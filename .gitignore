@@ -21,6 +21,8 @@
 *.idx
 *.ind
 *.ilg
+*.pdf
+*.bbl
 
 # Compiled PDF (remove this line if you want to track the PDF in git)
 # *.pdf
