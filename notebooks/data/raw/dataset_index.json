@@ -1,0 +1,130 @@
+{
+  "purpose": "DataFirst dataset index for ABM consumer agent calibration (BNPL / SA credit market)",
+  "generated": "2026-04-18",
+  "datasets": [
+    {
+      "priority": 1,
+      "idno": "zaf-saldru-nids-2017-v1.0.0",
+      "title": "National Income Dynamics Study 2017, Wave 5",
+      "authoring_entity": "SALDRU, University of Cape Town",
+      "year": "2017",
+      "access": "public",
+      "varcount": 2697,
+      "url": "https://www.datafirst.uct.ac.za/dataportal/index.php/catalog/712",
+      "info_file": "nids_wave5_info.json",
+      "vars_file": "nids_wave5_variables.json",
+      "filtered_vars_file": "nids_wave5_credit_vars.json",
+      "abm_relevance": "PRIMARY - income + debt + loan calibration",
+      "key_variables": [
+        {"name": "w5_hhincome", "use": "Household income distribution"},
+        {"name": "w5_hhincome_extu", "use": "Household income upper bound (imputed)"},
+        {"name": "w5_hhwage", "use": "Wage income component"},
+        {"name": "w5_expenditure", "use": "Household expenditure (spending behaviour)"},
+        {"name": "w5_loan", "use": "Total loan amount"},
+        {"name": "w5_h_owndebt_brac1", "use": "Debt bracket 1 (low)"},
+        {"name": "w5_h_owndebt_brac5", "use": "Debt bracket 5 (high)"},
+        {"name": "w5_h_owndebt_cat", "use": "Debt category (categorical)"},
+        {"name": "w5_a_dtflloan", "use": "Formal institution loan flag"},
+        {"name": "w5_a_dtfrloan", "use": "Friend/family loan flag"},
+        {"name": "w5_a_dtfrloanbal", "use": "Friend/family loan balance"},
+        {"name": "w5_a_dtemploan", "use": "Employer loan flag"},
+        {"name": "w5_a_emhearn", "use": "Employment earnings"},
+        {"name": "w5_a_incloan", "use": "Income from loans"},
+        {"name": "w5_pi_hhincome", "use": "Per capita household income"}
+      ],
+      "notes": "Longitudinal panel (Waves 1-5, 2008-2017). 39,434 individuals in Wave 5. Nationally representative. Sections include: income, expenditure, debt, personal ownership, loans, wages, grants. Best dataset for calibrating income distribution, DSTI ratios, and debt levels."
+    },
+    {
+      "priority": 1,
+      "idno": "zaf-statssa-ies-2022-2023-v1",
+      "title": "Income and Expenditure Survey 2022-2023",
+      "authoring_entity": "Statistics South Africa",
+      "year": "2022-2023",
+      "access": "public (CC-BY)",
+      "varcount": "not yet indexed in API",
+      "url": "https://www.datafirst.uct.ac.za/dataportal/index.php/catalog/1116",
+      "info_file": "ies_2022_info.json",
+      "vars_file": "ies_2022_variables.json",
+      "filtered_vars_file": null,
+      "abm_relevance": "PRIMARY - most recent SA income + expenditure + consumption data",
+      "key_topics": [
+        "Household income profiles",
+        "Expenditure by category (COICOP)",
+        "Consumption patterns",
+        "CPI basket composition",
+        "Poverty and inequality metrics"
+      ],
+      "notes": "Most recent SA income/expenditure survey. Mixed diary + recall methodology. 31,042 dwelling units. National coverage. Critical for calibrating spending patterns and income distributions to 2022-2023 levels. API variable metadata not yet populated - data files available on portal. Predecessor IES 2010-2011 (zaf-statssa-ies-2010-2011-v1) has full variable metadata if needed."
+    },
+    {
+      "priority": 2,
+      "idno": "zaf-statssa-ghs-2022-v1",
+      "title": "General Household Survey 2022",
+      "authoring_entity": "Statistics South Africa",
+      "year": "2022",
+      "access": "public (CC-BY)",
+      "varcount": 305,
+      "url": "https://www.datafirst.uct.ac.za/dataportal/index.php/catalog/945",
+      "info_file": "ghs_2022_info.json",
+      "vars_file": "ghs_2022_variables.json",
+      "filtered_vars_file": "ghs_2022_credit_vars.json",
+      "abm_relevance": "SECONDARY - income composition, social grants, household assets",
+      "key_variables": [
+        {"name": "lab_salary_hh", "use": "Household salary income"},
+        {"name": "lab_salary", "use": "Individual salary"},
+        {"name": "fin_inc_grant", "use": "Social grant income flag"},
+        {"name": "soc_grant_hh", "use": "Household receiving grant"},
+        {"name": "soc_grant_csg", "use": "Child support grant"},
+        {"name": "soc_grant_oag", "use": "Old age grant"},
+        {"name": "soc_grant_srd", "use": "Social relief of distress grant"},
+        {"name": "hwl_assets_*", "use": "Household durable asset ownership (proxy for wealth tier)"}
+      ],
+      "notes": "Annual cross-sectional survey. 2022 is most recent CAPI version (2020-21 were CATI due to COVID). Useful for income composition breakdown (wage vs. grant), asset-based wealth proxies, and household characteristics. GHS 2024 (zaf-statssa-ghs-2024-v1) also available."
+    },
+    {
+      "priority": 2,
+      "idno": "zaf-statssa-qlfs-2022-q2-v1",
+      "title": "Quarterly Labour Force Survey 2022, Quarter 2",
+      "authoring_entity": "Statistics South Africa",
+      "year": "2022",
+      "access": "public",
+      "varcount": 161,
+      "url": "https://www.datafirst.uct.ac.za/dataportal/index.php/catalog/909",
+      "info_file": "qlfs_2022_info.json",
+      "abm_relevance": "SECONDARY - employment status distribution, earnings by sector",
+      "notes": "Quarterly survey tracking employment/unemployment. Useful for calibrating the share of employed vs. unemployed consumers, earnings distributions by sector, and probability of income shock. QLFS 2025 Q1 and Q2 also available (most recent). 161 variables."
+    },
+    {
+      "priority": 3,
+      "idno": "zaf-saarf-amps-2015-v1.1",
+      "title": "All Media and Products Survey 2015",
+      "authoring_entity": "South African Audience Research Foundation (SAARF)",
+      "year": "2015",
+      "access": "public",
+      "varcount": 8079,
+      "url": "https://www.datafirst.uct.ac.za/dataportal/index.php/catalog/754",
+      "info_file": "amps_2015_info.json",
+      "vars_file": "amps_2015_variables.json",
+      "filtered_vars_file": "amps_2015_credit_vars.json",
+      "abm_relevance": "SUPPLEMENTARY - financial product ownership (credit cards, store accounts, banking)",
+      "notes": "8079 variables covering product and service ownership/usage. Includes income brackets, demographic data, and product adoption. Variable names are cryptic without codebook - requires downloading with layout files. Useful for modelling which financial products consumers hold (credit cards, store accounts) and adoption patterns by income tier. AMPS was discontinued after 2015; replaced by PAMS. 2015 is the final year."
+    }
+  ],
+  "not_on_datafirst": [
+    {
+      "source": "National Credit Regulator (NCR)",
+      "url": "https://www.ncr.org.za/",
+      "data": "Credit Bureau Monitor, Consumer Credit Market Report - quarterly aggregate credit data: total credit agreements, NPL rates, credit types, DSTI distributions"
+    },
+    {
+      "source": "South African Reserve Bank (SARB)",
+      "url": "https://www.resbank.co.za/",
+      "data": "Quarterly Bulletin - household credit and debt statistics, household debt-to-income ratio, bank credit growth rates"
+    },
+    {
+      "source": "FinMark Trust / FinScope",
+      "url": "https://finmark.org.za/",
+      "data": "FinScope South Africa Consumer Survey - financial inclusion, BNPL awareness, credit product usage by income band"
+    }
+  ]
+}

@@ -1,0 +1,191 @@
+{
+  "total_vars": 2697,
+  "matched": 37,
+  "variables": [
+    {
+      "name": "w5_a_dtflloan",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "w5_a_dtflloan_b",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "w5_a_dtfrloan",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "w5_a_dtfrloanbal",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "w5_a_dtemploan",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "w5_a_dtemploan_b",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "w5_hhincome",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "w5_hhincome_flg",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "w5_hhincome_extu",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "w5_hhincome_extu_flg",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "w5_hhwage",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "w5_hhwage_extu",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "w5_pi_hhincome",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "w5_pi_hhincome_extu",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "w5_pi_hhwage",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "w5_pi_hhwage_extu",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "w5_expenditure",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "w5_expenditure_extu",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "w5_loan",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "w5_loan_flg",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "w5_loan_extu",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "w5_loan_extu_flg",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "w5_a_emhearn",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "w5_a_emhearn_v",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "w5_a_emreswage",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "w5_a_noemreswage",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "w5_a_noemfrwage",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "w5_a_incloan",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "w5_a_incloan_v",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "w5_p_incloan",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "w5_p_incloan_v",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "w5_h_owndebt_brac1",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "w5_h_owndebt_brac2",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "w5_h_owndebt_brac3",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "w5_h_owndebt_brac4",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "w5_h_owndebt_brac5",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "w5_h_owndebt_cat",
+      "label": null,
+      "group": ""
+    }
+  ]
+}

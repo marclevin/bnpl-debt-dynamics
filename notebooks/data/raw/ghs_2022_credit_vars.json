@@ -1,0 +1,191 @@
+{
+  "total_vars": 305,
+  "matched": 37,
+  "variables": [
+    {
+      "name": "fin_inc_grant",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "hwl_assets_tv",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "hwl_assets_pool",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "hwl_assets_dvd",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "hwl_assets_paytv",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "hwl_assets_ac",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "hwl_assets_comp",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "hwl_assets_vac",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "hwl_assets_dishw",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "hwl_assets_washm",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "HWL_Assets_tumd",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "hwl_assets_freezer",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "hwl_assets_fridge",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "hwl_assets_estove",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "hwl_assets_microw",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "hwl_assets_sink",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "hwl_assets_secure",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "hwl_assets_hometh",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "hwl_assets_geyser",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "hwl_assets_solarg",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "hwl_assets_solarp",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "hwl_assets_rainwtnk",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "hwl_assets_borehole",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "hwl_assets_piano",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "hwl_assets_radio",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "hwl_assets_Gstove",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "lab_salary_hh",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "soc_grant_hh",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "soc_grant",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "soc_grant_oag",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "soc_grant_dis",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "soc_grant_csg",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "soc_grant_car",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "soc_grant_fos",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "soc_grant_grn",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "soc_grant_srd",
+      "label": null,
+      "group": ""
+    },
+    {
+      "name": "lab_salary",
+      "label": null,
+      "group": ""
+    }
+  ]
+}

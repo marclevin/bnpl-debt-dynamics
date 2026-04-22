@@ -1,0 +1,2445 @@
+{
+  "total": 305,
+  "variables": [
+    {
+      "uid": 1533896,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V1",
+      "name": "uqnr",
+      "labl": "Unique number"
+    },
+    {
+      "uid": 1533897,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V2",
+      "name": "personnr",
+      "labl": "Person number"
+    },
+    {
+      "uid": 1533898,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V3",
+      "name": "psu",
+      "labl": "Primary sampling unit"
+    },
+    {
+      "uid": 1533899,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V4",
+      "name": "prov",
+      "labl": "Province"
+    },
+    {
+      "uid": 1533900,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V5",
+      "name": "head_popgrp",
+      "labl": "Population group of household head"
+    },
+    {
+      "uid": 1533901,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V6",
+      "name": "head_sex",
+      "labl": "Sex of household head"
+    },
+    {
+      "uid": 1533902,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V7",
+      "name": "head_age",
+      "labl": "Age of household head"
+    },
+    {
+      "uid": 1533903,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V8",
+      "name": "hsg_maind",
+      "labl": "Type of main dwelling"
+    },
+    {
+      "uid": 1533904,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V9",
+      "name": "hsg_walls",
+      "labl": "Type of material used for the wall"
+    },
+    {
+      "uid": 1533905,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V10",
+      "name": "hsg_roof",
+      "labl": "Type of material used for the roof"
+    },
+    {
+      "uid": 1533906,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V11",
+      "name": "hsg_floor",
+      "labl": "Type of material used for the floor"
+    },
+    {
+      "uid": 1533907,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V12",
+      "name": "hsg_cond_wall",
+      "labl": "Walls condition"
+    },
+    {
+      "uid": 1533908,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V13",
+      "name": "hsg_cond_roof",
+      "labl": "Roof condition"
+    },
+    {
+      "uid": 1533909,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V14",
+      "name": "hsg_cond_floor",
+      "labl": "Floor condition"
+    },
+    {
+      "uid": 1533910,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V15",
+      "name": "hsg_rm_open",
+      "labl": "Lounge/dining room/sitting rooms/TV room (open)"
+    },
+    {
+      "uid": 1533911,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V16",
+      "name": "hsg_rm_close",
+      "labl": "Lounge/dining room/sitting rooms/TV room (closed)"
+    },
+    {
+      "uid": 1533912,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V17",
+      "name": "hsg_rm_bedr",
+      "labl": "Bedrooms"
+    },
+    {
+      "uid": 1533913,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V18",
+      "name": "hsg_rm_multi",
+      "labl": "One room with multiple use"
+    },
+    {
+      "uid": 1533914,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V19",
+      "name": "hsg_rm_kitch",
+      "labl": "Kitchen"
+    },
+    {
+      "uid": 1533915,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V20",
+      "name": "hsg_rm_toil",
+      "labl": "Toilets"
+    },
+    {
+      "uid": 1533916,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V21",
+      "name": "hsg_rm_bath",
+      "labl": "Bathrooms"
+    },
+    {
+      "uid": 1533917,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V22",
+      "name": "hsg_rm_othr",
+      "labl": "Other rooms"
+    },
+    {
+      "uid": 1533918,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V23",
+      "name": "hsg_rm_tot",
+      "labl": "Total rooms"
+    },
+    {
+      "uid": 1533919,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V24",
+      "name": "hsg_tenure",
+      "labl": "Ownership of dwelling"
+    },
+    {
+      "uid": 1533920,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V25",
+      "name": "hsg_rent",
+      "labl": "Monthly rent or mortgage"
+    },
+    {
+      "uid": 1533921,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V26",
+      "name": "hsg_value",
+      "labl": "Market value of the property"
+    },
+    {
+      "uid": 1533922,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V27",
+      "name": "hsg_built",
+      "labl": "Dwelling originally built"
+    },
+    {
+      "uid": 1533923,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V28",
+      "name": "hsg_rdp",
+      "labl": "RDP or state subsidised dwelling"
+    },
+    {
+      "uid": 1533924,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V29",
+      "name": "hsg_subsidy",
+      "labl": "House subsidy received"
+    },
+    {
+      "uid": 1533925,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V30",
+      "name": "wat_drinkwat",
+      "labl": "Main source of water"
+    },
+    {
+      "uid": 1533926,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V31",
+      "name": "wat_dist",
+      "labl": "Distance of water source from the dwelling"
+    },
+    {
+      "uid": 1533927,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V32",
+      "name": "wat_pipe",
+      "labl": "Usage of piped or tap water"
+    },
+    {
+      "uid": 1533928,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V33",
+      "name": "wat_treat",
+      "labl": "Treatment of drinking water"
+    },
+    {
+      "uid": 1533929,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V34",
+      "name": "wat_mun_source",
+      "labl": "Water supply"
+    },
+    {
+      "uid": 1533930,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V35",
+      "name": "wat_meter",
+      "labl": "Water meter"
+    },
+    {
+      "uid": 1533931,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V36",
+      "name": "wat_pay",
+      "labl": "Payment for water"
+    },
+    {
+      "uid": 1533932,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V37",
+      "name": "wat_inte_12mth",
+      "labl": "Water supply interruption"
+    },
+    {
+      "uid": 1533933,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V38",
+      "name": "wat_inte_2days",
+      "labl": "Duration of water interruption"
+    },
+    {
+      "uid": 1533934,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V39",
+      "name": "wat_inte_altsource",
+      "labl": "Alternative drinking water sources"
+    },
+    {
+      "uid": 1533935,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V40",
+      "name": "wat_inte_15days",
+      "labl": "Total duration of interruption"
+    },
+    {
+      "uid": 1533936,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V41",
+      "name": "san_toil",
+      "labl": "Type of toilet facility"
+    },
+    {
+      "uid": 1533937,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V42",
+      "name": "san_share",
+      "labl": "Toilet facility shared"
+    },
+    {
+      "uid": 1533938,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V43",
+      "name": "san_location",
+      "labl": "Location of the toilet facility"
+    },
+    {
+      "uid": 1533939,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V44",
+      "name": "san_distance",
+      "labl": "Distance to nearest toilet facility"
+    },
+    {
+      "uid": 1533940,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V45",
+      "name": "san_washfac",
+      "labl": "Hand washing facilities"
+    },
+    {
+      "uid": 1533941,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V46",
+      "name": "san_wash",
+      "labl": "Use of soap to wash hands after defecation"
+    },
+    {
+      "uid": 1533942,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V47",
+      "name": "eng_access",
+      "labl": "Access to electricity"
+    },
+    {
+      "uid": 1533943,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V48",
+      "name": "eng_mainelect",
+      "labl": "Main source of electricity"
+    },
+    {
+      "uid": 1533944,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V49",
+      "name": "eng_mains",
+      "labl": "Mains electricity supply"
+    },
+    {
+      "uid": 1533945,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V50",
+      "name": "eng_supply",
+      "labl": "Supplier of electricity"
+    },
+    {
+      "uid": 1533946,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V51",
+      "name": "eng_cook",
+      "labl": "Energy for cooking"
+    },
+    {
+      "uid": 1533947,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V52",
+      "name": "eng_light",
+      "labl": "Energy for lighting"
+    },
+    {
+      "uid": 1533948,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V53",
+      "name": "eng_wheat",
+      "labl": "Energy for water heating"
+    },
+    {
+      "uid": 1533949,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V54",
+      "name": "eng_sheat",
+      "labl": "Energy for space heating"
+    },
+    {
+      "uid": 1533950,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V55",
+      "name": "eng_pay",
+      "labl": "paying for electricity"
+    },
+    {
+      "uid": 1533951,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V56",
+      "name": "swr_rub",
+      "labl": "Refuse removal"
+    },
+    {
+      "uid": 1533952,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V57",
+      "name": "swr_sepwaste",
+      "labl": "Recycling of waste"
+    },
+    {
+      "uid": 1533953,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V58",
+      "name": "swr_env_rub",
+      "labl": "Irregular or no waste removal"
+    },
+    {
+      "uid": 1533954,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V59",
+      "name": "swr_env_lit",
+      "labl": "Littering"
+    },
+    {
+      "uid": 1533955,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V60",
+      "name": "swr_env_wat",
+      "labl": "Water pollution"
+    },
+    {
+      "uid": 1533956,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V61",
+      "name": "swr_env_air",
+      "labl": "Outdoor/indoor air pollution"
+    },
+    {
+      "uid": 1533957,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V62",
+      "name": "swr_env_lan",
+      "labl": "Land degradation"
+    },
+    {
+      "uid": 1533958,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V63",
+      "name": "swr_env_noi",
+      "labl": "Excessive noise"
+    },
+    {
+      "uid": 1533959,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V64",
+      "name": "com_phone",
+      "labl": "Telephone"
+    },
+    {
+      "uid": 1533960,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V65",
+      "name": "com_cell",
+      "labl": "Cellular telephone"
+    },
+    {
+      "uid": 1533961,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V66",
+      "name": "com_cell_total",
+      "labl": "Total number of cellular telephone in the household"
+    },
+    {
+      "uid": 1533962,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V67",
+      "name": "com_int_fixed",
+      "labl": "Internet connection in the household"
+    },
+    {
+      "uid": 1533963,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V68",
+      "name": "com_int_mobile",
+      "labl": "Any place via any other mobile access services"
+    },
+    {
+      "uid": 1533964,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V69",
+      "name": "com_int_pubwifi",
+      "labl": "public wifi"
+    },
+    {
+      "uid": 1533965,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V70",
+      "name": "com_int_stud",
+      "labl": "Internet for students at a school/university/college"
+    },
+    {
+      "uid": 1533966,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V71",
+      "name": "com_int_work",
+      "labl": "At place of work"
+    },
+    {
+      "uid": 1533967,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V72",
+      "name": "com_int_libr",
+      "labl": "Internet in a library or community hall/Thusong centre"
+    },
+    {
+      "uid": 1533968,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V73",
+      "name": "com_int_cafe",
+      "labl": "Internet Café"
+    },
+    {
+      "uid": 1533969,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V74",
+      "name": "com_mail_post",
+      "labl": "Mail carrier at home (postal delivery, mailman/woman)"
+    },
+    {
+      "uid": 1533970,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V75",
+      "name": "com_mail_Pbag",
+      "labl": "PO Box/ Private bag"
+    },
+    {
+      "uid": 1533971,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V76",
+      "name": "com_mail_Postnet",
+      "labl": "Postnet branch"
+    },
+    {
+      "uid": 1533972,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V77",
+      "name": "com_mail_Other",
+      "labl": "Other (e.g. local delivery office, school, shop)"
+    },
+    {
+      "uid": 1533973,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V78",
+      "name": "tra_taxi",
+      "labl": "Trips using taxis"
+    },
+    {
+      "uid": 1533974,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V79",
+      "name": "tra_bus",
+      "labl": "Trips using Buses"
+    },
+    {
+      "uid": 1533975,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V80",
+      "name": "tra_train",
+      "labl": "Trips Using Trains"
+    },
+    {
+      "uid": 1533976,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V81",
+      "name": "tra_taxi_trips",
+      "labl": "total number of trips using taxis"
+    },
+    {
+      "uid": 1533977,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V82",
+      "name": "tra_taxi_cost",
+      "labl": "Total cost of using taxis"
+    },
+    {
+      "uid": 1533978,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V83",
+      "name": "tra_taxi_dist",
+      "labl": "distance to the nearest taxi stop"
+    },
+    {
+      "uid": 1533979,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V84",
+      "name": "tra_bus_trips",
+      "labl": "total number of trips using buses"
+    },
+    {
+      "uid": 1533980,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V85",
+      "name": "tra_bus_cost",
+      "labl": "Total cost of using buses"
+    },
+    {
+      "uid": 1533981,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V86",
+      "name": "tra_bus_dist",
+      "labl": "distance to the nearest bus stop"
+    },
+    {
+      "uid": 1533982,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V87",
+      "name": "tra_train_trips",
+      "labl": "total number of trips using trains"
+    },
+    {
+      "uid": 1533983,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V88",
+      "name": "tra_train_cost",
+      "labl": "Total cost of using trains"
+    },
+    {
+      "uid": 1533984,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V89",
+      "name": "tra_train_dist",
+      "labl": "distance to the nearest train station"
+    },
+    {
+      "uid": 1533985,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V90",
+      "name": "hhw_hltfac",
+      "labl": "Medical help"
+    },
+    {
+      "uid": 1533986,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V91",
+      "name": "hhw_transp",
+      "labl": "Means of transport to nearest health facility"
+    },
+    {
+      "uid": 1533987,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V92",
+      "name": "hhw_time",
+      "labl": "Travel time to health facility"
+    },
+    {
+      "uid": 1533988,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V93",
+      "name": "fsd_hung_adult",
+      "labl": "Insufficient food for adult"
+    },
+    {
+      "uid": 1533989,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V94",
+      "name": "fsd_hung_child",
+      "labl": "Insufficient food for children"
+    },
+    {
+      "uid": 1533990,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V95",
+      "name": "fsd_worried",
+      "labl": "Worried about food"
+    },
+    {
+      "uid": 1533991,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V96",
+      "name": "fsd_healthy",
+      "labl": "Lack of nutritious food"
+    },
+    {
+      "uid": 1533992,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V97",
+      "name": "fsd_fewfoods",
+      "labl": "lack of variety food kind"
+    },
+    {
+      "uid": 1533993,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V98",
+      "name": "fsd_fewfoods_days",
+      "labl": "lacked variety food kind for 5 or more days in the past 30 days"
+    },
+    {
+      "uid": 1533994,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V99",
+      "name": "fsd_skipped",
+      "labl": "Skipped meals"
+    },
+    {
+      "uid": 1533995,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V100",
+      "name": "fsd_skipped_days",
+      "labl": "skipped meals for 5 or more days in the past 30 days"
+    },
+    {
+      "uid": 1533996,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V101",
+      "name": "fsd_ateless",
+      "labl": "ate less food"
+    },
+    {
+      "uid": 1533997,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V102",
+      "name": "fsd_ateless_days",
+      "labl": "ate less food for 5 or more days in the past 30 days"
+    },
+    {
+      "uid": 1533998,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V103",
+      "name": "fsd_ranout",
+      "labl": "run out of food"
+    },
+    {
+      "uid": 1533999,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V104",
+      "name": "fsd_ranout_days",
+      "labl": "run out of food for 5 or more days in the past 30 days"
+    },
+    {
+      "uid": 1534000,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V105",
+      "name": "fsd_hungry",
+      "labl": "Hunger"
+    },
+    {
+      "uid": 1534001,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V106",
+      "name": "fsd_whlday",
+      "labl": "Not eating the whole day"
+    },
+    {
+      "uid": 1534002,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V107",
+      "name": "agr_agri",
+      "labl": "Agricultural activities"
+    },
+    {
+      "uid": 1534003,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V108",
+      "name": "agr_agrino",
+      "labl": "Members involved in agricultural activities"
+    },
+    {
+      "uid": 1534004,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V109",
+      "name": "agr_agrdecmaker",
+      "labl": "Main decision maker"
+    },
+    {
+      "uid": 1534005,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V110",
+      "name": "agr_agri_type_live",
+      "labl": "Livestock production"
+    },
+    {
+      "uid": 1534006,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V111",
+      "name": "agr_agri_type_poul",
+      "labl": "Poultry production"
+    },
+    {
+      "uid": 1534007,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V112",
+      "name": "agr_agri_type_grai",
+      "labl": "Grains and food crops"
+    },
+    {
+      "uid": 1534008,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V113",
+      "name": "agr_agri_type_indus",
+      "labl": "Industrial crops"
+    },
+    {
+      "uid": 1534009,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V114",
+      "name": "agr_agri_type_fruit",
+      "labl": "Fruit and vegetable production"
+    },
+    {
+      "uid": 1534010,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V115",
+      "name": "agr_agri_type_fod",
+      "labl": "Fodder grazing/pasture or grass for animals"
+    },
+    {
+      "uid": 1534011,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V116",
+      "name": "agr_agri_type_fish",
+      "labl": "Fish farming/aquaculture"
+    },
+    {
+      "uid": 1534012,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V117",
+      "name": "agr_agri_type_for",
+      "labl": "Forestry"
+    },
+    {
+      "uid": 1534013,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V118",
+      "name": "agr_agri_type_game",
+      "labl": "Game farming"
+    },
+    {
+      "uid": 1534014,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V119",
+      "name": "agr_mainuse",
+      "labl": "Use of agricultural products and stock keeping"
+    },
+    {
+      "uid": 1534015,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V120",
+      "name": "agr_plant_farm",
+      "labl": "Farm land"
+    },
+    {
+      "uid": 1534016,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V121",
+      "name": "agr_plant_back",
+      "labl": "Backyard garden"
+    },
+    {
+      "uid": 1534017,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V122",
+      "name": "agr_plant_schl",
+      "labl": "School garden"
+    },
+    {
+      "uid": 1534018,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V123",
+      "name": "agr_plant_comm",
+      "labl": "Communal garden"
+    },
+    {
+      "uid": 1534019,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V124",
+      "name": "agr_plant_vrd",
+      "labl": "On verges of roads and unused public/municipal land"
+    },
+    {
+      "uid": 1534020,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V125",
+      "name": "agr_plant_oth",
+      "labl": "Other plant"
+    },
+    {
+      "uid": 1534021,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V126",
+      "name": "fin_inc_sal",
+      "labl": "Salaries/wages/commission"
+    },
+    {
+      "uid": 1534022,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V127",
+      "name": "fin_inc_buss",
+      "labl": "Income from a business"
+    },
+    {
+      "uid": 1534023,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V128",
+      "name": "fin_inc_rem",
+      "labl": "Remittances"
+    },
+    {
+      "uid": 1534024,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V129",
+      "name": "fin_inc_pen",
+      "labl": "Pensions"
+    },
+    {
+      "uid": 1534025,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V130",
+      "name": "fin_inc_grant",
+      "labl": "Grants"
+    },
+    {
+      "uid": 1534026,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V131",
+      "name": "fin_inc_agric",
+      "labl": "Sales of farm products and services"
+    },
+    {
+      "uid": 1534027,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V132",
+      "name": "fin_inc_none",
+      "labl": "No Income"
+    },
+    {
+      "uid": 1534028,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V133",
+      "name": "fin_inc_oth",
+      "labl": "Other income sources, e.g. rental income, interest"
+    },
+    {
+      "uid": 1534029,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V134",
+      "name": "fin_inc_main",
+      "labl": "Main income source"
+    },
+    {
+      "uid": 1534030,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V135",
+      "name": "fin_rem",
+      "labl": "Approximately how much from remittances"
+    },
+    {
+      "uid": 1534031,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V136",
+      "name": "fin_pen",
+      "labl": "Approximately how much from pensions"
+    },
+    {
+      "uid": 1534032,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V137",
+      "name": "fin_reqinc",
+      "labl": "Net household income per month in rand"
+    },
+    {
+      "uid": 1534033,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V138",
+      "name": "fin_compinc",
+      "labl": "Monthly income of your household higher"
+    },
+    {
+      "uid": 1534034,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V139",
+      "name": "fin_exp",
+      "labl": "Household expenditure"
+    },
+    {
+      "uid": 1534035,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V140",
+      "name": "hwl_vehicle",
+      "labl": "Ownership of  a motor vehicle"
+    },
+    {
+      "uid": 1534036,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V141",
+      "name": "hwl_totveh",
+      "labl": "Total number of vehicles"
+    },
+    {
+      "uid": 1534037,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V142",
+      "name": "hwl_domw",
+      "labl": "Domestic or household worker's services used by the household"
+    },
+    {
+      "uid": 1534038,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V143",
+      "name": "hwl_status",
+      "labl": "Wealth/poverty status of you and your household at present"
+    },
+    {
+      "uid": 1534039,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V144",
+      "name": "hwl_happy",
+      "labl": "Happier, the same or less happy with life"
+    },
+    {
+      "uid": 1534040,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V145",
+      "name": "hwl_assets_tv",
+      "labl": "TV Set"
+    },
+    {
+      "uid": 1534041,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V146",
+      "name": "hwl_assets_pool",
+      "labl": "Swimming pool"
+    },
+    {
+      "uid": 1534042,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V147",
+      "name": "hwl_assets_dvd",
+      "labl": "DVD player/Blu-Ray player"
+    },
+    {
+      "uid": 1534043,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V148",
+      "name": "hwl_assets_paytv",
+      "labl": "Pay TV (M-Net/DSTV/Top TV) Subscription"
+    },
+    {
+      "uid": 1534044,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V149",
+      "name": "hwl_assets_ac",
+      "labl": "Air conditioner (excluding fans)"
+    },
+    {
+      "uid": 1534045,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V150",
+      "name": "hwl_assets_comp",
+      "labl": "Computer/Desktop/Laptop"
+    },
+    {
+      "uid": 1534046,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V151",
+      "name": "hwl_assets_vac",
+      "labl": "Vacuum cleaner"
+    },
+    {
+      "uid": 1534047,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V152",
+      "name": "hwl_assets_dishw",
+      "labl": "Dishwashing machine"
+    },
+    {
+      "uid": 1534048,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V153",
+      "name": "hwl_assets_washm",
+      "labl": "Washing machine"
+    },
+    {
+      "uid": 1534049,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V154",
+      "name": "HWL_Assets_tumd",
+      "labl": "Tumble dryer"
+    },
+    {
+      "uid": 1534050,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V155",
+      "name": "hwl_assets_freezer",
+      "labl": "Deep freezer – free standing"
+    },
+    {
+      "uid": 1534051,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V156",
+      "name": "hwl_assets_fridge",
+      "labl": "Refrigerator or Combined Fridge Freezer"
+    },
+    {
+      "uid": 1534052,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V157",
+      "name": "hwl_assets_estove",
+      "labl": "Electric stove"
+    },
+    {
+      "uid": 1534053,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V158",
+      "name": "hwl_assets_microw",
+      "labl": "Microwave oven"
+    },
+    {
+      "uid": 1534054,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V159",
+      "name": "hwl_assets_sink",
+      "labl": "Built-in kitchen sink"
+    },
+    {
+      "uid": 1534055,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V160",
+      "name": "hwl_assets_secure",
+      "labl": "Home Security Service"
+    },
+    {
+      "uid": 1534056,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V161",
+      "name": "hwl_assets_hometh",
+      "labl": "Home theatre system"
+    },
+    {
+      "uid": 1534057,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V162",
+      "name": "hwl_assets_geyser",
+      "labl": "Geyser providing hot running water"
+    },
+    {
+      "uid": 1534058,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V163",
+      "name": "hwl_assets_solarg",
+      "labl": "Solar hot water geyser"
+    },
+    {
+      "uid": 1534059,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V164",
+      "name": "hwl_assets_solarp",
+      "labl": "Solar electrical panel(s)"
+    },
+    {
+      "uid": 1534060,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V165",
+      "name": "hwl_assets_rainwtnk",
+      "labl": "Rain water tank"
+    },
+    {
+      "uid": 1534061,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V166",
+      "name": "hwl_assets_borehole",
+      "labl": "Borehole"
+    },
+    {
+      "uid": 1534062,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V167",
+      "name": "hwl_assets_piano",
+      "labl": "Piano"
+    },
+    {
+      "uid": 1534063,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V168",
+      "name": "hwl_assets_radio",
+      "labl": "Radio"
+    },
+    {
+      "uid": 1534064,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V169",
+      "name": "hwl_assets_Gstove",
+      "labl": "Gas stove"
+    },
+    {
+      "uid": 1534065,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V170",
+      "name": "hwl_res_name",
+      "labl": "Person who answered most of the questions in the house section"
+    },
+    {
+      "uid": 1534066,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V171",
+      "name": "Q1ntLanguage",
+      "labl": "Interview language"
+    },
+    {
+      "uid": 1534067,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V172",
+      "name": "Q2Dwelling",
+      "labl": "Type of living quarters"
+    },
+    {
+      "uid": 1534068,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V173",
+      "name": "hholdsz",
+      "labl": "Household size"
+    },
+    {
+      "uid": 1534069,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V174",
+      "name": "mobphon_hh",
+      "labl": "Own a mobile telephone"
+    },
+    {
+      "uid": 1534070,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V175",
+      "name": "smartphone_hh",
+      "labl": "Own a smart phone"
+    },
+    {
+      "uid": 1534071,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V176",
+      "name": "onemed_hh",
+      "labl": "Medical aid scheme"
+    },
+    {
+      "uid": 1534072,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V177",
+      "name": "chld5yr_hh",
+      "labl": "Children 5 and younger"
+    },
+    {
+      "uid": 1534073,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V178",
+      "name": "chld17yr_hh",
+      "labl": "Children 17 and younger"
+    },
+    {
+      "uid": 1534074,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V179",
+      "name": "ad60plusyr_hh",
+      "labl": "Adults"
+    },
+    {
+      "uid": 1534075,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V180",
+      "name": "lab_salary_hh",
+      "labl": "Household Monthly salary"
+    },
+    {
+      "uid": 1534076,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V181",
+      "name": "soc_grant_hh",
+      "labl": "Social grant"
+    },
+    {
+      "uid": 1534077,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V182",
+      "name": "totalgrnt_hh",
+      "labl": "Total social grant"
+    },
+    {
+      "uid": 1534078,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V183",
+      "name": "undisab_hh",
+      "labl": "UN Disability"
+    },
+    {
+      "uid": 1534079,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V184",
+      "name": "disab_hh",
+      "labl": "Disability"
+    },
+    {
+      "uid": 1534080,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V185",
+      "name": "sevdisab_hh",
+      "labl": "Severe disability"
+    },
+    {
+      "uid": 1534081,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V186",
+      "name": "econact_hh",
+      "labl": "Economically active"
+    },
+    {
+      "uid": 1534082,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V187",
+      "name": "totmhinc",
+      "labl": "Household income"
+    },
+    {
+      "uid": 1534083,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V188",
+      "name": "stratum",
+      "labl": "Stratum"
+    },
+    {
+      "uid": 1534084,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V189",
+      "name": "geotype",
+      "labl": "Geographical type"
+    },
+    {
+      "uid": 1534085,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V190",
+      "name": "metro",
+      "labl": "Metro"
+    },
+    {
+      "uid": 1534086,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V191",
+      "name": "metro_code",
+      "labl": "Metro Code"
+    },
+    {
+      "uid": 1534087,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V192",
+      "name": "rotation",
+      "labl": "Rotation"
+    },
+    {
+      "uid": 1534088,
+      "sid": 945,
+      "fid": "F1",
+      "vid": "V193",
+      "name": "house_wgt",
+      "labl": "House Weight"
+    },
+    {
+      "uid": 1534089,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V194",
+      "name": "uqnr",
+      "labl": "Unique number"
+    },
+    {
+      "uid": 1534090,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V195",
+      "name": "personnr",
+      "labl": "Person number"
+    },
+    {
+      "uid": 1534091,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V196",
+      "name": "psu",
+      "labl": "Primary sampling unit"
+    },
+    {
+      "uid": 1534092,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V197",
+      "name": "prov",
+      "labl": "Province"
+    },
+    {
+      "uid": 1534093,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V198",
+      "name": "Four_by_Four",
+      "labl": "Stayed Nights (B_Nights)"
+    },
+    {
+      "uid": 1534094,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V199",
+      "name": "Sex",
+      "labl": "Gender"
+    },
+    {
+      "uid": 1534095,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V200",
+      "name": "age",
+      "labl": "Age"
+    },
+    {
+      "uid": 1534096,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V201",
+      "name": "age_grp1",
+      "labl": "Age group"
+    },
+    {
+      "uid": 1534097,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V202",
+      "name": "Population",
+      "labl": "Population group"
+    },
+    {
+      "uid": 1534098,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V203",
+      "name": "Languages",
+      "labl": "Languages"
+    },
+    {
+      "uid": 1534099,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V204",
+      "name": "hhc_relationship",
+      "labl": "Relationship to the household head"
+    },
+    {
+      "uid": 1534100,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V205",
+      "name": "hhc_marital",
+      "labl": "Marital status"
+    },
+    {
+      "uid": 1534101,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V206",
+      "name": "spouse",
+      "labl": "Spouse/partner"
+    },
+    {
+      "uid": 1534102,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V207",
+      "name": "spouse_name",
+      "labl": "Spouse number"
+    },
+    {
+      "uid": 1534103,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V208",
+      "name": "hhc_fath_alive",
+      "labl": "Father alive"
+    },
+    {
+      "uid": 1534104,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V209",
+      "name": "hhc_fath_parthh",
+      "labl": "Father part of the household"
+    },
+    {
+      "uid": 1534105,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V210",
+      "name": "hhc_fath_name",
+      "labl": "Father person number"
+    },
+    {
+      "uid": 1534106,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V211",
+      "name": "hhc_moth_alive",
+      "labl": "Mother still alive"
+    },
+    {
+      "uid": 1534107,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V212",
+      "name": "hhc_moth_parthh",
+      "labl": "Mother part of the household"
+    },
+    {
+      "uid": 1534108,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V213",
+      "name": "hhc_moth_name",
+      "labl": "Mother person number"
+    },
+    {
+      "uid": 1534109,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V214",
+      "name": "education",
+      "labl": "Highest education level"
+    },
+    {
+      "uid": 1534110,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V215",
+      "name": "ecd_chldatt",
+      "labl": "Type of ECD facility"
+    },
+    {
+      "uid": 1534111,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V216",
+      "name": "ecd_notatt",
+      "labl": "Place where children spent most of their time during the day"
+    },
+    {
+      "uid": 1534112,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V217",
+      "name": "ecd_notatt_rsn",
+      "labl": "Main reason for not attending the ECD facility"
+    },
+    {
+      "uid": 1534113,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V218",
+      "name": "ecd_fees",
+      "labl": "Amount paid to attend the ECD facility"
+    },
+    {
+      "uid": 1534114,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V219",
+      "name": "ecd_read",
+      "labl": "Read books/tell stories"
+    },
+    {
+      "uid": 1534115,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V220",
+      "name": "ecd_sing",
+      "labl": "Sing"
+    },
+    {
+      "uid": 1534116,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V221",
+      "name": "ecd_colour",
+      "labl": "Colour"
+    },
+    {
+      "uid": 1534117,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V222",
+      "name": "ecd_object",
+      "labl": "Objects"
+    },
+    {
+      "uid": 1534118,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V223",
+      "name": "ecd_count",
+      "labl": "Count"
+    },
+    {
+      "uid": 1534119,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V224",
+      "name": "ecd_play",
+      "labl": "Play"
+    },
+    {
+      "uid": 1534120,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V225",
+      "name": "edu_attend",
+      "labl": "Currently attending educational institution"
+    },
+    {
+      "uid": 1534121,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V226",
+      "name": "edu_rsnn",
+      "labl": "Main reason for not attending an educational institution"
+    },
+    {
+      "uid": 1534122,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V227",
+      "name": "edu_edui",
+      "labl": "Educational institution"
+    },
+    {
+      "uid": 1534123,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V228",
+      "name": "edu_ppriv",
+      "labl": "Public or private institution"
+    },
+    {
+      "uid": 1534124,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V229",
+      "name": "edu_corr",
+      "labl": "Distance learning classes"
+    },
+    {
+      "uid": 1534125,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V230",
+      "name": "edu_mode_tr",
+      "labl": "Means of transport"
+    },
+    {
+      "uid": 1534126,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V231",
+      "name": "edu_time",
+      "labl": "Time taken to school"
+    },
+    {
+      "uid": 1534127,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V232",
+      "name": "edu_burs",
+      "labl": "Fee reductions or bursaries"
+    },
+    {
+      "uid": 1534128,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V233",
+      "name": "edu_totfees",
+      "labl": "Total amount of tuition fees paid"
+    },
+    {
+      "uid": 1534129,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V234",
+      "name": "edu_nofees",
+      "labl": "Reason for no fees payment"
+    },
+    {
+      "uid": 1534130,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V235",
+      "name": "edu_grde",
+      "labl": "Current grade"
+    },
+    {
+      "uid": 1534131,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V236",
+      "name": "edu_same",
+      "labl": "Repeat Grade"
+    },
+    {
+      "uid": 1534132,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V237",
+      "name": "edu_food",
+      "labl": "School feeding scheme"
+    },
+    {
+      "uid": 1534133,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V238",
+      "name": "edu_eatfood",
+      "labl": "Provision of food"
+    },
+    {
+      "uid": 1534134,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V239",
+      "name": "edu_vlnc",
+      "labl": "Violence, corporal punishment or verbal abuse"
+    },
+    {
+      "uid": 1534135,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V240",
+      "name": "edu_vlnc_corp",
+      "labl": "Corporal punishment by teacher"
+    },
+    {
+      "uid": 1534136,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V241",
+      "name": "edu_vlnc_phyt",
+      "labl": "Physical violence by teacher"
+    },
+    {
+      "uid": 1534137,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V242",
+      "name": "edu_vlnc_vert",
+      "labl": "Verbal abuse by teacher"
+    },
+    {
+      "uid": 1534138,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V243",
+      "name": "edu_vlnc_verl",
+      "labl": "Verbal abuse by learners"
+    },
+    {
+      "uid": 1534139,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V244",
+      "name": "edu_vlnc_phyl",
+      "labl": "Physical abuse"
+    },
+    {
+      "uid": 1534140,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V245",
+      "name": "edu_abs",
+      "labl": "Absent from school"
+    },
+    {
+      "uid": 1534141,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V246",
+      "name": "edu_abs_days",
+      "labl": "Number of days absent"
+    },
+    {
+      "uid": 1534142,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V247",
+      "name": "edu_abs_rsn",
+      "labl": "Main reason absent"
+    },
+    {
+      "uid": 1534143,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V248",
+      "name": "hlt_medi",
+      "labl": "Medical aid scheme"
+    },
+    {
+      "uid": 1534144,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V249",
+      "name": "hlt_genhealth",
+      "labl": "Health status"
+    },
+    {
+      "uid": 1534145,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V250",
+      "name": "hlt_vacci",
+      "labl": "Covid-19 vaccine"
+    },
+    {
+      "uid": 1534146,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V251",
+      "name": "hlt_chronic_asm",
+      "labl": "Asthma"
+    },
+    {
+      "uid": 1534147,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V252",
+      "name": "hlt_chronic_dbt",
+      "labl": "Diabetes"
+    },
+    {
+      "uid": 1534148,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V253",
+      "name": "hlt_chronic_can",
+      "labl": "Cancer"
+    },
+    {
+      "uid": 1534149,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V254",
+      "name": "hlt_chronic_HIV",
+      "labl": "HIV and AIDS"
+    },
+    {
+      "uid": 1534150,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V255",
+      "name": "hlt_chronic_hbp",
+      "labl": "Hypertension/high blood pressure"
+    },
+    {
+      "uid": 1534151,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V256",
+      "name": "hlt_chronic_arth",
+      "labl": "Arthritis"
+    },
+    {
+      "uid": 1534152,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V257",
+      "name": "hlt_chronic_strk",
+      "labl": "Stroke"
+    },
+    {
+      "uid": 1534153,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V258",
+      "name": "hlt_chronic_tb",
+      "labl": "Tuberculosis"
+    },
+    {
+      "uid": 1534154,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V259",
+      "name": "hlt_chronic_broncho",
+      "labl": "Pneumonia / Bronchitis"
+    },
+    {
+      "uid": 1534155,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V260",
+      "name": "hlt_chronic_covid",
+      "labl": "Covid-19"
+    },
+    {
+      "uid": 1534156,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V261",
+      "name": "hlt_preg",
+      "labl": "Pregnancy"
+    },
+    {
+      "uid": 1534157,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V262",
+      "name": "dsb_see",
+      "labl": "Seeing"
+    },
+    {
+      "uid": 1534158,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V263",
+      "name": "dsb_hea",
+      "labl": "Hearing"
+    },
+    {
+      "uid": 1534159,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V264",
+      "name": "dsb_wal",
+      "labl": "Walking"
+    },
+    {
+      "uid": 1534160,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V265",
+      "name": "dsb_rem",
+      "labl": "Remembering"
+    },
+    {
+      "uid": 1534161,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V266",
+      "name": "dsb_sel",
+      "labl": "Self-care"
+    },
+    {
+      "uid": 1534162,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V267",
+      "name": "dsb_com",
+      "labl": "Communication"
+    },
+    {
+      "uid": 1534163,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V268",
+      "name": "soc_grant",
+      "labl": "Social grants"
+    },
+    {
+      "uid": 1534164,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V269",
+      "name": "soc_grant_oag",
+      "labl": "Old-age grant"
+    },
+    {
+      "uid": 1534165,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V270",
+      "name": "soc_grant_dis",
+      "labl": "Disability grant"
+    },
+    {
+      "uid": 1534166,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V271",
+      "name": "soc_grant_csg",
+      "labl": "Child support grant"
+    },
+    {
+      "uid": 1534167,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V272",
+      "name": "soc_grant_car",
+      "labl": "Care dependency grant"
+    },
+    {
+      "uid": 1534168,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V273",
+      "name": "soc_grant_fos",
+      "labl": "Foster care grant"
+    },
+    {
+      "uid": 1534169,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V274",
+      "name": "soc_grant_grn",
+      "labl": "Grant-in-aid"
+    },
+    {
+      "uid": 1534170,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V275",
+      "name": "soc_grant_srd",
+      "labl": "Special COVID-19 social relief of distress grant"
+    },
+    {
+      "uid": 1534171,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V276",
+      "name": "Itp_cell",
+      "labl": "Own a mobile telephone"
+    },
+    {
+      "uid": 1534172,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V277",
+      "name": "Itp_cell_sphone",
+      "labl": "Own a smart phone"
+    },
+    {
+      "uid": 1534173,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V278",
+      "name": "lab_wge",
+      "labl": "Working for a wage, commission or salary"
+    },
+    {
+      "uid": 1534174,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V279",
+      "name": "lab_bus",
+      "labl": "Business Activities"
+    },
+    {
+      "uid": 1534175,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V280",
+      "name": "lab_vol",
+      "labl": "Work without remuneration"
+    },
+    {
+      "uid": 1534176,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V281",
+      "name": "lab_ret",
+      "labl": "Return to work or business"
+    },
+    {
+      "uid": 1534177,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V282",
+      "name": "lab_amount",
+      "labl": "Willing to disclose their earning"
+    },
+    {
+      "uid": 1534178,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V283",
+      "name": "lab_sto",
+      "labl": "Total salary/pay"
+    },
+    {
+      "uid": 1534179,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V284",
+      "name": "lab_salper",
+      "labl": "Salary period"
+    },
+    {
+      "uid": 1534180,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V285",
+      "name": "lab_salc",
+      "labl": "Income categories"
+    },
+    {
+      "uid": 1534181,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V286",
+      "name": "lab_transp",
+      "labl": "Means of transport to go to work"
+    },
+    {
+      "uid": 1534182,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V287",
+      "name": "lab_mins",
+      "labl": "Time taken to place of employment"
+    },
+    {
+      "uid": 1534183,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V288",
+      "name": "lab_sector",
+      "labl": "Sector of organisation/business or branch"
+    },
+    {
+      "uid": 1534184,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V289",
+      "name": "lab_look",
+      "labl": "Looking for any kind of job or trying business"
+    },
+    {
+      "uid": 1534185,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V290",
+      "name": "lab_start",
+      "labl": "Liked to work"
+    },
+    {
+      "uid": 1534186,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V291",
+      "name": "lab_rnsw",
+      "labl": "Reason for not trying to find work or starting a business"
+    },
+    {
+      "uid": 1534187,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V292",
+      "name": "lab_accjob",
+      "labl": "Start work or a business"
+    },
+    {
+      "uid": 1534188,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V293",
+      "name": "lab_res_name",
+      "labl": "Person number of the respondent"
+    },
+    {
+      "uid": 1534189,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V294",
+      "name": "undisab",
+      "labl": "UN Disability"
+    },
+    {
+      "uid": 1534190,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V295",
+      "name": "disab",
+      "labl": "Disability"
+    },
+    {
+      "uid": 1534191,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V296",
+      "name": "sevdisab",
+      "labl": "Severe disability"
+    },
+    {
+      "uid": 1534192,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V297",
+      "name": "geotype",
+      "labl": "Geography Type"
+    },
+    {
+      "uid": 1534193,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V298",
+      "name": "metro_code",
+      "labl": "Metro Code"
+    },
+    {
+      "uid": 1534194,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V299",
+      "name": "metro",
+      "labl": "Metro"
+    },
+    {
+      "uid": 1534195,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V300",
+      "name": "stratum",
+      "labl": "Stratum"
+    },
+    {
+      "uid": 1534196,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V301",
+      "name": "lab_salary",
+      "labl": "Salary"
+    },
+    {
+      "uid": 1534197,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V302",
+      "name": "employ_Status1",
+      "labl": "Employment status one"
+    },
+    {
+      "uid": 1534198,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V303",
+      "name": "employ_Status2",
+      "labl": "Employment status two"
+    },
+    {
+      "uid": 1534199,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V304",
+      "name": "rotation",
+      "labl": "Rotation"
+    },
+    {
+      "uid": 1534200,
+      "sid": 945,
+      "fid": "F2",
+      "vid": "V305",
+      "name": "person_wgt",
+      "labl": "Person weight"
+    }
+  ]
+}
