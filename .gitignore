@@ -76,3 +76,7 @@ desktop.ini
 *~
 
 .env
+
+*.jpg
+*.dta
+*.jpeg

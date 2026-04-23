@@ -421,14 +421,12 @@ Adjust if NIDS W5 income distribution suggests different proportions after CPI-a
 
 Work through this list in order:
 
-- [ ] **NIDS W5** — Download from DataFirst (`zaf-saldru-nids-2017-v1.0.0`). Extract: `w5_pi_hhincome`, `w5_loan`, `w5_a_dtflloan`, `w5_h_owndebt_brac*`, `w5_expenditure`. Apply CPI × 1.37.
-- [ ] **IES 2022/23** — Download from DataFirst (`zaf-statssa-ies-2022-2023-v1`). Download codebook. Extract expenditure by COICOP category per income decile to get `expenditure_ratio`.
-- [ ] **GHS 2022** — Download from DataFirst (`zaf-statssa-ghs-2022-v1`). Extract: `fin_inc_grant`, `soc_grant_*`, `lab_salary_hh`. Set `income_type` distribution.
-- [ ] **QLFS 2022 Q2** — Download from DataFirst (`zaf-statssa-qlfs-2022-q2-v1`). Extract unemployment rate and employment-transition matrix for income-shock probability.
+- [x] **NIDS W5** — Download from DataFirst (`zaf-saldru-nids-2017-v1.0.0`). Extract: `w5_pi_hhincome`, `w5_loan`, `w5_a_dtflloan`, `w5_h_owndebt_brac*`, `w5_expenditure`. Apply CPI × 1.37.
+- [x] **IES 2022/23** — Download from DataFirst (`zaf-statssa-ies-2022-2023-v1`). Download codebook. Extract expenditure by COICOP category per income decile to get `expenditure_ratio`.
+- [x] **GHS 2022** — Download from DataFirst (`zaf-statssa-ghs-2022-v1`). Extract: `fin_inc_grant`, `soc_grant_*`, `lab_salary_hh`. Set `income_type` distribution.
+- [x] **QLFS 2022 Q2** — Download from DataFirst (`zaf-statssa-qlfs-2022-q2-v1`). Extract unemployment rate and employment-transition matrix for income-shock probability.
 - [x] **NCR CCMR** — Obtained (output.md). NPL rates and income-tier tables extracted above.
 - [x] **BNPL market report** — Obtained. Key parameters extracted into gem_findings.md. Use §5 directly.
-- [ ] **FinScope** — Contact FinMark Trust for micro-level adoption by income tier (broad parameters now covered by BNPL report). Can't do this.
-- [ ] **Eighty20 2025 Credit Stress Report** — Request from Eighty20 or check UCT Libraries. Needed for DSTI distribution.
 - [ ] **TransUnion SA Consumer Pulse 2025** — Obtain to verify BNPL delinquency doubling claim.
 - [ ] **SARB Quarterly Bulletin** — Extract household debt-to-income ratio (aggregate cross-check).
 
