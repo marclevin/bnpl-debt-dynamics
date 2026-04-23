@@ -5,6 +5,34 @@
 
 ---
 
+## 0. Simulation Phase Design
+
+The ABM runs in two mandatory phases, with an optional third:
+
+| Phase | Ticks | World state | Purpose |
+|---|---|---|---|
+| **Phase 1 — Pre-BNPL baseline** | t=0 → t=T_entry | Consumers + Banks only. No BNPL platform. | Calibrate and validate the model against known SA credit market aggregates. |
+| **Phase 2 — BNPL entry** | t=T_entry → end | BNPL platform agent activates. Consumers can adopt. | Observe adoption S-curve, D_bnpl accumulation, DSTI divergence, NPL drift. |
+| **Phase 3 — Regulatory shock** *(optional)* | t=T_shock | `bnpl_visible_to_banks = True` | Banks recalculate DSTI with full debt. Observe distress cascade. |
+
+**T_entry** is the tick at which BNPL enters. This is a model parameter to experiment with (e.g. early vs. late entry).
+
+### Critical initialisation rule
+
+At t=0, **every agent has `D_bnpl = 0` and `holds_bnpl = False`** regardless of archetype. BNPL obligations are an *emergent output* of Phase 2, not a seeded input.
+
+### What the 57% holdership figure means
+
+`p_bnpl_current_holders = 57%` (gem_findings.md §5) is **not** an initialisation parameter. It is a **Phase 2 validation target**: by the tick representing present-day (~2024/25), approximately 57% of agents should have adopted BNPL organically through the `p_bnpl_first_adoption` draw. If they haven't, the adoption rate parameter is miscalibrated.
+
+Similarly, the seasonal draw multipliers, average basket sizes, and default rates are Phase 2 emergent outputs to validate — not Phase 1 inputs.
+
+### Why this matters for the thesis
+
+The adoption curve itself becomes a model output, not an assumption. This makes the experimental design cleaner: Phase 1 proves calibration; Phase 2 produces the adoption and debt dynamics the thesis is studying; Phase 3 tests the regulatory counterfactual. Supervisor and examiners can evaluate each phase independently.
+
+---
+
 ## 1. Consumer Agent Structure
 
 The consumer agent holds a balance sheet with four live quantities updated each tick:
@@ -227,19 +255,21 @@ Growth CAGR 2025→2031: **20.8%**. Apply this as the market scaling function in
 
 ### `D_bnpl` calibration parameters
 
-| Parameter | Value | Source |
-|---|---|---|
-| `p_bnpl_current_holders` | **57%** | Share of SA shoppers already holding a BNPL product |
-| `p_bnpl_first_adoption_annual` | **10%** | Share of non-users who adopt in a given year (~0.83%/month) |
-| `E_transaction_value` (Type A/B) | **R1,629** | Average basket, standard consumer |
-| `E_transaction_value` (Type C) | **R2,949** | Average basket, high-affluence cohort |
-| `repayment_instalments` | **3–4** | Equal payments |
-| `repayment_window_weeks` | **6** | Total repayment period |
-| `upfront_deposit_rate` | **25–33%** | Paid at point of purchase (standard model) |
-| `p_default_bnpl_stock` | **4–6%** | Current SA estimated delinquency |
-| `p_default_bnpl_trajectory` | **6–8%** | Near-term direction (TransUnion 2025) |
-| `late_fee_weekly` | **R85–R125** | Per missed payment |
-| `late_fee_cap_pct` | **25% of GMV** | Maximum fee exposure (~R255–R375 on avg basket) |
+> **Phase note:** All D_bnpl parameters below are Phase 2 parameters only. At t=0 (Phase 1), every agent has `D_bnpl = 0` and `holds_bnpl = False`. See §0.
+
+| Parameter | Value | Source | Phase |
+|---|---|---|---|
+| `p_bnpl_current_holders` | **57%** | Validation target: share of agents who should hold BNPL by present-day tick | Phase 2 *output* |
+| `p_bnpl_first_adoption_annual` | **10%** | Share of non-holders who adopt in a given year (~0.83%/month) | Phase 2 *input* |
+| `E_transaction_value` (Type A/B) | **R1,629** | Average basket, standard consumer | Phase 2 *input* |
+| `E_transaction_value` (Type C) | **R2,949** | Average basket, high-affluence cohort | Phase 2 *input* |
+| `repayment_instalments` | **3–4** | Equal payments | Phase 2 *input* |
+| `repayment_window_weeks` | **6** | Total repayment period | Phase 2 *input* |
+| `upfront_deposit_rate` | **25–33%** | Paid at point of purchase (standard model) | Phase 2 *input* |
+| `p_default_bnpl_stock` | **4–6%** | Current SA estimated delinquency | Phase 2 validation target |
+| `p_default_bnpl_trajectory` | **6–8%** | Near-term direction (TransUnion 2025) | Phase 2 validation target |
+| `late_fee_weekly` | **R85–R125** | Per missed payment | Phase 2 *input* |
+| `late_fee_cap_pct` | **25% of GMV** | Maximum fee exposure (~R255–R375 on avg basket) | Phase 2 *input* |
 
 ### `D_bnpl` agent logic (tick-level rules)
 
@@ -310,12 +340,12 @@ This is the primary experiment in question.md: "Introduce a BNPL Shock into a st
 | `p_credit_approved_bank` | 0–5% | NCR rejection data |
 | `p_default_unsecured` | 34–35% | NCR short-term NPL |
 | Credit products (traditional) | None at t=0 | By design |
-| `holds_bnpl` | True from t=0 (BNPL is first gateway) | gem_findings.md §2 |
-| `p_bnpl_draw` | High — triggered by NTB < 0 most months | Low Y, low S |
+| `holds_bnpl` | **False at t=0** — adopts early in Phase 2 (first gateway) | gem_findings.md §2; see §0 |
+| `p_bnpl_draw` | High once active — triggered by NTB < 0 most months | Low Y, low S |
 | `E_transaction_value_bnpl` | R800–R1,629 | Essential categories (groceries, clothing) |
 | `p_default_bnpl` | 6–8% (highest risk tier) | TransUnion trajectory |
 | BNPL model | Standard 3-party (Payflex/PayJustNow) | Dominant SA model |
-| BNPL rationale | Only credit available; first formal credit gateway | gem_findings.md §2 |
+| BNPL rationale | Only credit available; expected to be among first adopters in Phase 2 | gem_findings.md §2 |
 
 ### Type B — The Stressed Middle Class
 
@@ -329,8 +359,8 @@ This is the primary experiment in question.md: "Introduce a BNPL Shock into a st
 | `p_credit_approved_bank` | 25–35% | NCR rejection data |
 | `p_default_unsecured` | 30–31% | NCR unsecured NPL |
 | Credit products (traditional) | Unsecured, credit facility, vehicle | NCR Table 5.5 |
-| `holds_bnpl` | True for ~57% at t=0; rest adopt over sim | gem_findings.md §5 |
-| `p_bnpl_draw` | Moderate — triggered at month-end (Janu-worry) | NTB < 0 seasonally |
+| `holds_bnpl` | **False at t=0** — adopts during Phase 2; core adopter demographic | gem_findings.md §5; see §0 |
+| `p_bnpl_draw` | Moderate once active — triggered at month-end (Janu-worry) | NTB < 0 seasonally |
 | `E_transaction_value_bnpl` | R1,629 | National average basket |
 | `p_default_bnpl` | 4–6% (mid-tier, rising) | gem_findings.md §4 |
 | BNPL model | Standard 3-party | Dominant SA model |
@@ -349,8 +379,8 @@ This is the primary experiment in question.md: "Introduce a BNPL Shock into a st
 | `p_credit_approved_bank` | 60–70% | NCR implied high-income approval |
 | `p_default_unsecured` | 13–14% | NCR mortgage/secured NPL |
 | Credit products (traditional) | All types | NCR Tables 2.3, 3.3 |
-| `holds_bnpl` | True for ~57% at t=0 | gem_findings.md §5 |
-| `p_bnpl_draw` | Low — driven by strategy not necessity | NTB > 0; S buffer exists |
+| `holds_bnpl` | **False at t=0** — adopts during Phase 2 for strategic reasons | gem_findings.md §5; see §0 |
+| `p_bnpl_draw` | Low once active — driven by strategy not necessity | NTB > 0; S buffer exists |
 | `E_transaction_value_bnpl` | **R2,949** | Premier Existence avg basket |
 | `p_default_bnpl` | 1–2% (lowest risk tier) | gem_findings.md §4 |
 | BNPL model | **Float (card-linked)** — 0% upfront, up to 24 months | gem_findings.md §3 |
@@ -397,7 +427,7 @@ Work through this list in order:
 - [ ] **QLFS 2022 Q2** — Download from DataFirst (`zaf-statssa-qlfs-2022-q2-v1`). Extract unemployment rate and employment-transition matrix for income-shock probability.
 - [x] **NCR CCMR** — Obtained (output.md). NPL rates and income-tier tables extracted above.
 - [x] **BNPL market report** — Obtained. Key parameters extracted into gem_findings.md. Use §5 directly.
-- [ ] **FinScope** — Contact FinMark Trust for micro-level adoption by income tier (broad parameters now covered by BNPL report).
+- [ ] **FinScope** — Contact FinMark Trust for micro-level adoption by income tier (broad parameters now covered by BNPL report). Can't do this.
 - [ ] **Eighty20 2025 Credit Stress Report** — Request from Eighty20 or check UCT Libraries. Needed for DSTI distribution.
 - [ ] **TransUnion SA Consumer Pulse 2025** — Obtain to verify BNPL delinquency doubling claim.
 - [ ] **SARB Quarterly Bulletin** — Extract household debt-to-income ratio (aggregate cross-check).
@@ -406,7 +436,9 @@ Work through this list in order:
 
 ## 12. Calibration Validation Targets
 
-Once the model is initialised, verify these aggregate outputs match reality before running experiments:
+Validation is phase-specific. Phase 1 targets must be met *before* BNPL is introduced. Phase 2 targets are emergent outputs to check after BNPL entry.
+
+### Phase 1 targets (pre-BNPL baseline — must pass before running Phase 2)
 
 | Metric | Target value | Source |
 | --- | --- | --- |
@@ -418,8 +450,13 @@ Once the model is initialised, verify these aggregate outputs match reality befo
 | Credit facilities share of accounts | ~70% of all accounts | NCR CCMR Table 1.8 |
 | DSTI at distress trigger (>50%) | ~15–20% of indebted consumers | NCR/Eighty20 estimate |
 | Share receiving social grants | ~45% of Type A agents | GHS 2022 |
-| BNPL market size at tick 24 (2026) | ~R25B annualised | gem_findings.md §1 |
-| BNPL holders at t=0 | ~57% of simulated population | gem_findings.md §5 |
+
+### Phase 2 targets (post-BNPL entry — emergent outputs to validate)
+
+| Metric | Target value | Source |
+| --- | --- | --- |
+| BNPL holders by present-day tick (~2024/25) | ~57% of simulated population | gem_findings.md §5 |
+| BNPL market size at tick representing 2026 | ~R25B annualised | gem_findings.md §1 |
 | BNPL default rate (stock, pre-shock) | 4–6% | gem_findings.md §4 |
 | BNPL default rate (post-shock trend) | 6–8% | TransUnion 2025 via gem_findings.md |
 | Avg BNPL basket (Type A/B) | ~R1,629 | gem_findings.md §5 |
