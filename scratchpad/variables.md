@@ -34,24 +34,28 @@ There are no separate "linking" variables — the match uses conditioning fields
 
 | Field                    | Description                          | NIDS column(s)               | Derivation                                          |
 | ------------------------ | ------------------------------------ | ---------------------------- | --------------------------------------------------- |
-| `liquid_savings`         | Cash/transactional buffer            | `w5_f_ass`                   | Financial assets as proxy (weak field — see notes). |
+| `liquid_savings`         | Cash/transactional buffer            | `w5_f_ass`                   | Financial assets as proxy, **winsorized at 1st/99th pct** (weak field — see notes). |
 | `D_trad`                 | Consolidated traditional debt        | `w5_f_deb`                   | Financial debts. (`w5_tot_deb` if incl. secured.)   |
-| `monthly_trad_repayment` | Monthly servicing obligation         | derived from `D_trad`        | Fixed servicing rate × `D_trad` (parameter).        |
+| `monthly_trad_repayment` | Monthly servicing obligation         | `D_trad` × FinScope product mix | **Constructed in P2** (not measurable). Amortize `D_trad` over a product-mix-weighted APR/term from `data/config/credit_rate_table.csv`. See [`data_fusion.md`](data_fusion.md). |
 
 ---
 
 ## Behavioural state — from FinScope (matched in, categorical)
 
 Attached to each NIDS household by the cell-donor match. Categorical flags — **no deflation**.
-Exact FinScope question codes to be resolved from the questionnaire during P0 (see
-[`data_fusion.md`](data_fusion.md)); concepts are fixed here.
+FinScope columns and codings **resolved** against `Finscope South Africa 2019.csv` (values are
+text labels, not numeric codes). National weighted rates (validation targets) shown for reference.
 
-| Field                  | Description                                   | FinScope block        | Notes                                          |
-| ---------------------- | --------------------------------------------- | --------------------- | ---------------------------------------------- |
-| `banked_status`        | Banked / underbanked / unbanked               | account/banking items | Core financial-access flag.                    |
-| `credit_access_formal` | Has/uses formal credit products               | credit items          | Traditional-lender eligibility; BNPL proxy.    |
-| `savings_product`      | Holds a savings/transactional product         | savings items         | Anchors the weak `liquid_savings` field.       |
-| `informal_finance`     | Mashonisa / stokvel / burial society / insurance | informal items     | Texture; noisier under the match.              |
+| Field                  | Description                          | FinScope column → rule                                              | Nat. rate |
+| ---------------------- | ------------------------------------ | ------------------------------------------------------------------ | --------- |
+| `banked`               | Banked / unbanked (**binary**)       | `F1 == "Yes"`                                                       | 82.4%     |
+| `credit_access_formal` | Uses formal credit                   | `G5` ∈ {Bank, Retail store, Micro finance, Insurance} **OR** any of `G10`–`G14` == "Yes" (lay-by `G15` excluded — not credit) | 26.4% |
+| `informal_finance`     | Uses informal finance                | `G5` ∈ {Mashonisa, Stokvel/burial, Friends/family, Colleagues, Employer advance} | 9.1% |
+| `savings_product`      | Saves / holds savings product        | `K7` is a valid Rand band (also import `K7` band + `K1_*` holdings) | 49.9%     |
+
+**Match keys:** income quintile (per-capita; FinScope income from `M13_MHI_Imputed` band midpoint ÷
+`Number_in_HH`, bucketed on the **NIDS** quintile bounds) × `Province` (names align exactly across
+surveys). FinScope weight: `HH_WEIGHT16`.
 
 ---
 
@@ -66,7 +70,8 @@ Exact FinScope question codes to be resolved from the questionnaire during P0 (s
 | `age_head`              | Age of head                               | NIDS individual-derived | Joined to head of `w5_hhid`.           |
 | `gender_head`           | Gender of head                            | NIDS individual-derived | —                                      |
 | `race_head`             | Population group of head                  | NIDS individual-derived | Strong SA financial-behaviour predictor. |
-| `education_head`        | Highest education of head                 | NIDS individual-derived | Profiling only.                        |
+| `education_head`        | Highest education of head (≈25 levels)    | NIDS individual-derived | Profiling only.                        |
+| `education_band`        | Coarse education: None/Primary/Secondary/Matric/Tertiary | derived from `education_head` | Profiling; explicit level→band map. |
 
 ---
 

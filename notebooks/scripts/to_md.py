@@ -10,7 +10,7 @@ DATALAB_KEY=os.getenv("DATALAB_API_KEY")  # Get the Datalab API key from environ
 client = DatalabClient(api_key=DATALAB_KEY)  # Initialize the Datalab client with your API key
 
 # Convert a document to markdown
-result = client.convert("TU_CPS_Q4_2025.pdf")
+result = client.convert("Finscope.pdf")
 print(result.markdown) # type: ignore
 
 # Save output with images

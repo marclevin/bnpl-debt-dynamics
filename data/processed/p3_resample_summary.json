@@ -1,0 +1,7 @@
+{
+  "n_agents": 5000,
+  "seed": 20240601,
+  "unique_source_households": 3250,
+  "gini_pc_agents": 0.671,
+  "max_quintile_share_dev_pp": 1.5
+}

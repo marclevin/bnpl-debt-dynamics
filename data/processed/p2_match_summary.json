@@ -1,0 +1,11 @@
+{
+  "n_households": 10841,
+  "province_fallback_draws": 0,
+  "match_diagnostics_pp": {
+    "banked": 0.4,
+    "credit_access_formal": 2.3,
+    "informal_finance": 0.1,
+    "savings_product": 1.8
+  },
+  "servicing_computed": true
+}

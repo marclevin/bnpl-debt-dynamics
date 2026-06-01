@@ -98,11 +98,11 @@ Full column-level mapping: [`household_agent.md`](household_agent.md) and
 
 | Phase | Goal | Key output | Status |
 | ----- | ---- | ---------- | ------ |
-| **P0** | Load & inspect NIDS W5 + FinScope 2019 | clean dataframes, key/flag inventory | ☐ |
-| **P1** | Build NIDS backbone in 2017 units | per-household record + quintile tag | ☐ |
-| **P2** | Simple cell-donor match from FinScope | flags attached to each household | ☐ |
-| **P3** | Weighted resample to 5,000 | fixed synthetic population | ☐ |
-| **P4** | Validate (internal + match diagnostics) | validation report | ☐ |
+| **P0** | Load & inspect NIDS W5 + FinScope 2019 | clean dataframes, key/flag inventory | ☑ both surveys resolved |
+| **P1** | Build NIDS backbone in 2017 units | per-household record + quintile tag | ☑ `notebooks/p0_backbone.ipynb` → `data/processed/nids_backbone.parquet` |
+| **P2** | Simple cell-donor match from FinScope | flags attached to each household | ☑ `notebooks/p2_finscope_match.ipynb` → `synthetic_population_matched.parquet` (servicing computed, guarded) |
+| **P3** | Weighted resample to 5,000 | fixed synthetic population | ☑ `notebooks/p3_resample.ipynb` → `synthetic_population_5000.parquet` |
+| **P4** | Validate (internal + match diagnostics) | validation report | ☑ `notebooks/p4_validation.ipynb` — 14/14 checks pass |
 | **P5** | Instantiate agents | Household agents in Mesa | ☐ |
 
 ---
@@ -147,6 +147,40 @@ Full column-level mapping: [`household_agent.md`](household_agent.md) and
 
 ## 9. Changelog (living)
 
+- **2026-06-01 (showcase)** — Built `notebooks/00_showcase.ipynb`: a supervisor-facing guided tour
+  (what each phase did, with visuals), a benchmark validation scorecard (7/7 ✓, incl. Gini 0.651 and
+  FinScope flag rates), and a plain-English profile of a fixed-seed sample agent.
+- **2026-06-01 (head demographics)** — Added the deferred head-of-household demographics to P0
+  (`age_head`, `gender_head`, `race_head`, `education_head` + coarse `education_band`), joined via
+  the roster head (`w5_r_relhead==1`) → individual-derived file (99% matched). Propagated through
+  P2/P3 into `synthetic_population_5000.parquet`; added a demographics section to the visualizer.
+  Education×quintile gradient is textbook (Q1 4% tertiary → Q5 54%). **Static data layer complete.**
+- **2026-06-01 (P3)** — Built `notebooks/p3_resample.ipynb`: weighted resample to **5,000 agents**
+  (from 3,250 unique source households) → `synthetic_population_5000.parquet`. P4 extended with a
+  live resample-fidelity section (income KS gap 0.012, flag gap 0.3pp, shares ±1.5pp) — now **14/14
+  pass**. Population-size stability checked at 1k/5k/10k. The static household-agent data layer is
+  complete; next is the ABM (rules, environment, lender).
+- **2026-06-01 (P4 + fixes)** — Diagnostics surfaced servicing/DSTI outliers (68 hh with
+  repay>income, max DSTI 25×) from the stock-balance × product-term mismatch. Fixed with a term
+  floor (`MIN_TERM_MONTHS=6`) + NCA-style affordability cap (`MAX_DSTI=0.65`): now 0 hh over income,
+  DSTI 3–6% by quintile. Built `notebooks/p4_validation.ipynb` (benchmark comparisons + pass/fail,
+  **10/10 pass**, incl. emergent Gini 0.651 in the SA band). Toned down the visualizer's clustering
+  framing (PCA<50% var, weak silhouette → continuum, not natural clusters).
+- **2026-06-01 (viz)** — Rate table populated → P2 re-run, `monthly_trad_repayment` computed for all
+  10,841 households (4,702 debtors; quintile DSTI 3–9%). Built `notebooks/p1p2_visualizer.ipynb`:
+  quintile archetype profiles (`data/processed/quintile_archetypes.csv`), balance-sheet / flag /
+  source / bivariate / province views, and an unsupervised K-means structure check vs the quintiles.
+- **2026-06-01 (P2)** — Built `notebooks/p2_finscope_match.ipynb`: FinScope codes **resolved** (F1
+  banked, G5/G10–G14 formal credit, K7 savings, M13_MHI income); cell-donor match on per-capita
+  income quintile × province (45 cells, ≥30 donors, **0 fallbacks**); matched marginals reproduce
+  FinScope within **≤2.3 pp**. `monthly_trad_repayment` constructed via product-mix amortization
+  over an **external, user-populated** `data/config/credit_rate_table.csv` (placeholder-guarded, so
+  not yet computed). `liquid_savings` winsorized at the 99th pct. Output:
+  `data/processed/synthetic_population_matched.parquet`.
+- **2026-06-01 (P1)** — Built `notebooks/p0_backbone.ipynb`: NIDS W5 loaded (13,719 → **10,841
+  valid households**), backbone derived in 2017 Rands (income source, committed/discretionary
+  expenditure, balance sheet), **per-capita weighted income quintiles** assigned (bounds
+  R900 / R1,801 / R3,400 / R7,712). Outputs in `data/processed/`. Next: P2 FinScope match.
 - **2026-06-01** — Switched to **2017-only** units (dropped CPI forwarding, IES, 2022-level
   validation). Reintroduced a **simple FinScope cell-donor match** (replacing crude per-quintile
   imputation). Behavioural validation deferred to BNPL-provider targets. OVERVIEW.md promoted to

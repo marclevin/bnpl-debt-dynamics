@@ -75,6 +75,12 @@ All monetary fields are in **2017 Rands**. Full column-level mapping in [`variab
 - **Why this and not hot-deck/regression:** It is transparent, easy to explain to a supervisor or
   examiner, and avoids over-claiming precision the 2017↔2019 vintage gap cannot support.
 - **No monetary adjustment** anywhere — flags are categorical; NIDS money stays in 2017 Rands.
+- **Resolved (validated against data):** flags = `banked` (binary, `F1`), `credit_access_formal`
+  (formal source/products, split from `informal_finance`), `savings_product` (`K7`). Cell =
+  per-capita income quintile × province (45 cells, ≥30 donors each). Matched marginals reproduce
+  FinScope within ≤1.8 pp. `monthly_trad_repayment` is **constructed** by amortizing `D_trad` over a
+  product-mix-weighted APR/term from an external, user-populated table (no repayment amount exists in
+  either survey). Details in [`data_fusion.md`](data_fusion.md).
 
 ---
 

@@ -1,0 +1,20 @@
+{
+  "reference_year": 2017,
+  "n_households": 10841,
+  "weighted_population": 18670046.380067,
+  "pc_income_quintile_bounds": [
+    900.0,
+    1801.42,
+    3400.0,
+    7712.14
+  ],
+  "weighted_quintile_shares": {
+    "Q1": 0.2044,
+    "Q2": 0.1957,
+    "Q3": 0.2011,
+    "Q4": 0.1988,
+    "Q5": 0.1999
+  },
+  "liquid_savings_winsor_99pct": 133662.35000000166,
+  "head_demographics_coverage": 10736
+}
