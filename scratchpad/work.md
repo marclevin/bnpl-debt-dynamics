@@ -40,3 +40,17 @@ We need at least three core papers to anchor our model design and calibration:
 - ABM
 - BNPL
 - Behavioural Economics
+
+
+
+## Notes
+
+
+Basically take FinScope bands like quintiles on income and match them to NIDS, be SIMPLE
+
+Match FinScope to NIDS as much as possible, but be prepared to impute crudely where needed. The more complex the fusion, the more validation/calibration burden we have — and the more we risk overfitting to the quirks of the source surveys rather than capturing real-world dynamics.
+
+Join Conditional on income band and province, gender.
+
+Make expenditure and stuff one vairablestry and grab from one source, validate validate.
+

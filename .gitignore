@@ -80,3 +80,5 @@ desktop.ini
 *.jpg
 *.dta
 *.jpeg
+
+.Rhistory

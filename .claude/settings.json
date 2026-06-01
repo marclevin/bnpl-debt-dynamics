@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cat notebooks/variables.ipynb)",
+      "Bash(ls -la notebooks/context/)",
+      "Bash(ls -la notebooks/scripts/)",
+      "Bash(find data *)",
+      "Bash(ls -la data/raw/FINMARK_2019/)"
+    ]
+  }
+}
