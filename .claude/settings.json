@@ -33,7 +33,9 @@
       "Read(//c/Users/marcl/OneDrive/Desktop/University/Masters/Thesis/notebooks/**)",
       "PowerShell($env:PYTHONIOENCODING='utf-8'; & \"env\\\\python.exe\" \"scratchpad\\\\_build_p3.py\")",
       "PowerShell($env:PYTHONIOENCODING='utf-8'; & \"env\\\\python.exe\" \"scratchpad\\\\_add_demographics.py\")",
-      "PowerShell($env:PYTHONIOENCODING='utf-8'; & \"env\\\\python.exe\" \"scratchpad\\\\_build_showcase.py\")"
+      "PowerShell($env:PYTHONIOENCODING='utf-8'; & \"env\\\\python.exe\" \"scratchpad\\\\_build_showcase.py\")",
+      "Bash(./env/python.exe -c ' *)",
+      "Bash(PYTHONIOENCODING=utf-8 PYTHONUTF8=1 ./env/python.exe -c ' *)"
     ]
   }
 }

@@ -148,7 +148,7 @@ enters only as static balance-sheet state from NIDS.
 - [`data_fusion.md`](data_fusion.md) — the simple cell-donor matching procedure.
 - [`../household_agent.md`](../household_agent.md) — data → agent mapping.
 - [`work.md`](work.md) — ABM design narrative.
-- `decision_rules.md` — agent decision rules (to be written).
+- [`decision_rules.md`](decision_rules.md) — open-decision register for agent rules (scaffold; logic to be filled from literature).
 
 ---
 
