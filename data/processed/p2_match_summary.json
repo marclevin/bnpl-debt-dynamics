@@ -7,5 +7,11 @@
     "informal_finance": 0.1,
     "savings_product": 1.8
   },
-  "servicing_computed": true
+  "servicing_computed": true,
+  "servicing_apr_basis": "NCA maximum prescribed interest rates (in force 6 May 2016), repo 7.00% (SARB 2017)",
+  "affordability_rule": "NCA Regulation 23A(9) residual-income test (GN R202, GG 38557, 13 Mar 2015)",
+  "min_term_months": 6,
+  "n_affordability_capped": 158,
+  "n_debtors_zero_nca_capacity": 53,
+  "max_dsti": 0.911
 }

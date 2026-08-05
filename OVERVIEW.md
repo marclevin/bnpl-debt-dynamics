@@ -147,6 +147,20 @@ Full column-level mapping: [`household_agent.md`](household_agent.md) and
 
 ## 9. Changelog (living)
 
+- **2026-08-05 (servicing grounded)** — Replaced the two unsourced servicing parameters.
+  (1) **APRs**: `credit_rate_table.csv` placeholders → **NCA statutory maximum prescribed rates**
+  per sub-sector (regime in force 6 May 2016, so 2017-valid) at the **2017 repo rate of 7.00%**:
+  credit facilities 21%, other credit agreements 24%, unsecured 28%, short-term 5%/month.
+  (2) **Affordability**: flat `MAX_DSTI = 0.65` → the **NCA Reg 23A(9) residual-income test**
+  (GN R202, GG 38557). The NCA prescribes *no* DSTI ratio — it prescribes a minimum expense-norms
+  table, giving an **income-varying** ceiling (10.4% of income at R900/mo vs 83.2% at R7,712/mo).
+  Both published worked examples are asserted in-notebook. **P4 check D was circular** — it tested
+  `dsti.max() <= 0.66`, i.e. the cap it had just imposed; replaced with a non-circular test of how
+  often the guard binds (**3.4% of debtors**, passes at ≤10%). Still **14/14**. New diagnostic:
+  **53 debtor households** have income at or below the Reg 23A norm, so no NCA-compliant lender
+  could have granted their debt — reported as a finding, not capped away. **Closes D9's
+  affordability formula.** Known limits: statutory maxima are ceilings not observed averages (NCR
+  CCMR publishes no rates); terms remain assumptions; Reg 23A is per-consumer, applied per-household.
 - **2026-06-01 (showcase)** — Built `notebooks/00_showcase.ipynb`: a supervisor-facing guided tour
   (what each phase did, with visuals), a benchmark validation scorecard (7/7 ✓, incl. Gini 0.651 and
   FinScope flag rates), and a plain-English profile of a fixed-seed sample agent.
