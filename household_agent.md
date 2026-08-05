@@ -1,7 +1,7 @@
 # The Household Agent: Data → Agent Mapping
 
 *How survey data becomes one agent in the model. Built for a supervisor walkthrough.
-Everything is in **2017 units** — see [`OVERVIEW.md`](OVERVIEW.md) for the full strategy.*
+Everything is in **2017 units**; see [`OVERVIEW.md`](OVERVIEW.md) for the full strategy.*
 
 ---
 
@@ -47,7 +47,7 @@ No invented people, no inflation maths: the numbers stay in 2017 Rands.
 
 ## The mapping table
 
-All money in **2017 Rands — no CPI**. NIDS file: `data/raw/NIDS_W5/hhderived.csv`.
+All money in **2017 Rands, no CPI**. NIDS file: `data/raw/NIDS_W5/hhderived.csv`.
 FinScope flags attached via the simple quintile cell-donor match.
 
 | Agent field                   | Plain meaning                          | Source → column(s)                                                   |
@@ -64,6 +64,7 @@ FinScope flags attached via the simple quintile cell-donor match.
 | `savings_product`             | Holds a savings product                | **FinScope (matched)**                                              |
 | `informal_finance`            | Mashonisa / stokvel / insurance        | **FinScope (matched)**                                              |
 | `income_quintile`             | Which fifth of the income distribution | NIDS `w5_hhincome` + `w5_wgt` (weighted): also the **match key**   |
+| `reference_group`             | Whose behaviour this agent observes    | **derived** at model init: `income_quintile` × `province` (45 groups) |
 | `household_size`              | How many people                        | NIDS `w5_hhsizer`                                                    |
 | `household_composition`       | Adults / children / elderly            | NIDS member records                                                 |
 | `head_demographics`           | Age, gender, race, education of head   | NIDS individual-derived (joined to `w5_hhid`)                       |
@@ -76,7 +77,7 @@ FinScope flags attached via the simple quintile cell-donor match.
 
 ```
 P1 BACKBONE   NIDS → derive income_source, committed/discretionary, savings proxy,
-              D_trad, income_quintile   (stays in 2017 Rands — no CPI)
+              D_trad, income_quintile   (stays in 2017 Rands, no CPI)
 P2 MATCH      FinScope → copy banked / credit / savings / informal flags
               onto each NIDS household, by income-quintile cell (× province if it fits)
 P3 RESAMPLE   draw 5,000 households, probability ∝ w5_wgt (with replacement)
@@ -105,9 +106,15 @@ size we can re-run many times.
 
 ## What this agent does *not* have yet (on purpose)
 
-- No BNPL balance, so no stacking. Arrives with the BNPL extension.
-- No peer or neighbour links. Households don't interact in the baseline.
-- One simple lender only, so no multi-bank competition yet.
+- **No BNPL balance at initialisation.** This is the injection design, not a missing feature: every
+  household starts at zero BNPL so that the 2017 baseline is BNPL-free and the injection is clean
+  (see [`OVERVIEW.md`](OVERVIEW.md) §1a). The BNPL rules themselves are fully specified in D11-D14.
+- One *traditional* lender only, so no multi-bank competition. The BNPL side does have 4 platforms.
+
+**Households do now interact.** Each agent belongs to a **reference group** (income quintile ×
+province, the same cell as the FinScope match) and its want-driven BNPL adoption probability rises
+with the group's adoption share. See [`scratchpad/decision_rules.md`](scratchpad/decision_rules.md)
+D17. The channel is inert until BNPL is switched on, and `beta = 0` turns it off entirely.
 
 The four behavioural validation targets **are** now sourced (see [`OVERVIEW.md`](OVERVIEW.md) §7).
 BNPL-provider data is an upside, not a dependency.

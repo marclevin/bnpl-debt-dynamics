@@ -84,7 +84,13 @@ Systemic credit distress is not the sum of individual distress, and this is the 
 it from the bottom up. Cardaci \cite{cardaci2018inequality} builds a hybrid agent-based
 stock-flow-consistent model in which heterogeneous households and banks interact through a credit
 network, and finds that the link between inequality, household debt and financial instability runs
-through the structure of that network rather than through aggregate leverage. D'Orazio and Giulioni
+through the structure of that network rather than through aggregate leverage. Two of its features
+matter for the present design. Households do not consume in isolation: their consumption follows a
+behavioural rule based on \emph{expenditure cascades}, so that rising inequality exerts upward
+pressure on the consumption norms of lower and middle-income households. That social pressure drives
+the debt-financed consumption boom, and the accumulation of non-performing loans that follows
+produces a banking crisis endogenously rather than by assumption. Peer influence is therefore not an
+optional embellishment in this literature but part of the mechanism that generates the crisis. D'Orazio and Giulioni
 \cite{dorazio2017micro} reach a compatible conclusion from a different direction. In their model
 households form beliefs about future employment, set desired consumption accordingly, and approach
 the bank when consumption outruns income; the bank rations credit proportionally once lending
@@ -244,8 +250,13 @@ standard for communicating agent-based models. The second update's \emph{purpose
 element is used as intended: the patterns that judge the model's realism are stated in advance,
 before any result is presented, so that the validation criteria cannot be chosen after the fact.
 
-Rules that are settled are given in full. Rules that remain open are marked as such rather than
-quietly filled, and the submodels governing the \ac{BNPL} platform are flagged as pending.
+Every behavioural rule in the model is specified here, and each carries a citation, parameters with
+either a source or an explicit sweep, and a validation hook. Two exceptions are marked in place
+rather than quietly filled. The borrowing-amount rule of Submodel~4 is adopted by assumption, since
+the literature sweep found no work that fixes one, and it therefore carries mandatory rather than
+optional sensitivity analysis. The cap on concurrent facilities in Submodel~15 is hypothetical, as
+no jurisdiction currently imposes such a cap, and it is labelled so rather than presented alongside
+the interventions that do exist.
 
 \subsection*{1. Overview}
 
@@ -318,8 +329,18 @@ The \textbf{credit bureau} is not an agent but a shared information structure. I
 traditional debt only. Its contents define what the traditional lender can observe, and its scope is
 the model's central mechanism.
 
-The \textbf{\ac{BNPL} platform class} is the injected entity. Its submodels depend on decisions that
-remain open and are specified in outline only below.
+The \textbf{\ac{BNPL} platforms} are the injected entities. Four are active in the baseline, matching
+the number of providers operating in South Africa. Each holds its own receivables, applies its own
+light eligibility screen and per-order cap, and cannot observe any other platform's exposure. Their
+state comprises outstanding receivables per household and the instalment schedule attached to each.
+
+\textbf{Reference groups} are the model's social structure. Each household belongs to exactly one,
+defined as the intersection of its income quintile and its province. This is deliberately the same
+cell already used for the FinScope donor match, so no new construct is introduced. Over the
+5{,}000-agent population it yields 45 groups, with a minimum of 23 agents, a median of 84 and a
+maximum of 353. Groups are fixed at initialisation and static thereafter, consistent with static
+household composition. Three groups in the Northern Cape fall between 23 and 31 agents and are
+therefore noise-prone, which is noted wherever group-level results are reported.
 
 The environment is homogeneous and exogenous, held at 2017 conditions. The time step is 14 days,
 chosen to align with the pay-in-four \ac{BNPL} cadence and to divide cleanly into monthly survey
@@ -330,8 +351,10 @@ the model.
 
 \subsubsection*{1.3 Process overview and scheduling}
 
-Scheduling is synchronous. Within a tick, households act, then the lender processes applications,
-then state updates and observation occur. Activation order within the household step remains open.
+Scheduling is synchronous at the level of the tick. Within a tick, households act in random
+asynchronous order reseeded each tick, then the lender processes applications, then state updates
+and observation occur. The reasoning behind random rather than uniform activation, and the reason
+the peer channel is insensitive to it, are given in Submodel~17.
 
 The order of operations inside a household's tick is itself a modelling decision, and it is
 priority-ordered as follows.
@@ -343,7 +366,11 @@ priority-ordered as follows.
     \item Scheduled debt service is attempted.
     \item Discretionary consumption is set.
     \item If cash is insufficient at step 2 or step 3, the household seeks credit.
-    \item Balances, arrears, the distress counter and default flags update.
+    \item The household observes the \ac{BNPL} adoption share of its reference group \emph{as it
+    stood at the end of the previous tick}, and its want-driven \ac{BNPL} propensity is set
+    accordingly.
+    \item Balances, arrears, the distress counter and default flags update, and group adoption
+    shares are recomputed for the next tick.
 \end{enumerate}
 
 Two features of this ordering carry the model's mechanism. Committed expenditure precedes debt
@@ -352,7 +379,10 @@ service because Madeira's default condition is the failure to finance minimum co
 would make default impossible by construction. Borrowing occurs last because in D'Orazio and
 Giulioni \cite{dorazio2017micro} credit answers a realised shortfall rather than an anticipated one.
 Placing it at step 5 is what permits a household to borrow in order to service existing debt, which
-is the self-reinforcing spiral the thesis exists to observe.
+is the first of the two self-reinforcing spirals the thesis exists to observe. The second is social
+and enters at step 6. The one-tick lag on the group adoption share is not cosmetic: reading a share
+that is still being written within the same tick would make the synchronous update ill-defined and
+would introduce an artificial dependence on activation order.
 
 \subsection*{2. Design concepts}
 
@@ -367,6 +397,14 @@ rule-based gates and treated as policy levers, following \cite{yun2020housing}.
 behaviour in the relationship between \ac{BNPL} access and systemic default are emergent. Nothing in
 the rules specifies a default rate, a stacking depth, or a tipping point. The quantities the research
 questions ask about are precisely the quantities not imposed.
+
+Two distinct positive feedback loops can generate that behaviour, and the model is constructed so
+they can be separated. The \emph{financial} loop runs through the balance sheet: a household short
+of cash borrows to meet its obligations, which raises future servicing, which deepens the shortfall.
+The \emph{social} loop runs through the reference group: a household that adopts \ac{BNPL} raises
+its group's adoption share, which raises its neighbours' propensity to adopt. Setting the peer
+coefficient to zero disables the second loop while leaving the first intact, so the contribution of
+each can be measured rather than asserted.
 
 \textbf{Adaptation.} Households adapt through consumption compression, borrowing and repayment
 choice. They do not optimise; they follow heuristics keyed to immediate cash position. The lender
@@ -383,25 +421,42 @@ a stated simplification.
 \textbf{Prediction.} None beyond the implicit assumption that current income persists. Households
 form no forecast of future income or prices.
 
-\textbf{Sensing.} Households sense their own balance sheet exactly. The lender senses the
-household's declared gross income, its own outstanding loans, and all other traditional debt through
-the bureau. It does not sense \ac{BNPL} obligations or informal debt. This asymmetry is the model's
-central mechanism and is discussed as a submodel below.
+\textbf{Sensing.} Households sense their own balance sheet exactly, and sense one aggregate
+property of their reference group: the share of its members currently holding a \ac{BNPL} balance,
+lagged one tick. They do not observe any individual neighbour, nor any neighbour's income, debt or
+distress. The lender senses the household's declared gross income, its own outstanding loans, and
+all other traditional debt through the bureau. It does not sense \ac{BNPL} obligations or informal
+debt. That second asymmetry is the model's central mechanism and is discussed as a submodel below.
 
-\textbf{Interaction.} Interaction is bipartite, between households and lenders, and is mediated
-entirely by credit applications and repayments. There is no household-to-household interaction in
-the baseline, so no peer effects and no social contagion. Given that Ackert et al.
-\cite{ackert2025bnpl} identify social norms as a driver of \ac{BNPL} uptake, this absence is a real
-limitation rather than a neutral simplification, and it is recorded as such.
+The contrast is worth stating plainly. Households can see \ac{BNPL} spreading among their peers;
+the regulated lender cannot see it at all.
+
+\textbf{Interaction.} There are two channels. The first is bipartite, between households and
+lenders, mediated by credit applications and repayments. The second is household-to-household, and
+runs through the reference group: a household's want-driven \ac{BNPL} propensity rises with its
+group's adoption share. Influence is indirect and aggregate rather than dyadic, since a household
+responds to a summary statistic of its group and not to identified individuals.
+
+Interaction is confined to the \emph{want-driven} path. A household facing a genuine shortfall
+borrows regardless of what its peers do, which follows from Ackert et al. \cite{ackert2025bnpl},
+where social approval shapes the \emph{choice} of \ac{BNPL} for a discretionary purchase rather than
+the underlying need for credit. Peer influence on consumption itself, the expenditure-cascade
+mechanism of \cite{cardaci2018inequality}, is not implemented, and is recorded as the natural
+extension.
 
 \textbf{Stochasticity.} Three sources. The income shock is Bernoulli. The behavioural type
 assignment is drawn once at initialisation. The want-driven \ac{BNPL} purchase trigger is
-probabilistic. All runs are seeded, and reported results are averaged across replicates with
-dispersion shown.
+probabilistic, and its probability is now state-dependent rather than fixed, since it responds to
+the group adoption share. All runs are seeded, and reported results are averaged across replicates
+with dispersion shown. Replication matters more than it did before the peer channel was introduced,
+because positive feedback amplifies early random differences between runs.
 
-\textbf{Collectives.} Income quintiles are the reporting collective, and also the cell within which
-FinScope donor flags were matched. They are a property of the population, not an entity agents
-perceive or belong to behaviourally.
+\textbf{Collectives.} The reference group, income quintile crossed with province, is a genuine
+collective in the \ac{ODD} sense: agents belong to one, and its aggregate state feeds back into
+their behaviour. It is not merely a reporting category. That the same cell serves three purposes,
+as the FinScope match cell, the reporting stratum and the social reference group, is economical
+rather than accidental, since all three rest on the same claim that income and geography together
+identify households in comparable circumstances.
 
 \textbf{Observation.} Collected each tick: population default rate, arrears distribution by \ac{CCMR}
 age band, aggregate traditional and \ac{BNPL} debt, mean and quintile debt-service-to-income,
@@ -451,11 +506,13 @@ already held in the data.
 \textbf{Submodel 3: borrowing trigger.} The trigger differs by lender type. Traditional credit is
 sought only on a realised shortfall, when cash cannot meet committed expenditure plus scheduled
 service \cite{dorazio2017micro}. \ac{BNPL} has an additional want-driven path: an eligible household
-initiates a discretionary \ac{BNPL} purchase with a fixed probability per tick. The second trigger
-is necessary because Ackert et al. \cite{ackert2025bnpl} find \ac{BNPL} uptake driven by social norm
-rather than need, and deHaan et al. \cite{dehaan2024bnpl} find harm following adoption even among
-consumers with credit available. A purely shortfall-driven \ac{BNPL} agent would model \ac{BNPL} as
-a pure substitute and could reproduce neither finding.
+initiates a discretionary \ac{BNPL} purchase with a probability that is not fixed but responds to
+peer behaviour, as specified in Submodel~11. The second trigger is necessary because Ackert et al.
+\cite{ackert2025bnpl} find \ac{BNPL} uptake driven by social norm rather than need, and deHaan et
+al. \cite{dehaan2024bnpl} find harm following adoption even among consumers with credit available.
+A purely shortfall-driven \ac{BNPL} agent would model \ac{BNPL} as a pure substitute and could
+reproduce neither finding. Peer influence applies to this path alone; the shortfall path is
+untouched, since a household in genuine need borrows irrespective of what its peers are doing.
 
 \textbf{Submodel 4: borrowing amount.} \textbf{This submodel is an assumption with no literature
 anchor.} The sweep of consumer-credit agent-based models and behavioural studies located no work
@@ -518,8 +575,10 @@ observes declared gross income, its own loans, and other traditional debt. It do
 \ac{BNPL} obligations, which fall outside the \ac{NCA} and carry no bureau-reporting obligation
 \cite{nortonrose_bnpl_sa}, a gap TransUnion confirms from inside the bureau system by listing
 \ac{BNPL} history among the information absent from the standard South African credit report
-\cite{transunion_cps_sa_2025}. Nor does it observe informal debt, which is not reported in practice
-and enters the model only as static balance-sheet state carried from \ac{NIDS}. The consequence is
+\cite{transunion_cps_sa_2025}. Nor does it observe informal debt. South African informal finance runs
+substantially through stokvels, burial societies and similar rotating savings arrangements
+\cite{investing_in_social_capital}, along with mashonisa lending, none of which reports to a credit
+bureau; it therefore enters the model only as static balance-sheet state carried from \ac{NIDS}. The consequence is
 that the Regulation 23A test is computed over an incomplete liability set. The lender is neither
 unlawful nor careless: it complies with the regulation using the record the regulation gives it, and
 that is the point. Bureau visibility of \ac{BNPL} is a boolean parameter, disabled by default, and
@@ -527,18 +586,148 @@ is also the intervention lever of Submodel~14. Running with it enabled should re
 outcomes close to the no-\ac{BNPL} baseline, so the gap between the two runs measures the cost of
 the regulatory reporting gap directly.
 
-\subsubsection*{3.4 Submodels pending}
+\textbf{Submodel 11: peer influence.} Each household belongs to one reference group, defined as its
+income quintile crossed with its province. Let $s_g(t-1)$ denote the share of households in group
+$g$ holding a non-zero \ac{BNPL} balance at the end of the previous tick. The want-driven \ac{BNPL}
+propensity of household $i$ is
 
-Four submodels governing the injected \ac{BNPL} platform are not yet fixed, and are named here so
-that their absence is explicit rather than silent: \ac{BNPL} eligibility and limit; multi-platform
-stacking, including whether platforms observe one another and whether any aggregate limit exists;
-\ac{BNPL} repayment structure and penalties; and the intervention levers for the third research
-question, notably cool-off period mechanics and stacking caps. The empirical anchors for these are
-in hand, principally the \ac{CFPB} finding that 63 percent of \ac{BNPL} borrowers held simultaneous
-loans and 32 percent held them across different firms \cite{cfpb2025bnpl}, but the rules themselves
-are not yet specified. Two further items remain open: whether any macro variable varies within a run,
-and the activation order of households within a tick, which is a known \ac{ODD} design concept
-capable of affecting results \cite{grimm2020odd}.
+\begin{equation*}
+    q_i(t) = \mathrm{clip}\!\left(q_{\text{base}} + \beta \, s_{g(i)}(t-1),\; 0,\; 1\right).
+\end{equation*}
+
+A strictly positive $q_{\text{base}}$ is structurally required rather than merely convenient. Every
+household begins with no \ac{BNPL} balance, so $s_g(0)=0$ everywhere, and under a purely
+multiplicative rule adoption could never begin. The two coefficients therefore play the roles that
+$p$ and $q$ play in Bass diffusion: $q_{\text{base}}$ governs spontaneous adoption and $\beta$
+governs imitation.
+
+Three literatures license this submodel. Ackert et al. \cite{ackert2025bnpl} supply the domain
+claim, that \ac{BNPL} uptake specifically is norm-driven, since their participants chose \ac{BNPL}
+over a credit-card loan for the same purchase and expected their social networks to approve. Cardaci
+\cite{cardaci2018inequality} supplies the methodological precedent, since peer effects and
+expenditure cascades are central to the household-credit agent-based model this thesis takes as its
+principal anchor. Granovetter \cite{granovetter1978threshold} supplies the mechanism, being the
+canonical account of how share-dependent adoption with heterogeneous thresholds yields discontinuous
+aggregate outcomes.
+
+Neither $q_{\text{base}}$ nor $\beta$ can be calibrated: no South African data fixes either. This
+raises a methodological difficulty that must be met directly rather than buried. The submodel exists
+partly because the second research question asks for a non-linear threshold, and with wholly
+independent households the population default rate is close to a smooth function of \ac{BNPL}
+access, thresholds being products of feedback. Introducing a peer channel and then reporting
+non-linearity as a finding would be circular.
+
+The resolution is to treat $\beta = 0$ as a control arm rather than as an uninteresting corner of
+the parameter space. At $\beta = 0$ the model reduces exactly to independent agents, and results for
+both the first and second research questions are reported as a surface over the swept parameter and
+$\beta$ jointly, with the $\beta = 0$ row always shown. The claim available at the end is then not
+that a threshold exists, but that population default responds non-linearly to \ac{BNPL} access
+\emph{only where social transmission is present}, which is both stronger and falsifiable. The same
+device separates the two feedback loops for the first research question, since $\beta = 0$ isolates
+the financial loop from the social one.
+
+Whether a \emph{sharp} threshold emerges is left as an empirical question about the model rather
+than an assumption built into it. Linear coupling of this kind produces diffusion; whether diffusion
+combined with the affordability gate of Submodel~9 and the arrears accrual of Submodel~6 produces a
+sharp transition is not presupposed. Should the linear form yield only a smooth response,
+Granovetter-style heterogeneous individual thresholds are registered here, in advance, as the
+structural robustness check.
+
+Finally, the submodel is inert in the baseline. With \ac{BNPL} disabled, $s_g$ is identically zero,
+so the calibration of baseline arrears against the 2017 \ac{CCMR} is untouched by anything in this
+submodel.
+
+\textbf{Submodel 12: BNPL eligibility and limit.} A household is eligible only if it is
+\emph{banked}. Both major South African providers debit a bank card for the checkout instalment
+\cite{payflex_terms, payjustnow_terms}, so an unbanked household cannot transact at all. Eligibility
+is therefore capped at 83.1 percent of the population by an observed data field rather than by
+assumption, and the access sweep of the second research question runs within the banked
+subpopulation. The platform applies a light automated screen and a per-order cap of R15{,}000,
+following Payflex. The screen is deliberately \emph{not} the Regulation 23A residual-income test of
+Submodel~9: that asymmetry is the mechanism under study, since \ac{BNPL} routes around the
+affordability assessment precisely because it sits outside the \ac{NCA}. Making the screen a real
+affordability test is an intervention, not the baseline.
+
+\textbf{Submodel 13: stacking.} A household may hold concurrent facilities across several platforms,
+with no aggregate limit. Platforms cannot observe one another, and this is a consequence of
+Submodel~10 rather than a fresh assumption: with no bureau-reporting obligation there exists no
+shared infrastructure through which one platform could see another's exposure. Each platform
+therefore screens against a liability set it cannot fully see, exactly as the traditional lender
+does. Four platforms are active in the baseline, matching the South African market, and the number
+is swept from one to six, with a single platform serving as the control that isolates
+single-platform accumulation from genuine cross-platform stacking. Stacking depth is emergent rather
+than imposed, and at a realistic access rate the model should approximate the \ac{CFPB} shares:
+roughly 63 percent of adopters holding simultaneous loans and 32 percent holding across different
+firms \cite{cfpb2025bnpl}. Those are United States figures, so the comparison is an
+order-of-magnitude check rather than a point target.
+
+\textbf{Submodel 14: BNPL repayment and penalties.} Repayment follows the Payflex Pay in 4 schedule
+\cite{payflex_terms}: 25 percent of the purchase at checkout, then 25 percent at each of the next
+three ticks, interest free. This confirms rather than merely assumes the choice of a 14-day step.
+The design chapter adopted a biweekly tick on the grounds that it aligns with the pay-in-four
+cadence; because Payflex instalments fall every two weeks, they land exactly on model ticks and no
+discretisation error enters the \ac{BNPL} schedule anywhere. Interest is zero, which is the product
+and also the basis on which providers claim to fall outside the \ac{NCA}. A missed instalment
+accrues a late fee of R95 per week capped at three weeks, so R190 per tick to a maximum of R285.
+Once that cap is exhausted the balance converts to arrears and the household is cut off from that
+platform while remaining eligible at others, since platforms are blind to each other.
+
+\textbf{Submodel 15: intervention levers.} Four levers answer the third research question, and three
+correspond to instruments that exist in the world. The first is \textbf{bureau visibility}, a boolean
+that closes the South African reporting gap of Submodel~10; the difference between the two settings
+measures the cost of the reporting exemption directly. The second is a \textbf{mandatory
+affordability check}, which applies the Regulation 23A test to \ac{BNPL} as well as to traditional
+credit, expressing the \ac{FCA}'s requirement of proportionate affordability checks
+\cite{fca_ps26_1} in South African statutory terms. That requirement descends from the Woolard
+Review \cite{woolard2021}, whose recommendations began the process of bringing \ac{BNPL} inside the
+United Kingdom regulatory perimeter, and it is precisely the assessment South African providers are
+not obliged to perform. The third is a \textbf{cool-off period}, set at
+one tick in the baseline because section 66A of the Consumer Credit Act gives a 14-day right of
+withdrawal, which again falls exactly on a tick boundary; after a want-driven purchase a household
+cannot initiate another for the cool-off duration, while the shortfall-driven path remains open,
+since a cool-off on emergency borrowing would be a different instrument answering a different
+question. The fourth is a \textbf{cap on concurrent facilities}, and this one is genuinely
+hypothetical: no jurisdiction currently imposes such a cap, and it is labelled as such rather than
+presented alongside the three real instruments.
+
+The third research question asks whether cool-off interventions change outcomes or whether agents
+simply defer rather than desist, and the model answers it directly. The comparison is
+\emph{cumulative \ac{BNPL} volume over the full horizon} with and without the cool-off, not the
+timing of purchases. If total volume is unchanged and only its distribution over time shifts, agents
+defer. If cumulative volume falls, they desist.
+
+\textbf{Submodel 16: macro environment.} Fully static. No macro variable varies within a run, and
+the 2017 repurchase rate of 7.00 percent is held constant, so the statutory maximum rates feeding
+Submodel~6 are constant as well. This is a consequence of the counterfactual design rather than a
+matter for the literature: the experiment exists to isolate the effect of injecting \ac{BNPL}, and
+any macro time-variation would confound that effect with a macro effect, making it impossible to
+attribute a change in default to the injection. Both Cardaci \cite{cardaci2018inequality} and
+Madeira \cite{madeira2018chile} do carry macro dynamics, because both ask macro questions; the
+divergence here is deliberate and follows from asking a product-level question over 24 months. The
+cost is that the model cannot speak to how \ac{BNPL} stress interacts with a downturn, which,
+given that \ac{BNPL} grew in South Africa through a period of rising rates, is named as future work.
+
+\textbf{Submodel 17: activation order.} Households are activated in random asynchronous order,
+reseeded every tick, and the lender processes applications only once all households have acted.
+Random rather than uniform activation is chosen because credit in this model is scarce, being
+rationed by the affordability gate of Submodel~9 and by per-platform limits, and a fixed order would
+hand the same households first claim on that scarce resource in every tick, manufacturing a
+persistent artefactual advantage. The choice is not incidental: Comer and Loerch
+\cite{comer2013activation} find statistically significant differences in emergent population
+behaviour across uniform, synchronous and random activation in a replicated civil-violence model,
+and Alizadeh and Cioffi-Revilla \cite{alizadeh2015activation} find that different regimes produce
+different results with no scheme dominating.
+
+One property of the design deserves emphasis, because it is a payoff of an earlier decision. The
+peer channel of Submodel~11 is \emph{activation-order independent by construction}, since it reads
+the reference-group adoption share lagged one tick. Every household within a tick therefore sees the
+same settled share regardless of when it acts, and the model's principal interaction does not
+inherit the sensitivity these authors warn about. Had the share been read live within the tick,
+results would have depended on activation order and the two decisions would have become entangled.
+Following Comer and Loerch directly, the model is nonetheless re-run under uniform and under fully
+synchronous activation, and any material movement is reported as activation-order sensitivity;
+asserting robustness without testing it would not be defensible in a model containing a positive
+feedback loop.
 
 \section*{ABM Implementation}
 

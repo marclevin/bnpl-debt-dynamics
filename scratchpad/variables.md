@@ -9,7 +9,7 @@ All variables resolve to one of two sources, **all monetary values in 2017 Rands
   `data/raw/FINMARK_2019/Finscope South Africa 2019.csv`.
 
 Two roles: **behavioural state** (drives decisions) and **conditioning** (profiles/segments).
-There are no separate "linking" variables — the match uses conditioning fields directly.
+There are no separate "linking" variables; the match uses conditioning fields directly.
 
 ---
 
@@ -42,7 +42,7 @@ There are no separate "linking" variables — the match uses conditioning fields
 
 ## Behavioural state: from FinScope (matched in, categorical)
 
-Attached to each NIDS household by the cell-donor match. Categorical flags — **no deflation**.
+Attached to each NIDS household by the cell-donor match. Categorical flags, so **no deflation**.
 FinScope columns and codings **resolved** against `Finscope South Africa 2019.csv` (values are
 text labels, not numeric codes). National weighted rates (validation targets) shown for reference.
 
@@ -89,7 +89,7 @@ surveys). FinScope weight: `HH_WEIGHT16`.
 ## Notes
 
 - **2017 Rands throughout.** No CPI multiplier anywhere; FinScope flags are categorical.
-- **Committed/discretionary** split is approximate — NIDS only gives food / non-food / rent.
+- **Committed/discretionary** split is approximate: NIDS only gives food / non-food / rent.
 - **Liquid savings** is the weakest field; proxied by financial assets, floored at 0.
 - **FinScope question codes** are coded blocks (e.g. `B*`, `C*`); exact columns resolved against
   the FinScope 2019 questionnaire PDF during P0.

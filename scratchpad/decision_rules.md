@@ -1,6 +1,6 @@
 # Decision Rules: Open Design Register
 
-**Status:** D0 to D10 are closed and cited (2026-08-05). D11 to D16 remain open. Each closed rule
+**Status:** **all 18 decisions (D0 to D17) are closed and cited** (2026-08-05). Each closed rule
 carries a stated choice, a citation, parameters with sources or explicit sensitivity flags, and a
 validation hook. D4 is closed **by assumption**, with no anchor found, and is flagged as such.
 
@@ -122,6 +122,10 @@ ordered sequence; **the order itself is a modelling decision.**
     committed expenditure plus scheduled debt service.
   - **BNPL: shortfall-driven OR want-driven.** In addition to the shortfall path, a BNPL-eligible
     agent initiates a discretionary BNPL purchase with probability `q` per tick.
+  - **`q` is not a constant.** It is socially transmitted: see **D17**, where
+    `q_i(t) = clip(q_base + β · s_g(t-1), 0, 1)` and `s_g` is the BNPL-adoption share of the agent's
+    reference group. **Peer influence acts on the want-driven path only.** The shortfall path is
+    untouched, because a household in genuine shortfall borrows regardless of what its peers do.
 - *Why BNPL gets a second trigger:* `[ackert2025bnpl]` shows BNPL uptake is driven by social norm
   rather than need, and `[dehaan2024bnpl]` finds harm following adoption even among consumers who
   had credit available. A purely shortfall-driven BNPL agent would model BNPL as a pure substitute
@@ -297,39 +301,254 @@ ordered sequence; **the order itself is a modelling decision.**
 
 ---
 
-## Part C. BNPL platform (deferred extension, but decisions named now)
+## Part C. BNPL platform (the injected entity)
 
-### D11. BNPL eligibility & limit
-- **Design space:** near-universal acceptance (low friction) vs light affordability screen; per-purchase
-  limit vs rolling limit.  **Anchor:** `[ANCHOR: BNPL]`. **Decision:** _TODO._
+> **Vintage note applying to all of Part C.** BNPL product parameters are taken **as currently
+> specified by South African providers**, and are therefore at current vintage while the population
+> is 2017. This is not an oversight: the counterfactual design (OVERVIEW §1a) asks what *today's*
+> product does to a 2017 population, so today's product terms are the correct ones. Where a
+> parameter is a Rand amount it is generous in 2017 real terms, which is flagged per-rule and swept.
 
-### D12. Multi-platform **stacking** (RQ1, RQ2)
-- **Governs:** the self-reinforcing debt mechanism. *Open:* can an agent hold N concurrent BNPL
-  facilities? Do platforms see each other? Is there an aggregate limit?
-- **Anchor:** `[ANCHOR: BNPL]` (evidence on concurrent BNPL use) + `[ANCHOR: REG/DATA]`.
-  **Decision:** _TODO._
+### D11. BNPL eligibility and limit
+- **Governs:** who can use BNPL at all, and how much. Sets the ceiling on the RQ2 access sweep.
+- **Anchors:** `[ANCHOR: BNPL/REG]` Payflex `[payflex_terms]` (automated credit assessment, orders
+  capped at **R15,000**); PayJustNow `[payjustnow_terms]` (an *available balance* rather than a
+  credit limit; where a purchase exceeds the facility the difference is added to the first
+  instalment); `[ANCHOR: BNPL]` Hayashi & Routh `[toh2025bnplconstraints]` (users are financially
+  constrained, so the screen cannot be a serious affordability test).
 
-### D13. BNPL repayment structure & penalties
-- **Design space:** pay-in-4 biweekly (decision.md Set 1 cadence), late fees, default handling.
-  **Anchor:** `[ANCHOR: BNPL]`. **Decision:** _TODO._
+- **DECISION (eligibility).** A household is BNPL-eligible only if it is **banked**. Both major
+  South African providers debit a bank card for the checkout instalment, so an unbanked household
+  cannot transact at all. This uses the existing `banked` flag, which caps eligibility at **83.1% of
+  the population** by data rather than by assumption. **The RQ2 access sweep therefore runs within
+  the banked subpopulation, not over the whole population**, and the ceiling is observed rather than
+  chosen.
+- **DECISION (screen).** A **light automated screen**, explicitly *not* the Reg 23A residual-income
+  test of D9. That asymmetry is the mechanism: BNPL routes around the affordability assessment
+  precisely because it is outside the NCA (D10). Making the BNPL screen a real affordability test is
+  an *intervention*, not the baseline (D14, lever 2).
+- **DECISION (limit).** A per-order cap of R15,000 following Payflex, plus a rolling available
+  balance per platform.
+- **Parameters:** order cap R15,000 (Payflex, current vintage); rolling balance **NOT SOURCED**,
+  swept.
+- **⚠ Why the vintage problem is mostly moot here:** at LMI household incomes a R15,000 order cap
+  will rarely bind. The binding constraint on borrowing size is the purchase amount (D4), not the
+  platform cap. Verify empirically once implemented; if the cap binds for more than a few percent of
+  transactions, revisit.
+- **Validation hook:** share of eligible households ≈ 83.1% by construction; check that the order
+  cap binds rarely.
+
+### D12. Multi-platform stacking (RQ1, RQ2)
+- **Governs:** the self-reinforcing debt mechanism. The core of RQ1.
+- **Anchors:** `[ANCHOR: BNPL]` CFPB `[cfpb2025bnpl]`: across 2021 and 2022, **63% of BNPL borrowers
+  held simultaneous loans** at some point, **32% held them across different firms**, and roughly
+  **20% originated more than one loan per month**.
+
+- **DECISION (concurrency).** A household may hold **N concurrent BNPL facilities**, one per
+  platform, with no aggregate limit across platforms.
+- **DECISION (platform blindness follows from D10, it is not a new assumption).** Platforms **cannot
+  see one another**. This is a direct consequence of BNPL sitting outside the NCA with no
+  bureau-reporting obligation: with no shared reporting infrastructure there is no channel through
+  which one platform could observe another's exposure. Each platform applies its own screen and its
+  own cap to a liability set it cannot fully see, exactly as the traditional lender does in D9.
+- **Parameters:** `N_platforms = 4` baseline (PayJustNow, Payflex, Mobicred and TymeBank are all
+  active in South Africa), swept 1 to 6. `N = 1` is a useful control: it isolates single-platform
+  debt accumulation from cross-platform stacking.
+- **Validation hook (external, transferable with care).** Stacking depth is **emergent, not
+  imposed**. At a realistic access rate the model should approximate the CFPB shares: roughly 63% of
+  adopters holding simultaneous loans and 32% holding across firms. ⚠ United States figures applied
+  to a South African model; treat as an order-of-magnitude check and state the transfer.
+
+### D13. BNPL repayment structure and penalties
+- **Governs:** how BNPL obligations retire or snowball.
+- **Anchors:** `[ANCHOR: BNPL/REG]` Payflex `[payflex_terms]`: **Pay in 4** splits a purchase into
+  four interest-free instalments over six weeks, 25% at checkout then three further 25% instalments
+  **every two weeks**; late fee **R95 per week capped at three weeks**. PayJustNow
+  `[payjustnow_terms]`: Pay in 3, first instalment at checkout then two monthly instalments.
+
+- **DECISION.** **Pay in 4 on the Payflex schedule**: 25% of the purchase at checkout, then 25% at
+  each of the next three ticks.
+- **This retroactively validates the 14-day tick.** decision.md Set 1 chose a biweekly step because
+  it "aligns with pay-in-4 BNPL cadence". That alignment is now confirmed against an actual South
+  African product rather than assumed: Payflex instalments fall **exactly** on the model tick, so no
+  discretisation error is introduced anywhere in the BNPL schedule.
+- **Interest:** zero. That is the product, and it is the basis on which providers claim to fall
+  outside the NCA (D10).
+- **Penalties:** R95 per week late, capped at three weeks, so **R190 per tick to a maximum of R285**
+  per missed instalment. Once the fee cap is exhausted the balance converts to arrears and the
+  household is cut off from that platform, while remaining eligible at others, since platforms are
+  blind to each other (D12).
+- **Parameters:** all sourced from Payflex except the post-cap handling, which is an assumption.
+- **Sensitivity:** Pay in 3 monthly (PayJustNow) as the structural alternative.
 
 ### D14. Intervention levers (RQ3)
-- **Governs:** the policy experiments. *Open:* "cool-off period" mechanics; stacking cap; mandatory
-  affordability check; bureau visibility switch.
-- **Anchor:** `[ANCHOR: BNPL/REG]`. **Decision:** _TODO._
+- **Governs:** the policy experiments. RQ3.
+- **Anchors:** `[ANCHOR: REG/DATA]` FCA `[fca_ps26_1]`, which brings Deferred Payment Credit into
+  the UK regulatory perimeter from **15 July 2026** and requires **proportionate affordability
+  checks**; the Woolard Review `[woolard2021]`, whose 26 recommendations initiated that process;
+  and **CCA s.66A**, which gives a **14-day right of withdrawal** on regulated credit agreements.
+
+Four levers, three of which correspond to instruments that actually exist:
+
+1. **Bureau visibility** (`bnpl_bureau_visible`, boolean, default false). Closes the South African
+   reporting gap identified in D10. The gap between on and off measures the cost of the reporting
+   exemption directly.
+2. **Mandatory affordability check.** Applies the D9 Reg 23A residual-income test to BNPL as well as
+   to traditional credit. This is the FCA's "proportionate affordability checks" expressed in South
+   African statutory terms.
+3. **Cool-off period.** `k_cool = 1` tick baseline, which is **14 days, the CCA s.66A statutory
+   figure**, and again falls exactly on a tick boundary. Mechanics: after initiating a want-driven
+   BNPL purchase, a household cannot initiate another for `k_cool` ticks. The shortfall-driven path
+   is not blocked, since a cool-off on emergency borrowing would be a different instrument.
+   Swept 0 to 4 ticks.
+4. **Stacking cap.** A maximum on concurrent facilities. ⚠ **No jurisdiction currently imposes
+   this.** It is the genuinely hypothetical lever and must be labelled as such rather than presented
+   alongside the three real instruments.
+
+- **Operationalising "defer versus desist" (this is what RQ3 actually asks).** Compare **total BNPL
+  volume over the full horizon** with and without the cool-off, not just the timing. If volume is
+  unchanged and only the timing shifts, agents **defer**. If cumulative volume falls, they
+  **desist**. This gives RQ3 a direct, unambiguous answer rather than a narrative one.
 
 ---
 
-## Part D. Environment & scheduling
+## Part D. Environment and scheduling
 
 ### D15. Macro environment
-- **Already decided (Set 7):** homogeneous, exogenous, held in 2017 terms. *Open:* are any macro
-  variables time-varying within the run, or fully static? **Decision:** _TODO._
+- **Governs:** whether anything outside the household and lender moves during a run.
+- **Already decided (Set 7):** homogeneous, exogenous, held in 2017 terms.
+- **DECISION. Fully static. No macro variable varies within a run.** The 2017 repurchase rate of
+  7.00% is held constant, so the NCA maximum prescribed rates feeding D6 servicing are constant too.
+- *Why, and this is a design consequence rather than a literature question:* the counterfactual
+  design (OVERVIEW §1a) exists to isolate the effect of injecting BNPL. **Any macro time-variation
+  would confound the injection effect with a macro effect and destroy the experimental control.**
+  A moving interest rate or unemployment path would make it impossible to attribute a change in
+  default to BNPL rather than to the macro path.
+- *Deliberate divergence from the anchors:* both `[cardaci2018inequality]` and `[madeira2018chile]`
+  carry macro dynamics, because both are asking macro questions. This thesis is asking a
+  product-level question over a 24-month horizon, so the macro layer is held fixed on purpose. Say
+  this explicitly rather than letting it look like an omission.
+- **Parameters:** none. This is a control, not a knob.
+- **⚠ Limitation:** no business cycle, so the model cannot speak to how BNPL stress interacts with a
+  downturn. Given that BNPL grew in South Africa through a period of rising rates, that interaction
+  is plausibly important and is named as future work.
 
-### D16. Scheduling / activation order
-- **Already decided (Set 7):** synchronous biweekly clock (consumers act → lender processes → state
-  updates). *Open:* agent activation order within the consumer step (random, staged or simultaneous),
-  a known ODD design concept that affects results. **Anchor:** `[ANCHOR: ABM]`. **Decision:** _TODO._
+### D16. Scheduling and activation order
+- **Governs:** the order in which households act within a tick. A known ODD design concept.
+- **Already decided (Set 7):** synchronous biweekly clock, households act, then the lender processes,
+  then state updates.
+- **Anchors:** `[ANCHOR: ABM]` Comer & Loerch `[comer2013activation]`, who replicate a
+  well-documented civil-violence model and find **statistically significant differences in emergent
+  population behaviour** across uniform, synchronous and random activation; and Alizadeh &
+  Cioffi-Revilla `[alizadeh2015activation]`, who compare four regimes in an opinion-dynamics model
+  and find that **different regimes produce different results, with no scheme dominating**.
+
+- **DECISION. Random asynchronous activation of households within a tick, reseeded every tick.**
+  The lender processes applications only after all households have acted.
+- *Why random rather than uniform:* under a fixed order the same households would hold first claim
+  on a scarce resource every single tick, and credit here **is** scarce, being rationed by the D9
+  affordability gate and by per-platform limits (D11). Uniform activation would manufacture a
+  persistent, purely artefactual advantage for households early in the ordering.
+
+- **⚠ The peer channel is activation-order independent by construction, and this is a payoff of an
+  earlier decision.** D17 reads the reference-group adoption share **lagged one tick**. Every
+  household in a tick therefore sees the same, already-settled share, regardless of when it acts.
+  The model's principal new interaction consequently does **not** inherit the activation-order
+  sensitivity that `[comer2013activation]` and `[alizadeh2015activation]` warn about. Had the peer
+  share been read live within the tick, results would have depended on activation order and the two
+  decisions would have become entangled.
+- **Sensitivity (mandatory, not optional).** Following `[comer2013activation]` directly, re-run
+  under uniform and under fully synchronous activation. Any material movement in results is reported
+  as activation-order sensitivity. Given that the literature says this matters and the model has a
+  positive feedback loop, asserting robustness without testing it would not be defensible.
+- **Validation hook:** none directly. This is a robustness dimension rather than a fitted quantity.
+
+---
+
+## Part F. Social structure
+
+### D17. Peer influence and the reference group
+- **Governs:** whether households influence one another at all. Without this the model has no
+  agent-to-agent interaction, which makes it closer to a dynamic microsimulation than an ABM, and
+  more seriously leaves **RQ2 asking for a non-linear threshold the topology cannot produce**:
+  with independent households, population default is close to a smooth function of BNPL access,
+  because thresholds are products of feedback.
+- **Anchors (all three roles covered):**
+  - `[ANCHOR: BNPL]` **domain.** Ackert et al. `[ackert2025bnpl]`: consumers chose BNPL over a
+    credit-card loan for the same purchase and expected their social networks to approve. BNPL
+    uptake specifically is norm-driven.
+  - `[ANCHOR: ABM]` **method.** Cardaci `[cardaci2018inequality]`, already this thesis's primary ABM
+    anchor, models **peer effects and expenditure cascades** as a central mechanism, generating a
+    debt-financed consumption boom and an endogenous banking crisis. Adding a peer channel moves the
+    model *closer* to its anchor. The no-interaction design was the deviation needing defence.
+  - `[ANCHOR: BEHAV]` **mechanism.** Granovetter `[granovetter1978threshold]`: share-dependent
+    adoption with heterogeneous thresholds produces discontinuous aggregate outcomes. This is the
+    canonical account of how individual-level rules generate population-level tipping.
+
+- **DECISION (reference group).** `g(i) = (income_quintile_i, province_i)`. This is the **same cell
+  already used for the FinScope donor match**, so no new construct enters the thesis. Verified
+  against `data/processed/synthetic_population_5000.parquet`: **45 groups, min 23 agents, median 84,
+  max 353, none below 20.** Groups are fixed at initialisation and static, consistent with static
+  household composition (decision.md Set 2).
+  - *Why not province alone:* 9 groups with less noise, but it drops income homophily, so a Q1
+    household would treat Q5 households as peers.
+  - *Why not an explicit contact network:* no South African data exists to calibrate degree or
+    clustering, so it would add several free parameters. Recorded as future work.
+  - ⚠ Three Northern Cape cells sit between 23 and 31 agents, so their peer share is noise-prone.
+    Report Northern Cape separately, or pool it, in any group-level result.
+
+- **DECISION (mechanism).** Let `s_g(t-1)` be the share of households in group `g` holding a
+  non-zero BNPL balance at the end of the previous tick. Then
+
+  ```
+  q_i(t) = clip( q_base + beta * s_g(i)(t-1),  0, 1 )
+  ```
+
+  The one-tick lag keeps the synchronous update well defined.
+  - **`q_base > 0` is structurally required.** With `s_g(0) = 0` everywhere and a purely
+    multiplicative rule, adoption could never start. `q_base` is the spontaneous-adoption term and
+    `beta` the imitation term, exactly the innovation and imitation coefficients of Bass diffusion.
+  - **`beta = 0` recovers the pre-D17 independent-agent model exactly.**
+
+- **Parameters:** `q_base` and `beta` are both **NOT SOURCED**. No South African data fixes either.
+  Both are swept, and `beta` is the primary experimental axis rather than a nuisance parameter
+  (see below).
+
+- **⚠ The circularity risk, and how it is handled.** D17 is being added partly because RQ2 wants
+  non-linearity. Reporting non-linearity as a finding would then be circular. **`beta = 0` is the
+  control arm.** All RQ2 output is reported as a surface over (BNPL access rate × `beta`), with the
+  `beta = 0` row shown. The claim then becomes:
+
+  > Population default responds non-linearly to BNPL access **only when social transmission is
+  > present**; without it the response is smooth.
+
+  That is stronger than "a threshold exists", and it converts an uncalibrated parameter into the
+  experimental variable. **Whether a sharp threshold emerges is left as an empirical question of the
+  model, not an assumption.** Linear coupling produces diffusion; whether that plus the affordability
+  gate (D9) and arrears accrual (D6) yields a *sharp* default threshold is not presupposed.
+  Granovetter-style heterogeneous thresholds are **pre-registered now** as the structural robustness
+  check should the linear form give only a smooth response.
+
+- **Consequence for RQ1.** The model now holds two distinct self-reinforcing loops: a **financial**
+  one (borrow to service existing debt, D0 step 5) and a **social** one (adopt because peers
+  adopted). Running `beta = 0` isolates the financial loop, so RQ1 can be answered for each
+  mechanism separately. Distinguishing them is a genuine analytical contribution.
+
+- **Baseline safety.** With BNPL disabled, `s_g` is identically zero, so **the peer channel is inert
+  in the baseline**. The CCMR 2017 calibration (`data/config/ccmr_2017_baseline.json`) is
+  mathematically untouched and needs no re-verification.
+
+- **Validation hook.** Not a validation target: no South African household-level BNPL adoption time
+  series exists to fit an S-curve against. The adoption path is reported descriptively, and the
+  `beta = 0` versus `beta > 0` contrast is the experiment. The four patterns in OVERVIEW §7 are
+  unaffected, since all four are evaluated at the baseline or on traditional-credit outcomes.
+
+- **Deliberately excluded.** Peer effects on **consumption** (Cardaci's actual expenditure-cascade
+  mechanism) are not implemented: they would add further uncalibrated parameters and, critically,
+  would make the baseline **non-inert**, requiring the CCMR calibration to be re-verified. Recorded
+  as the natural extension. **Distress contagion** (peer distress suppressing adoption) is rejected
+  because the suppression effect has no literature anchor, and the model already carries one uncited
+  rule in D4.
 
 ---
 
@@ -337,13 +556,18 @@ ordered sequence; **the order itself is a modelling decision.**
 
 | RQ | Mechanism it tests | Rules involved | Swept parameter(s) |
 | -- | ------------------ | -------------- | ------------------ |
-| RQ1: when does stacking self-reinforce? | debt accumulates faster than repayment | D5, D6, D12 | stacking depth, BNPL-first propensity |
-| RQ2: non-linear default threshold | population default vs BNPL access | D3, D7, D11 | BNPL access/penetration rate |
-| RQ3: do cool-off periods work? | defer vs desist | D3, D14 | cool-off length, on/off |
+| RQ1: when does stacking self-reinforce? | two loops: **financial** (borrow to service) and **social** (adopt because peers adopted) | D5, D6, D12, **D17** | stacking depth, BNPL-first propensity, **`beta`** |
+| RQ2: non-linear default threshold | population default vs BNPL access, amplified by social transmission | D3, D7, D11, **D17** | BNPL access rate × **`beta`** (2-D surface) |
+| RQ3: do cool-off periods work? | **defer vs desist, measured as total BNPL volume over the horizon, not timing** | D3, D14 | cool-off length `k_cool` (0 to 4 ticks; **1 tick = the CCA s.66A 14-day statutory figure**), and each lever on/off |
 
-**Validation targets (provider-independent fallback):** baseline (no-BNPL) default/arrears should
-reproduce a **CCMR / TransUnion** aggregate before any BNPL is switched on. See
-[[behavioural-validation-hedge]] and [`../OVERVIEW.md`](../OVERVIEW.md) §7.
+**`beta = 0` is the control arm for RQ1 and RQ2.** It recovers the independent-agent model exactly,
+isolating the financial loop in RQ1 and providing the no-social-transmission comparison in RQ2.
+See D17 for why this matters methodologically.
+
+**Validation targets:** four external targets, listed in OVERVIEW §7. The baseline (no-BNPL) arrears
+profile targets the **2017-Q1 CCMR** (`data/config/ccmr_2017_baseline.json`): 71.63% current,
+16.54% 60+ days, 14.21% 90+ days, account basis. All four are unaffected by D17, since the peer
+channel is inert in the baseline. See [[behavioural-validation-hedge]].
 
 ---
 
@@ -351,8 +575,14 @@ reproduce a **CCMR / TransUnion** aggregate before any BNPL is switched on. See
 
 - [x] D0 tick order · [x] D1 income/shock · [x] D2 consumption · [x] D3 borrow trigger
 - [~] D4 borrow amount *(assumption, no anchor)* · [x] D5 lender choice · [x] D6 repayment/arrears · [x] D7 default def.
-- [x] D8 heterogeneity · [x] D9 credit gate · [x] D10 info asymmetry · [ ] D11 BNPL eligibility
-- [ ] D12 stacking · [ ] D13 BNPL repayment · [ ] D14 interventions · [ ] D15 macro · [ ] D16 scheduling
+- [x] D8 heterogeneity · [x] D9 credit gate · [x] D10 info asymmetry · [x] D11 BNPL eligibility
+- [x] D12 stacking · [x] D13 BNPL repayment · [x] D14 interventions · [x] D15 macro · [x] D16 scheduling
+- [x] D17 peer influence / reference group
+
+**All 18 decisions are closed.** Two carry explicit caveats rather than clean anchors: **D4**
+(borrowing amount) is closed *by assumption* with no anchor found, and **D14 lever 4** (stacking cap)
+has no real-world instrument and is labelled hypothetical. Every other rule carries a citation,
+parameters with sources or sweep flags, and a validation hook.
 
 Each box closes only when it has: a stated rule, a citation, parameters with sources, and a
 validation hook.

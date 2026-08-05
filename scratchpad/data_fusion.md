@@ -1,11 +1,11 @@
 # Matching: NIDS ← FinScope (simple cell-donor)
 
 How financial-inclusion flags from **FinScope 2019** are attached to **NIDS Wave 5** households.
-Deliberately simple ("ignorant") matching — transparent and easy to defend, not a precision fusion.
+Deliberately simple ("ignorant") matching: transparent and easy to defend, not a precision fusion.
 All NIDS monetary values stay in **2017 Rands**; FinScope flags are categorical and need no deflation.
 
 > Replaces the earlier hot-deck/IPF fusion. See [`decision.md`](decision.md) Set 5. Resolved and
-> validated against real data in `scratchpad` (P2 logic) — marginals reproduce within ≤1.8%.
+> validated against real data in `scratchpad` (P2 logic); marginals reproduce within ≤1.8%.
 
 ---
 
@@ -31,7 +31,7 @@ Both surveys are bucketed into the **same** cells, then donors are drawn within 
      No Income→0, R1–999→500, R1,000–2,999→2,000, R3,000–7,999→5,500, R8,000–11,999→10,000,
      R12,000–29,999→21,000, R30,000+→40,000.
 2. **× Province** (secondary). Province names align **exactly** across surveys (no harmonization
-   needed). Feasibility checked: 45 quintile×province cells, **min 30 donors, none < 20** — so the
+   needed). Feasibility checked: 45 quintile×province cells, **min 30 donors, none < 20**, so the
    province split is used directly, no fallback required in practice.
 3. **Fallback.** If any cell is too thin, fall back to quintile-only for that cell (logged).
 
@@ -99,7 +99,8 @@ lender could have granted their debt. Reported as a finding, not capped away.
 - **National marginals** of the matched synthetic population reproduce FinScope national rates
   within tolerance. *Validated:* banked +0.4, credit +1.5, informal +0.1, savings +1.8 (pp).
 - **Cell marginals** match by construction (correctness check).
-- Behavioural validation (default rates, DTI) is **deferred to BNPL-provider targets** — see
+- Behavioural validation (default rates, DTI) now has **four external targets**, no longer dependent
+  on BNPL-provider data. See
   [`../OVERVIEW.md`](../OVERVIEW.md) §7.
 
 ---

@@ -1,7 +1,7 @@
 # Key Decisions: Synthetic Population & ABM
 
 Design decisions for the **2017-anchored, single-backbone** approach. Canonical strategy lives in
-[`../OVERVIEW.md`](../OVERVIEW.md) — this document records the *why* behind each decision.
+[`../OVERVIEW.md`](../OVERVIEW.md); this document records the *why* behind each decision.
 
 > **Current direction (2026-06-01).** Work **exclusively in 2017 units**. NIDS Wave 5 is the
 > backbone; FinScope provides financial-inclusion flags via a **simple cell-donor match**. No CPI
@@ -44,7 +44,7 @@ all three at once. FinScope flags are categorical, so the FinScope 2019 vintage 
 
 - **Geographic scope:** Abstracted, except province is available as a secondary matching cell (Set 5).
 - **Population size:** **5,000 synthetic households**, weighted-resampled from NIDS W5.
-- **Household definition:** NIDS definition — co-residence + resource sharing.
+- **Household definition:** NIDS definition, meaning co-residence plus resource sharing.
 - **Composition dynamics:** Static across the 24-month horizon.
 
 ---
@@ -81,7 +81,7 @@ All monetary fields are in **2017 Rands**. Full column-level mapping in [`variab
 
 ## Decision Set 5: Matching Strategy (NIDS ← FinScope)
 
-(This replaces the old CPI/fusion set. The method is deliberately simple — see
+(This replaces the old CPI/fusion set. The method is deliberately simple; see
 [`data_fusion.md`](data_fusion.md) for the full procedure.)
 
 - **Direction:** NIDS households are the **recipients**; FinScope respondents are the **donors**.
@@ -90,7 +90,7 @@ All monetary fields are in **2017 Rands**. Full column-level mapping in [`variab
   respondent from the same cell and copy its financial-inclusion flags.
 - **Why this and not hot-deck/regression:** It is transparent, easy to explain to a supervisor or
   examiner, and avoids over-claiming precision the 2017↔2019 vintage gap cannot support.
-- **No monetary adjustment** anywhere — flags are categorical; NIDS money stays in 2017 Rands.
+- **No monetary adjustment** anywhere: flags are categorical; NIDS money stays in 2017 Rands.
 - **Resolved (validated against data):** flags = `banked` (binary, `F1`), `credit_access_formal`
   (formal source/products, split from `informal_finance`), `savings_product` (`K7`). Cell =
   per-capita income quintile × province (45 cells, ≥30 donors each). Matched marginals reproduce
@@ -102,7 +102,8 @@ All monetary fields are in **2017 Rands**. Full column-level mapping in [`variab
 
 ## Decision Set 6: Agents (Consumers + Single Lender Stub)
 
-Trimmed to the minimum needed for a baseline. BNPL and a richer lender market are **future work**.
+Trimmed to the minimum on the *traditional* side. The **BNPL side is now fully specified** in
+`decision_rules.md` D11 to D14; only multi-lender competition among traditional lenders remains out.
 
 **Consumer agents (households):**
 
@@ -115,19 +116,30 @@ Trimmed to the minimum needed for a baseline. BNPL and a richer lender market ar
 **Single Lender (stub):** One aggregate lender holding all traditional debt; a deterministic
 visible-debt gate decides applications. No competition, no adaptation.
 
-**Deferred:** BNPL platform agent, multiple lenders, informal lenders, merchants. Informal debt
-enters only as static balance-sheet state from NIDS.
+**BNPL platforms (specified, D11 to D14):** 4 active in baseline; banked-only eligibility (83.1% of
+the population, by data); light screen, deliberately *not* the Reg 23A test; R15,000 per-order cap
+(Payflex); Pay in 4 on a biweekly schedule that lands exactly on model ticks; R95/week late fee
+capped at 3 weeks; platforms blind to one another, which follows from D10 rather than being a new
+assumption.
+
+**Deferred:** multiple *traditional* lenders, informal lenders, merchants. Informal debt enters only
+as static balance-sheet state from NIDS.
 
 ---
 
 ## Decision Set 7: Topology
 
 - **Consumer-to-lender:** Bipartite; all consumers may apply to the single lender, subject to the gate.
-- **Consumer-to-consumer:** None in baseline.
-- **Macro environment:** Homogeneous, exogenous (inflation, unemployment) — held in 2017 terms.
+- **Consumer-to-consumer:** **Peer influence on BNPL adoption**, via a reference group defined as
+  income quintile × province (the same cell as the FinScope match; 45 groups, min 23 agents). The
+  want-driven BNPL trigger rises with the group's adoption share; the shortfall-driven path is
+  untouched, since need-driven borrowing is not socially transmitted. `beta = 0` recovers the
+  independent-agent model and is the control arm. Inert in the no-BNPL baseline. See
+  [`decision_rules.md`](decision_rules.md) D17.
+- **Macro environment:** Homogeneous, exogenous (inflation, unemployment), held in 2017 terms.
 - **Income dynamics:** Static income baseline per household + a single biweekly Bernoulli shock that
   reduces savings / cash flow and can trigger borrowing.
-- **Time:** Synchronous biweekly clock — consumers act, lender processes applications, state updates.
+- **Time:** Synchronous biweekly clock: consumers act, lender processes applications, state updates.
 
 ---
 
@@ -154,8 +166,8 @@ enters only as static balance-sheet state from NIDS.
 | 3. Sources     | NIDS W5 backbone + FinScope 2019 donor; IES/GHS/QLFS dropped                      |
 | 4. Variables   | Behavioural (NIDS + FinScope flags) / conditioning; all money in 2017 Rands       |
 | 5. Matching    | **Simple cell-donor by income quintile (× province)**; categorical flags only     |
-| 6. Agents      | Consumers + single minimal lender stub; BNPL & multi-lender deferred             |
-| 7. Topology    | Bipartite consumer–lender; no consumer network; static income + biweekly shock    |
+| 6. Agents      | Consumers + single traditional lender stub + **4 BNPL platforms** (D11-D14); multi-*traditional*-lender deferred |
+| 7. Topology    | Bipartite consumer/lender **plus peer influence on BNPL adoption** (D17); static income + biweekly shock |
 | 8. Validation  | Internal (~5%) + match diagnostics; four external ABM targets (OVERVIEW §7)     |
 
 ---
@@ -176,9 +188,13 @@ enters only as static balance-sheet state from NIDS.
 - **2017 reference year.** Population reflects 2017 conditions; results are not forwarded to a
   current year. This is a deliberate scope choice, stated up front.
 - **FinScope 2019 as a 2017 proxy.** 2-year vintage gap on financial-inclusion flags, uncorrected.
-- **Cell-donor match** is crude — it preserves cell-level marginals, not household-level joint
+- **Cell-donor match** is crude: it preserves cell-level marginals, not household-level joint
   structure beyond the cell variables.
 - **Liquid savings** is the weakest NIDS field; proxied by financial assets.
-- No external behavioural validation yet (deferred to BNPL-provider targets).
-- No informal credit supply, no consumer network, no spatial heterogeneity beyond the match cell,
-  static household composition, single static lender rule.
+- No informal credit supply, no spatial heterogeneity beyond the match cell, static household
+  composition, single static lender rule.
+- **Social structure is minimal, not absent.** Households interact only through the D17 reference
+  group, and only on BNPL adoption. There is no explicit contact network, no dyadic influence, and
+  no peer effect on consumption (Cardaci's expenditure cascades). The peer coefficient `beta` is
+  uncalibrated and is therefore swept, with `beta = 0` reported as the control arm.
+- Three Northern Cape reference groups hold 23 to 31 agents, so their peer share is noise-prone.

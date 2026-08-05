@@ -36,7 +36,7 @@ The NCR **Consumer Credit Market Report does not publish interest rates**; it re
 granted, gross debtors book, and age analysis (arrears) only. No public 2017 source gives observed
 average APRs by product class for this population, so the statutory maximum is used as the
 best-sourced available figure. This **biases servicing upward**. It is defensible for a low-to-middle
-income population — where unsecured lenders price at or near the cap — but must be stated as a
+income population, where unsecured lenders price at or near the cap, but must be stated as a
 limitation and swept in sensitivity analysis.
 
 ### Terms are still assumptions
@@ -98,5 +98,5 @@ because the agent is a household. This is a stated simplification, not an oversi
 ### Diagnostic
 
 53 debtor households have income at or below the Reg 23A minimum-expense norm, so **no
-NCA-compliant lender could have granted their debt**. This is reported as a finding — evidence of
-informal or reckless credit, or of NIDS income under-reporting — not silently capped away.
+NCA-compliant lender could have granted their debt**. This is reported as a finding: evidence of
+informal or reckless credit, or of NIDS income under-reporting, rather than silently capped away.

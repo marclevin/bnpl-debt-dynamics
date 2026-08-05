@@ -33,13 +33,13 @@ These four alone are enough to start writing §Literature Review and §ABM Desig
   affordability assessment and **no bureau reporting**. `[HAVE]` This is the citation that makes the
   bank-can't-see-BNPL mechanism a documented fact rather than a modelling convenience.
 - **D14 interventions.** `[FIND]` UK FCA Woolard Review; Australia ASIC BNPL reviews; EU CCD2.
-  Cool-off periods, stacking caps, mandatory affordability checks — need the actual instrument text.
+  Cool-off periods, stacking caps, mandatory affordability checks: need the actual instrument text.
 
 ## Closed since this file was written (2026-08-05)
 
-- **D9 affordability formula — SETTLED.** NCA Reg 23A(9) residual-income test, not a DSTI cap.
+- **D9 affordability formula, SETTLED.** NCA Reg 23A(9) residual-income test, not a DSTI cap.
   `[HAVE: sa_ncr_affordability_2015]`
-- **Servicing APRs — SOURCED.** NCA statutory maximum prescribed rates by sub-sector at the 2017
+- **Servicing APRs, SOURCED.** NCA statutory maximum prescribed rates by sub-sector at the 2017
   repo rate. `[HAVE: sa_ncr_ratecaps_2016]`
 - **Correction:** the NCR CCMR **does not publish interest rates.** It reports credit granted,
   gross debtors book, and age analysis only. It remains the right source for the *arrears*
@@ -60,6 +60,28 @@ consumer-credit ABMs found, all now in the bib:
 - **`hamill2023creditcard`.** UK credit-card market ABM. Lender promotional strategy raises
   borrower indebtedness; reproduces the non-monotonic income vs debt-to-income relationship
   (middle-income households carry the highest balance-to-income). Useful for D9/lender conduct.
+
+## ⚑ Cardaci already has peer effects (2026-08-05)
+
+**The single most useful thing found in the whole sweep.** `cardaci2018inequality`, already this
+thesis's primary ABM anchor, models **peer effects and expenditure cascades** as a central
+mechanism: a behavioural consumption rule based on expenditure cascades, upward pressure on
+consumption norms from inequality, a debt-financed consumption boom, and an endogenous banking
+crisis from accumulating non-performing loans.
+
+Consequence: adding a peer channel (D17) moves the model **closer** to its anchor, not further from
+it. **The no-interaction design was the deviation that needed defending.** This reframes D17 from
+"an addition we invented to make RQ2 work" into "restoring a mechanism the anchor already has".
+
+Supporting mechanism citation added: **Granovetter (1978)**, *AJS* 83(6):1420-1443, threshold models
+of collective behaviour, the canonical account of share-dependent adoption producing discontinuous
+aggregate outcomes.
+
+Related and possibly worth reading, though **not** the peer-effects source: `[FIND/VERIFY]`
+D'Orazio (2019), *Economic Modelling* 82:308-331, "Income inequality, consumer debt, and prudential
+regulation". Relevant to RQ3 (prudential regulation, and the finding that its effectiveness depends
+on the cycle phase). ⚠ Two sources disagree on authorship (one listing Da Silva & Lima); confirm
+before citing.
 
 ## BNPL evidence upgrade (2026-08-05)
 
@@ -86,10 +108,10 @@ other badly. Collected estimates:
 | US$1.2bn by 2029 | BusinessWire 2024 |
 
 The two 2024 estimates differ by **49%** for the same year, and CAGRs range 9.8% to 25.2% over
-overlapping windows. None is a primary source. **Use penetration rates, not market value** — RQ2
+overlapping windows. None is a primary source. **Use penetration rates, not market value**: RQ2
 sweeps a BNPL *access rate*, so a USD market size was never the right quantity anyway.
 
-**Use instead (already in the repo):** `data/raw/TU_CPS_Q4_2025/` — TransUnion Consumer Pulse SA
+**Use instead (already in the repo):** `data/raw/TU_CPS_Q4_2025/`, TransUnion Consumer Pulse SA
 Q4 2025. BNPL is named by 20% of consumers intending to apply for credit, behind only new credit
 cards (30%) and personal loans (28%), and TransUnion
 lists BNPL history among information **absent from the standard SA credit report**, which is
@@ -99,6 +121,31 @@ law-firm note. Secondary: Statista 2022 (91% aware, 27% used in past year); Stit
 
 **No South African academic BNPL study was found.** Supports the novelty claim, but see the
 systematic-search TODO in `main.tex`.
+
+## D11 to D16 sources (2026-08-05): no provider contact needed
+
+The BNPL platform was specified entirely from **published** sources, confirming the earlier
+judgement that contacting a firm is unnecessary.
+
+- **`payflex_terms`.** Pay in 4: 25% at checkout then three further 25% instalments **every two
+  weeks** over six weeks, interest free. Late fee **R95/week capped at 3 weeks**. Automated credit
+  assessment, orders capped at **R15,000**. This single page supplied most of D13 and D11.
+- **`payjustnow_terms`.** Pay in 3: first instalment at checkout, then two monthly. An *available
+  balance* rather than a credit limit. Used as the D13 structural alternative.
+- **`fca_ps26_1`.** FCA PS26/1, Regulation Day **15 July 2026**, proportionate affordability checks
+  required, and **CCA s.66A gives a 14-day right of withdrawal**. Supplies two of the four D14
+  levers with real statutory figures.
+- **`woolard2021`.** The review that started UK BNPL regulation. `% VERIFY` exact title.
+- **`comer2013activation`** *Procedia CS* 20:183-188 and **`alizadeh2015activation`** JASSS 18(3):8:
+  activation regime demonstrably changes emergent outcomes. Anchors D16 and forces the mandatory
+  activation-order robustness run.
+
+**Two lucky alignments worth exploiting in the write-up.** Payflex's biweekly Pay in 4 and the CCA's
+14-day withdrawal right *both* fall exactly on the model's 14-day tick. Neither was designed for;
+both mean zero discretisation error in the BNPL schedule and in the cool-off lever.
+
+**Still not found:** any South African academic BNPL study, and any observed SA BNPL default or
+arrears rate. The latter would have been the ideal D13 validation target.
 
 ## Tier 3: South African calibration `[FIND]`
 
@@ -110,7 +157,7 @@ systematic-search TODO in `main.tex`.
   and the residual-income formula for D9. **DONE 2026-08-05** (Reg 23A(9), GN R202, GG 38557).
 - **`[FIND]` APRs and terms for SA unsecured credit / store cards / personal loans.** This is the
   gap flagged in [[servicing-not-grounded]]; `data/config/credit_rate_table.csv` is hand-populated.
-  NCR CCMR reports average rates by product class — that is the fix.
+  NCR CCMR reports average rates by product class, which is the fix.
 - **`[FIND]` SA BNPL market size / penetration.** PayJustNow, Payflex, Float. Needed to set the
   BNPL access rate that RQ2 sweeps.
 
@@ -124,7 +171,7 @@ systematic-search TODO in `main.tex`.
 - `Buy Now Pay Later South Africa regulation National Credit Act`
 - `present bias hyperbolic discounting minimum payment anchoring household debt`
 
-Good venues to sweep directly: **JASSS** (jasss.org — most credit ABMs land here), *Journal of
+Good venues to sweep directly: **JASSS** (jasss.org, where most credit ABMs land), *Journal of
 Economic Behavior & Organization*, *Journal of Economic Dynamics and Control*, *Journal of Financial
 Economics*, CFPB / FCA / ASIC / BIS working papers.
 
@@ -134,6 +181,6 @@ Economics*, CFPB / FCA / ASIC / BIS working papers.
 
 1. **§Literature Review.** Three subsections mirroring the three anchors. Writing it forces a
    position on D0–D8.
-2. **Fill `decision_rules.md`** as you write; each `_TODO._` becomes "we adopt X, following [cite]".
+2. ~~Fill `decision_rules.md`~~ **DONE 2026-08-05: all 18 decisions (D0 to D17) closed and cited.**
 3. **§ABM Design.** This is just `decision_rules.md` re-expressed in ODD form (`grimm2020odd`).
 4. **Then** code `simulation/` against a spec that is already written and already cited.

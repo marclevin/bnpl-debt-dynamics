@@ -10,7 +10,7 @@ first, then propagate to the companion docs. Last updated: **2026-06-01**.
 
 How do **Buy Now Pay Later (BNPL)** platforms affect consumer debt saturation and the potential
 for systemic default in South Africa? We answer with an **agent-based model (ABM)** (Python/Mesa)
-whose core engine is the household **balance sheet** — money and debt flowing through a population
+whose core engine is the household **balance sheet**: money and debt flowing through a population
 of household agents over time.
 
 ---
@@ -43,9 +43,10 @@ mechanistic* ("stacking becomes self-reinforcing when X"), not as forecasts.
 ## 2. Strategy in one breath
 
 Build a synthetic population of **household agents from NIDS Wave 5 (2017)**, enrich each with
-**financial-inclusion flags matched in from FinScope**, and keep **everything in 2017 units** — no
+**financial-inclusion flags matched in from FinScope**, and keep **everything in 2017 units**: no
 inflation-forwarding, no second monetary reference year. Get a clean, validated *consumer*
-population working first; BNPL and a richer lender market come later.
+population working first, then **inject** BNPL into it (§1a). All 18 agent-rule decisions are now
+closed and cited; a richer *traditional* lender market remains out of scope.
 
 **The five commitments that keep this simple:**
 
@@ -54,7 +55,7 @@ population working first; BNPL and a richer lender market come later.
 2. **One backbone source: NIDS W5.** Income, expenditure, debt, demographics, weights.
 3. **One donor source: FinScope.** Provides financial-inclusion flags only, via a simple match.
 4. **Simple match, not fusion.** Cell-donor by income quintile (× province where cell sizes allow)
-   — copy a random FinScope respondent's flags onto each NIDS household.
+   by copying a random FinScope respondent's flags onto each NIDS household.
 5. **Validation: internal for the data layer, external for the ABM.** The population is checked for
    internal consistency and FinScope-marginal reproduction. The ABM is checked against four external
    targets sourced from the literature and the regulator (see §7). BNPL-provider data is no longer a
@@ -70,7 +71,7 @@ population working first; BNPL and a richer lender market come later.
 | **FinScope SA**  | 2019 | **Donor**: banked status, credit access, savings, informal flags| **In** (proxy) |
 
 
-**FinScope note:** A 2017 FinScope wave is **not in our data** — we use **FinScope 2019** as a
+**FinScope note:** A 2017 FinScope wave is **not in our data**, so we use **FinScope 2019** as a
 proxy for the ~2017 financial-inclusion landscape. The variables we import are **categorical
 flags** (banked yes/no, has-credit yes/no), which are not monetary and so need no deflation; the
 2-year gap is recorded as a limitation, not corrected.
@@ -104,7 +105,7 @@ Full column-level mapping: [`household_agent.md`](household_agent.md) and
   [P1] BACKBONE                                │
    derive: income_source, committed/           │
    discretionary, savings proxy, D_trad,       │
-   quintile  (NO CPI — stays 2017)             │
+   quintile  (NO CPI, stays 2017)              │
         │                                      │
         ▼                                      ▼
   [P2] MATCH  ── cell-donor by income quintile (× province) ──►
@@ -140,14 +141,23 @@ Full column-level mapping: [`household_agent.md`](household_agent.md) and
 
 - NIDS W5 → 5,000 weighted household agents, quintile-tagged, **2017 Rands**.
 - Simple FinScope cell-donor match for financial-inclusion flags.
-- Consumer balance sheets + one minimal lender stub.
-- Internal-consistency + match-diagnostic validation.
+- Consumer balance sheets + one traditional lender operating an NCA Reg 23A gate.
+- **BNPL platform agents** (4 in baseline), stacking, pay-in-4 repayment, and the four RQ3
+  intervention levers. All specified in D11 to D14 from published SA provider terms and FCA PS26/1.
+- **Peer influence on BNPL adoption** (D17), the model's only agent-to-agent channel.
+- Internal-consistency + match-diagnostic validation, plus four external ABM targets (§7).
 
 **Deferred (future work)**
 
-- BNPL platform agent and multi-lender market.
+- **Multi-lender competition** among *traditional* lenders (the traditional side stays a single
+  non-adaptive stub; the BNPL side does have multiple platforms).
 - **BNPL-provider behavioural data** (desirable, no longer required: see §7).
-- Geography beyond the match cell, peer-to-peer networks, dynamic composition.
+- Geography beyond the match cell, **explicit contact networks** (no SA data to calibrate degree or
+  clustering), **peer effects on consumption** (Cardaci's expenditure cascades), dynamic composition.
+
+*Moved into scope 2026-08-05:* **peer influence on BNPL adoption** (D17), via an income quintile ×
+province reference group. This is the model's only agent-to-agent channel and it is what makes the
+non-linear threshold in RQ2 structurally possible.
 
 ---
 
@@ -176,6 +186,14 @@ Full column-level mapping: [`household_agent.md`](household_agent.md) and
 - ⚠ **Calibration versus validation.** The income-shock probability `p` (D1) is *fitted* to baseline
   arrears, so the **baseline is calibrated, not validated**. Only the BNPL-on results are genuine
   predictions. This must be stated in the limitations chapter.
+- ⚠ **The `beta = 0` control arm (D17).** The peer-influence strength `beta` is uncalibrated, and
+  D17 was added partly because RQ2 needs non-linearity to be structurally possible. Reporting
+  non-linearity as a finding would therefore be circular unless controlled. **All RQ1 and RQ2 output
+  is reported as a surface over the swept parameter × `beta`, with the `beta = 0` row shown.** At
+  `beta = 0` the model reduces exactly to independent agents. The claim becomes *"default responds
+  non-linearly to BNPL access only when social transmission is present"*, which is stronger than
+  asserting a threshold. The four targets above are unaffected: the peer channel is **inert in the
+  baseline**, since `s_g` is identically zero when BNPL is disabled.
 - BNPL-provider data remains desirable but is now an upside, not a dependency.
 
 ---
@@ -191,6 +209,41 @@ Full column-level mapping: [`household_agent.md`](household_agent.md) and
 ---
 
 ## 9. Changelog (living)
+
+- **2026-08-05 (D11 to D16 closed: all 18 decisions now closed).** The BNPL platform is specified
+  from **published South African provider terms** rather than from provider cooperation, confirming
+  no firm contact is needed. **D11:** eligibility is *banked-only*, since both major providers debit
+  a bank card at checkout, which caps access at **83.1% of the population by observed data**, so the
+  RQ2 sweep runs inside the banked subpopulation rather than over a free parameter. Screen is
+  deliberately **not** the Reg 23A test; that asymmetry is the mechanism. **D12:** platforms are
+  blind to each other, which *follows from* D10 rather than being a new assumption; stacking depth is
+  emergent and checked against CFPB (63% simultaneous, 32% cross-firm). **D13:** Payflex Pay in 4 is
+  25% at checkout then 25% every two weeks, which **lands exactly on the 14-day tick**, retroactively
+  validating the tick choice made in decision.md Set 1; late fee R95/week capped at 3 weeks.
+  **D14:** four RQ3 levers, three of which are real instruments (bureau visibility, mandatory
+  affordability check per FCA PS26/1, and a **14-day cool-off from CCA s.66A**, again exactly one
+  tick); the stacking cap is labelled hypothetical since no jurisdiction imposes one. RQ3's
+  "defer versus desist" is operationalised as **cumulative BNPL volume over the horizon**, not
+  timing. **D15:** macro fully static, because any time-variation would confound the injection
+  effect and destroy the experimental control. **D16:** random asynchronous activation, anchored to
+  Comer & Loerch and Alizadeh & Cioffi-Revilla; note that **D17's one-tick lag makes the peer channel
+  activation-order independent**, so the main interaction does not inherit that sensitivity.
+  Bibliography now 28 entries.
+
+- **2026-08-05 (D17 peer influence).** Added the model's **only agent-to-agent channel**. Motive was
+  structural, not cosmetic: with independent households, population default is close to a smooth
+  function of BNPL access, so **RQ2 was asking for a threshold the topology could not produce**.
+  Peer influence acts on the **want-driven BNPL trigger only** (`q_i(t) = clip(q_base + beta·s_g(t-1), 0, 1)`),
+  over a reference group of **income quintile × province**, the same cell already used for the
+  FinScope match (45 groups, min 23 agents, median 84, verified against the 5,000-agent parquet).
+  Need-driven borrowing is not socially transmitted. Key discovery justifying the change:
+  **Cardaci (2018), already the primary ABM anchor, models peer effects and expenditure cascades
+  centrally**, so the no-interaction design was the deviation, not the addition. Mechanism anchored
+  to Granovetter (1978) threshold models; domain to Ackert et al. `beta = 0` recovers the previous
+  model exactly and is the **control arm**, which also lets RQ1 separate the financial loop (borrow
+  to service) from the social loop (adopt because peers adopted). **No data-pipeline change:**
+  `province` and `income_quintile` are already columns, so the reference group is derived at model
+  init. Baseline calibration untouched, since the channel is inert with BNPL disabled.
 
 - **2026-08-05 (decision rules D0 to D10 closed).** Literature sweep found the consumer-credit ABM
   anchors the register was missing: **Madeira (2018, *J. Financial Stability*)**, a Central Bank of
@@ -209,13 +262,13 @@ Full column-level mapping: [`household_agent.md`](household_agent.md) and
   per sub-sector (regime in force 6 May 2016, so 2017-valid) at the **2017 repo rate of 7.00%**:
   credit facilities 21%, other credit agreements 24%, unsecured 28%, short-term 5%/month.
   (2) **Affordability**: flat `MAX_DSTI = 0.65` → the **NCA Reg 23A(9) residual-income test**
-  (GN R202, GG 38557). The NCA prescribes *no* DSTI ratio — it prescribes a minimum expense-norms
+  (GN R202, GG 38557). The NCA prescribes *no* DSTI ratio; it prescribes a minimum expense-norms
   table, giving an **income-varying** ceiling (10.4% of income at R900/mo vs 83.2% at R7,712/mo).
-  Both published worked examples are asserted in-notebook. **P4 check D was circular** — it tested
+  Both published worked examples are asserted in-notebook. **P4 check D was circular**: it tested
   `dsti.max() <= 0.66`, i.e. the cap it had just imposed; replaced with a non-circular test of how
   often the guard binds (**3.4% of debtors**, passes at ≤10%). Still **14/14**. New diagnostic:
   **53 debtor households** have income at or below the Reg 23A norm, so no NCA-compliant lender
-  could have granted their debt — reported as a finding, not capped away. **Closes D9's
+  could have granted their debt, reported as a finding rather than capped away. **Closes D9's
   affordability formula.** Known limits: statutory maxima are ceilings not observed averages (NCR
   CCMR publishes no rates); terms remain assumptions; Reg 23A is per-consumer, applied per-household.
 - **2026-06-01 (showcase).** Built `notebooks/00_showcase.ipynb`: a supervisor-facing guided tour
@@ -228,7 +281,7 @@ Full column-level mapping: [`household_agent.md`](household_agent.md) and
   Education×quintile gradient is textbook (Q1 4% tertiary → Q5 54%). **Static data layer complete.**
 - **2026-06-01 (P3).** Built `notebooks/p3_resample.ipynb`: weighted resample to **5,000 agents**
   (from 3,250 unique source households) → `synthetic_population_5000.parquet`. P4 extended with a
-  live resample-fidelity section (income KS gap 0.012, flag gap 0.3pp, shares ±1.5pp) — now **14/14
+  live resample-fidelity section (income KS gap 0.012, flag gap 0.3pp, shares ±1.5pp), now **14/14
   pass**. Population-size stability checked at 1k/5k/10k. The static household-agent data layer is
   complete; next is the ABM (rules, environment, lender).
 - **2026-06-01 (P4 + fixes).** Diagnostics surfaced servicing/DSTI outliers (68 hh with
@@ -256,4 +309,4 @@ Full column-level mapping: [`household_agent.md`](household_agent.md) and
   validation). Reintroduced a **simple FinScope cell-donor match** (replacing crude per-quintile
   imputation). Behavioural validation deferred to BNPL-provider targets. OVERVIEW.md promoted to
   living source of truth.
-- *(earlier)* — Simplified from multi-survey hot-deck fusion to single-source NIDS resample.
+- *(earlier)* Simplified from multi-survey hot-deck fusion to single-source NIDS resample.
