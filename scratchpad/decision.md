@@ -10,6 +10,22 @@ Design decisions for the **2017-anchored, single-backbone** approach. Canonical 
 
 ---
 
+## Decision Set 0: The Claim (counterfactual injection)
+
+The model is a **counterfactual experiment, not a historical fit**. A 2017 population is calibrated
+against the 2017-Q1 CCMR, and a BNPL lender class is then **injected** into that calibrated economy.
+
+*Why 2017 is the right control:* BNPL reached the South African market at scale from roughly 2021.
+Fitting to its actual arrival would require disentangling it from COVID-19 income shocks, the 2020
+credit contraction and post-pandemic inflation. **The absence of BNPL in 2017 is the experimental
+control**, and it is what makes the injection interpretable.
+
+*What this forbids:* no claim about any actual year after 2017, and no comparison to post-2020
+observed arrears. Results are directional and mechanistic, not forecasts. Full statement in
+[`../OVERVIEW.md`](../OVERVIEW.md) §1a.
+
+---
+
 ## Decision Set 1: Temporal Scope
 
 - **Reference year:** **2017** (NIDS W5 reference period). All monetary values stay in 2017 Rands.

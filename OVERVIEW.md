@@ -15,6 +15,31 @@ of household agents over time.
 
 ---
 
+## 1a. What kind of claim this model makes (the injection statement)
+
+**This is a counterfactual experiment, not a historical fit.** State it exactly this way, in the
+introduction, in the ODD Purpose section, and again in limitations:
+
+> We construct a household population calibrated to observed South African conditions in **2017**,
+> a period in which BNPL was effectively absent from the South African market. We validate that
+> population's credit behaviour against the **2017-Q1 NCR Consumer Credit Market Report**. We then
+> **inject** a BNPL lender class into that calibrated economy and observe how the dynamics change.
+> The model therefore answers *"what does BNPL do to a household population like this one?"*, and
+> **not** *"what happened in South Africa between 2017 and 2019?"*
+
+**Why this framing is a strength, not an apology.** BNPL entered the South African market at scale
+from roughly 2021. Any attempt to fit a model to the actual arrival of BNPL would have to
+disentangle it from COVID-19 income shocks, the 2020 credit contraction, and post-pandemic
+inflation, none of which the thesis is equipped to identify. Holding the population at 2017 gives a
+**clean baseline with no BNPL contamination**, which is precisely what makes the injection
+interpretable. The absence of BNPL in 2017 is the experimental control.
+
+**What this framing forbids.** No claim that model output describes any actual year after 2017. No
+comparison of model output to post-2020 observed arrears. Results are read as *directional and
+mechanistic* ("stacking becomes self-reinforcing when X"), not as forecasts.
+
+---
+
 ## 2. Strategy in one breath
 
 Build a synthetic population of **household agents from NIDS Wave 5 (2017)**, enrich each with
@@ -138,8 +163,12 @@ Full column-level mapping: [`household_agent.md`](household_agent.md) and
      adoption raises credit-card interest and late fees. Enabling BNPL in the model must therefore
      **increase** arrears and interest burden on traditional debt. Substitution would falsify the
      lender-choice rule (D5).
-  2. **Baseline arrears** versus NCR CCMR age analysis (D6, D7). ⚠ The CCMR in the repo is Q1 2025
-     against a 2017 population; **obtain the 2017-vintage CCMR before using this as a target.**
+  2. **Baseline arrears** versus NCR CCMR age analysis (D6, D7). **Resolved 2026-08-05:** the
+     2017-Q1 CCMR is in the repo and extracted to `data/config/ccmr_2017_baseline.json`. Account
+     basis, combined unsecured plus credit facilities: **71.63% current, 16.54% 60+ days,
+     14.21% 90+ days.** The default horizon `k` was revised from 6 to **7 ticks (98 days)** so it
+     maps cleanly onto the 90+ band. ⚠ CCMR counts **accounts**, the model counts **households**,
+     so this is an order-of-magnitude target, not a point target.
   3. **Non-monotonic income to debt-to-income pattern** with a middle-income peak, reported by
      Hamill et al. (2023) (D8). A pattern-oriented check in the sense of Grimm et al. (2020).
   4. **Savings exhaustion** versus the TransUnion Consumer Pulse finding that 36% of South African

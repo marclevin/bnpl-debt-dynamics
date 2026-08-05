@@ -1,0 +1,82 @@
+{
+  "source": "NCR Consumer Credit Market Report, March 2017 (2017-Q1), Appendix D Tables 21 and 23",
+  "basis": "ACCOUNTS, not rand value, and not households",
+  "reference_quarter": "2017-Q1",
+  "unsecured_credit": {
+    "accounts": {
+      "current": 3996610,
+      "d30": 272703,
+      "d31_60": 161326,
+      "d61_90": 111079,
+      "d91_120": 90857,
+      "d120_plus": 919213
+    },
+    "total_accounts": 5551788,
+    "pct": {
+      "current": 71.99,
+      "d30": 4.91,
+      "d31_60": 2.91,
+      "d61_90": 2.0,
+      "d91_120": 1.64,
+      "d120_plus": 16.56
+    },
+    "pct_current": 71.99,
+    "pct_60_plus": 20.19,
+    "pct_90_plus": 18.19
+  },
+  "credit_facilities": {
+    "accounts": {
+      "current": 18198277,
+      "d30": 2280170,
+      "d31_60": 952359,
+      "d61_90": 609039,
+      "d91_120": 453888,
+      "d120_plus": 2939794
+    },
+    "total_accounts": 25433527,
+    "pct": {
+      "current": 71.55,
+      "d30": 8.97,
+      "d31_60": 3.74,
+      "d61_90": 2.39,
+      "d91_120": 1.78,
+      "d120_plus": 11.56
+    },
+    "pct_current": 71.55,
+    "pct_60_plus": 15.74,
+    "pct_90_plus": 13.34
+  },
+  "combined_unsecured_and_facilities": {
+    "accounts": {
+      "current": 22194887,
+      "d30": 2552873,
+      "d31_60": 1113685,
+      "d61_90": 720118,
+      "d91_120": 544745,
+      "d120_plus": 3859007
+    },
+    "total_accounts": 30985315,
+    "pct": {
+      "current": 71.63,
+      "d30": 8.24,
+      "d31_60": 3.59,
+      "d61_90": 2.32,
+      "d91_120": 1.76,
+      "d120_plus": 12.45
+    },
+    "pct_current": 71.63,
+    "pct_60_plus": 16.54,
+    "pct_90_plus": 14.21
+  },
+  "model_target": {
+    "note": "Baseline (no-BNPL) target for D6/D7. Combined unsecured + credit facilities is the closest analogue to the model's consolidated D_trad for an LMI household.",
+    "pct_current": 71.63,
+    "pct_60_plus": 16.54,
+    "pct_90_plus": 14.21
+  },
+  "caveats": [
+    "CCMR counts ACCOUNTS; the model counts HOUSEHOLDS. A household may hold several accounts, so account-level arrears rates are not directly a household-level default rate. Treat as an order-of-magnitude target and state the unit mismatch.",
+    "Section 4.4 of the converted markdown has a CORRUPT '% Number of accounts' column for credit facilities (83.22% repeated for all 13 quarters). Appendix D Table 21 is authoritative and reproduces the report's prose figure of 71.55%.",
+    "The model's tick is 14 days, so default at k ticks does not align with CCMR day buckets unless k=7 (98 days), which is the first tick boundary at or beyond the 90-day convention."
+  ]
+}

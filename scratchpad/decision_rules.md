@@ -179,11 +179,25 @@ ordered sequence; **the order itself is a modelling decision.**
 - **Parameters:** `m = 0.29` baseline, from `[Keys2019]`.
 - **⚠ Parameter caveat:** 0.29 is a United States credit-card figure. Applying it to South African
   unsecured credit is a transfer assumption. Sweep 0.20 to 0.40.
-- **Arrears definition:** CCMR age bands (current, 30, 60, 90+ days). At a biweekly tick, 90 days is
-  6 ticks.
-- **Validation hook:** baseline share of accounts current versus CCMR. **⚠ Vintage problem:** the
-  CCMR in the repo is Q1 2025 (unsecured credit ~70.6% of accounts current) but the population is
-  2017. **Obtain the 2017-vintage CCMR from the NCR before using this as a target.**
+- **Arrears definition:** CCMR age bands (current, 30, 31-60, 61-90, 91-120, 120+ days).
+- **Validation hook (2017 vintage, resolved).** `data/raw/CCMR_Q1_2017/` (NCR CCMR March 2017) is
+  now in the repo and extracted to `data/config/ccmr_2017_baseline.json`. **2017-Q1, account basis:**
+
+  | Credit type | % current | % 60+ days | % 90+ days |
+  | --- | --- | --- | --- |
+  | Unsecured credit | 71.99% | 20.19% | 18.19% |
+  | Credit facilities | 71.55% | 15.74% | 13.34% |
+  | **Combined (the model target)** | **71.63%** | **16.54%** | **14.21%** |
+
+  Combined unsecured plus credit facilities is the closest analogue to the model's consolidated
+  `D_trad` for an LMI household. Both figures are cross-checked against the report's own prose in
+  the extraction script.
+- **⚠ Unit mismatch (state it).** CCMR counts **accounts**; the model counts **households**. A
+  household may hold several accounts, so an account-level arrears rate is not a household-level
+  default rate. Treat as an order-of-magnitude target, not a point target.
+- **⚠ Data quality note.** Section 4.4 of the converted 2017 markdown has a **corrupt** credit
+  facilities "% Number of accounts" column (83.22% repeated for all 13 quarters). Appendix D
+  Table 21 is authoritative and reproduces the prose figure of 71.55%. Do not read section 4.4.
 
 ### D7. Distress and default definition
 - **Governs:** the model's headline output variable. The threshold the RQs ask about.
@@ -197,16 +211,21 @@ ordered sequence; **the order itself is a modelling decision.**
   itself does not use a DSTI ratio. Madeira's minimum-consumption test is cited, is consistent with
   the Reg 23A affordability rule already implemented in P2, and is validated against real default
   rates in a middle-income economy.
-- **Parameters:** `k = 6` ticks. At a 14-day tick this is **84 days**, the nearest tick boundary
-  below the CCMR 90-day impairment convention (90 days is 6.43 ticks, so it does not fall on a tick).
-  State the discretisation explicitly rather than calling 6 ticks "3 months".
-- **Sensitivity:** `k = 7` (98 days), the nearest boundary above 90 days.
+- **Parameters:** `k = 7` ticks. **Revised from k=6 once the 2017 CCMR buckets were in hand.** At a
+  14-day tick, k=7 is **98 days**, which falls inside the CCMR `91-120` bucket and therefore maps
+  cleanly onto the **90+ days** impairment convention. k=6 would be 84 days, which lands inside the
+  `61-90` bucket and so has **no clean CCMR analogue at all**. Choosing k for tick-alignment with the
+  validation target is deliberate, and should be said out loud in the methodology rather than
+  presented as a round number.
+- **Sensitivity:** `k = 4` (56 days, maps to the 60+ band, target 16.54%) as the looser definition.
 - **Consequences:** credit cut-off from the traditional lender (which sees the default via the
   bureau, D10) and penalty accrual.
 - **⚠ Limitation:** no scarring or recovery path in the baseline. Once defaulted, an agent does not
   rehabilitate. Over a 24-month horizon this is tolerable but it must be stated.
-- **Validation hook:** population default rate versus CCMR impairment (subject to the D6 vintage
-  problem).
+- **Validation hook:** with `k = 7`, the baseline population default rate targets the 2017-Q1 CCMR
+  **90+ days** figure of **14.21%** of accounts (combined unsecured and credit facilities). With
+  `k = 4` it targets the 60+ figure of **16.54%**. Subject to the D6 account-versus-household unit
+  mismatch.
 
 ### D8. Behavioural heterogeneity
 - **Governs:** whether all agents share one rule set.
