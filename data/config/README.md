@@ -1,4 +1,4 @@
-# Config — sourced external parameters
+# Config: sourced external parameters
 
 ## `credit_rate_table.csv`
 
@@ -28,9 +28,9 @@ Rates are evaluated at the **2017 repo rate of 7.00%** (SARB; cut to 6.75% on 21
 | Unsecured credit transactions (personal loans) | repo + 21% p.a. | **28%** |
 | Developmental credit | repo + 27% p.a. | 34% |
 | Short-term credit transactions | 5% per month (first loan) | **60% nominal p.a.** |
-| Incidental credit agreements | 2% per month | — |
+| Incidental credit agreements | 2% per month | n/a |
 
-### ⚠ Limitation — these are ceilings, not observed averages
+### ⚠ Limitation: these are ceilings, not observed averages
 
 The NCR **Consumer Credit Market Report does not publish interest rates**; it reports credit
 granted, gross debtors book, and age analysis (arrears) only. No public 2017 source gives observed
@@ -50,17 +50,17 @@ caps short-term credit transactions at 6 months). Every other `term_months` valu
 | product_class | Credit product class label |
 | finscope_col | FinScope yes/no column flagging this product |
 | nca_subsector | NCA sub-sector the class maps to |
-| apr_annual | Annual rate (decimal) — statutory max for the sub-sector |
+| apr_annual | Annual rate (decimal): statutory max for the sub-sector |
 | apr_source | Provenance of the rate |
 | term_months | Representative repayment term |
-| term_source | Provenance — or explicit `ASSUMPTION` |
+| term_source | Provenance, or the explicit marker `ASSUMPTION` |
 
 `other_default` (no `finscope_col`) is the fallback when `D_trad > 0` but the donor flags no
 specific product.
 
 ---
 
-## Affordability rule — NCA Regulation 23A(9)
+## Affordability rule: NCA Regulation 23A(9)
 
 **The NCA does not prescribe a debt-service-to-income cap.** It prescribes a **residual-income
 test**: a table of minimum necessary living expenses by gross monthly income band, with credit
@@ -90,7 +90,7 @@ distribution than the flat 65% it replaced:
 | R3,400 | R975.50 | R2,424.50 | 71.3% |
 | R7,712 | R1,299.46 | R6,412.54 | 83.2% |
 
-### ⚠ Limitation — household vs individual
+### ⚠ Limitation: household vs individual
 
 Reg 23A applies to an individual **consumer**. It is applied here to NIDS **household** income,
 because the agent is a household. This is a stated simplification, not an oversight.

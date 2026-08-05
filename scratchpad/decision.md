@@ -1,4 +1,4 @@
-# Key Decisions — Synthetic Population & ABM
+# Key Decisions: Synthetic Population & ABM
 
 Design decisions for the **2017-anchored, single-backbone** approach. Canonical strategy lives in
 [`../OVERVIEW.md`](../OVERVIEW.md) — this document records the *why* behind each decision.
@@ -37,8 +37,8 @@ all three at once. FinScope flags are categorical, so the FinScope 2019 vintage 
 
 | Source          | Year | Role                                                               | Status      |
 | --------------- | ---- | ----------------------------------------------------------------- | ----------- |
-| **NIDS Wave 5** | 2017 | **Backbone** — income, expenditure, debt, demographics, weights   | **In**      |
-| **FinScope SA** | 2019 | **Donor** — banked status, credit access, savings, informal flags | **In** |
+| **NIDS Wave 5** | 2017 | **Backbone**: income, expenditure, debt, demographics, weights   | **In**      |
+| **FinScope SA** | 2019 | **Donor**: banked status, credit access, savings, informal flags | **In** |
 
 **NIDS backbone file:** `data/raw/NIDS_W5/hhderived.csv` (household-level income, expenditure,
 assets, debts, size, weights). Head demographics joined from the NIDS individual-derived file.
@@ -121,8 +121,11 @@ enters only as static balance-sheet state from NIDS.
   it was sampled from (income quintile shares, household composition) within ~5%.
 - **Match diagnostics:** imported FinScope flags reproduce **FinScope marginals** (e.g. national
   banked rate, credit-access rate) within tolerance.
-- **Behavioural validation:** **deferred** — targets to be obtained from **BNPL providers**, not
-  from CPI-forwarded survey aggregates.
+- **Behavioural validation:** **no longer deferred.** Closing D0 to D10 produced four external
+  targets: the deHaan et al. complementarity test (D5), CCMR baseline arrears (D6, D7), the Hamill
+  et al. non-monotonic income to debt-to-income pattern (D8), and TransUnion savings exhaustion (D2).
+  Full list and caveats in [`../OVERVIEW.md`](../OVERVIEW.md) §7. Note that the income-shock
+  probability is *fitted* to baseline arrears, so the baseline is calibrated rather than validated.
 
 ---
 
@@ -137,26 +140,26 @@ enters only as static balance-sheet state from NIDS.
 | 5. Matching    | **Simple cell-donor by income quintile (× province)**; categorical flags only     |
 | 6. Agents      | Consumers + single minimal lender stub; BNPL & multi-lender deferred             |
 | 7. Topology    | Bipartite consumer–lender; no consumer network; static income + biweekly shock    |
-| 8. Validation  | Internal (~5%) + match diagnostics; behavioural targets deferred to BNPL providers |
+| 8. Validation  | Internal (~5%) + match diagnostics; four external ABM targets (OVERVIEW §7)     |
 
 ---
 
 ## Companion Documents
 
-- [`../OVERVIEW.md`](../OVERVIEW.md) — living source of truth (strategy + execution plan).
-- [`variables.md`](variables.md) — variable mapping to NIDS + FinScope columns.
-- [`data_fusion.md`](data_fusion.md) — the simple cell-donor matching procedure.
-- [`../household_agent.md`](../household_agent.md) — data → agent mapping.
-- [`work.md`](work.md) — ABM design narrative.
-- [`decision_rules.md`](decision_rules.md) — open-decision register for agent rules (scaffold; logic to be filled from literature).
+- [`../OVERVIEW.md`](../OVERVIEW.md): living source of truth (strategy + execution plan).
+- [`variables.md`](variables.md): variable mapping to NIDS + FinScope columns.
+- [`data_fusion.md`](data_fusion.md): the simple cell-donor matching procedure.
+- [`../household_agent.md`](../household_agent.md): data → agent mapping.
+- [`work.md`](work.md): ABM design narrative.
+- [`decision_rules.md`](decision_rules.md): open-decision register for agent rules (scaffold; logic to be filled from literature).
 
 ---
 
 ## Known Limitations (for methods/limitations chapter)
 
-- **2017 reference year** — population reflects 2017 conditions; results are not forwarded to a
+- **2017 reference year.** Population reflects 2017 conditions; results are not forwarded to a
   current year. This is a deliberate scope choice, stated up front.
-- **FinScope 2019 as a 2017 proxy** — 2-year vintage gap on financial-inclusion flags, uncorrected.
+- **FinScope 2019 as a 2017 proxy.** 2-year vintage gap on financial-inclusion flags, uncorrected.
 - **Cell-donor match** is crude — it preserves cell-level marginals, not household-level joint
   structure beyond the cell variables.
 - **Liquid savings** is the weakest NIDS field; proxied by financial assets.

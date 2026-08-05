@@ -156,12 +156,14 @@ ordered sequence; **the order itself is a modelling decision.**
 - *Why not cost-ranked:* BNPL is nominally interest-free, so cost-ranking selects it trivially and
   attributes the choice to price. The evidence attributes it to convenience and social norm
   `[ackert2025bnpl]`, which is a different mechanism with different intervention implications (RQ3).
-- **Validation hook (strong, external).** `[dehaan2024bnpl]` establishes **complementarity**: BNPL
-  adopters' credit-card interest and late fees *rise*. Switching BNPL on in the model must therefore
-  **increase**, not decrease, traditional-credit stress. If the model produces substitution
-  (traditional debt falls when BNPL is enabled), it contradicts the best available causal evidence
-  and the lender-choice rule is wrong. **This is the single most useful falsification test the
-  model has.**
+- **Validation hook (strong, external).** `[dehaan2024bnpl]` establishes **complementarity**. Note
+  precisely what they measure: overdraft charges, credit-card *interest* and *late fees*, which are
+  indicators of servicing stress, **not** outstanding balances. The model analogue is therefore
+  **arrears and interest burden on traditional debt**, not traditional debt stock. Switching BNPL on
+  must **increase** traditional-credit arrears and interest burden. If instead the model shows
+  traditional stress *falling* when BNPL is enabled (pure substitution), it contradicts the best
+  available causal evidence and the lender-choice rule is wrong. **This is the single most useful
+  falsification test the model has.**
 
 ### D6. Repayment rule and arrears
 - **Governs:** how debt is retired versus how it snowballs. Drives the default observable.
@@ -195,7 +197,10 @@ ordered sequence; **the order itself is a modelling decision.**
   itself does not use a DSTI ratio. Madeira's minimum-consumption test is cited, is consistent with
   the Reg 23A affordability rule already implemented in P2, and is validated against real default
   rates in a middle-income economy.
-- **Parameters:** `k = 6` ticks (3 months), aligning with the CCMR 90-day impairment convention.
+- **Parameters:** `k = 6` ticks. At a 14-day tick this is **84 days**, the nearest tick boundary
+  below the CCMR 90-day impairment convention (90 days is 6.43 ticks, so it does not fall on a tick).
+  State the discretisation explicitly rather than calling 6 ticks "3 months".
+- **Sensitivity:** `k = 7` (98 days), the nearest boundary above 90 days.
 - **Consequences:** credit cut-off from the traditional lender (which sees the default via the
   bureau, D10) and penalty accrual.
 - **⚠ Limitation:** no scarring or recovery path in the baseline. Once defaulted, an agent does not

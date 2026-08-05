@@ -1,4 +1,4 @@
-# Matching — NIDS ← FinScope (simple cell-donor)
+# Matching: NIDS ← FinScope (simple cell-donor)
 
 How financial-inclusion flags from **FinScope 2019** are attached to **NIDS Wave 5** households.
 Deliberately simple ("ignorant") matching — transparent and easy to defend, not a precision fusion.
@@ -65,21 +65,32 @@ monthly_trad_repayment       = amortize(D_trad, weighted_apr, weighted_term)
                               = D_trad · r / (1 − (1+r)^(−n)),  r = apr/12, n = term_months
 ```
 
-- The APR/term table is **external and user-populated** (`data/config/credit_rate_table.csv`) — fill
-  from NCR / regulator / BNPL provider. The pipeline **refuses to run** while any `PLACEHOLDER_`
-  remains, so a placeholder can never silently enter results.
+- The APR/term table (`data/config/credit_rate_table.csv`) is **sourced from the NCA statutory
+  maximum prescribed interest rates** per sub-sector (regime in force 6 May 2016, so 2017-valid),
+  evaluated at the **2017 repo rate of 7.00%**: credit facilities 21%, other credit agreements 24%,
+  unsecured 28%, short-term 5% per month. See `data/config/README.md` for the full mapping and the
+  ceilings-not-averages limitation.
 - If `D_trad > 0` but the donor flags no product, use the `other_default` class.
 
-**Realism guards (documented assumptions).** Because a NIDS debt *balance* (a stock) is paired with a
-FinScope product *type* (independent within the cell), naïve amortization could force impossible debt
-service (e.g. a large balance labelled a 1-month "short-term loan"). Two parameters bound this:
+**Guards.** Because a NIDS debt *balance* (a stock) is paired with a FinScope product *type*
+(independent within the cell), naive amortization could force impossible debt service, for example a
+large balance labelled a short-term loan. Two parameters bound this:
 
-- `MIN_TERM_MONTHS = 6` — term floor: a stock balance is never amortized faster than 6 months.
-- `MAX_DSTI = 0.65` — NCA-style affordability ceiling; `monthly_trad_repayment` is capped at
-  `MAX_DSTI × monthly income`.
+- `MIN_TERM_MONTHS = 6`. Term floor: a stock balance is never amortized faster than 6 months.
+  **Still an assumption**, not sourced.
+- **NCA Regulation 23A(9) residual-income ceiling** (replaced the earlier flat `MAX_DSTI = 0.65`,
+  which had no statutory basis). The NCA prescribes no debt-service-to-income ratio; it prescribes a
+  minimum expense-norms table by gross income band. Debt service is capped at
+  `gross income − Reg 23A necessary expenses`, giving an **income-varying** ceiling: 10.4% of income
+  at R900/month rising to 83.2% at R7,712/month.
 
-After the fix: max DSTI = 0.65, **0** households with repayment > income (was 68), weighted-mean DSTI
-by quintile 3–6%. The raw (pre-cap) value is retained as `repay_uncapped` for transparency.
+Result: max DSTI 0.911, **0** households with repayment > income, weighted-mean DSTI by quintile
+2.8–6.1%. The guard binds for only **3.4% of debtors** (158 of 4,702), so the APR/term assumptions
+produce affordable servicing unaided for the rest. The raw pre-cap value is retained as
+`repay_uncapped`, and `nca_max_service` records each household's ceiling.
+
+**Diagnostic:** 53 debtor households have income at or below the Reg 23A norm, so no NCA-compliant
+lender could have granted their debt. Reported as a finding, not capped away.
 
 ---
 

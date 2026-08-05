@@ -1,4 +1,4 @@
-# The Household Agent — Data → Agent Mapping
+# The Household Agent: Data → Agent Mapping
 
 *How survey data becomes one agent in the model. Built for a supervisor walkthrough.
 Everything is in **2017 units** — see [`OVERVIEW.md`](OVERVIEW.md) for the full strategy.*
@@ -56,14 +56,14 @@ FinScope flags attached via the simple quintile cell-donor match.
 | `income_source`               | Where most of it comes from            | NIDS `w5_hhwage` / `w5_hhgovt` / `w5_hhremitt` / … → WAGE/GRANT/OTHER |
 | `expenditure_committed`       | Must-pay spending (food + rent)        | NIDS `w5_expf` + `w5_rentexpend`                                     |
 | `expenditure_discretionary`   | Flexible spending                      | NIDS `w5_expnf` − `w5_rentexpend` (≥ 0)                              |
-| `liquid_savings`              | Cash buffer                            | NIDS `w5_f_ass` (proxy — weak field)                                |
+| `liquid_savings`              | Cash buffer                            | NIDS `w5_f_ass` (proxy: weak field)                                |
 | `D_trad`                      | Traditional debt owed                  | NIDS `w5_f_deb`                                                      |
-| `monthly_trad_repayment`      | Monthly debt payment                   | derived from `D_trad` (servicing rate)                              |
+| `monthly_trad_repayment`      | Monthly debt payment                   | constructed: amortize `D_trad` at NCA statutory max rates, capped by NCA Reg 23A |
 | `banked_status`               | Banked / underbanked / unbanked        | **FinScope (matched)**                                              |
 | `credit_access_formal`        | Has formal credit                      | **FinScope (matched)**                                              |
 | `savings_product`             | Holds a savings product                | **FinScope (matched)**                                              |
 | `informal_finance`            | Mashonisa / stokvel / insurance        | **FinScope (matched)**                                              |
-| `income_quintile`             | Which fifth of the income distribution | NIDS `w5_hhincome` + `w5_wgt` (weighted) — also the **match key**   |
+| `income_quintile`             | Which fifth of the income distribution | NIDS `w5_hhincome` + `w5_wgt` (weighted): also the **match key**   |
 | `household_size`              | How many people                        | NIDS `w5_hhsizer`                                                    |
 | `household_composition`       | Adults / children / elderly            | NIDS member records                                                 |
 | `head_demographics`           | Age, gender, race, education of head   | NIDS individual-derived (joined to `w5_hhid`)                       |
@@ -94,27 +94,29 @@ size we can re-run many times.
 
 ## Three honest assumptions (flagged for the chapter)
 
-1. **2017 throughout** — the population reflects 2017 conditions; results are not forwarded to a
+1. **2017 throughout.** The population reflects 2017 conditions; results are not forwarded to a
    current year. A deliberate scope choice, not an oversight.
-2. **FinScope 2019 as a 2017 proxy** — we have no 2017 FinScope wave; the 2-year gap on categorical
+2. **FinScope 2019 as a 2017 proxy.** We have no 2017 FinScope wave; the 2-year gap on categorical
    flags is noted, not corrected.
-3. **Crude match** — flags are copied at the income-quintile cell level, so they reproduce cell
+3. **Crude match.** Flags are copied at the income-quintile cell level, so they reproduce cell
    marginals but not finer joint structure.
 
 ---
 
 ## What this agent does *not* have yet (on purpose)
 
-- No BNPL balance — arrives with the BNPL extension.
-- No peer/neighbour links — households don't interact in the baseline.
-- One simple lender only — no multi-bank competition yet.
-- No behavioural validation targets yet — those come from **BNPL providers** later.
+- No BNPL balance, so no stacking. Arrives with the BNPL extension.
+- No peer or neighbour links. Households don't interact in the baseline.
+- One simple lender only, so no multi-bank competition yet.
+
+The four behavioural validation targets **are** now sourced (see [`OVERVIEW.md`](OVERVIEW.md) §7).
+BNPL-provider data is an upside, not a dependency.
 
 ---
 
 ## See also
 
-- [`OVERVIEW.md`](OVERVIEW.md) — living source of truth (strategy + execution plan).
-- [`scratchpad/variables.md`](scratchpad/variables.md) — full column-level variable list.
-- [`scratchpad/data_fusion.md`](scratchpad/data_fusion.md) — the simple cell-donor matching method.
-- [`scratchpad/decision.md`](scratchpad/decision.md) — why each decision was made.
+- [`OVERVIEW.md`](OVERVIEW.md): living source of truth (strategy + execution plan).
+- [`scratchpad/variables.md`](scratchpad/variables.md): full column-level variable list.
+- [`scratchpad/data_fusion.md`](scratchpad/data_fusion.md): the simple cell-donor matching method.
+- [`scratchpad/decision.md`](scratchpad/decision.md): why each decision was made.
