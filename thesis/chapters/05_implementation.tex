@@ -1,0 +1,83 @@
+\chapter{Implementation and Experimental Protocol}
+\label{ch:implementation}
+
+% =============================================================================
+% SKELETON. Written once the model in simulation/ exists.
+% Target: ~2,000 words. Every section below states what it must contain.
+% Chapter 4 is the specification; this chapter is how that specification was
+% realised in code, and how the experiments were run. Do not re-specify rules
+% here --- cross-reference the submodel instead.
+% =============================================================================
+
+\section{Framework and Architecture}
+\label{sec:implementation-architecture}
+
+% CONTENT REQUIRED:
+% - Mesa version, Python version, repository layout under simulation/.
+% - Class structure: HouseholdAgent, TraditionalLender, BNPLPlatform, CreditBureau,
+%   and the Model class that owns the scheduler and the data collector.
+% - Which ODD entity (Section~\ref{sec:entities}) maps to which class.
+% - How the population parquet from Chapter~\ref{ch:data} is loaded and instantiated (P5).
+% - A figure: class/interaction diagram. This is the natural place for the first
+%   structural figure in the thesis.
+
+\section{The Tick}
+\label{sec:implementation-tick}
+
+% CONTENT REQUIRED:
+% - The seven-step ordering of Section~\ref{sec:scheduling} as implemented, step by step.
+% - Where the one-tick lag on the reference-group adoption share is stored and when it is
+%   recomputed. This is the detail that makes the peer channel activation-order independent,
+%   so it is worth showing concretely.
+% - How random asynchronous activation is reseeded each tick (Submodel~17).
+
+\section{Parameter Register}
+\label{sec:parameters}
+
+% CONTENT REQUIRED:
+% - One table: parameter, symbol, baseline value, sweep range, source or "assumption".
+% - Must agree exactly with Table~\ref{tab:submodels} and with
+%   Appendix~\ref{app:specification}. Generate it from the config file rather than
+%   typing it, so the three cannot drift apart.
+% - Flag the two uncalibrated parameters (q_base, beta) and the one unanchored rule
+%   (Submodel~4) in the table itself, not only in the text.
+
+\section{Experimental Protocol}
+\label{sec:protocol}
+
+% CONTENT REQUIRED:
+% - Burn-in: 12 ticks discarded of 52. State what is checked to confirm burn-in is adequate.
+% - Replicates per parameter combination, and the seed scheme. Section~\ref{sec:peer-influence}
+%   notes that positive feedback amplifies early random differences, so justify the replicate
+%   count with a dispersion argument rather than picking a round number.
+% - The full sweep grid: BNPL access rate x platform count (1-6) x beta (including 0)
+%   x the four intervention levers x the Submodel~4 amount-rule variants.
+% - Total run count and wall-clock cost.
+% - The calibration procedure for the income-shock probability: what was searched, over what
+%   range, against which statistic of pattern~2, and what the fitted value came out at.
+%   This is the step that makes the baseline calibrated rather than validated
+%   (Section~\ref{sec:lim-calibration}), so it must be transparent.
+
+\section{Verification}
+\label{sec:verification}
+
+% CONTENT REQUIRED:
+% - Verification is "did I build the model I specified", as distinct from validation,
+%   which is "does the model behave like the world". Keep them separate.
+% - Unit tests: balance-sheet conservation (money is neither created nor destroyed),
+%   arrears ageing across CCMR bands, Reg 23A gate reproducing both published worked
+%   examples, Pay-in-4 schedule landing on tick boundaries, late fee capping at R285.
+% - Degenerate-case checks: beta=0 reproduces the independent-agent model exactly;
+%   BNPL disabled reproduces the baseline exactly; a single platform reduces stacking
+%   to single-platform accumulation.
+% - Confirm the peer channel is inert in the baseline (s_g identically zero), since the
+%   baseline calibration depends on it.
+
+\section{Reproducibility}
+\label{sec:reproducibility}
+
+% CONTENT REQUIRED:
+% - Seeds, environment capture, and where raw run output lands (results/raw) versus
+%   summarised output (results/summary).
+% - How a reader could regenerate every figure in Chapter~\ref{ch:results} from the
+%   repository.

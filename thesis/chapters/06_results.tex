@@ -1,0 +1,98 @@
+\chapter{Results and Analysis}
+\label{ch:results}
+
+% =============================================================================
+% SKELETON. Written once runs exist.
+% Target: ~6,000 words --- the largest chapter in the thesis.
+%
+% ORGANISING PRINCIPLE: one section per research question, in the order they are
+% posed in Section~\ref{sec:rqs}, preceded by the baseline and followed by
+% robustness. The beta=0 control arm is the spine: every RQ1 and RQ2 result is a
+% surface over the swept parameter and beta jointly, with the beta=0 row always
+% shown. This is not optional presentation --- it is what makes the RQ2 claim
+% non-circular (Section~\ref{sec:peer-influence}).
+% =============================================================================
+
+\section{Baseline Calibration}
+\label{sec:results-baseline}
+
+% CONTENT REQUIRED:
+% - The fitted income-shock probability and the arrears profile it produces, against
+%   Table~\ref{tab:ccmr}.
+% - State plainly, here and not only in Chapter~\ref{ch:limitations}, that this is
+%   agreement obtained by fitting, and that the account-versus-household unit mismatch
+%   (Section~\ref{sec:lim-units}) makes it an order-of-magnitude agreement.
+% - Report patterns 3 and 4 here too. These are NOT fitted, so they are the first
+%   genuine tests in the thesis. If pattern 3 (non-monotonic debt-to-income with a
+%   middle-income peak) fails, say so prominently --- a failed independent test is a
+%   result, not an embarrassment.
+% - Figure: arrears profile, model versus CCMR, by age band.
+% - Figure: debt-to-income by income quintile, testing pattern 3.
+
+\section{RQ1: When Does Stacking Become Self-Reinforcing?}
+\label{sec:results-rq1}
+
+% CONTENT REQUIRED:
+% - Separate the two feedback loops, which is what beta=0 exists for. At beta=0 only the
+%   financial loop operates (borrow to service); at beta>0 the social loop is added.
+%   Report the contribution of each rather than the combined effect only.
+% - Pattern 1 is tested here: does enabling BNPL raise arrears and servicing burden on
+%   TRADITIONAL debt? Report with the caveat of Section~\ref{sec:lim-pattern1} attached
+%   --- the direction is partly designed in, the magnitude is not.
+% - Stacking depth distribution versus the CFPB shares (63% simultaneous, 32% cross-firm),
+%   as an order-of-magnitude check.
+% - Platform-count sweep 1-6, with the single-platform arm isolating single-platform
+%   accumulation from genuine cross-platform stacking.
+% - Figure: stacking depth distribution by platform count.
+% - Figure: traditional servicing stress, BNPL on versus off, by quintile.
+
+\section{RQ2: Does Default Respond Non-Linearly to BNPL Access?}
+\label{sec:results-rq2}
+
+% CONTENT REQUIRED:
+% - THE central figure of the thesis: population default rate as a surface over
+%   BNPL access rate x beta, with the beta=0 row explicit.
+% - The claim to be supported or refuted is conditional: "default responds non-linearly
+%   to BNPL access only where social transmission is present". If the beta=0 row is also
+%   non-linear, that is a more interesting result and must not be buried.
+% - Access sweep runs inside the banked subpopulation (83.1% ceiling, Submodel~12).
+%   State the ceiling wherever an access rate is reported so it is not misread as a
+%   share of all households.
+% - If the linear peer coupling produces only a smooth response, run the Granovetter
+%   heterogeneous-threshold variant registered in advance in Section~\ref{sec:peer-influence}
+%   and report it here as the structural robustness check.
+% - Note the three Northern Cape reference groups with 23-31 agents wherever
+%   group-level results are shown.
+
+\section{RQ3: Do Cool-Off Interventions Change Outcomes or Defer Them?}
+\label{sec:results-rq3}
+
+% CONTENT REQUIRED:
+% - The defer-versus-desist test is CUMULATIVE BNPL VOLUME over the full horizon, not
+%   the timing of purchases (Submodel~15). Unchanged volume with a shifted time
+%   distribution means agents defer; lower cumulative volume means they desist.
+% - All four levers ranked by effect on population default: bureau visibility,
+%   mandatory Reg 23A check, cool-off, concurrent-facility cap.
+% - Label the concurrent-facility cap as hypothetical every time it is reported
+%   alongside the three real instruments.
+% - The bureau-visibility contrast deserves its own treatment: it is the comparison
+%   the whole model was built to make, and it holds every uncalibrated parameter fixed
+%   across both arms (Section~\ref{sec:lim-reading}).
+% - Figure: cumulative BNPL volume over the horizon, cool-off on versus off.
+% - Figure: intervention ranking, effect on population default with dispersion.
+
+\section{Sensitivity and Robustness}
+\label{sec:results-robustness}
+
+% CONTENT REQUIRED:
+% - Submodel~4 amount rule: shortfall, shortfall +25%, shortfall plus one tick of
+%   committed expenditure. MANDATORY, not optional. Report any material movement
+%   explicitly as amount-rule sensitivity.
+% - Minimum-payer share swept 0.20-0.40 (Submodel~6), which brackets the transferred
+%   US point estimate of 0.29 (Section~\ref{sec:lim-transfer}).
+% - Activation order: re-run under uniform and fully synchronous activation
+%   (Submodel~17). The peer channel should be insensitive by construction; confirm it
+%   empirically rather than asserting it.
+% - Income-shock magnitude sweep.
+% - Population-size stability at 1,000 / 5,000 / 10,000 agents.
+% - Replicate dispersion: show it, do not just report means.

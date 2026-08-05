@@ -1,0 +1,90 @@
+\chapter{Conclusions and Future Work}
+\label{ch:conclusions}
+
+% =============================================================================
+% SKELETON. Written last, once Chapter~\ref{ch:results} exists.
+% Target: ~1,500 words. Sections 8.1-8.3 wait on results; Section 8.4 is drafted
+% below because the future-work items are already known and are referenced from
+% Chapters 1 and 7.
+% =============================================================================
+
+\section{Summary of Findings}
+\label{sec:summary}
+
+% CONTENT REQUIRED:
+% - One paragraph per research question, answering it in a sentence and then
+%   qualifying it. Resist restating the whole of Chapter~\ref{ch:results}.
+% - Be explicit about which findings are predictions (BNPL-on, parameters held fixed)
+%   and which are calibrated agreement (the baseline). See Section~\ref{sec:lim-calibration}.
+% - If any registered pattern failed, it belongs here as prominently as the successes.
+
+\section{Contributions}
+\label{sec:contributions}
+
+% CONTENT REQUIRED, in descending order of defensibility:
+% 1. An ABM containing a regulated, bureau-informed lender class and an unregulated,
+%    bureau-invisible one, over a survey-derived household population. This is the gap
+%    identified in Section~\ref{sec:lit-gap} --- but the novelty claim must not be
+%    stated more strongly than the systematic search supports. Settle that first.
+% 2. A survey-grounded synthetic population of South African households with complete
+%    2017-Rand balance sheets, with its validation record (Chapter~\ref{ch:data}),
+%    reusable independently of this model.
+% 3. A quantification, internal to the model, of the cost of the BNPL bureau-reporting
+%    exemption, obtained from the bureau-visibility contrast.
+
+\section{Policy Implications}
+\label{sec:policy}
+
+% CONTENT REQUIRED:
+% - Follow the intervention ranking of Section~\ref{sec:results-rq3}.
+% - Keep the hypothetical concurrent-facility cap clearly separated from the three
+%   instruments that exist in other jurisdictions.
+% - Honour Section~\ref{sec:lim-reading}: results are directional and mechanistic.
+%   Recommend the direction of a policy, not a threshold value.
+
+\section{Future Work}
+\label{sec:future-work}
+
+The limitations of Chapter~\ref{ch:limitations} suggest five extensions, ordered here by the
+ratio of what they would add to what they would cost.
+
+\textbf{Bounding the adoption parameters.} The single most valuable improvement available to
+this model is to constrain $q_{\text{base}}$ using the \ac{CFPB} stacking shares as a calibration
+target and not only as an after-the-fact check (Section~\ref{sec:lim-uncalibrated}). This
+would convert a free parameter into a partly calibrated one and would materially strengthen the
+first research question, at the cost of one additional calibration loop. It requires no new data
+and no structural change.
+
+\textbf{Contagion channels.} The model produces correlated individual defaults and not systemic
+cascades, because it has no mechanism by which one household's default affects another's income
+(Section~\ref{sec:lim-structural}). Three candidates would change that: a traditional lender with
+a balance sheet that can be impaired and can ration credit in response; feedback from aggregate
+default to employment or income; and Cardaci's expenditure-cascade mechanism
+\cite{cardaci2018inequality}, in which peer influence acts on consumption and not only on
+\ac{BNPL} adoption. Any of the three would let a successor model ask the systemic question this
+one deliberately does not.
+
+\textbf{Macroeconomic dynamics.} Submodel~16 holds the environment static to protect the
+experimental control. A successor design could relax this deliberately, since \ac{BNPL} grew in
+South Africa through a period of rising rates and the interaction between \ac{BNPL} stress and a
+downturn is exactly what a regulator would want to know. The methodological price is that the
+injection effect and the macro effect would have to be separately identified, which requires a
+more elaborate experimental design than a single counterfactual injection.
+
+\textbf{Competition among traditional lenders.} The traditional side is a single non-adaptive
+stub. Hamill et al. \cite{hamill2023creditcard} show that promotional strategies chosen by
+profit-maximising lenders raise borrower indebtedness, so a competing, adapting traditional sector
+would add a driver of distress that this model holds fixed.
+
+\textbf{Behavioural evidence for the South African market.} The transfer problem of
+Section~\ref{sec:lim-transfer} cannot be solved from within a modelling exercise. Eliciting
+present bias, minimum-payment anchoring, or \ac{BNPL} social-approval effects in a South African
+sample would replace the model's least defensible imported parameters with domestic estimates, and
+would be a contribution independent of any model built on it.
+
+% CONTENT STILL REQUIRED:
+% - Explicit contact networks, if any SA data on degree or clustering becomes available.
+%   Currently excluded because nothing exists to calibrate them against.
+% - Dynamic household composition over longer horizons.
+% - A rehabilitation and scarring path for defaulted households, which becomes necessary
+%   at any horizon materially longer than 24 months.

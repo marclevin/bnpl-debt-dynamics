@@ -1,0 +1,238 @@
+\chapter{Limitations}
+\label{ch:limitations}
+
+Several of the limitations below were adopted knowingly, as the price of a design decision made
+for good reasons elsewhere. Others are genuine weaknesses. This chapter distinguishes between the
+two, because a reader is entitled to know which constraints were chosen and which were merely
+inherited.
+
+A general rule applies throughout: wherever a caveat is recorded against a data artefact in this
+project, it has a home in this chapter. Nothing material is documented only in a configuration
+file or a notebook.
+
+\section{Limitations of the Population}
+\label{sec:lim-population}
+
+\subsection{FinScope 2019 stands in for 2017}
+\label{sec:lim-finscope}
+
+No \ac{FinScope} wave was available for 2017, so the 2019 wave supplies the four
+financial-inclusion flags for a population otherwise fixed at 2017. The imported variables are
+categorical --- banked or not, holds formal credit or not --- so no deflation is required and the
+2017-Rand commitment is not violated. The two-year gap is nonetheless real: financial inclusion in
+South Africa was changing over that period, and banked status in particular gates \ac{BNPL}
+eligibility in Submodel~12. The gap is recorded and not corrected, because any correction would
+require an assumption about the direction and pace of change that this thesis cannot source.
+
+\subsection{The liquid savings field is weak}
+\label{sec:lim-savings}
+
+\texttt{liquid\_savings} is the least reliable quantity carried into the model. It derives from
+the \ac{NIDS} financial-assets field, which measures reported financial assets and not an
+accessible cash balance, and which is among the most under-reported items in household surveys
+generally. It required winsorisation at the 99th percentile to remove implausible outliers.
+
+The consequence is specific and uncomfortable. Validation pattern~4 measures the share of agents
+reaching zero liquid savings, so the model is being judged partly on its handling of its own
+weakest input. Section~\ref{sec:lim-targets} takes up whether pattern~4 should carry the weight of
+a validation target at all.
+
+\subsection{Regulation 23A is applied per household}
+\label{sec:lim-reg23a}
+
+Regulation 23A prescribes a minimum-expense norm for an individual consumer. The model applies it
+to household income and household expenditure, because \ac{NIDS} is a household survey and the
+agent is a household. For a single-earner household the two coincide. For a household with several
+earners, applying a per-consumer norm to pooled income makes the affordability test more
+permissive than the regulation would be in practice, since the norm is not scaled by the number of
+consumers in the household. The direction of the bias is therefore known --- the model's lender is
+somewhat more willing to lend than a compliant lender would be --- even though its magnitude is
+not.
+
+\subsection{Servicing is constructed, not observed}
+\label{sec:lim-servicing}
+
+Neither survey records a monthly repayment amount, so Section~\ref{sec:servicing} constructs one.
+Three assumptions enter. Statutory maximum prescribed rates are \emph{ceilings}, not observed
+average rates, and the \ac{NCR} \ac{CCMR} does not publish realised interest rates, so no
+observed alternative exists; using the ceiling makes the model's opening servicing burden an upper
+bound. Loan terms are assumed, not observed, with a six-month floor. And the product mix
+implied by assigning sub-sector rates to a consolidated debt balance is itself an assumption,
+since \ac{NIDS} records a single debt figure and not a portfolio.
+
+A related diagnostic is reported in Section~\ref{sec:servicing} and repeated here as a limitation
+of the data and not of the model: 53 households carrying debt have income at or below the
+Regulation 23A expense norm for their band, so no compliant lender could lawfully have granted the
+debt they hold. They were retained. Whether this reflects informal borrowing that falls outside
+the \ac{NCA}, misreporting in the survey, or non-compliant lending cannot be determined from the
+data available.
+
+\subsection{The resample is slightly more unequal than the population}
+\label{sec:lim-resample}
+
+Weighted resampling to 5{,}000 agents raises the per-capita income Gini from 0.651 to 0.671. The
+distortion passes its tolerance with very little margin, and it runs in the direction that would,
+if anything, modestly overstate distress among the lowest-income agents. It is small, it is
+measured, and it is not corrected.
+
+\section{Limitations of the Validation Strategy}
+\label{sec:lim-validation}
+
+\subsection{The baseline is calibrated, not validated}
+\label{sec:lim-calibration}
+
+This is the most important limitation in the thesis and it deserves to be stated without
+softening. The income-shock probability of Submodel~1 cannot be estimated from the data, because
+\ac{NIDS} Wave 5 enters this design as a single wave and within-household income volatility is not
+identified from one wave. The probability is therefore \emph{fitted} so that baseline arrears
+reproduce validation pattern~2.
+
+It follows that the no-\ac{BNPL} baseline is calibrated rather than validated. Its agreement with
+the 2017 \ac{CCMR} is not evidence that the model is right; it is the result of having tuned a
+parameter until it agreed. Only the results obtained after \ac{BNPL} is injected --- with that
+parameter then held fixed --- are genuine out-of-sample predictions of the model. Patterns 3 and 4
+remain independent, since nothing is tuned to either.
+
+\subsection{The model counts households and the CCMR counts accounts}
+\label{sec:lim-units}
+
+Validation pattern~2 compares the model's arrears profile against \ac{CCMR} figures computed on an
+\emph{account} basis. The model's unit is the \emph{household}. A household may hold several
+credit accounts, and accounts in arrears are not distributed one per household, so an account-level
+arrears share is not a household-level distress rate and the two cannot be equated.
+
+The comparison is therefore an order-of-magnitude check and not a point target, and pattern~2
+should be read as asking whether the model's arrears profile is of the right shape and scale, not
+whether it reproduces 71.63 percent current. Since pattern~2 is also the target the income-shock
+probability is fitted to, the imprecision propagates into the calibration itself.
+
+\subsection{Three of the four targets are foreign or off-vintage}
+\label{sec:lim-targets}
+
+Only pattern~2 is both South African and vintage-matched to the 2017 population. Pattern~1 rests
+on United States banking data for 2015 to 2021. Pattern~3 rests on a United Kingdom credit-card
+model. Pattern~4 rests on a South African survey fielded in 2025, and comparing a 2017 population
+against a 2025 survey is precisely the cross-period comparison that
+Section~\ref{sec:injection} otherwise forbids.
+
+Pattern~4 has a second weakness. It compares the share of agents at zero liquid savings against
+the share of consumers who said they anticipated missing a bill payment. These are different
+constructs --- a realised stock condition against a stated expectation --- with no established
+mapping between them, and the pattern carries no explicit tolerance band. Combined with the
+weakness of the underlying savings field (Section~\ref{sec:lim-savings}), pattern~4 is best read
+as a plausibility check, not as a test the model could meaningfully fail.
+
+\subsection{Pattern 1 is not fully independent of the design}
+\label{sec:lim-pattern1}
+
+Section~\ref{sec:purpose} sets this out and it is restated here for completeness. The want-driven
+borrowing path of Submodel~3 was adopted partly because a purely shortfall-driven \ac{BNPL} agent
+would treat the product as a pure substitute for traditional credit and could not reproduce the
+deHaan et al. complementarity result under any parameterisation. The direction of pattern~1 is
+therefore partly built into the lender-choice rule. Its magnitude is not, and the pattern can
+still fail if the Regulation 23A gate crowds out traditional borrowing sufficiently, but it is a
+weaker test than it appears.
+
+\section{Limitations of the Model}
+\label{sec:lim-model}
+
+\subsection{Behavioural parameters are transferred from other markets}
+\label{sec:lim-transfer}
+
+The behavioural micro-foundations of Section~\ref{sec:lit-behavioural} are drawn from United
+States evidence and applied to South African borrowers. The minimum-payer share of 0.29 comes from
+Keys and Wang's analysis of United States credit-card accounts and is applied to South African
+unsecured credit. Present bias is established on United States samples. Ackert et al., which
+motivates the entire want-driven borrowing path, is an incentivised experiment conducted with
+United States participants.
+
+No developing-market behavioural evidence of comparable quality was located for any of the three.
+Two responses are made, and neither fully discharges the problem. First, the transferred
+parameter that matters most is swept: the minimum-payer share runs from 0.20 to 0.40, so results
+are reported across a range that brackets the transferred point estimate instead of depending on
+it. Second, the mechanisms being transferred --- present bias, anchoring on a salient minimum
+payment --- are claims about general features of human decision-making under credit contracts, not
+about institutional arrangements specific to the United States, and the burden of the transfer is
+correspondingly lighter than it would be for, say, a transferred default rate. Neither argument
+establishes that the parameters are right for South Africa, and this remains the model's most
+significant unresolved external-validity problem.
+
+\subsection{Two parameters cannot be calibrated at all}
+\label{sec:lim-uncalibrated}
+
+The peer-influence coefficient $\beta$ and the spontaneous adoption rate $q_{\text{base}}$ of
+Equation~\ref{eq:peer} are fixed by no South African source. This creates two distinct problems.
+
+The first is circularity, and Section~\ref{sec:peer-influence} addresses it: the peer channel was
+added partly because the second research question asks about non-linearity, and non-linearity
+requires feedback. Reporting non-linearity as a finding of a model built to produce it would be
+worthless. The resolution is the $\beta = 0$ control arm, reported in every result, which reduces
+the model exactly to independent agents and converts the claim into a conditional one.
+
+The second problem is plausibility, and the control arm does not solve it. A reader can see which
+results depend on social transmission, but cannot tell which region of the $(q_{\text{base}},
+\beta)$ surface corresponds to the actual South African market. The available anchors are indirect:
+the 83.1 percent banked ceiling, the TransUnion finding that 20 percent of consumers intending to
+apply for credit named \ac{BNPL}, and the \ac{CFPB} stacking shares. Using the last of these to
+bound $q_{\text{base}}$ rather than only to check output after the fact, would convert a free
+parameter into a partly calibrated one, and is registered in Section~\ref{sec:future-work} as the
+most valuable single improvement available to this model.
+
+\subsection{The borrowing-amount rule is an assumption}
+\label{sec:lim-amount}
+
+Submodel~4 has no literature anchor. The sweep of consumer-credit agent-based models and
+behavioural studies located no work that fixes a borrowing-amount rule, and D'Orazio and Giulioni
+use the shortfall without defending the choice. The model requests exactly the shortfall with no
+precautionary buffer. Sensitivity analysis across three specifications is mandatory and not
+optional for this rule, and any material movement of results across them is reported as
+amount-rule sensitivity.
+
+\subsection{Structural exclusions}
+\label{sec:lim-structural}
+
+The following were excluded by design, and each bounds what the model can be asked.
+
+\textbf{No macroeconomic dynamics.} Submodel~16 holds the environment fully static, because any
+time-variation would confound the effect of injecting \ac{BNPL} with a macro effect and destroy
+the experimental control. The cost is that the model cannot speak to how \ac{BNPL} stress
+interacts with a downturn --- which matters, since \ac{BNPL} grew in South Africa through a period
+of rising rates.
+
+\textbf{No contagion.} There is one aggregate traditional lender with no balance sheet that can
+fail, no interbank exposure, and no feedback from household default to employment or aggregate
+income. Default is an individual cash-flow event. The only household-to-household channel
+transmits \ac{BNPL} adoption, not distress. The model therefore produces correlated individual
+defaults and not systemic cascades, which is why Section~\ref{sec:rqs} does not ask about the
+latter.
+
+\textbf{No competition among traditional lenders.} The traditional side is a single non-adaptive
+stub. Hamill et al. show that lender conduct is itself a driver of household indebtedness, so
+holding it fixed suppresses a mechanism known to matter.
+
+\textbf{No learning and no scarring.} Households do not update their rules from experience within
+the horizon, and default carries no rehabilitation path and no lasting credit-record damage beyond
+cut-off. Over 24 months both are tolerable; over a longer horizon neither would be.
+
+\textbf{No peer effects on consumption.} Cardaci's expenditure-cascade mechanism, in which
+inequality raises the consumption norms of lower-income households, is not implemented. Peer
+influence in this model acts only on \ac{BNPL} adoption.
+
+\textbf{Static household composition.} Households do not form, dissolve or change size over the
+horizon, and reference groups are fixed at initialisation.
+
+\section{How Results Should Be Read}
+\label{sec:lim-reading}
+
+Taken together, these limitations imply a specific reading. Results are directional and
+mechanistic. They describe what happens to a population of this kind when a lender class with
+these properties is introduced, and they are informative about the sign, the rough magnitude and
+the mechanism of that change. They are not forecasts of South African outcomes in any actual year,
+they do not identify a threshold value of \ac{BNPL} access that would apply outside the model, and
+no number reported in Chapter~\ref{ch:results} should be transferred to a policy calculation
+without the qualifications above attached.
+
+What survives all of it is the comparison the model was built to make: the difference between two
+runs that are identical except for the presence of a bureau-reporting obligation. That contrast is
+internal to the model, holds every uncalibrated parameter fixed across both arms, and is the
+result this thesis rests on.

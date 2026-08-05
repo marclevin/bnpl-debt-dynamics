@@ -1,0 +1,185 @@
+\chapter{Introduction}
+\label{ch:introduction}
+
+\section{Background and Context}
+\label{sec:background}
+
+South Africa regulates consumer credit tightly. The \ac{NCA} \cite{sa_nca_2005} requires every
+registered credit provider to assess whether an applicant can afford a proposed agreement before
+granting it, and Regulation 23A of the Affordability Assessment Regulations
+\cite{sa_ncr_affordability_2015} prescribes how. The test is one of residual income: gross income,
+less statutory deductions, less a prescribed table of minimum necessary living expenses, less
+every other committed obligation the consumer discloses or the credit bureau records. What
+survives that subtraction is what the new instalment must fit inside. The Act also caps the cost
+of credit by sub-sector \cite{sa_ncr_ratecaps_2016}. Registered lenders report their exposures to
+the credit bureaux, so each lender assesses an applicant against a record of what every other
+registered lender has advanced.
+
+\ac{BNPL} providers sit outside that regime. Because they levy neither interest nor fees on the
+deferred amount, they argue that they do not transact credit within the meaning of the \ac{NCA}.
+The consequences follow directly: no registration with the \ac{NCR}, no Regulation 23A
+assessment, and no obligation to report what they have lent to any credit bureau
+\cite{nortonrose_bnpl_sa}. TransUnion confirms the last point from inside the bureau system,
+listing \ac{BNPL} history among the categories of information absent from the standard South
+African credit report \cite{transunion_cps_sa_2025}.
+
+This produces an unusual market structure. A registered lender running a lawful and diligent
+affordability assessment computes residual income from a liability record that is incomplete by
+regulatory construction. It cannot see \ac{BNPL} obligations, and neither can any \ac{BNPL}
+provider see another's. A household can therefore hold several concurrent facilities that no
+party to any of those agreements has assessed in aggregate.
+
+The international evidence suggests this matters. deHaan et al. \cite{dehaan2024bnpl}, tracking
+banking records for 10.6 million United States consumers, find that adopting \ac{BNPL} is followed
+by higher overdraft charges, credit-card interest and late fees, with the effects concentrated
+among liquidity-constrained consumers. The \ac{CFPB} \cite{cfpb2025bnpl} finds concurrent
+borrowing to be the norm and not the exception: across 2021 and 2022, 63 percent of \ac{BNPL}
+borrowers held simultaneous loans at some point and 32 percent held them across different firms.
+South Africa has no equivalent evidence base, and the reporting exemption that makes the question
+urgent is the same feature that makes it unobservable. Nobody, including the regulator, can
+measure aggregate \ac{BNPL} exposure from administrative data.
+
+That is the situation this thesis models.
+
+\section{Research Questions and Objectives}
+\label{sec:rqs}
+
+\subsection{Research questions}
+
+This thesis is guided by the following primary research question:
+
+\begin{quote}
+    How does the availability of multiple concurrent \ac{BNPL} facilities affect the trajectory of
+    consumer financial distress among \ac{LMI} South African households, and which platform-level
+    interventions reduce population-level default?
+\end{quote}
+
+This is decomposed into three subsidiary questions:
+
+\begin{enumerate}
+    \item Under what conditions does debt stacking become self-reinforcing?
+    \item Does the population-level default rate respond non-linearly to the level of \ac{BNPL}
+    access, and if so, under what conditions?
+    \item Do ``cool-off period'' interventions meaningfully alter outcomes, or do agents simply
+    defer rather than desist?
+\end{enumerate}
+
+A word on what these questions deliberately do not ask. An earlier formulation asked about
+\emph{systemic default cascades}, and the model cannot answer that. It contains a single
+non-adaptive traditional lender with no balance sheet that can fail, no interbank exposure, no
+feedback from household default to employment or income, and a fully static macro environment
+(Submodel~16). Default here is an individual cash-flow event, and the only household-to-household
+channel transmits \ac{BNPL} \emph{adoption}, not distress. What the model can produce is a
+correlated rise in independent defaults across a population, which is the phenomenon the questions
+above name. Genuine contagion channels are set out as future work in
+Section~\ref{sec:future-work}.
+
+\subsection{Research objectives}
+
+The questions above resolve into five objectives.
+
+\begin{enumerate}
+    \item Construct a household population for South Africa in 2017 from survey microdata, with a
+    complete balance sheet per household, and not from assumed distributions.
+    \item Specify an agent-based model of that population containing two lender classes: one
+    regulated, bureau-informed and subject to Regulation 23A, and one exempt from all three.
+    \item Calibrate the population's credit behaviour, with \ac{BNPL} disabled, against the 2017
+    first-quarter \ac{CCMR} \cite{ncr_ccmr_2017}.
+    \item Inject the \ac{BNPL} lender class and measure the change in arrears, servicing burden,
+    stacking depth and population default across sweeps of \ac{BNPL} access, platform count and
+    peer-influence strength.
+    \item Evaluate four platform-level interventions against that baseline, three of which
+    correspond to instruments that exist in other jurisdictions.
+\end{enumerate}
+
+\section{The Claim: A Counterfactual Injection}
+\label{sec:injection}
+
+This model is a counterfactual experiment, not a historical fit, and the distinction governs every
+result reported in this thesis.
+
+A household population is calibrated to observed South African conditions in 2017, a period in
+which \ac{BNPL} was effectively absent from the South African market. That population's credit
+behaviour is validated against the 2017 first-quarter \ac{NCR} \ac{CCMR} \cite{ncr_ccmr_2017}. A
+\ac{BNPL} lender class is then \emph{injected} into the calibrated economy and the change in
+dynamics is observed. The model therefore answers what \ac{BNPL} does to a household population of
+this kind, and not what happened in South Africa in any particular later year.
+
+The 2017 anchor is a control, not a limitation. \ac{BNPL} reached the South African market at
+scale from roughly 2021, so any attempt to fit the model to its actual arrival would have to
+separate that arrival from pandemic income shocks, the 2020 credit contraction and post-pandemic
+inflation, none of which this thesis is equipped to identify. The absence of \ac{BNPL} in 2017 is
+what makes the injection interpretable.
+
+Three restrictions follow, and they are binding. No model output is claimed to describe an actual
+year after 2017. No model output is compared to post-2020 observed arrears. Results are read as
+directional and mechanistic --- ``stacking becomes self-reinforcing under conditions $X$'' ---
+and never as forecasts.
+
+\section{Methodology}
+\label{sec:methodology}
+
+The work proceeds in three stages.
+
+The first constructs the household population. \ac{NIDS} Wave 5, conducted in 2017, supplies the
+backbone: income and its dominant source, committed and discretionary expenditure, a liquid
+savings proxy, consolidated debt, household composition, head demographics and survey weights, for
+10{,}841 valid households. \ac{FinScope} 2019 supplies four financial-inclusion flags through a
+cell-donor match on per-capita income quintile crossed with province. The matched population is
+then resampled with probability proportional to survey weight to a fixed 5{,}000 agents. Monthly
+debt servicing, which neither survey records, is constructed by amortising each household's
+balance at the \ac{NCA} statutory maximum prescribed rate for the relevant sub-sector, evaluated
+at the 2017 repurchase rate, and capping the result by the Regulation 23A residual-income test.
+Everything stays in 2017 Rands. Chapter~\ref{ch:data} gives the construction and its validation.
+
+The second stage specifies the model. Chapter~\ref{ch:design} does this using the \ac{ODD}
+protocol \cite{grimm2006odd, grimm2020odd}, with the patterns that judge the model's realism
+registered before any result is presented. Households borrow on realised shortfall, repay by
+salience instead of by optimisation, and adopt \ac{BNPL} partly in response to adoption within
+their reference group. The traditional lender applies Regulation 23A against a bureau record
+containing traditional debt only. \ac{BNPL} platforms apply a light screen, cannot see one
+another, and are invisible to the bureau.
+
+The third stage runs the experiment. The baseline is calibrated with \ac{BNPL} disabled, \ac{BNPL}
+is injected, and outcomes are swept over access rate, platform count, peer-influence strength and
+the four intervention levers. Because the peer-influence coefficient cannot be calibrated from any
+South African source, every result is reported as a surface in which the zero-influence row is
+always shown, so that any non-linearity attributable to social transmission can be distinguished
+from non-linearity that is not.
+
+\section{Research Outcomes}
+\label{sec:outcomes}
+
+The thesis is expected to deliver four things.
+
+A reusable, survey-grounded synthetic population of South African households with complete balance
+sheets in 2017 Rands, together with its validation record. An agent-based model containing a
+regulated and an unregulated lender class over that population, specified to \ac{ODD} standard.
+An estimate, within the model, of how much of the change in household distress under \ac{BNPL} is
+attributable to the reporting exemption itself, obtained by comparing runs with bureau visibility
+switched on and off. And a ranking of four platform-level interventions by their effect on
+population default, with the cool-off lever evaluated specifically on whether it reduces cumulative
+borrowing volume or merely redistributes it over time.
+
+What the thesis will not deliver is a forecast of South African \ac{BNPL} outcomes in any actual
+year, a calibrated estimate of peer-influence strength, or any claim about interaction between
+\ac{BNPL} stress and a macroeconomic downturn. Chapter~\ref{ch:limitations} sets out the full
+boundary.
+
+\section{Thesis Outline}
+\label{sec:outline}
+
+Chapter~\ref{ch:literature} reviews four literatures: agent-based models of household credit,
+which establish the method; the empirical evidence on \ac{BNPL}, which establishes the phenomenon;
+the behavioural economics of borrowing and repayment, which supplies the decision rules; and the
+South African regulatory setting, which supplies the mechanism. It closes by identifying the gap
+this thesis occupies.
+
+Chapter~\ref{ch:data} constructs and validates the household population.
+Chapter~\ref{ch:design} specifies the model under the \ac{ODD} protocol.
+Chapter~\ref{ch:implementation} describes the implementation and the experimental protocol.
+Chapter~\ref{ch:results} reports results against each research question in turn.
+Chapter~\ref{ch:limitations} states the limitations, several of which are structural and were
+adopted knowingly. Chapter~\ref{ch:conclusions} concludes and sets out future work.
+Appendix~\ref{app:rationale} records the design alternatives considered and rejected, and
+Appendix~\ref{app:specification} holds the full parameter register.

@@ -1,0 +1,90 @@
+\chapter{Design Rationale: Alternatives Considered and Rejected}
+\label{app:rationale}
+
+Chapter~\ref{ch:design} states the rules the model uses. This appendix records the alternatives
+that were considered and rejected for each, and why. It is kept out of the body because the
+rejections are not needed to understand the model, and kept in the thesis because they are needed
+to defend it.
+
+\section{Population Construction}
+
+\textbf{Statistical fusion of \ac{NIDS} and \ac{FinScope}, rejected in favour of a cell-donor
+match.} A hot-deck or model-based fusion would recover finer joint structure between the survey
+instruments than copying flags within an income-quintile-by-province cell. It would also require
+its own validation, introduce a real risk of fitting the idiosyncrasies of two surveys instead of
+the population behind them, and take on a calibration burden disproportionate to the four
+categorical flags actually being imported. The crude match reproduces cell marginals, which is
+what the model needs, and its diagnostics are reported in Section~\ref{sec:match}.
+
+\textbf{\ac{CPI} forwarding to 2022, rejected in favour of 2017-only units.} An earlier design
+forwarded \ac{NIDS} monetary values to 2022. This required a second reference year, assumptions
+about how relative incomes moved between the two, and 2022-vintage validation targets. Working
+entirely in 2017 Rands removes all three, and the 2017 anchor is independently required by the
+counterfactual injection design of Section~\ref{sec:injection}.
+
+\section{Household Decision Rules}
+
+\textbf{A propensity-to-consume or buffer-stock consumption rule (Submodel~2), rejected.} Both
+require a calibrated propensity for which no South African estimate exists, and both would discard
+the committed-versus-discretionary expenditure split already observed in the survey data. The
+two-tier rule uses what the data records instead of imposing what it does not.
+
+\textbf{Cost ranking as the lender-choice rule (Submodel~5), rejected.} \ac{BNPL} is nominally
+interest-free, so a cost-minimising rule selects it trivially and attributes the choice to price.
+The evidence attributes the choice to convenience and social approval \cite{ackert2025bnpl}, and
+the distinction matters because the two mechanisms imply different interventions: a price-driven
+choice would respond to disclosure of effective cost, while a norm-driven one would not.
+
+\textbf{Scheduled amortisation as the sole repayment rule (Submodel~6), rejected.} Keys and Wang
+\cite{Keys2019} find that 29 percent of credit-card accounts pay at or near the contractual
+minimum, and that near-minimum payers shift their payments when the formula changes, which is the
+signature of anchoring, not of planned amortisation. A uniform amortisation rule would
+suppress precisely the behaviour by which obligations persist and compound.
+
+\textbf{A debt-service-to-income threshold as the default condition (Submodel~7), rejected.} Any
+such threshold is arbitrary, and the \ac{NCA} itself prescribes none. Madeira's cash-flow
+insolvency test --- default on the failure to finance minimum consumption --- is cited, consistent
+with the affordability rule the model already implements, and validated against observed default
+rates in a middle-income economy \cite{madeira2018chile}.
+
+\textbf{A continuous present-bias parameter (Submodel~8), rejected.} No South African distribution
+exists against which to calibrate one, so it would add a free parameter with no discipline. The
+model carries a single binary behavioural type instead, whose share is sourced and swept.
+
+\section{Lender and Platform Rules}
+
+\textbf{A flat \ac{DSTI} cap as the credit-granting gate (Submodel~9), rejected.} The earlier
+version of this model used a ceiling of 0.65. It was unsourced, and the \ac{NCA} prescribes no
+debt-service-to-income ratio at all. It was also badly over-permissive at the bottom of the
+distribution: a 65 percent rule would permit a household earning R900 per month to service R585
+per month. The Regulation 23A residual-income test is what the regulation actually prescribes, and
+it produces an income-varying ceiling from 10.4 percent to 83.2 percent of income.
+
+\textbf{Making the \ac{BNPL} eligibility screen a real affordability test (Submodel~12),
+rejected for the baseline.} The asymmetry between the Regulation 23A test that binds registered
+lenders and the light automated screen that \ac{BNPL} providers apply is the mechanism under
+study, not an inconvenience to be smoothed away. Imposing a genuine affordability test on
+\ac{BNPL} is an \emph{intervention}, and it appears as the second lever of Submodel~15.
+
+\textbf{A purely multiplicative peer-influence rule (Submodel~11), rejected.} Every household
+opens with no \ac{BNPL} balance, so the reference-group adoption share is identically zero at
+initialisation. Under a multiplicative rule, adoption could never begin. The additive form of
+Equation~\ref{eq:peer} gives $q_{\text{base}}$ and $\beta$ the roles that $p$ and $q$ play in Bass
+diffusion.
+
+\section{Environment and Scheduling}
+
+\textbf{Macroeconomic dynamics (Submodel~16), rejected.} Both Cardaci
+\cite{cardaci2018inequality} and Madeira \cite{madeira2018chile} carry macro dynamics, because
+both ask macro questions. Any time-variation here would confound the effect of injecting \ac{BNPL}
+with a macro effect, making it impossible to attribute a change in default to the injection. The
+divergence follows from asking a product-level question over 24 months, and its cost is stated in
+Section~\ref{sec:lim-structural}.
+
+\textbf{Uniform activation order (Submodel~17), rejected.} Credit in this model is scarce, being
+rationed by the affordability gate and by per-platform limits. A fixed activation order would hand
+the same households first claim on that scarce resource in every tick, manufacturing a persistent
+artefactual advantage. Comer and Loerch \cite{comer2013activation} find statistically significant
+differences in emergent population behaviour across activation regimes in a replicated model, and
+Alizadeh and Cioffi-Revilla \cite{alizadeh2015activation} find that no scheme dominates, so the
+choice is reported and tested instead of assumed away.

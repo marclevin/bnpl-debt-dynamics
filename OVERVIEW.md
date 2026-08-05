@@ -2,7 +2,10 @@
 
 **Project:** Modelling BNPL impact on the South African consumer credit market (Agent-Based Model).
 **This file is the canonical strategy + execution plan.** When a decision changes, change it here
-first, then propagate to the companion docs. Last updated: **2026-06-01**.
+first, then propagate to the companion docs. Last updated: **2026-08-05**.
+
+> **Defect register:** [`scratchpad/issues.md`](scratchpad/issues.md) records every known shortfall
+> in the thesis with evidence, severity and owner. Check it before starting work.
 
 ---
 
@@ -209,6 +212,40 @@ non-linear threshold in RQ2 structurally possible.
 ---
 
 ## 9. Changelog (living)
+
+- **2026-08-05 (thesis document pass).** Full review of `thesis/main.tex` produced
+  [`scratchpad/issues.md`](scratchpad/issues.md): **43 findings**, 5 of them blockers. 31 closed
+  in this pass. The document was restructured from a single flat file of unnumbered `\section*`
+  headings into `thesis/main.tex` + `thesis/chapters/*.tex`, with numbered chapters,
+  `\label`/`\ref` throughout, front matter and a ToC. **Body prose 6,265 → 10,519 words**
+  (57 pages), against a ~25,000 limit.
+  - **New chapters written:** Introduction; **Data and Population Construction** (P0–P4 written
+    up at last, including the 53 zero-capacity debtors and the circular-check episode as
+    findings); **Limitations**; Appendix A (design rationale, holding the rejected alternatives
+    moved out of the body).
+  - **RQ rewritten.** The primary RQ asked about *systemic default cascades*; the model has one
+    non-adaptive lender, no contagion channel and a static macro environment, so nothing can
+    cascade. It now asks about **population-level default**, and §1.2 states explicitly what the
+    model cannot answer. Contagion channels are recorded as future work.
+  - **Pattern 1 caveat added.** The "primary falsification test" is partly designed in: the
+    want-driven trigger (D3) was chosen *because* a shortfall-only agent could not reproduce
+    deHaan et al. The magnitude stays open; the direction does not. Same treatment as the
+    `beta = 0` circularity.
+  - **ODD chapter condensed 4,569 → 3,588 words** while *gaining* two specification tables, by
+    converting the 11 design concepts and all 17 submodels from prose to tables and keeping
+    extended prose only for D9, D10, D11, D13, D15.
+  - **Errors fixed:** `\ac{FCA}` undefined (2 LaTeX warnings); CCA s.66A attributed to the UK;
+    CCMR arrears bands presented as if they summed (they nest — full band table now given); the
+    account-vs-household unit mismatch now stated in the thesis, not only in the JSON; bib key
+    `toh2025bnplconstraints` → `hayashi2025constraints`; Irving (2005) replaced by FinScope for
+    the stokvel/mashonisa claim.
+  - **Humanised.** "rather than" 45 → 6; antithesis constructions 20+ → 4, kept only where the
+    contrast carries the claim. Self-critical passages deliberately retained.
+  - ⚠ **Gini disambiguated.** 0.651 is the *weighted backbone* per-capita Gini (0.611 household);
+    **0.671** is the *5,000-agent resample*. The 0.019 gap is validation check F and passes its
+    0.02 tolerance with almost no margin.
+  - **Still blocking:** the ABM itself (P5 → `simulation/`). Chapters 5, 6 and 8 are skeletons
+    with per-section content requirements, ready to fill the day the first run lands.
 
 - **2026-08-05 (D11 to D16 closed: all 18 decisions now closed).** The BNPL platform is specified
   from **published South African provider terms** rather than from provider cooperation, confirming

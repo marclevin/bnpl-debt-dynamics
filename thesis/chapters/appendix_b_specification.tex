@@ -1,0 +1,46 @@
+\chapter{Full Parameter Register}
+\label{app:specification}
+
+% =============================================================================
+% SKELETON. Populate from the model's config file once simulation/ exists, and
+% generate it programmatically rather than typing it --- this table, the parameter
+% table of Section~\ref{sec:parameters} and Table~\ref{tab:submodels} must agree,
+% and three hand-maintained copies will drift.
+% =============================================================================
+
+Table~\ref{tab:submodels} gives the rule and source for each submodel. This appendix holds the
+complete numerical register: every parameter, its baseline value, its sweep range where it is
+swept, and its provenance.
+
+Three entries require flagging wherever they appear, and are marked in the register itself rather
+than only in accompanying text.
+
+\begin{itemize}
+    \item \textbf{Submodel~4, borrowing amount.} An assumption with no literature anchor. Carries
+    mandatory sensitivity analysis over three specifications.
+    \item \textbf{$q_{\text{base}}$ and $\beta$, Submodel~11.} Neither can be calibrated from any
+    South African source. The $\beta = 0$ control arm is reported in every result.
+    \item \textbf{Income-shock probability, Submodel~1.} Fitted to validation pattern~2, which is
+    what makes the baseline calibrated rather than validated
+    (Section~\ref{sec:lim-calibration}).
+\end{itemize}
+
+% CONTENT REQUIRED: a longtable with columns
+%   Parameter | Symbol | Baseline | Sweep range | Source / status
+% covering at minimum:
+%   - income shock probability (FITTED) and magnitude (swept)
+%   - minimum-payer share: 0.29 baseline, swept 0.20-0.40, Keys & Wang (transfer)
+%   - default horizon k: 7 ticks = 98 days, fixed by CCMR band mapping
+%   - q_base, beta: UNCALIBRATED, swept, beta=0 always reported
+%   - platform count: 4 baseline, swept 1-6
+%   - BNPL per-order cap: R15,000, Payflex terms
+%   - BNPL late fee: R95/week, capped 3 weeks (R285), Payflex terms
+%   - banked eligibility ceiling: 83.1%, observed from the data layer
+%   - repurchase rate: 7.00% (2017), static
+%   - NCA statutory maxima by sub-sector: credit facilities 21%, other agreements 24%,
+%     unsecured 28%, short-term 5%/month
+%   - minimum loan term: 6 months
+%   - tick length: 14 days; horizon 52 ticks; burn-in 12 ticks
+%   - population size: 5,000; seed 20240601
+%   - cool-off duration: 1 tick (14 days, UK CCA s.66A)
+%   - bureau_visibility, mandatory_affordability, cool_off, facility_cap: booleans
