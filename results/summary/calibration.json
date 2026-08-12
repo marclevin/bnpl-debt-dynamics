@@ -1,0 +1,25 @@
+{
+  "fitted_shock_prob": 0.048,
+  "fitted_payment_friction": 0.09,
+  "objective_column": "active_90_plus_mean",
+  "objective_value": 0.14752450518294208,
+  "objective_sd": 0.0034368064042262173,
+  "target_90_plus": 0.1421,
+  "target_d30": 0.0824,
+  "fitted_d30": 0.08381428784476638,
+  "unfitted": {
+    "active_d31_60": 0.012523438995986933,
+    "active_d61_90": 0.012083834930887053,
+    "active_60_plus": 0.15960834011382913,
+    "active_current": 0.7440539330454176,
+    "all_households_90_plus": 0.0615675,
+    "default_rate": 0.184297,
+    "zero_savings_rate": 0.4555935
+  },
+  "qlfs_band": {
+    "lower": 0.005447,
+    "upper": 0.011718,
+    "fitted_inside": false
+  },
+  "replicates": 20
+}
