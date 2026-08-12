@@ -260,6 +260,14 @@ Needs either a developing-market behavioural source or an explicit defence of th
 Researcher task — it is a literature search, and the answer determines how load-bearing the
 sweep has to be.
 
+**Partial progress 2026-08-12 (`AGENT`).** Not this issue's core — the 0.29 transfer is untouched —
+but one adjacent transfer was **eliminated** rather than defended. The D1 income-shock *magnitude*
+was an unsourced free parameter; re-reading Madeira showed his labour shock is a flow into
+unemployment, not a fractional income cut, so the magnitude is the household's **wage component**,
+observable in `w5_hhwage`. It is now data-driven, South African, and carries no parameter to sweep.
+That is the pattern this issue wants: replace a transferred number with a local observable where the
+data allows it. **It does not close B7.**
+
 ### B8 · RQ1's answer will be a function of two uncalibrated parameters — `MAJOR` · `BOTH` · `OPEN`
 
 `q_base` and β are both admitted uncalibratable
@@ -274,6 +282,18 @@ Available anchors: the 83.1% banked ceiling, the TransUnion 20% intention figure
 stacking shares (63% simultaneous, 32% cross-firm). Consider using the CFPB shares to **bound**
 `q_base` rather than only to check output after the fact — that converts a free parameter into
 a calibrated one and materially strengthens RQ1.
+
+**Related precedent set 2026-08-12 (`AGENT`).** The same "bound it, don't just check it afterwards"
+move has now been applied to the *third* uncalibrated parameter, the income-shock probability `p`.
+`p` stays fitted to CCMR arrears (D1 requires that), but it is now **reported against an independent
+official band**: Stats SA Labour Market Dynamics 2022 (Report 02-11-02) gives vintage-matched 2017
+QLFS job-separation rates, implying **0.54%–1.17% per tick**
+(`data/config/qlfs_2017_labour_flows.json`). A fitted `p` outside that band is evidence the shock
+process is carrying stress the rest of the model should generate.
+
+This is the template for `q_base`: fit or sweep, then report against an external band rather than
+leaving the reader to ask which region of the surface is real. **B8 stays OPEN** — `q_base` and β
+themselves are still unbounded.
 
 ### B9 · The novelty claim is not yet verifiable — `MAJOR` · `MARC` · `OPEN`
 
@@ -316,6 +336,371 @@ Several are worth reporting and are currently invisible to an examiner:
 - Emergent Gini of 0.651, inside the South African band.
 - FinScope 2019 used as a 2017 proxy; the two-year gap on categorical flags is recorded but
   not corrected.
+
+### B15 · The minimum-payment formula was never defined — `MAJOR` · `AGENT` · `OPEN`
+
+Found 2026-08-12 while planning the implementation. **D6 fixes the *share* of agents who pay the
+contractual minimum (`m = 0.29`) but never says what the contractual minimum *is*.** The rule was
+recorded as closed and cited, and the gap survived the whole design pass because `[Keys2019]`
+measures behaviour *relative to* whatever minimum a US issuer set, so citing it feels like it
+settles the question when it does not. The NCA prescribes maximum rates and the Reg 23A
+affordability test but **no minimum-payment formula**, so there is no SA statutory anchor either.
+
+Now closed by assumption in D6 — `max(interest accrued, 5% of balance per month)`, tick-scaled, with
+the interest floor preventing negative amortisation by construction — and swept 2.5%–10%.
+
+**This is the model's second uncited rule, alongside D4.** The limitations chapter currently
+presents D4 as the only one. That sentence has to change, and the minimum-payment assumption must
+appear in the parameter register flagged as an assumption, not buried in code. If the minimum-payer
+arm turns out to drive results, the finding is minimum-formula-sensitive and must be reported so.
+
+### B16 · SA BNPL credit limits are not publicly disclosed — `MINOR` · `AGENT` · `CLOSED`
+
+Searched 2026-08-12. D11's rolling available balance was marked `NOT SOURCED`; a deliberate search
+confirms **no published figure exists for either major SA provider**. Payflex publishes the R15,000
+per-order cap but sets the rolling limit per customer from credit history `[payflex_limits]`;
+PayJustNow declines to publish limits at all `[payjustnow_limits]`.
+
+Closed as "cannot be sourced", and the absence is worth a sentence in the thesis rather than a
+silent round number: the opacity of BNPL credit limits is consistent with the regulatory position
+in D10, where the product sits outside the NCA with no disclosure or reporting obligation. The
+parameter is demoted to a binding-check quantity under D11's existing "check the cap binds rarely"
+requirement — if it rarely binds it is inert, and the sweep demonstrates that.
+
+⚠ Related and weaker: BNPL **purchase size** now leans on an SA average basket of R1,568 from
+**trade press** (`sa_bnpl_basket_2026`, flagged `% VERIFY`). It is the weakest source in the
+bibliography and is retained only because it is the sole SA-specific figure, cross-checked against
+CFPB. If a regulator or provider figure surfaces, replace it.
+
+### B17 · D1's single-tick shock could not carry its own calibration — `MAJOR` · `AGENT` · `CLOSED`
+
+Found 2026-08-12 by running the model. D1 specified the income shock as **non-persistent (single
+tick)** and simultaneously made `p` the parameter that *carries* the baseline validation. Those two
+commitments are incompatible, and the register never noticed because nothing had been executed.
+
+Measured: with a single-tick shock, sweeping `p` from **0 to 0.40** moves the 90+ arrears rate only
+from **1.13% to 1.47%**, against a **14.21%** target. The parameter cannot move the quantity it is
+supposed to be fitted to. A one-tick wage loss is absorbed by savings or refinanced through the D9
+gate, which is computed on income that has not yet fallen.
+
+Closed by making the shock an **unemployment spell** with a sourced exit hazard (QLFS 2017:
+11.6% per quarter → 1.87% per tick). The same sweep then spans **4.0%–16.8%** and brackets the
+target. The revision moves the model *toward* its anchor — Madeira models flows into and out of
+unemployment — and toward the SA data, where 68.4% of the unemployed remain unemployed a quarter
+later. `shock_persistent=False` recovers the original rule as a robustness arm.
+
+**Worth reporting in the thesis, not just fixing.** It is a clean example of implementation
+falsifying a specification that looked complete on paper, which is an argument for building the
+model rather than only designing it.
+
+### B18 · The CCMR denominator excluded over half the population — `MAJOR` · `AGENT` · `CLOSED`
+
+Found 2026-08-12. The account-vs-household mismatch (B5) was recorded, but only one edge of it. The
+second edge: CCMR accounts are held by **credit-active** consumers, whereas **only 44.2%** of the
+5,000 households hold traditional debt. A household with no debt can never be in arrears, so
+comparing an all-household arrears rate to an account-level target builds in an undershoot with no
+behavioural content.
+
+Measured on one run: **1.68%** of all households 90+ against **3.80%** of credit-active households —
+a factor of 2.3, definitional.
+
+Closed by reporting both. The **credit-active** rate is compared to CCMR; the **all-household** rate
+remains the population default rate the RQs ask about. B5's thesis text needs extending to state
+this second edge, not just the first.
+
+### B19b · Pattern 3 resolved by fixing the STATISTIC, not the data — `MAJOR` · `AGENT` · `CLOSED`
+
+Supersedes B19 below, which recorded the first (wrong) measurement. The failure was **not**
+behavioural and **not** caused by the zero-capacity debtors as such. It was a badly chosen
+statistic: a **mean of ratios** over a population containing near-zero incomes.
+
+Diagnostic: in Q1 the **top 1% of households carry 76.9% of the total DTI mass**, and the median Q1
+household has DTI of **0.000**. The Q1 mean of 2.92 was three households with tiny incomes, not a
+finding. A mean of ratios is not a meaningful measure over this population.
+
+**Pre-registered primary statistic: the AGGREGATE ratio** (total debt / total income per quintile),
+chosen on its own merits before checking whether it passes — it is the standard financial-stability
+measure, it is the form the CCMR reports in, and it cannot be driven by a near-zero denominator.
+
+| | Q1 | Q2 | Q3 | Q4 | Q5 | Peak |
+| --- | --- | --- | --- | --- | --- | --- |
+| **PRIMARY aggregate** | 1.163 | 0.612 | 1.172 | **1.446** | 0.561 | **Q4 — pattern HOLDS** |
+| secondary mean | 3.394 | 0.886 | 1.317 | 1.074 | 1.163 | Q1 |
+| secondary median (debtors) | — | — | — | — | — | reported alongside |
+
+Non-monotonic with a middle-upper peak and Q5 lowest, which is Hamill's qualitative shape.
+
+**All 5,000 households retained**, including the 33 zero-capacity debtors, all of which sit in Q1.
+Excluding them would also flip the verdict, and that is precisely why they stay: P2's decision was
+to report them, and dropping data to make a test pass is the circularity avoided elsewhere.
+**The thesis must report all three statistics and state that the verdict is statistic-dependent.**
+
+⚠ A median over *all* households is identically zero in every quintile (participation is below 50%
+everywhere), so the median is computed over debtors only.
+
+### B19 · Pattern 3 fails as specified — `MAJOR` · `BOTH` · `SUPERSEDED by B19b`
+
+First baseline calibration, 2026-08-12, 20 replicates at the fitted `p`. Pattern 3 (Hamill et al.:
+non-monotonic income to debt-to-income with a **middle-income** peak) **does not hold** as written.
+Debt-to-income by quintile:
+
+| Q1 | Q2 | Q3 | Q4 | Q5 |
+| --- | --- | --- | --- | --- |
+| **3.396** | 0.903 | 1.341 | 1.065 | 1.157 |
+
+The relationship *is* non-monotonic, which is half the pattern, but the peak is at **Q1**, not the
+middle. Two readings, and the thesis should give both:
+
+- **Q1's ratio is a denominator artefact.** Debt-to-income explodes as income approaches zero, and
+  Q1 contains the households whose debt no NCA-compliant lender could have granted (the 53/33
+  zero-capacity debtors). This is arguably not a behavioural result at all.
+- **Excluding Q1, the peak is at Q3** — an actual middle-income peak, consistent with Hamill.
+
+**Do not quietly report the Q2-Q5 version as a pass.** Report the full profile, state that the
+pattern fails on the stated test, and give the Q1-excluded reading as a secondary observation with
+the denominator caveat attached. A failed independent test is a result, and this is the first
+genuinely unfitted test in the thesis.
+
+### B20 · The fitted shock rate is ~4x observed labour-market flows — `MAJOR` · `BOTH` · `OPEN`
+
+The QLFS cross-check added on 2026-08-12 did its job on the first run. Fitted
+`p = 0.048` per tick against a sourced band of **0.0054-0.0117**, so **4.1x the upper bound** — and
+still roughly 2.8x after a rough adjustment for multi-earner households.
+
+The model needs a job-separation rate several times the real one to reproduce CCMR arrears. The
+likely reason is structural: the population was built so that debt service is **affordable by
+construction** (P2 caps servicing at Reg 23A capacity), so **98.2%** of households can meet their
+instalment out of income, and the single labour shock is the only channel into arrears. In reality
+arrears are generated by many stressors at once — expense shocks, illness, household composition
+change, rate changes — none of which this model carries (D15 holds macro static deliberately).
+
+Read it as: the shock parameter is absorbing the work of several missing channels. It belongs in
+the limitations chapter next to the calibrated-not-validated caveat, and it strengthens rather than
+weakens the case for the QLFS band, which is what exposed it.
+
+**⚠ UPDATE 2026-08-12: the comparison is now LIKE-FOR-LIKE, so the gap can no longer be explained
+away.** The shock hazard now applies **per earner** — each employed member separates independently —
+so `p` is an *individual* separation rate, directly comparable to the QLFS *individual* transition
+rate. The household-versus-individual caveat that previously absorbed part of the gap **no longer
+applies**. The overshoot stands at **4.1x on a like-for-like basis**, and adding the second
+(friction) stressor did not reduce it, because friction generates mild delinquency rather than the
+deep arrears `p` is fitted to. State it plainly in the limitations chapter.
+
+### B21 · Arrears mass is bimodal; the middle CCMR bands are underpopulated — `MINOR` · `AGENT` · `OPEN`
+
+At the fitted `p`: 90+ is **14.9%** against a target of 14.21% and 60+ is **16.2%** against 16.54%,
+both close, but `current` is **81.4%** against **71.6%** — about 10pp too high. The shortfall sits
+in the mild bands (1-30 and 31-60 days), which are nearly empty.
+
+**Cause, correctly diagnosed on the second attempt.** The first diagnosis (no recovery path) was
+wrong: arrears *can* cure in the model. What cannot recover is **income**. The unemployment spell
+has a sourced exit hazard of 1.87%/tick, giving a mean spell of ~53 ticks against a 52-tick horizon,
+so a shocked household is effectively absorbed. Meanwhile 98.2% of unshocked households can afford
+their instalment out of income. The population therefore has exactly two states.
+
+**Attempted fix that did NOT work (2026-08-12).** Splitting the shock by earner count, so a job loss
+costs one earner's wage rather than all of it, was implemented and re-calibrated. It made things
+marginally worse on this measure (`current` 81.4% → 82.7%), because 72% of WAGE households are
+single-earner, so for most of them the shock is still total. **Kept anyway**: it is more faithful to
+the data, and it makes `p` a per-earner hazard directly comparable to the QLFS *individual* rate,
+which removes the household-vs-individual fudge from the calibration check. It just does not fix
+bimodality.
+
+**Full band profile at the fitted `p`, credit-active denominator:**
+
+| Band | Model | CCMR 2017 | Gap |
+| --- | --- | --- | --- |
+| current | 77.13% | 71.63% | +5.50 |
+| 1–30 d | **0.82%** | **8.24%** | **−7.42** |
+| 31–60 d | 0.89% | 3.59% | −2.70 |
+| 61–90 d | 0.69% | 2.32% | −1.63 |
+| 91–120 d | 0.79% | 1.76% | −0.97 |
+| 120+ d | 19.69% | 12.45% | +7.24 |
+
+Total delinquency is roughly right (**22.9%** vs 28.4%); its **distribution** is not. The single
+largest gap is the **1–30 day band**, which is the *largest* delinquent band in reality and is
+nearly empty in the model.
+
+**What is actually missing is transient mild delinquency** — households a fortnight late that then
+catch up. That is not unemployment; it is payment friction. The model has exactly one stressor and
+it is persistent, so it cannot generate it. Same root cause as **B20**'s 4x overshoot: one channel
+doing the work of many.
+
+**RESOLVED 2026-08-12 by adding a second, cited stressor.** `payment_friction`: a per-tick
+probability of missing a traditional instalment **despite having the cash**, anchored to
+Kuchler & Pagel `[Kuchler2021]` (present-biased borrowers fail to execute planned paydown) — already
+in the bibliography and already cited in D6. Traditional debt only, because BNPL auto-debits a card,
+so inattention cannot stop a BNPL instalment. Fitted to the 1-30 band at **0.09 per tick**.
+
+D7 distress is assessed **before** friction is applied, so a household that skips an affordable
+instalment is not counted as cash-flow insolvent and the headline default rate stays clean. Verified
+by test: heavy friction more than doubles the 1-30 band while moving default by under 1pp, and
+*downward* rather than up (withholding a payment conserves cash). Not perfectly orthogonal, but the
+residual is explicable and bounded.
+
+**Result — two parameters, two targets, three unfitted bands:**
+
+| Band | Before | After | CCMR | Status |
+| --- | --- | --- | --- | --- |
+| current | 77.13% | **74.41%** | 71.63% | unfitted, +2.78 |
+| 1-30 d | 0.82% | **8.38%** | 8.24% | FITTED |
+| 31-60 d | 0.89% | 1.25% | 3.59% | unfitted, −2.34 |
+| 61-90 d | 0.69% | 1.21% | 2.32% | unfitted, −1.11 |
+| 90+ d | 20.47% | **14.75%** | 14.21% | FITTED |
+| **60+ d** | 14.93% | **15.96%** | **16.54%** | **unfitted, −0.58** |
+
+Total delinquency **25.6%** against 28.4%, up from 22.9%. The 60+ band remains the strongest
+independent result in the thesis. The 31-60 and 61-90 bands are still roughly 2pp and 1pp thin,
+which is the residual of the same one-persistent-stressor problem and should be reported as such
+rather than fitted away with a third parameter.
+
+### B22 · RQ2's conditional non-linearity claim is NOT supported — `MAJOR` · `BOTH` · `OPEN`
+
+First full sweep, 2026-08-12, 700 runs (7 access levels x 5 beta x 20 replicates). The registered
+claim was *"population default responds non-linearly to BNPL access only where social transmission
+is present"*. It does not hold. **Every arm is near-linear, including `beta = 0`:**
+
+| beta | rise over access range | linear R² | max deviation from linear |
+| --- | --- | --- | --- |
+| **0 (control)** | +8.48% | **0.9992** | 1.4% of rise |
+| 0.5 | +20.83% | 0.9681 | 8.8% |
+| 1 | +31.68% | 0.9702 | 9.5% |
+| 2 | +35.98% | 0.9914 | 6.3% |
+| 3 | +36.33% | 0.9965 | 3.8% |
+
+**What IS strongly supported is amplification, not non-linearity.** Peer influence multiplies the
+access response by **4.3x**. That is a clean result and arguably a better one, because it is a
+*magnitude* claim that the `beta = 0` control identifies cleanly.
+
+Two secondary observations worth reporting:
+- **Curvature peaks at INTERMEDIATE beta** (R² lowest at 0.5-1.0) and disappears at high beta. The
+  system saturates: beta=2 and beta=3 are nearly indistinguishable.
+- The registered fallback now applies. D17 pre-registered the **Granovetter heterogeneous-threshold
+  variant** as the structural robustness check should linear coupling give only a smooth response.
+  That is exactly what happened, so the variant should be run before concluding no threshold exists.
+  Linear coupling producing a linear response is close to tautological; heterogeneous thresholds are
+  the mechanism that would actually generate tipping.
+
+**Do not restate the RQ as if it had been answered affirmatively.** The honest headline is
+amplification, with non-linearity unsupported under linear coupling and still open under the
+threshold variant.
+
+### B23 · Bureau visibility, the model's headline policy lever, does nothing — `MAJOR` · `BOTH` · `OPEN`
+
+RQ3, 400 runs. Closing the reporting gap (D14 lever 1) has **essentially no effect** on population
+default: 32.99% against 32.91% with no lever at `beta = 0`, and 56.38% against 56.12% at `beta = 1`.
+Cumulative BNPL volume moves by under 1%.
+
+D10 called this "the comparison the whole model was built to make", so a null result needs stating
+loudly rather than being buried. **It is a coherent finding, not a bug** — the degenerate-case test
+confirms the lever does tighten the traditional gate. It constrains the *wrong lender*: bureau
+visibility only affects what the **traditional** lender will grant. It does nothing to BNPL
+eligibility, nothing to the platforms' mutual blindness (D12), and nothing to the want-driven
+trigger. Households keep stacking BNPL regardless; they are simply refused additional *bank* credit.
+
+The policy reading is genuinely interesting and should be foregrounded: **transparency alone is not
+a remedy.** The lever that does work is the mandatory Reg 23A affordability check on BNPL (lever 2),
+which cuts default from 32.91% to 28.05% and volume by 15.3% at `beta = 0`. Disclosure without an
+accompanying affordability duty changes who lends, not how much debt is taken on.
+
+### B27 · The statutory cool-off arm is a no-op (off-by-one) — `BLOCKER` · `AGENT` · `OPEN`
+
+Found 2026-08-12 while reading the RQ3 output. In `simulation/agents.py` a want-driven purchase at
+tick `t` sets `cool_off_until = t + k_cool`, and the gate is `tick >= cool_off_until`. With
+`k_cool = 1` the gate passes again at `t + 1`, so **nothing is ever blocked** — a household could not
+purchase twice within one tick anyway.
+
+`k_cool = 1` is the arm the thesis presents as the **CCA s.66A statutory 14-day right of
+withdrawal**, and D14 makes a point of it landing exactly on a tick boundary. The sweep therefore
+reports the statutory instrument as having *precisely zero* effect (+0.0% volume at both betas).
+**That is an artefact, and it inverts the headline RQ3 claim.**
+
+The current `k_cool = 2` arm is what a corrected `k_cool = 1` will produce: **−2.6% volume at β=0
+and −30.4% at β=1**. So the corrected finding is *"the statutory cool-off is close to useless
+against individual impulse and materially effective against social transmission"* — a much better
+result than the one currently in the output.
+
+⚠ **The test suite missed this** because `test_cool_off_cannot_increase_bnpl_volume` only asserts
+volume does not *increase*, which a no-op satisfies trivially. Fix requires a regression test that
+`k_cool = 1` **strictly reduces** want-driven purchase count against `k_cool = 0`.
+
+Plan: [`next_steps.md`](next_steps.md) **P0**. Nothing else in RQ3 is affected — the affordability,
+bureau and stacking-cap arms are unaffected by this bug.
+
+### B24 · The two most influential parameters are the two worst-sourced — `MAJOR` · `BOTH` · `OPEN`
+
+Robustness suite, 520 runs. Ranked by movement in population default:
+
+| Parameter | Range | Default rate | Movement | Provenance |
+| --- | --- | --- | --- | --- |
+| `bnpl_purchase_mean` | R784 – R3,136 | 45.07% → 64.68% | **19.6pp** | **trade press, `% VERIFY`** |
+| `bnpl_platform_limit` | R1,000 – R15,000 | 39.61% → 56.48% | **16.9pp** | **unsourceable (B16)** |
+| `amount_rule` | 3 variants | 48.55% → 56.04% | **7.5pp** | **uncited (D4)** |
+| `k_default` | 4 vs 7 | 58.73% → 56.05% | 2.7pp | sourced |
+| `min_payer_share` | 0.20 – 0.40 | 56.02% – 56.27% | **0.25pp** | sourced (US transfer) |
+| `min_payment_frac` | 0.025 – 0.10 | 55.90% – 56.11% | **0.21pp** | uncited (B15) |
+| activation order | 3 regimes | 56.08% – 56.26% | **0.18pp** | sourced |
+| population size | 1k / 5k / 10k | 55.80% – 56.22% | 0.42pp | — |
+
+**Good news, and it retires two worries.** The **B7** transfer concern is largely defused: the
+minimum-payer share barely matters over 0.20–0.40. **B15**'s newly-found uncited minimum-payment
+formula also barely matters. And **D16's** prediction that the peer channel is activation-order
+independent by construction is **confirmed empirically**, not merely asserted.
+
+**Bad news, and it is the headline.** The model's output is driven mainly by **BNPL purchase size**
+and the **per-platform rolling limit** — respectively a trade-press figure and a quantity no South
+African provider publishes. Both must be reported as first-order sensitivities in Chapter 6, not
+buried in a robustness appendix, and every RQ1/RQ2 magnitude must be stated as conditional on them.
+Finding a better source for either would do more for the thesis than any further modelling.
+
+**Confirmed by Sobol variance decomposition** (1,024 runs, N=64, 6 parameters), which OFAT could not
+have shown. Total-order indices on the population default rate:
+
+| Parameter | S1 | **ST** | interaction (ST−S1) |
+| --- | --- | --- | --- |
+| `bnpl_purchase_mean` | 0.102 | **0.307** | **0.206** |
+| `beta` | 0.189 | 0.255 | 0.066 |
+| `shock_prob` | 0.230 | 0.174 | −0.056 |
+| `bnpl_platform_limit` | 0.074 | 0.163 | 0.090 |
+| `q_base` | −0.029 | 0.033 | 0.062 |
+| `min_payment_frac` | 0.002 | **0.0006** | −0.001 |
+
+Two things OFAT missed entirely:
+- **Two-thirds of `bnpl_purchase_mean`'s influence is INTERACTIVE** (ST−S1 = 0.206). It does not
+  merely shift the level; it changes how the other parameters act. On BNPL adoption the interaction
+  term is larger still (0.402 of ST 0.533).
+- **`min_payment_frac` has ST ≈ 0.0006**, i.e. it is essentially inert. **This retires B15 as a
+  substantive concern** — the newly-found uncited rule should still be disclosed, but it cannot be
+  driving any result. The same holds for the B7 minimum-payer transfer.
+
+⚠ **Confidence intervals are wide at N=64** and several S1 estimates come out slightly negative, a
+known small-sample artefact. The *rankings* are stable across all five outputs, but the point
+estimates are not publication-grade. **Re-run at N≥256 before quoting numbers in the thesis**
+(`python -m simulation.sensitivity --samples 256`), which is roughly 4x the compute.
+
+### B25 · High-beta arms produce implausible BNPL volumes — `MINOR` · `BOTH` · `OPEN`
+
+At full access and `beta = 1`, cumulative BNPL volume reaches **R31,097 per eligible household over
+40 post-burn-in ticks**, roughly R2,000 per month against a median household income near R4,800.
+Adoption reaches 49% and population default 56%.
+
+These are mechanistic illustrations, not plausible states, and the upper reaches of the RQ2 surface
+should be labelled as such. It is consistent with OVERVIEW §1a (results are directional and
+mechanistic, never forecasts), but the point needs making where the surface is presented, since a
+reader will otherwise read 56% default as a prediction.
+
+### B26 · Three external checks passed that were NOT fitted — `NOTE` · `AGENT` · `CLOSED`
+
+Worth recording as positives alongside the problems above:
+
+- **Stacking depth versus CFPB.** At full access and `beta = 1`, **37%** of households hold two or
+  more concurrent facilities, against the CFPB's **32%** holding loans across different firms.
+  Order-of-magnitude agreement, US-to-SA transfer stated — and **emergent, not imposed** (D12).
+- **The D11 binding checks pass.** The R15,000 order cap binds on **0.3%** of requests, confirming
+  D11's prediction that it would rarely bind at LMI incomes. The rolling limit binds on **5.6%** at
+  R5,000, so it is largely inert at that value — though B24 shows it is *not* inert at R1,000.
+- **Internal consistency.** BNPL enabled at zero access reproduces the BNPL-disabled baseline
+  (24.43% versus 24.56% default), and adoption is exactly zero, confirming the injection design.
 
 ---
 

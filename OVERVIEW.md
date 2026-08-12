@@ -2,7 +2,7 @@
 
 **Project:** Modelling BNPL impact on the South African consumer credit market (Agent-Based Model).
 **This file is the canonical strategy + execution plan.** When a decision changes, change it here
-first, then propagate to the companion docs. Last updated: **2026-08-05**.
+first, then propagate to the companion docs. Last updated: **2026-08-12**.
 
 > **Defect register:** [`scratchpad/issues.md`](scratchpad/issues.md) records every known shortfall
 > in the thesis with evidence, severity and owner. Check it before starting work.
@@ -72,6 +72,12 @@ closed and cited; a richer *traditional* lender market remains out of scope.
 | ---------------- | ---- | ---------------------------------------------------------------- | -------------- |
 | **NIDS Wave 5**  | 2017 | **Backbone**: income, expenditure, debt, demographics, weights  | **In**         |
 | **FinScope SA**  | 2019 | **Donor**: banked status, credit access, savings, informal flags| **In** (proxy) |
+| **NCR CCMR**     | 2017 | **Validation target**: arrears age analysis (D6, D7)            | **In**         |
+| **Stats SA LMD** | 2017 | **Calibration cross-check**: QLFS job-separation band for `p` (D1) | **In**      |
+
+The last two are *targets*, not inputs: nothing flows from them into the population. Both are
+vintage-matched to 2017 and both are extracted to `data/config/` by scripts that assert the source
+report's own prose, so neither can silently drift.
 
 
 **FinScope note:** A 2017 FinScope wave is **not in our data**, so we use **FinScope 2019** as a
@@ -134,7 +140,7 @@ Full column-level mapping: [`household_agent.md`](household_agent.md) and
 | **P2** | Simple cell-donor match from FinScope | flags attached to each household | ☑ `notebooks/p2_finscope_match.ipynb` → `synthetic_population_matched.parquet` (servicing computed, guarded) |
 | **P3** | Weighted resample to 5,000 | fixed synthetic population | ☑ `notebooks/p3_resample.ipynb` → `synthetic_population_5000.parquet` |
 | **P4** | Validate (internal + match diagnostics) | validation report | ☑ `notebooks/p4_validation.ipynb`: 14/14 checks pass |
-| **P5** | Instantiate agents | Household agents in Mesa | ☐ |
+| **P5** | Instantiate agents | Household agents in Mesa | ◐ in progress (`simulation/`) |
 
 ---
 
@@ -189,6 +195,14 @@ non-linear threshold in RQ2 structurally possible.
 - ⚠ **Calibration versus validation.** The income-shock probability `p` (D1) is *fitted* to baseline
   arrears, so the **baseline is calibrated, not validated**. Only the BNPL-on results are genuine
   predictions. This must be stated in the limitations chapter.
+- **Calibration cross-check (2026-08-12), which is not a fifth target.** `p` is still fitted, but it
+  is now *reported against* an independent official band. Stats SA **Labour Market Dynamics 2022**
+  (Report 02-11-02) carries the QLFS panel for 2017–2022, so a **vintage-matched 2017** figure
+  exists: Q3:2017 → Q4:2017, **93.14% retained employment, 3.53% to unemployment, 6.86% left
+  employment**, implying a per-tick hazard band of **0.54%–1.17%**
+  (`data/config/qlfs_2017_labour_flows.json`). This constrains the parameter that carries the four
+  targets rather than adding a target, so the count stays at four. ⚠ QLFS counts **individuals**;
+  the model shocks a **household** — the same class of unit mismatch as the CCMR account basis.
 - ⚠ **The `beta = 0` control arm (D17).** The peer-influence strength `beta` is uncalibrated, and
   D17 was added partly because RQ2 needs non-linearity to be structurally possible. Reporting
   non-linearity as a finding would therefore be circular unless controlled. **All RQ1 and RQ2 output
@@ -212,6 +226,121 @@ non-linear threshold in RQ2 structurally possible.
 ---
 
 ## 9. Changelog (living)
+
+- **2026-08-12 (P5 begins; sourcing pass on two assumed parameters).** Before writing the ABM, the
+  two parameters the implementation plan would have had to invent were sent back to the sources.
+  One was eliminated, one was proved unsourceable, and a third gap was found in a rule already
+  marked closed.
+  - **D1 shock magnitude: eliminated, not assumed.** Re-reading the anchor settled it. Madeira does
+    not model a fractional income cut; he models **flows into and out of unemployment**. Following
+    the anchor properly makes the shock a *separation from employment*, so its magnitude is the
+    household's **wage component** — observable in `w5_hhwage`, which is in the NIDS hhderived file
+    all along. **No free parameter and no sweep.** No pipeline rebuild either: `source_w5_hhid` is
+    already on the 5,000-agent parquet, so the column joins onto the validated population and the
+    14/14 checks are untouched.
+  - **D1 `p` gains an external band.** `p` stays *fitted* to CCMR arrears (D1 requires that), but is
+    now reported against Stats SA **Labour Market Dynamics 2022** (Report 02-11-02), whose QLFS panel
+    spans 2017–2022 and so yields a **vintage-matched 2017** figure. Q3:2017 → Q4:2017: **93.14%
+    retained, 3.53% to unemployment, 6.86% left employment** → **0.54%–1.17% per tick**. Extracted
+    by `notebooks/scripts/extract_qlfs_lmd.py`, which asserts two of the report's own prose
+    statements and requires headline Table 2.1a and appendix Table A.1 to agree — the same discipline
+    used for the CCMR. Partially answers issues.md **B8**: the template is "bound it, don't only
+    check it afterwards", which is what `q_base` still needs.
+  - **D11 rolling balance: searched, and it does not exist publicly.** Neither major SA provider
+    discloses a rolling limit — Payflex publishes only the R15,000 per-order cap and sets the rest
+    per customer; PayJustNow declines to publish limits at all. Recorded as a **citable absence**
+    consistent with D10's no-disclosure regime, and demoted from a behavioural parameter to a
+    **binding-check quantity** under D11's existing "check the cap binds rarely" test.
+  - **D6 gap found: the minimum payment was never defined.** D6 fixes the *share* of minimum-payers
+    (`m = 0.29`) but never says what the contractual minimum *is*, and the gap survived the design
+    pass because `[Keys2019]` measures behaviour *relative to* an issuer's minimum, which reads as
+    though it settles the question. No NCA anchor exists either. Now closed by assumption and swept.
+    **This is the model's second uncited rule** — the limitations chapter currently claims D4 is the
+    only one, and that sentence must change (issues.md **B15**).
+  - **D4 purchase size: weakly anchored.** SA average BNPL basket ≈ **R1,568**, cross-checked against
+    CFPB's $135/loan and $848 per user per lender per year (new bib entry `cfpb2025market`, distinct
+    from the existing `cfpb2025bnpl`). ⚠ The SA figure is **trade press** and is now the weakest
+    source in the bibliography, flagged `% VERIFY`. The D4 *rule* remains uncited.
+  - Net effect on the register: **assumed parameters the ABM must invent fall from four to two**,
+    and both survivors carry mandatory sensitivity.
+
+- **2026-08-12 (first full sweep: 3,304 runs).** RQ0/RQ1/RQ2/RQ3 + robustness (2,280) and a Sobol
+  variance decomposition (1,024). Raw output in `results/raw/`, summaries and figures in
+  `results/summary/`. Five findings, in order of how much they change the write-up:
+  - **RQ2's registered claim is NOT supported** (issues.md **B22**). Every arm is near-linear,
+    *including* `beta = 0` (linear R² = 0.9992). What IS supported is **amplification**: peer
+    influence multiplies the access response **4.3x**. Curvature peaks at *intermediate* beta and
+    vanishes at high beta as the system saturates. D17's pre-registered **Granovetter
+    heterogeneous-threshold variant** should now be run before concluding no threshold exists.
+  - **Bureau visibility does nothing** (**B23**). The lever D10 called "the comparison the whole
+    model was built to make" moves default by 0.08pp and volume by under 1%. Coherent, not a bug:
+    it constrains the *traditional* lender while leaving BNPL eligibility, platform blindness and
+    the want-driven trigger untouched. The lever that works is the **mandatory Reg 23A check on
+    BNPL** (32.9% → 28.1% default, volume −15.3%). Policy reading: **transparency alone is not a
+    remedy.**
+  - **The two most influential parameters are the two worst-sourced** (**B24**). BNPL purchase size
+    (trade press) moves default **19.6pp**; the rolling limit (unpublished by any SA provider)
+    moves it **16.9pp**. Sobol confirms it and adds what OFAT could not: **two-thirds of purchase
+    size's influence is interactive**. Both must be first-order sensitivities in ch.6, not appendix
+    material.
+  - **Two worries retired.** `min_payment_frac` has a total-order Sobol index of **0.0006** and the
+    minimum-payer share moves default by 0.25pp over 0.20–0.40 — so **B15** and much of **B7** are
+    disclosure items, not threats. **D16's** activation-order independence is now confirmed
+    empirically (0.18pp across three regimes), as predicted by the one-tick lag.
+  - **Three unfitted external checks passed** (**B26**): emergent stacking at **37%** holding 2+
+    facilities against the CFPB's 32% cross-firm; the R15,000 order cap binding on **0.3%** of
+    requests exactly as D11 predicted; and BNPL-at-zero-access reproducing the BNPL-free baseline.
+  - **Pattern 1 (deHaan complementarity) passes**: enabling BNPL raises traditional arrears
+    +3.9pp at `beta = 0` and +10.5pp at `beta = 1`, with interest burden up 3.8% and 6.4%. Direction
+    is partly designed in (the want-driven trigger); the magnitude is not.
+  - ⚠ **High-beta arms are implausible in absolute terms** (**B25**): R31,097 of BNPL per eligible
+    household over 40 ticks against a ~R4,800 median monthly income. Label the upper reaches of the
+    RQ2 surface as mechanistic, per §1a.
+  - ⚠ Sobol confidence intervals are wide at N=64; **re-run at N≥256 before quoting indices.**
+
+- **2026-08-12 (the ABM exists; baseline calibrated).** `simulation/` built to the 17-submodel
+  specification on Mesa 3.5.1. **60/60 verification tests pass**, including every degenerate case
+  chapter 5 commits to: `beta = 0` recovers the independent-agent model, BNPL-disabled reproduces
+  the baseline exactly, `N = 1` collapses stacking, and `s_g` is identically zero in the baseline.
+  - **Two fitted parameters, against two different bands, leaving three unfitted checks:**
+    `shock_prob = 0.048` per tick fitted to the 90+ tail, and `payment_friction = 0.09` per tick
+    fitted to the 1-30 band. They are near-orthogonal, so the pair is identified rather than
+    over-determined.
+
+    | Band | Model | CCMR 2017 | Status |
+    | --- | --- | --- | --- |
+    | current | 74.41% | 71.63% | unfitted |
+    | 1-30 d | **8.38%** | 8.24% | FITTED |
+    | 31-60 d | 1.25% | 3.59% | unfitted, thin |
+    | 61-90 d | 1.21% | 2.32% | unfitted, thin |
+    | 90+ d | **14.75%** | 14.21% | FITTED |
+    | **60+ d** | **15.96%** | **16.54%** | **unfitted — the strongest independent result** |
+
+  - **Pattern 3 HOLDS** on the pre-registered aggregate statistic (issues.md **B19b**): aggregate
+    debt/income peaks at **Q4** with Q5 lowest, which is Hamill's shape. The earlier "fails" verdict
+    came from a **mean of ratios**, which over this population is a division artefact — the top 1%
+    of Q1 carries 77% of its DTI mass and the median Q1 household has DTI 0.00. **The statistic was
+    fixed, not the data**: all 33 zero-capacity debtors are retained, and the thesis reports all
+    three statistics and states that the verdict is statistic-dependent.
+  - **Pattern 4:** ~45% reach zero liquid savings against TransUnion's 36% — same order, high.
+  - **The QLFS band earned its place immediately** (issues.md **B20**): fitted `p` is **4.1x** its
+    upper bound, and since the hazard now applies **per earner** the comparison is **like-for-like**
+    — the household-versus-individual caveat no longer explains any of the gap. Servicing is
+    affordable by construction for 98.2% of households, so the shock channel is doing the work of
+    several missing stressors.
+  - **Three closed decisions were revised by running the model**, all recorded: D1's single-tick
+    shock could not move the quantity it was fitted to (**B17**); the CCMR comparison used a
+    denominator excluding the 56% of households holding no debt (**B18**); and D6 fixed the *share*
+    of minimum-payers without ever defining the minimum (**B15**).
+  - **A second stressor was added and cited, not invented**: `payment_friction`, anchored to
+    Kuchler & Pagel — already in the bibliography and already cited in D6 for exactly this
+    behaviour. D7 distress is assessed *before* friction, so it moves arrears without contaminating
+    the headline default rate; verified by test.
+  - Replicate dispersion at the fitted values is tight (sd ~0.004 on 90+ across 20 replicates),
+    which is the dispersion argument chapter 5 asks for in place of a round number.
+  - **Global sensitivity analysis added** (`simulation/sensitivity.py`, SALib Sobol) over the six
+    uncalibrated or weakly-grounded parameters. OFAT sweeps show whether a result moves; Sobol
+    apportions output variance and exposes interactions, which OFAT cannot.
 
 - **2026-08-05 (thesis document pass).** Full review of `thesis/main.tex` produced
   [`scratchpad/issues.md`](scratchpad/issues.md): **43 findings**, 5 of them blockers. 31 closed

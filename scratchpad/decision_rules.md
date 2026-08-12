@@ -80,17 +80,78 @@ ordered sequence; **the order itself is a modelling decision.**
 - **DECISION.** The shock is a **labour income** shock, applied only to households whose dominant
   income source is `WAGE`. Households dependent on `GRANT` income face no labour shock, because South
   African social grants are statutory transfers and do not vary with employment. This conditioning
-  uses `income_source`, which the data layer already carries. The shock hits **income**, not savings,
-  and is **non-persistent** (single tick) in the baseline.
-- **Parameters:** `p` (shock probability per tick) and shock magnitude are **NOT SOURCED**.
-  NIDS W5 is a single wave in this design, so within-household income volatility cannot be estimated
-  from it, and QLFS was dropped from scope (decision.md Set 3).
+  uses `income_source`, which the data layer already carries. The shock hits **income**, not savings.
+- **REVISED 2026-08-12: the shock is PERSISTENT, not single-tick.** The original rule said
+  "non-persistent (single tick) in the baseline". Implementation showed that rule cannot work, and
+  re-reading the anchor showed it was never right:
+  - **It contradicts the anchor.** Madeira models *flows into and out of unemployment*. An
+    unemployment spell is not a one-fortnight blip.
+  - **It contradicts the data now in the repo.** QLFS 2017 Q3→Q4: **68.4% of the unemployed remained
+    unemployed** the following quarter, and only 11.6% moved into employment. South African
+    unemployment is highly persistent.
+  - **It makes D1's own calibration mandate impossible.** Measured directly: with a single-tick
+    shock, sweeping `p` from 0 to 0.40 moves the 90+ arrears rate only from **1.13% to 1.47%**
+    against a **14.21%** target. `p` cannot carry a validation it cannot move. With persistence the
+    same sweep spans **4.0% to 16.8%** and brackets the target.
+  - **Mechanism.** A one-tick wage loss is absorbed by savings or refinanced through the D9 gate,
+    which is computed on income that has not yet fallen. A *spell* exhausts the buffer (median
+    liquid savings is **R90**), collapses the income the Reg 23A test is computed on, and so closes
+    the borrowing escape route. Arrears then age through the CCMR bands instead of clearing.
+  - **Exit hazard is sourced, not assumed:** QLFS 2017 unemployed→employed of 11.6% per quarter =
+    **1.87% per tick** (`shock_exit_prob`).
+  - `shock_persistent = False` recovers the original single-tick rule exactly and is retained as a
+    **robustness arm**, so the revision is testable rather than asserted.
+  - Consequence: `p` is now unambiguously an **onset hazard**, directly comparable to the QLFS
+    employed→unemployed rate. The comparison below is therefore like-for-like, which it was not
+    before.
+- **MAGNITUDE: SOURCED 2026-08-12. It is no longer a free parameter.** Re-reading the anchor closed
+  this. Madeira does **not** model an abstract fractional income cut; he simulates *flows into and
+  out of unemployment* alongside permanent and temporary wage shocks. Following the anchor properly
+  means the shock is a **separation from employment**, so its magnitude is the household's **wage
+  component**, which is observed rather than chosen:
+  - `w5_hhwage` is present in `data/raw/NIDS_W5/hhderived.csv` (alongside `w5_hhgovt` and
+    `w5_hhremitt`), so every household's wage share of income is in the data.
+  - A shocked household loses its wage component for one tick. Grant and remittance income is
+    untouched, which makes D1's existing WAGE/GRANT conditioning quantitative instead of categorical.
+  - **No data-pipeline rebuild.** `source_w5_hhid` is already a column on
+    `synthetic_population_5000.parquet`, so `w5_hhwage` joins straight onto the validated
+    population. P1 to P3 are not re-run and the 14/14 validation is untouched.
+  - **Join verified against the 5,000-agent parquet (2026-08-12):** 5,000 of 5,000 rows matched,
+    **0 unmatched**; the joined `w5_hhincome` reproduces the backbone value exactly, which confirms
+    the key; and **0 households have wage income exceeding total income**, so no clipping is needed.
+  - **Wage share of income, observed:** WAGE-dominant households (n=2,892) have a mean share of
+    **0.80** and a median of **0.845**, so a separation removes roughly four-fifths of their income.
+    That is both larger and far better grounded than the 0.5 the earlier draft would have assumed.
+  - **On the 1,811 null `w5_hhwage` values:** all fall outside the WAGE group — **zero WAGE-dominant
+    households have null or zero wage income** — so mapping null to 0 is safe and does not silently
+    exempt anyone who should be shocked. GRANT and OTHER households carry small residual wage shares
+    (mean 0.054 and 0.024) but are exempt from the labour shock by this rule anyway.
+  - Consequence: the magnitude sweep is **withdrawn**. There is nothing left to sweep.
+- **Parameters:** `p` (shock probability per tick) remains **NOT SOURCED**, deliberately. NIDS W5 is
+  a single wave in this design, so within-household income volatility cannot be estimated from it.
 - **Treatment:** `p` is promoted from assumption to **calibration target**. It is fitted so the
   baseline (no-BNPL) arrears rate reproduces the CCMR benchmark, then held fixed for all BNPL runs.
-  Magnitude is swept.
+- **NEW: `p` now carries an external plausibility check (2026-08-12).** Stats SA *Labour Market
+  Dynamics in South Africa, 2022* (Report 02-11-02) publishes the QLFS panel for **2017 to 2022**,
+  so a **vintage-matched 2017 figure** exists. Extracted by
+  `notebooks/scripts/extract_qlfs_lmd.py` to `data/config/qlfs_2017_labour_flows.json`.
+  **Q3:2017 → Q4:2017, individual basis:** 93.14% retained employment, **3.53% moved to
+  unemployment**, 3.32% moved to not-economically-active, so **6.86% left employment**. Converted to
+  the 14-day tick this is a hazard band of **0.54% to 1.17% per tick** (narrow to broad measure).
+  - The fitted `p` is reported **against** this band. It is **not fitted to it**: fitting `p` to both
+    CCMR arrears and the QLFS band would over-determine the baseline.
+  - ⚠ **Unit mismatch (state it).** QLFS counts **individuals**; the model shocks a **household**.
+    A multi-earner household faces a higher probability that at least one earner separates, so the
+    household hazard sits at or above the individual rate. Same treatment as the
+    account-versus-household mismatch on the CCMR target (D6).
+  - ⚠ The model shock is non-persistent (one tick) while a QLFS separation may persist for quarters,
+    so the band bounds the rate of shock **onset**, not the stock of unemployed households.
 - **Validation hook:** this is the parameter that *carries* the validation. Because `p` is fitted to
   baseline arrears, the baseline is calibrated rather than validated, and only the BNPL-on results
-  are genuine predictions. **State this explicitly in the limitations chapter.**
+  are genuine predictions. **State this explicitly in the limitations chapter.** The QLFS band does
+  not change that, but it does mean the fitted value is no longer wholly unconstrained: a fitted `p`
+  falling far outside 0.54% to 1.17% per tick is evidence the shock process is carrying stress the
+  rest of the model should be generating. Report the comparison either way.
 
 ### D2. Consumption rule
 - **Governs:** how fast the cash buffer is drawn down; the main driver of running short.
@@ -141,6 +202,15 @@ ordered sequence; **the order itself is a modelling decision.**
   income, which is the shortfall rule, but the paper does not defend the choice.
 - **DECISION (assumption).** The agent requests **exactly the shortfall**, with no precautionary
   buffer. For BNPL, the amount is anchored to the purchase size rather than to a shortfall.
+- **PARTIAL UPDATE 2026-08-12: the BNPL purchase *level* now has an anchor.** The *rule* stays
+  closed-by-assumption, but the number it produces no longer has to be invented:
+  - **South African average BNPL basket ≈ R1,568.** ⚠ Trade press, not a provider disclosure or a
+    regulator statistic, and at current vintage against a 2017 population. Weak, but SA-specific,
+    and it falls under Part C's existing vintage note.
+  - **Cross-check, strong but foreign:** CFPB reports an **average BNPL loan of $135** and **$848
+    per user per lender per year across 6.3 loans** `[cfpb2025market]`.
+  - Purchase size is centred on the SA basket figure and swept. This narrows the gap; it does not
+    close it, and D4 remains the model's one uncited rule.
 - **This is a flagged limitation, not a cited rule.** It must appear in the limitations chapter as
   an uncited modelling choice.
 - **Sensitivity (mandatory, not optional):** shortfall, shortfall x 1.25, and shortfall plus one
@@ -183,6 +253,19 @@ ordered sequence; **the order itself is a modelling decision.**
 - **Parameters:** `m = 0.29` baseline, from `[Keys2019]`.
 - **⚠ Parameter caveat:** 0.29 is a United States credit-card figure. Applying it to South African
   unsecured credit is a transfer assumption. Sweep 0.20 to 0.40.
+- **⚠ GAP FOUND 2026-08-12, during implementation planning: the minimum itself is undefined.** This
+  rule fixes the *share* of agents who pay the contractual minimum but never says what the
+  contractual minimum *is*, and `[Keys2019]` measures behaviour relative to whatever minimum the US
+  card issuer set rather than prescribing a formula. The NCA prescribes maximum rates and the
+  Reg 23A affordability test, but **no minimum-payment formula**, so there is no South African
+  statutory anchor either.
+- **DECISION (assumption, newly surfaced).** Minimum payment =
+  `max(interest accrued this tick, 5% of the outstanding balance per month, tick-scaled)`. The
+  interest floor prevents negative amortisation by construction; the 5% is an assumption.
+- **This is a second uncited rule alongside D4** and must be recorded in the limitations chapter as
+  such, not buried in code. **Sensitivity: mandatory**, sweep the 5% over 2.5% to 10%. If the
+  minimum-payer arm drives results, the finding is minimum-formula-sensitive and must be reported
+  that way.
 - **Arrears definition:** CCMR age bands (current, 30, 31-60, 61-90, 91-120, 120+ days).
 - **Validation hook (2017 vintage, resolved).** `data/raw/CCMR_Q1_2017/` (NCR CCMR March 2017) is
   now in the repo and extracted to `data/config/ccmr_2017_baseline.json`. **2017-Q1, account basis:**
@@ -199,6 +282,17 @@ ordered sequence; **the order itself is a modelling decision.**
 - **⚠ Unit mismatch (state it).** CCMR counts **accounts**; the model counts **households**. A
   household may hold several accounts, so an account-level arrears rate is not a household-level
   default rate. Treat as an order-of-magnitude target, not a point target.
+- **REFINED 2026-08-12: which households form the denominator.** The mismatch has a second edge that
+  was not previously stated, and it matters more than the first. CCMR accounts are held by
+  **credit-active consumers**; in the 5,000-agent population only **44.2% of households hold any
+  traditional debt at all**, and a household with no debt can never be in arrears. Comparing an
+  all-household arrears rate to an account-level one therefore guarantees an undershoot for a purely
+  definitional reason. Measured on the same run: **1.68% of all households** were 90+ against
+  **3.80% of credit-active households**, a factor of 2.3 with no behavioural content whatsoever.
+  - **The credit-active rate is the closer analogue and is the one compared to CCMR.**
+  - **Both are always reported.** The all-household rate remains the correct denominator for the
+    *population default rate* the RQs ask about; it is only the CCMR arrears comparison that uses
+    the credit-active base. Metrics carry both (`pct_90_plus` and `active_90_plus`).
 - **⚠ Data quality note.** Section 4.4 of the converted 2017 markdown has a **corrupt** credit
   facilities "% Number of accounts" column (83.22% repeated for all 13 quarters). Appendix D
   Table 21 is authoritative and reproduces the prose figure of 71.55%. Do not read section 4.4.
@@ -331,6 +425,24 @@ ordered sequence; **the order itself is a modelling decision.**
   balance per platform.
 - **Parameters:** order cap R15,000 (Payflex, current vintage); rolling balance **NOT SOURCED**,
   swept.
+- **⚠ SEARCHED AND NOT FOUND, 2026-08-12. The absence is itself the finding, and is citable.**
+  A deliberate search for a published rolling limit returned nothing from either major provider:
+  - **Payflex** publishes the R15,000 per-order cap but no rolling limit. Its support material
+    states the spend limit is set per customer from credit history and repayment behaviour
+    `[payflex_limits]`.
+  - **PayJustNow** explicitly declines to publish limits: the limit is set per shopper from
+    identity verification and credit profile `[payjustnow_limits]`.
+
+  Neither firm discloses a figure, so this parameter **cannot** be sourced from published terms the
+  way D13's Pay-in-4 schedule and late-fee cap were. That is worth stating in the thesis rather than
+  papering over with a round number: the opacity of BNPL credit limits is consistent with the
+  regulatory position in D10, where the product sits outside the NCA and carries no disclosure or
+  reporting obligation.
+- **TREATMENT: demoted from a behavioural parameter to a binding-check quantity.** This rule already
+  requires verifying that the *order cap* binds rarely; the same test now governs the rolling limit.
+  Set it, then measure the share of attempted transactions it blocks. If it rarely binds it is inert
+  and the sweep **demonstrates** that, rather than the chosen value mattering. If it binds often,
+  that is a reportable result and the parameter is promoted to a headline sensitivity.
 - **⚠ Why the vintage problem is mostly moot here:** at LMI household incomes a R15,000 order cap
   will rarely bind. The binding constraint on borrowing size is the purchase amount (D4), not the
   platform cap. Verify empirically once implemented; if the cap binds for more than a few percent of
@@ -569,6 +681,12 @@ profile targets the **2017-Q1 CCMR** (`data/config/ccmr_2017_baseline.json`): 71
 16.54% 60+ days, 14.21% 90+ days, account basis. All four are unaffected by D17, since the peer
 channel is inert in the baseline. See [[behavioural-validation-hedge]].
 
+**Plus one calibration cross-check (2026-08-12), which is not a fifth target.** The fitted `p` is
+reported against the QLFS 2017 job-separation band in
+`data/config/qlfs_2017_labour_flows.json` (**0.54% to 1.17% per tick**). This checks the
+*calibration* rather than the model output, so it does not join the four validation targets; it
+constrains the one parameter that carries them. See D1.
+
 ---
 
 ## Open-decision checklist (fill as research lands)
@@ -579,10 +697,21 @@ channel is inert in the baseline. See [[behavioural-validation-hedge]].
 - [x] D12 stacking · [x] D13 BNPL repayment · [x] D14 interventions · [x] D15 macro · [x] D16 scheduling
 - [x] D17 peer influence / reference group
 
-**All 18 decisions are closed.** Two carry explicit caveats rather than clean anchors: **D4**
-(borrowing amount) is closed *by assumption* with no anchor found, and **D14 lever 4** (stacking cap)
-has no real-world instrument and is labelled hypothetical. Every other rule carries a citation,
-parameters with sources or sweep flags, and a validation hook.
+**All 18 decisions are closed.** Four carry explicit caveats rather than clean anchors:
+
+- **D4** (borrowing amount) is closed *by assumption* with no anchor for the rule. Its BNPL *level*
+  gained a weak SA anchor on 2026-08-12 (R1,568 basket, CFPB cross-check); the rule did not.
+- **D6** (minimum-payment formula) was found undefined on 2026-08-12 during implementation planning.
+  Now closed by assumption, with mandatory sensitivity. **This is the model's second uncited rule.**
+- **D11** (rolling available balance) was searched on 2026-08-12 and **no published figure exists**
+  for either major SA provider. Demoted to a binding-check quantity.
+- **D14 lever 4** (stacking cap) has no real-world instrument and is labelled hypothetical.
+
+Every other rule carries a citation, parameters with sources or sweep flags, and a validation hook.
+
+**Resolved on 2026-08-12:** the D1 income-shock **magnitude**, which was `NOT SOURCED`, is now
+data-driven from `w5_hhwage` and carries no free parameter at all; and the fitted `p` gained an
+external plausibility band from the QLFS 2017 panel.
 
 Each box closes only when it has: a stated rule, a citation, parameters with sources, and a
 validation hook.

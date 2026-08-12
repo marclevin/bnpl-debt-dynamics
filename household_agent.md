@@ -29,6 +29,7 @@ No invented people, no inflation maths: the numbers stay in 2017 Rands.
                     │           HOUSEHOLD AGENT             │
                     ├──────────────────────────────────────┤
    INFLOW    ──►    │  income_monthly      (+ source)       │   from NIDS
+                    │  income_wage  (the part a shock hits) │   from NIDS
                     │                                       │
    OUTFLOW   ──►    │  expenditure_committed                │   from NIDS
                     │  expenditure_discretionary            │
@@ -54,6 +55,7 @@ FinScope flags attached via the simple quintile cell-donor match.
 | ----------------------------- | -------------------------------------- | ------------------------------------------------------------------- |
 | `income_monthly`              | Money in each month                    | NIDS `w5_hhincome`                                                   |
 | `income_source`               | Where most of it comes from            | NIDS `w5_hhwage` / `w5_hhgovt` / `w5_hhremitt` / … → WAGE/GRANT/OTHER |
+| `income_wage`                 | The part at risk in a job-loss shock   | NIDS `w5_hhwage` (joined on `source_w5_hhid`)                        |
 | `expenditure_committed`       | Must-pay spending (food + rent)        | NIDS `w5_expf` + `w5_rentexpend`                                     |
 | `expenditure_discretionary`   | Flexible spending                      | NIDS `w5_expnf` − `w5_rentexpend` (≥ 0)                              |
 | `liquid_savings`              | Cash buffer                            | NIDS `w5_f_ass` (proxy: weak field)                                |
