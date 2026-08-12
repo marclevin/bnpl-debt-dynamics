@@ -172,6 +172,21 @@
                  concurrent-loan (stacking) prevalence}
 }
 
+@techreport{cfpb2025market,
+  title       = {The Buy Now, Pay Later Market},
+  author      = {{Consumer Financial Protection Bureau}},
+  institution = {Consumer Financial Protection Bureau},
+  year        = {2025},
+  month       = dec,
+  url         = {https://www.consumerfinance.gov/data-research/research-reports/the-buy-now-pay-later-market/},
+  note        = {Six large \ac{BNPL} lenders, calendar years 2019--2023: 335.8m loans
+                 worth \$45.2bn, average loan \$135, 6.3 loans per user per lender per
+                 year, \$848 average annual \ac{BNPL} amount per user per lender.
+                 Distinct from cfpb2025bnpl (January 2025), which is the
+                 concurrent-loan/stacking source. Used as the foreign cross-check on
+                 \ac{BNPL} purchase size in Submodel~4}
+}
+
 @article{hayashi2025constraints,
   title = {Financial Constraints Among Buy Now,  Pay Later Users},
   ISSN = {0161-2387},
@@ -393,6 +408,60 @@
   year        = {2025},
   note        = {Retained for post-period context only. The 2017 report is the validation
                  target; see ncr\_ccmr\_2017}
+}
+
+@techreport{statssa_lmd_2022,
+  title       = {Labour Market Dynamics in South Africa, 2022},
+  author      = {{Statistics South Africa}},
+  institution = {Statistics South Africa},
+  type        = {Report},
+  number      = {02-11-02},
+  year        = {2023},
+  url         = {https://www.statssa.gov.za/publications/Report-02-11-02/Report-02-11-022022.pdf},
+  note        = {\ac{QLFS} panel, 2017--2022, so a \textbf{vintage-matched 2017} figure is
+                 available. Table 2.1a (p.15), Q3:2017 to Q4:2017: 93.14\% retained
+                 employment, 3.53\% moved to unemployment, 3.32\% to not economically
+                 active. Table A.1 (p.149) reproduces the same transition. Extracted by
+                 notebooks/scripts/extract\_qlfs\_lmd.py to
+                 data/config/qlfs\_2017\_labour\_flows.json. Supplies the plausibility
+                 band for the fitted income-shock probability in Submodel~2; INDIVIDUAL
+                 basis, not household}
+}
+
+% --- Evidence that SA BNPL credit limits are NOT publicly disclosed (Submodel 12) ---
+% Cited for an ABSENCE: neither provider publishes a rolling limit, which is consistent
+% with the no-disclosure regulatory position in Submodel 11.
+
+@misc{payflex_limits,
+  title        = {What is my Payflex limit?},
+  author       = {{Payflex}},
+  year         = {2025},
+  howpublished = {\url{https://support.myboost.co/hc/en-us/articles/12980246778777-What-is-my-PayFlex-limit}},
+  note         = {No published rolling limit. The spend limit is set per customer from
+                  credit history and repayment behaviour. Payflex publishes only the
+                  R15,000 per-order cap (payflex\_terms)}
+}
+
+@misc{payjustnow_limits,
+  title        = {Why don't I have a spend limit?},
+  author       = {{PayJustNow}},
+  year         = {2025},
+  howpublished = {\url{https://community.payjustnow.com/support/solutions/articles/154000149850-why-don-t-i-have-a-spend-limit-}},
+  note         = {No published limit of any kind. Limits are set per shopper from
+                  identity verification and credit profile}
+}
+
+@misc{sa_bnpl_basket_2026,
+  title        = {Buy Now Pay Later South Africa: Honest 2026 Guide for Stores},
+  author       = {{Ecommerce Development}},
+  year         = {2026},
+  howpublished = {\url{https://www.ecommercedevelopment.co.za/buy-now-pay-later-south-africa/}},
+  note         = {Average South African \ac{BNPL} basket $\approx$ R1,568.
+                  \% VERIFY: trade press, not a provider disclosure or a regulator
+                  statistic, and at current vintage against a 2017 population. Weak, and
+                  the weakest source cited in the thesis; retained only because it is the
+                  sole SA-specific figure for \ac{BNPL} purchase size. Cross-checked
+                  against cfpb2025market}
 }
 
 @misc{nortonrose_bnpl_sa,
