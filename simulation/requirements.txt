@@ -1,0 +1,19 @@
+# BNPL ABM — pinned to the environment the runs were produced on.
+# Python 3.14.4. Reproduce with:  pip install -r simulation/requirements.txt
+#
+# The repo-local conda prefix env at ./env is gitignored, so this file and
+# environment.yml are the reproducibility record (thesis ch.5, Reproducibility).
+
+mesa==3.5.1
+networkx==3.6.1     # imported eagerly by mesa.discrete_space; mesa 3.5.1 does not declare it
+tqdm==4.70.0        # pulled in by mesa
+
+pandas==3.0.2
+numpy==2.4.4
+scipy==1.17.1
+pyarrow==24.0.0     # parquet IO for the population and run output
+joblib==1.5.3       # parallel batch runner
+matplotlib==3.10.9  # figures
+
+pypdf==6.15.0       # notebooks/scripts/extract_qlfs_lmd.py
+pytest==9.1.1       # verification suite

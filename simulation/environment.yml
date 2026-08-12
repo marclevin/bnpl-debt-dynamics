@@ -1,0 +1,30 @@
+# BNPL ABM — conda environment.
+#
+#   conda env create -f simulation/environment.yml -p ./env
+#   conda activate ./env
+#
+# The runs reported in the thesis were produced on a conda *prefix* env at ./env
+# (gitignored). Recreating it at that path keeps every notebook and script path valid.
+
+name: bnpl-abm
+
+channels:
+  - conda-forge
+
+dependencies:
+  - python=3.14.4
+  - pandas=3.0.2
+  - numpy=2.4.4
+  - scipy=1.17.1
+  - pyarrow=24.0.0
+  - matplotlib=3.10.9
+  - joblib=1.5.3
+  - jupyter
+  - pip
+  - pip:
+      # Not taken from conda-forge: mesa is pip-only for this version.
+      - mesa==3.5.1
+      - networkx==3.6.1   # mesa.discrete_space imports it but mesa 3.5.1 does not declare it
+      - tqdm==4.70.0
+      - pypdf==6.15.0
+      - pytest==9.1.1

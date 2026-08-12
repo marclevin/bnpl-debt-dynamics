@@ -1,0 +1,248 @@
+"""Observation: per-tick metrics and the run summary.
+
+The CCMR band mapping is exact at a 14-day tick, which is the reason k was revised from
+6 to 7: 7 ticks is 98 days, inside the 91-120 bucket, so it maps onto the 90+ impairment
+convention. k=6 would be 84 days and would land in 61-90 with no clean analogue.
+
+Two counters are tracked separately and must not be conflated:
+  * `distress_streak` drives DEFAULT (D7), the model's headline output.
+  * `arrears_age_ticks` drives the CCMR BAND comparison (D6).
+"""
+
+from __future__ import annotations
+
+import statistics
+from collections import Counter
+
+from .config import CCMR_BANDS
+
+
+def ccmr_band(arrears_age_ticks: int) -> str:
+    """Map ticks-in-arrears onto the CCMR age-analysis band."""
+    for label, lo, hi in CCMR_BANDS:
+        if arrears_age_ticks >= lo and (hi is None or arrears_age_ticks <= hi):
+            return label
+    return "current"  # pragma: no cover
+
+
+def collect_tick(model) -> dict:
+    """One row of per-tick observation."""
+    agents = list(model.agents)
+    n = len(agents)
+
+    bands = Counter(ccmr_band(a.arrears_age_ticks) for a in agents)
+    n_defaulted = sum(1 for a in agents if a.defaulted)
+    n_zero_savings = sum(1 for a in agents if a.savings <= 0)
+
+    # The CCMR denominator is ACCOUNTS, held by credit-active consumers. Slightly over
+    # half this population holds no traditional debt at all and so can never be in
+    # arrears; including them guarantees the model undershoots the target for a reason
+    # that has nothing to do with behaviour. The credit-active denominator is the closer
+    # analogue and is reported alongside the all-household figure, never instead of it.
+    active = [a for a in agents if a.d_trad > 0 or a.arrears_trad > 0]
+    n_active = len(active)
+    bands_active = Counter(ccmr_band(a.arrears_age_ticks) for a in active)
+
+    bnpl_holders = 0
+    stacking = Counter()
+    total_bnpl = 0.0
+    if model.params.bnpl_enabled:
+        for a in agents:
+            outstanding = a.bnpl_outstanding()
+            total_bnpl += outstanding
+            depth = a.stacking_depth()
+            stacking[depth] += 1
+            if outstanding > 0:
+                bnpl_holders += 1
+
+    row = {
+        "tick": model.tick,
+        "n_agents": n,
+        # --- headline outputs ---------------------------------------------------
+        "default_rate": n_defaulted / n,
+        "n_defaulted": n_defaulted,
+        # --- CCMR bands (D6) ------------------------------------------------------
+        **{f"band_{label}": bands.get(label, 0) / n for label, _, _ in CCMR_BANDS},
+        "pct_60_plus": sum(
+            bands.get(label, 0) for label in ("d61_90", "d91_120", "d120_plus")
+        )
+        / n,
+        "pct_90_plus": sum(bands.get(label, 0) for label in ("d91_120", "d120_plus")) / n,
+        # --- same bands on the credit-active denominator (the CCMR analogue) --------
+        "n_credit_active": n_active,
+        "active_current": (bands_active.get("current", 0) / n_active) if n_active else 0.0,
+        **{
+            f"active_{label}": (bands_active.get(label, 0) / n_active) if n_active else 0.0
+            for label, _, _ in CCMR_BANDS
+        },
+        "active_60_plus": (
+            sum(bands_active.get(label, 0) for label in ("d61_90", "d91_120", "d120_plus"))
+            / n_active
+            if n_active
+            else 0.0
+        ),
+        "active_90_plus": (
+            sum(bands_active.get(label, 0) for label in ("d91_120", "d120_plus")) / n_active
+            if n_active
+            else 0.0
+        ),
+        # --- traditional stress: the pattern-1 falsification test (D5) ------------
+        "trad_debt_total": sum(a.d_trad for a in agents),
+        "trad_arrears_total": sum(a.arrears_trad for a in agents),
+        "trad_interest_tick": sum(a.interest_charged_tick for a in agents),
+        "trad_arrears_rate": sum(1 for a in agents if a.arrears_trad > 0) / n,
+        # --- BNPL ------------------------------------------------------------------
+        "bnpl_outstanding_total": total_bnpl,
+        "bnpl_adoption_rate": bnpl_holders / n,
+        "bnpl_volume_tick": sum(a.bnpl_volume_tick for a in agents),
+        "bnpl_fees_tick": sum(a.bnpl_fees_tick for a in agents),
+        "stacking_mean": (
+            sum(d * c for d, c in stacking.items()) / n if stacking else 0.0
+        ),
+        "stacking_2plus": sum(c for d, c in stacking.items() if d >= 2) / n,
+        # --- pattern 4 (TransUnion 36%) ------------------------------------------
+        "zero_savings_rate": n_zero_savings / n,
+        # --- D1 diagnostic ----------------------------------------------------------
+        "shocked_rate": sum(1 for a in agents if a.shocked_tick) / n,
+    }
+    return row
+
+
+def summarise_run(model) -> dict:
+    """Collapse a run to one row, discarding burn-in."""
+    p = model.params
+    post = [r for r in model.history if r["tick"] >= p.burn_in]
+    if not post:  # pragma: no cover
+        post = model.history
+    final = model.history[-1]
+    agents = list(model.agents)
+
+    def mean(key: str) -> float:
+        return statistics.fmean(r[key] for r in post)
+
+    # --- pattern 3 (Hamill et al.): non-monotonic DTI with a middle-income peak ---
+    #
+    # PRE-REGISTERED PRIMARY STATISTIC: the AGGREGATE ratio, total debt over total income
+    # within each quintile. Chosen on its own merits before checking whether it passes:
+    # it is the standard financial-stability measure, it is the form the CCMR reports in,
+    # and unlike a mean of ratios it cannot be driven by near-zero denominators.
+    #
+    # The mean and median of household-level ratios are reported ALONGSIDE it, never
+    # instead of it, because the verdict on pattern 3 is statistic-dependent and that
+    # dependence is itself a finding. Measured: the mean is carried almost entirely by a
+    # handful of Q1 households (top 1% of Q1 hold 77% of its DTI mass, median Q1 = 0.00),
+    # so a mean of ratios is not a meaningful measure over this population.
+    #
+    # All households are retained, including the zero-capacity debtors. Excluding them
+    # would flip the verdict, which is exactly why they stay: P2's decision was to report
+    # them as a finding, and dropping data to make a test pass is the circularity this
+    # project has avoided elsewhere.
+    dti_aggregate: dict[str, float] = {}
+    dti_mean: dict[str, float] = {}
+    dti_median: dict[str, float] = {}
+    for q in ("Q1", "Q2", "Q3", "Q4", "Q5"):
+        members = [a for a in agents if a.rec.income_quintile == q]
+        if not members:
+            continue
+        total_income = sum(a.income_monthly for a in members)
+        dti_aggregate[q] = (
+            sum(a.total_debt() for a in members) / total_income if total_income > 0 else 0.0
+        )
+        ratios = [
+            a.total_debt() / a.income_monthly if a.income_monthly > 0 else 0.0
+            for a in members
+        ]
+        dti_mean[q] = statistics.fmean(ratios)
+        # Median over DEBTORS. Over all households it is identically zero in every
+        # quintile, since fewer than half hold any debt, which makes it uninformative.
+        debtor_ratios = [
+            a.total_debt() / a.income_monthly
+            for a in members
+            if a.total_debt() > 0 and a.income_monthly > 0
+        ]
+        dti_median[q] = statistics.median(debtor_ratios) if debtor_ratios else 0.0
+
+    # --- D11 binding checks -------------------------------------------------------
+    n_requests = sum(pl.n_requests for pl in model.platforms)
+    n_order_cap = sum(pl.n_blocked_order_cap for pl in model.platforms)
+    n_rolling = sum(pl.n_blocked_rolling_limit for pl in model.platforms)
+
+    summary = {
+        **{f: getattr(p, f) for f in ("seed", "label")},
+        **{
+            k: getattr(p, k)
+            for k in (
+                "shock_prob",
+                "q_base",
+                "beta",
+                "bnpl_enabled",
+                "bnpl_access_rate",
+                "n_platforms",
+                "bnpl_bureau_visible",
+                "bnpl_affordability_check",
+                "k_cool",
+                "stacking_cap",
+                "amount_rule",
+                "min_payer_share",
+                "min_payment_frac",
+                "payment_friction",
+                "k_default",
+                "activation",
+                "bnpl_platform_limit",
+            )
+        },
+        # --- headline -----------------------------------------------------------
+        "default_rate_final": final["default_rate"],
+        "default_rate_mean": mean("default_rate"),
+        "pct_90_plus_final": final["pct_90_plus"],
+        "pct_90_plus_mean": mean("pct_90_plus"),
+        "pct_60_plus_final": final["pct_60_plus"],
+        "pct_60_plus_mean": mean("pct_60_plus"),
+        "pct_current_final": final["band_current"],
+        "pct_current_mean": mean("band_current"),
+        # --- the CCMR comparison, on the credit-active denominator -----------------
+        "active_90_plus_final": final["active_90_plus"],
+        "active_90_plus_mean": mean("active_90_plus"),
+        "active_60_plus_final": final["active_60_plus"],
+        "active_60_plus_mean": mean("active_60_plus"),
+        "active_current_final": final["active_current"],
+        "active_current_mean": mean("active_current"),
+        "active_d30_mean": mean("active_d30"),
+        "active_d31_60_mean": mean("active_d31_60"),
+        "active_d61_90_mean": mean("active_d61_90"),
+        "active_d120_plus_mean": mean("active_d120_plus"),
+        "n_credit_active_final": final["n_credit_active"],
+        # --- pattern 1: traditional stress --------------------------------------
+        "trad_arrears_rate_mean": mean("trad_arrears_rate"),
+        "trad_interest_total": sum(r["trad_interest_tick"] for r in post),
+        "trad_debt_final": final["trad_debt_total"],
+        # --- pattern 4 ------------------------------------------------------------
+        "zero_savings_rate_mean": mean("zero_savings_rate"),
+        # --- BNPL / RQ1 / RQ3 -----------------------------------------------------
+        "bnpl_adoption_final": final["bnpl_adoption_rate"],
+        "bnpl_volume_cumulative": sum(r["bnpl_volume_tick"] for r in post),
+        "bnpl_fees_cumulative": sum(r["bnpl_fees_tick"] for r in post),
+        "bnpl_outstanding_final": final["bnpl_outstanding_total"],
+        "stacking_mean_final": final["stacking_mean"],
+        "stacking_2plus_final": final["stacking_2plus"],
+        # --- D1 diagnostic --------------------------------------------------------
+        "shocked_rate_mean": mean("shocked_rate"),
+        # --- population / eligibility --------------------------------------------
+        "n_agents": final["n_agents"],
+        "n_banked": model.n_banked,
+        "n_bnpl_eligible": model.n_bnpl_eligible,
+        "n_zero_capacity_debtors": len(model.zero_capacity_debtors),
+        # --- D11 binding checks ---------------------------------------------------
+        "bnpl_requests": n_requests,
+        "bnpl_order_cap_bind_rate": (n_order_cap / n_requests) if n_requests else 0.0,
+        "bnpl_rolling_limit_bind_rate": (n_rolling / n_requests) if n_requests else 0.0,
+        # --- lender ----------------------------------------------------------------
+        "trad_applications": model.lender.n_applications,
+        "trad_granted": model.lender.n_granted,
+        "trad_refused_gate": model.lender.n_refused_gate,
+    }
+    # `dti_` is the PRIMARY (aggregate) statistic; the others are the secondary readings.
+    summary.update({f"dti_{q}": v for q, v in dti_aggregate.items()})
+    summary.update({f"dti_mean_{q}": v for q, v in dti_mean.items()})
+    summary.update({f"dti_median_{q}": v for q, v in dti_median.items()})
+    return summary
