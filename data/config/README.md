@@ -1,5 +1,55 @@
 # Config: sourced external parameters
 
+## `qlfs_2017_labour_flows.json`
+
+Supplies the **plausibility band for the fitted income-shock probability `p`** (D1), and underpins
+the shock *mechanism*: following Madeira, the shock is a **separation from employment**, not an
+abstract fractional income cut, so its magnitude is the household's wage component (`w5_hhwage`)
+rather than a chosen parameter.
+
+Source: Statistics South Africa, *Labour Market Dynamics in South Africa, 2022*, **Report 02-11-02**.
+The 2022 edition reports the QLFS panel for **2017–2022**, so a **vintage-matched 2017** figure is
+available for the NIDS W5 population.
+
+**Q3:2017 → Q4:2017, individual basis (Table 2.1a, p.15):**
+
+| Transition from employed | Thousands | % |
+| --- | --- | --- |
+| Retained employment | 15 081 | 93.14 |
+| To unemployed | 572 | 3.53 |
+| To not economically active | 538 | 3.32 |
+| **Left employment (combined)** | **1 110** | **6.86** |
+
+Converted to the 14-day tick (6.52 ticks per quarter, constant hazard), this gives a band of
+**0.54% (narrow, employed→unemployed) to 1.17% (broad, employed→not employed) per tick**.
+
+Regenerate with:
+
+```
+python notebooks/scripts/extract_qlfs_lmd.py
+```
+
+The script asserts **two of the report's own prose statements** (retention fell 1.9 pp between 2017
+and 2022 → 93.1 − 91.2; unemployment→employment "11,6 % in 2017") and requires headline **Table
+2.1a** and appendix **Table A.1** to agree on the same transition, so the extraction cannot silently
+drift. Same discipline as `ccmr_2017_baseline.json`.
+
+### ⚠ This is a cross-check, not a fifth validation target
+
+`p` is **fitted to CCMR arrears**. Fitting it to the QLFS band as well would over-determine the
+baseline. The band is reported alongside the fitted value; a fitted `p` far outside it is evidence
+the shock process is carrying stress the rest of the model should be generating.
+
+### ⚠ Limitation: individual vs household
+
+QLFS counts **individuals**; the model shocks a **household**. A multi-earner household faces a
+higher probability that at least one earner separates, so the household hazard sits at or above the
+individual rate. Order-of-magnitude band, exactly like the account-vs-household mismatch on the CCMR
+target. Also, the model shock is non-persistent (one tick) while a real separation may last
+quarters, so the band bounds shock **onset**, not the stock of unemployed households.
+
+---
+
 ## `credit_rate_table.csv`
 
 Drives `monthly_trad_repayment` in the P2 notebook. Because **neither NIDS nor FinScope records a

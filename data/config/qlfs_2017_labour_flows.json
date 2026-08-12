@@ -1,0 +1,46 @@
+{
+  "source": "Statistics South Africa, Labour Market Dynamics in South Africa, 2022, Report 02-11-02, Table 2.1a (p.15) and Table A.1 (p.149)",
+  "basis": "INDIVIDUALS aged 15-64 in the QLFS panel, not households. Quarterly transition between labour market states.",
+  "reference_transition": "Q3:2017 -> Q4:2017",
+  "why_this_vintage": "The 2022 edition reports the QLFS panel for 2017-2022, so a 2017 figure is available that is vintage-matched to the NIDS W5 population.",
+  "employed_at_t0_thousands": 16192,
+  "counts_thousands": {
+    "to_employed": 15081,
+    "to_unemployed": 572,
+    "to_nea": 538
+  },
+  "pct": {
+    "retained_employed": 93.14,
+    "to_unemployed": 3.53,
+    "to_nea": 3.32,
+    "out_of_employment": 6.86
+  },
+  "range_2017": {
+    "note": "All three transitions in Table A.1 whose t quarter falls in 2017.",
+    "narrow_employed_to_unemployed_pct": [
+      3.6,
+      3.5,
+      4.0
+    ],
+    "broad_employed_to_not_employed_pct": [
+      6.9,
+      6.8,
+      7.4
+    ]
+  },
+  "model_target": {
+    "note": "D1 plausibility band for the fitted income-shock probability p. The model shock is the loss of the household wage component for one tick, so the analogue is a separation from employment. The NARROW measure (employed -> unemployed) is the lower bound; the BROAD measure (employed -> not employed, i.e. including discouraged and other NEA) is the upper bound. p is FITTED to CCMR arrears, then reported against this band. It is not fitted to this band.",
+    "ticks_per_quarter": 6.5223,
+    "tick_days": 14.0,
+    "p_tick_lower": 0.005447,
+    "p_tick_upper": 0.011718,
+    "p_tick_central_narrow": 0.005495,
+    "p_tick_central_broad": 0.010837
+  },
+  "caveats": [
+    "UNIT MISMATCH. These are INDIVIDUAL transition rates; the model shocks a HOUSEHOLD. A household with several earners faces a higher probability that at least one earner separates, so the household-level hazard is at or above the individual rate. Treat as an order-of-magnitude band, in the same way as the account-versus-household mismatch on the CCMR target.",
+    "The band is a PLAUSIBILITY CHECK on a fitted parameter, not a second calibration target. p is fitted to CCMR arrears; fitting it to both would over-determine the baseline.",
+    "The model shock is non-persistent (one tick), whereas a QLFS separation may persist for several quarters. The band therefore bounds the rate of shock ONSET, not the stock of unemployed households.",
+    "Q1:2017 -> Q2:2017 is not in Table A.1; the 2017 range is taken over the three transitions whose t quarter falls in 2017."
+  ]
+}
