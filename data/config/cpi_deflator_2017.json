@@ -1,0 +1,49 @@
+{
+  "source": "Statistics South Africa, Consumer Price Index, statistical release P0141, headline CPI. Annual average basis for 2018-2025; the June 2026 release supplies the mid-2026 anchor.",
+  "source_url": "https://www.statssa.gov.za/publications/P0141/P0141June2026.pdf",
+  "base_year": 2017,
+  "verify": "% VERIFY (narrowed 2026-08-13): the 2018-2025 annual averages are taken from published Stats SA releases and media statements, NOT re-derived from P0141 Table B1 index numbers, because statssa.gov.za blocks automated retrieval. TWO independent checks now constrain them: the 2024 rate against Stats SA's published 4,4% statement, and the whole compounded chain against the published June 2026 index (see index_drift_check). Pin to Table B1 when convenient; the residual error is bounded at ~1%.",
+  "rebasing_note": "Stats SA rebased the headline index at Dec 2016 = 100; Dec 2021 = 100; Dec 2024 = 100. Index numbers from releases either side of a rebase are NOT directly comparable without the published linking factors. This chain is built from annual RATES, which are rebase-invariant, so the issue does not arise.",
+  "annual_average_inflation_pct": {
+    "2018": 4.7,
+    "2019": 4.1,
+    "2020": 3.3,
+    "2021": 4.5,
+    "2022": 7.04,
+    "2023": 6.08,
+    "2024": 4.36,
+    "2025": 3.22
+  },
+  "mid_2026_anchor": {
+    "yoy_pct": 5.0,
+    "index": 107.5,
+    "index_base": 2024.0,
+    "month": 6,
+    "note": "2026 has no annual average yet. An annual average sits at the mid-point of its year under smooth within-year price movement, so the 2025 annual average IS approximately the mid-2025 price level, and June 2026 is twelve months later. The published June 2026 year-on-year rate is therefore exactly the multiplier from the 2025 average to mid-2026. factor_from_2017['2026'] is a MID-YEAR level, not an annual average."
+  },
+  "index_drift_check": {
+    "published_june_2026_index": 107.5,
+    "implied_by_this_chain": 106.68,
+    "gap_pct": -0.765,
+    "tolerance_pct": 1.5,
+    "note": "The residual comes from approximating each year's average by its mid-point. Recorded, not tuned away. It bounds the error on a deflator of ~1.5 at well under one per cent."
+  },
+  "factor_from_2017": {
+    "2017": 1.0,
+    "2018": 1.047,
+    "2019": 1.089927,
+    "2020": 1.125895,
+    "2021": 1.17656,
+    "2022": 1.25939,
+    "2023": 1.335961,
+    "2024": 1.394208,
+    "2025": 1.439102,
+    "2026": 1.511057
+  },
+  "usage": "A nominal amount observed in year Y is converted to 2017 Rands by DIVIDING by factor_from_2017[Y].",
+  "model_target": {
+    "factor_2024": 1.394208,
+    "factor_2025": 1.439102,
+    "factor_2026_mid": 1.511057
+  }
+}

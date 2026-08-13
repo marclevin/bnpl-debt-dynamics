@@ -1,0 +1,90 @@
+{
+  "sources": {
+    "primary": "weaver2025iar (Weaver Fintech, Integrated Report 2025, p14, 'Profitable BNPL network' panel)",
+    "gmv_by_fy": "homechoice2024ir (Integrated Report 2024, five-year review)",
+    "results_announcement": "weaver2025results (SENS, 10 March 2026)",
+    "trade_press": "sa_bnpl_basket_2026 (superseded; retained as corroboration)",
+    "entity_note": "HomeChoice International plc was renamed Weaver Fintech Ltd (JSE: WVR). FY2024 documents carry the old name, FY2025 documents the new one."
+  },
+  "disclosed": {
+    "gmv_by_fy_rm": {
+      "2021": 204.0,
+      "2022": 747.0,
+      "2023": 1527.0,
+      "2024": 3924.0
+    },
+    "cumulative_gmv_chart_rbn": {
+      "2022": 0.9,
+      "2023": 2.4,
+      "2024": 6.3,
+      "2025": 13.1
+    },
+    "cumulative_gmv_rm": 13100.0,
+    "cumulative_transactions": 9400000,
+    "signed_up_customers": 3700000,
+    "frequency_by_fy": {
+      "2021": 1.8,
+      "2022": 2.2,
+      "2023": 2.8,
+      "2024": 3.9,
+      "2025": 4.4
+    },
+    "fy2025_gmv_stated_rm": 7100.0
+  },
+  "cross_checks": {
+    "gmv_since_inception_fy2024_rm": 6402.0,
+    "fy2025_gmv_derived_rm": 6698.0,
+    "fy2025_gmv_stated_rm": 7100.0,
+    "reconciliation_gap_pct": -5.7,
+    "note": "The annual series from the FY2024 report reproduces the FY2025 report's cumulative chart at every shared year, and the derived FY2025 GMV lands within a few per cent of the separately stated R7.1bn. Two documents, two presentations, one quantity."
+  },
+  "derivation": {
+    "average_order_value_nominal": 1393.62,
+    "gmv_weighted_vintage_year": 2024.23,
+    "deflator_applied": 1.4047
+  },
+  "corroboration": {
+    "trade_press_nominal": 1568.0,
+    "trade_press_vintage": 2026,
+    "trade_press_2017_rands": 1037.68,
+    "gap_pct": 4.6,
+    "note": "Two independent South African sources \u2014 a listed-issuer disclosure and trade press \u2014 land within a few per cent of each other once both are deflated to 2017 Rands. Neither is fitted to anything."
+  },
+  "superseded_metric": {
+    "figure": "FY2024 IAR: 'Frequency is up to 2.12 per annum, average spending up 21% to 7 000'",
+    "why_dropped": "RESOLVED 2026-08-13 and no longer used. Read as a BNPL order value it implies R7,000/2.12 = R3,302, which contradicts the R1,394 the cumulative aggregates give and would be anomalously high for South African apparel and homeware checkouts. It is a GROUP-WIDE fintech metric: Weaver cross-sells personal lending, a wallet and insurance alongside BNPL, so R7,000 across 2.12 transactions describes a blended portfolio, not a BNPL basket. The FY2025 report settles it by publishing a BNPL-SPECIFIC frequency series (1.8x to 4.4x), which is what this file now uses."
+  },
+  "international_levels": {
+    "united_states": {
+      "value": 135.0,
+      "currency": "USD",
+      "source": "cfpb2025bnpl",
+      "year": 2025
+    },
+    "australia": {
+      "value": 147.0,
+      "currency": "AUD",
+      "source": "asic2020rep672",
+      "year": 2020
+    },
+    "united_kingdom_low": {
+      "value": 88.0,
+      "currency": "GBP",
+      "source": "woolard2021",
+      "year": 2021
+    },
+    "united_kingdom_high": {
+      "value": 110.0,
+      "currency": "GBP",
+      "source": "woolard2021",
+      "year": 2021
+    }
+  },
+  "international_note": "Levels in three currencies; none transfers. The transferable object is the ratio to median monthly household income. Pin the income denominators to each jurisdiction's official statistic before publishing that table.",
+  "model_target": {
+    "mean_purchase_2017_rands": 992.1,
+    "annual_volume_per_active_user_2017_rands": 4260.93,
+    "annual_volume_per_signed_up_user_2017_rands": 1333.41,
+    "volume_band_note": "The frequency rate's denominator is not defined in the source, so the volume target is a BAND, not a point. The upper bound assumes frequency is per ACTIVE BNPL customer; the lower divides FY2025 GMV by all SIGNED-UP customers, most of whom are dormant. Compare the model's volume per ADOPTING household against the upper bound and per ELIGIBLE household against the lower."
+  }
+}

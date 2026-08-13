@@ -1,0 +1,50 @@
+{
+  "source": "Statistics South Africa, Income and Expenditure Survey 2022/2023 household microdata (DataFirst zaf-statssa-ies-2022-2023-v1), COICOP 2018.",
+  "n_households": 19940,
+  "weighted_households": 21282824,
+  "vintage_note": "Only a RATIO is taken from this survey, never a money amount, so the 2022/23 vintage cannot contaminate the 2017-Rand model. Identical treatment to the FinScope 2019 categorical flags in P2.",
+  "category_mapping": {
+    "included": {
+      "3": "all",
+      "5": [
+        51,
+        52,
+        53,
+        54,
+        55
+      ],
+      "8": [
+        81
+      ],
+      "9": [
+        91,
+        92
+      ]
+    },
+    "excluded_note": "05.6 routine household maintenance, 08.2-08.3 software and communication services, and all service groups in 09."
+  },
+  "drift_check": {
+    "clothing_footwear_pct_of_consumption": 5.182,
+    "statssa_published_pct": 5.0
+  },
+  "aggregates_pct_of_comparable_total": {
+    "food": 20.185,
+    "actual_rent": 6.472,
+    "discretionary": 73.342,
+    "bnpl_financeable": 10.174
+  },
+  "by_expenditure_quintile": {
+    "Q1": 0.195664,
+    "Q2": 0.224685,
+    "Q3": 0.217286,
+    "Q4": 0.200051,
+    "Q5": 0.110325
+  },
+  "robustness": {
+    "share_excluding_division_09": 0.136307,
+    "note": "Division 09 moves the share by well under a percentage point."
+  },
+  "model_target": {
+    "bnpl_financeable_share_of_discretionary": 0.138721
+  }
+}

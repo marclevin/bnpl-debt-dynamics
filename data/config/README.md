@@ -1,5 +1,162 @@
 # Config: sourced external parameters
 
+## `cpi_deflator_2017.json`
+
+**Every monetary quantity in this model is 2017 Rands** — the NIDS backbone, the Reg 23A expense
+table, the CCMR arrears targets, the statutory rates at the 2017 repo rate. The BNPL parameters were
+the exception until the 2026-08-12 QA pass: purchase size, the Payflex per-order cap and the Payflex
+late fees were all taken at **current vintage** and used unadjusted, denominating the BNPL side of
+the model roughly **1.4× too high** against everything it interacts with (DEFECTS.md **B29**).
+
+This file is the single documented factor that fixes it, applied once in `simulation/config.py` so a
+published nominal figure and the 2017-Rand value the model uses cannot drift apart.
+
+Source: Statistics South Africa, *Consumer Price Index*, statistical release **P0141**, headline CPI,
+**annual average** basis. The annual average is the right basis because the quantities being
+deflated are averages over a year — an average order value, a tariff in force across a year — not
+point-in-time observations.
+
+| From 2017 to | Factor | Used for |
+| --- | ---: | --- |
+| 2024 | 1.3942 | the GMV-weighted vintage of the derived average order value |
+| 2025 | 1.4391 | the FY2025 volume anchors |
+| mid-2026 | 1.5111 | the published Payflex terms and the trade-press basket |
+
+**The 2026 figure is a published anchor, not a part-year guess** (pinned 2026-08-13). 2026 has no
+annual average yet, and the Payflex terms are a mid-year source, so what is needed is the mid-2026
+price level. The **June 2026 release** gives it: headline index **107.5** (Dec 2024 = 100) and
+**5.0%** year-on-year. The year-on-year rate is exactly the right multiplier, because an annual
+average sits at the mid-point of its year under smooth price movement — so the 2025 annual average
+*is* approximately the mid-2025 level, and June 2026 is twelve months later.
+
+### The drift check that narrows the `% VERIFY`
+
+The published June 2026 index can be compared against what the compounded rate chain implies for the
+same date. It implies **106.68** against a published **107.5**, a **−0.77%** gap, which the script
+asserts against a 1.5% tolerance. The residual comes from approximating each year's average by its
+mid-point; it is recorded rather than tuned away, and it bounds the error on a factor of ~1.5 at
+well under one per cent.
+
+⚠ The 2018–2025 annual averages are still from published releases rather than re-derived from
+**P0141 Table B1** (statssa.gov.za blocks automated retrieval; Table B1 sits in the appendix of each
+monthly release). But they are now constrained by **two independent checks** — the 2024 rate against
+Stats SA's own published 4,4% statement, and the whole chain against the June 2026 index. Pin to
+Table B1 when convenient; the flag is narrow, not open-ended.
+
+**Rebasing.** Stats SA rebased at Dec 2016, Dec 2021 and Dec 2024 = 100. Index numbers either side
+of a rebase are not directly comparable without the published linking factors. This chain is built
+from annual **rates**, which are rebase-invariant, so the issue does not arise.
+
+Regenerate with:
+
+```
+python notebooks/scripts/extract_cpi_deflator.py
+```
+
+---
+
+## `ies_2022_bnpl_share.json`
+
+Supplies **`kappa`**, the share of a household's discretionary budget spent on the categories BNPL
+actually finances, which is what sizes a BNPL purchase in D4. It replaces a flat national constant
+of R1,568 taken from trade press, which was the model's single largest driver of output and was also
+**127% of the median banked Q1 household's monthly discretionary budget** (DEFECTS.md **B24/B30**).
+
+Source: Statistics South Africa, *Income and Expenditure Survey 2022/2023* household microdata
+(DataFirst `zaf-statssa-ies-2022-2023-v1`), COICOP 2018, 19,940 households weighted to ~21.3m.
+
+Mapping — apparel, homeware and appliances, consumer electronics and sporting goods, which is what
+both major providers' merchant networks sell:
+
+| COICOP 2018 | Included |
+| --- | --- |
+| 03 | Clothing and footwear, in full |
+| 05.1–05.5 | Furniture, textiles, appliances, utensils, tools |
+| 08.1 | ICT equipment — devices, **not** airtime or data |
+| 09.1–09.2 | Recreational durables and other recreational goods |
+
+Deliberately excluded: 05.6 routine household maintenance, 08.2–08.3 software and communication
+services, and every service group in 09. Division 09 moves the result by under a quarter of a
+percentage point either way, which the script reports.
+
+**Result: 13.87% of discretionary expenditure.** The denominator matches the model's own
+`expenditure_discretionary` definition — total consumption less food (division 01) and less actual
+rentals (04.1) — with imputed rentals (04.2) removed from both sides, since NIDS non-food
+expenditure carries no imputed rent for owner-occupiers.
+
+The script asserts Stats SA's published headline for this survey — clothing and footwear at **5.0%**
+of total household consumption expenditure, against **5.18%** extracted — so it cannot silently
+drift. Regenerate with:
+
+```
+python notebooks/scripts/extract_ies_bnpl_share.py
+```
+
+### ⚠ Vintage: a ratio, never an amount
+
+The survey is 2022/23 and the model is 2017. **Only a ratio is taken, never a money amount**, so the
+vintage cannot contaminate the model. This is the identical argument already made and accepted for
+the FinScope 2019 categorical flags in P2, and it is the reason the level comes from elsewhere.
+
+### The share is flat across Q1–Q4 and lower at the top
+
+By expenditure quintile: **0.196, 0.225, 0.217, 0.200, 0.110**. The near-flatness across the first
+four quintiles is what makes a single proportional `kappa` defensible; Q5's lower share is the one
+place a single ratio does violence to the data, and is worth a sentence. The value used is the
+**aggregate** ratio (0.1387), not the mean of household ratios — the same choice, for the same
+reason, as the aggregate debt-to-income statistic in B19b: a mean of ratios over a population with
+near-zero denominators is not a meaningful measure.
+
+---
+
+## `bnpl_anchors_2017.json`
+
+**Validation targets, not inputs.** Quantities the model is checked against *after* the purchase
+rule above has already fixed its own scale from IES.
+
+**Primary source (pinned 2026-08-13): Weaver Fintech, *Integrated Report 2025*, page 14**, the
+"Profitable BNPL network" panel. PayJustNow is the BNPL business in that group and one of the four
+SA platforms the model represents. ⚠ The entity was renamed: **HomeChoice International plc → Weaver
+Fintech Ltd (JSE: WVR)**.
+
+One page discloses all of it: cumulative BNPL GMV **R13.1bn**, cumulative transactions **9.4m**,
+**3.7m signed-up customers**, and an annual frequency series of **1.8x, 2.2x, 2.8x, 3.9x, 4.4x**
+(FY2021–FY2025). **No document states an average order value** — it falls out of dividing two
+disclosed aggregates, which is why this is an extraction script rather than a citation.
+
+| Target | 2017 Rands | Derivation |
+| --- | ---: | --- |
+| Mean BNPL purchase | **R992** | R13.1bn ÷ 9.4m, deflated at the GMV-weighted vintage (2024.2) |
+| Volume per **signed-up** user per year | **R1,333** | FY2025 GMV R7.1bn ÷ 3.7m signed-up |
+| Volume per **active** user per year | **R4,261** | 4.4 × R992 |
+
+**The volume target is a band, not a point**, because the frequency rate's denominator is not
+defined on the page. Compare the model's volume per **adopting** household against the upper bound
+and per **eligible** household against the lower.
+
+**Two cross-checks are asserted.** The FY2024 annual GMV series must reproduce this report's
+cumulative chart at every shared year (R0.9bn, R2.4bn, R6.3bn) — two documents, two presentations,
+one quantity. And the derived FY2025 GMV must land near the separately stated R7.1bn; it comes in at
+R6.7bn, a −5.7% gap recorded rather than tuned away.
+
+### ⚠ The R7,000 metric is dropped, and why
+
+The FY2024 report states *"Frequency is up to 2.12 per annum, average spending is up 21% to 7 000."*
+Read as a BNPL order value that implies R3,302 — contradicting the R1,394 the cumulative aggregates
+give, and anomalously high for South African apparel and homeware checkouts. It is a **group-wide
+fintech metric**: Weaver cross-sells personal lending, a wallet and insurance alongside BNPL, so
+R7,000 across 2.12 transactions describes a blended portfolio, not a basket. The FY2025 report
+settles it by publishing a **BNPL-specific** frequency series, which is what this file now uses.
+
+This band is the check the thesis previously lacked entirely, and it is what turns B25's "these
+volumes look implausible" into a measured statement.
+
+```
+python notebooks/scripts/extract_bnpl_anchors.py
+```
+
+---
+
 ## `qlfs_2017_labour_flows.json`
 
 Supplies the **plausibility band for the fitted income-shock probability `p`** (D1), and underpins
