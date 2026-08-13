@@ -33,8 +33,21 @@ than only in accompanying text.
 %   - default horizon k: 7 ticks = 98 days, fixed by CCMR band mapping
 %   - q_base, beta: UNCALIBRATED, swept, beta=0 always reported
 %   - platform count: 4 baseline, swept 1-6
-%   - BNPL per-order cap: R15,000, Payflex terms
-%   - BNPL late fee: R95/week, capped 3 weeks (R285), Payflex terms
+%   - BNPL purchase size: kappa = 0.1387 x household monthly discretionary expenditure,
+%     DERIVED from Stats SA IES 2022/23 COICOP microdata; swept 0.07-0.28; base swept
+%     discretionary/income. Validated (NOT fitted) against R992, the average order value
+%     derived from PayJustNow's disclosed cumulative GMV and transaction count.
+%   - BNPL rolling limit: lambda = 0.25 x household MONTHLY INCOME, per household.
+%     No SA provider publishes a level; the functional form comes from HomeChoice's
+%     audited "low and grow" disclosure. Swept 0.1-1.0 against a 0.10-0.26 external band
+%     (Woolard, ASIC REP 672). Binding rate reported BY QUINTILE.
+%   - BNPL per-order cap: R15,000 nominal (Payflex terms) -> R9,927 in 2017 Rands
+%   - BNPL late fee: R95/week, capped 3 weeks (R285) nominal -> R125.74/tick, cap
+%     R188.61, in 2017 Rands
+%   ⚠ ALL BNPL Rand figures are published at current vintage and are deflated to 2017
+%     Rands by a single sourced CPI factor (data/config/cpi_deflator_2017.json). The
+%     table MUST show both the published nominal figure and the 2017-Rand value used,
+%     or a reader checking against Payflex's website will think the model is wrong.
 %   - banked eligibility ceiling: 83.1%, observed from the data layer
 %   - repurchase rate: 7.00% (2017), static
 %   - NCA statutory maxima by sub-sector: credit facilities 21%, other agreements 24%,

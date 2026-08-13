@@ -291,16 +291,20 @@ granovetter1978threshold} & Neither parameter calibratable. \textbf{$\beta=0$ co
 in every result} \\
 \addlinespace
 12. \ac{BNPL} eligibility & Banked households only. Light automated screen, deliberately not the
-Regulation 23A test. Per-order cap R15{,}000 & \cite{payflex_terms, payjustnow_terms} & Access
-capped at 83.1\% of the population by observed data. Sweep runs inside the banked subpopulation \\
+Regulation 23A test. Per-order cap R15{,}000 nominal (R9{,}927 in 2017 Rands); rolling available
+balance set \emph{per household} at $\lambda$ months of income & \cite{payflex_terms,
+payjustnow_terms, homechoice2024ir} & Access capped at 83.1\% of the population by observed data.
+Sweep runs inside the banked subpopulation. $\lambda$ swept 0.1--1.0, reported against a
+0.10--0.26 external band \cite{woolard2021, asic2020rep672}; binding rate reported by quintile \\
 \addlinespace
 13. Stacking & Concurrent facilities across platforms with no aggregate limit. Platforms cannot
 observe one another & Follows Submodel~10 & Platforms swept 1--6, baseline 4. Checked against
 \ac{CFPB} 63\% simultaneous / 32\% cross-firm \\
 \addlinespace
 14. \ac{BNPL} repayment & Pay in 4: 25\% at checkout then 25\% at each of the next three ticks,
-interest free. Late fee R95 per week capped at three weeks & \cite{payflex_terms} & No free
-parameter. Instalments land exactly on tick boundaries \\
+interest free. The checkout debit must clear, or the purchase is declined. Late fee R95 per week
+capped at three weeks, nominal (R125.74 per tick, capped at R188.61, in 2017 Rands) &
+\cite{payflex_terms} & No free parameter. Instalments land exactly on tick boundaries \\
 \addlinespace
 15. Intervention levers & Bureau visibility; mandatory Regulation 23A check on \ac{BNPL}; 14-day
 cool-off; cap on concurrent facilities & \cite{fca_ps26_1, woolard2021} & Each on/off. Cool-off

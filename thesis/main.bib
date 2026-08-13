@@ -1,7 +1,7 @@
 % ============================================================================
 % main.bib — BNPL ABM mini-thesis
 %
-% Organised by the three anchor literatures named in scratchpad/work.md:
+% Organised by the three anchor literatures named in scratchpad/DECISIONS.md:
 %   [ABM]    agent-based models of credit / household finance
 %   [BNPL]   empirical + regulatory evidence on BNPL
 %   [BEHAV]  behavioural economics of borrowing and repayment
@@ -13,7 +13,7 @@
 
 
 % ---------------------------------------------------------------------------
-% [METHOD] ABM documentation standard — anchors decision_rules.md §"ODD"
+% [METHOD] ABM documentation standard — anchors DECISIONS.md Part I, the ODD structure
 % ---------------------------------------------------------------------------
 
 @article{grimm2006odd,
@@ -308,7 +308,12 @@
   howpublished = {\url{https://payflex.co.za/terms-conditions/}},
   note         = {Pay in 4: 25\% at checkout then three further 25\% instalments every
                   two weeks over six weeks, interest free; late fee R95 per week capped
-                  at three weeks; automated credit assessment; orders capped at R15,000}
+                  at three weeks; automated credit assessment; orders capped at R15,000.
+                  \textbf{All Rand figures here are NOMINAL at 2026 vintage} and are
+                  deflated to 2017 Rands before use (statssa\_cpi), since every other
+                  quantity in the model is in 2017 Rands. The product MECHANICS --- four
+                  instalments, fortnightly, zero interest, a three-week fee cap --- are
+                  vintage-free and are used as published}
 }
 
 @misc{payjustnow_terms,
@@ -338,7 +343,30 @@
   institution = {Financial Conduct Authority},
   year        = {2021},
   note        = {26 recommendations; initiated the process of bringing BNPL within
-                 FCA regulation. \% VERIFY exact report title and pagination}
+                 FCA regulation. Also reports average \ac{BNPL} transaction values of
+                 \pounds88 and \pounds110, and finds it ``relatively easy'' to accrue
+                 around \pounds1,000 of \ac{BNPL} debt invisible to credit reference
+                 agencies --- the latter used in Submodel~12 as the external band for
+                 the per-provider rolling limit, since a stacked total across providers
+                 is roughly 40\% of UK median monthly household income.
+                 \% VERIFY exact report title and pagination}
+}
+
+@techreport{asic2020rep672,
+  title       = {Buy now pay later: An industry update},
+  author      = {{Australian Securities and Investments Commission}},
+  institution = {Australian Securities and Investments Commission},
+  type        = {Report},
+  number      = {672},
+  year        = {2020},
+  month       = nov,
+  url         = {https://www.asic.gov.au/regulatory-resources/find-a-document/reports/rep-672-buy-now-pay-later-an-industry-update/},
+  note        = {Six Australian \ac{BNPL} providers. Average transaction value of A\$147
+                 for the lowest-value provider; 21\% of surveyed users missed a payment
+                 in the prior year. Used in Submodel~4 as one of the three regulator
+                 figures behind the purchase-size RATIO benchmark: the levels are in
+                 three currencies and do not transfer, but normalised by median monthly
+                 household income the US and Australian figures both sit near 2\%}
 }
 
 
@@ -456,12 +484,129 @@
   author       = {{Ecommerce Development}},
   year         = {2026},
   howpublished = {\url{https://www.ecommercedevelopment.co.za/buy-now-pay-later-south-africa/}},
-  note         = {Average South African \ac{BNPL} basket $\approx$ R1,568.
+  note         = {Average South African \ac{BNPL} basket $\approx$ R1,568 (nominal, 2026).
                   \% VERIFY: trade press, not a provider disclosure or a regulator
-                  statistic, and at current vintage against a 2017 population. Weak, and
-                  the weakest source cited in the thesis; retained only because it is the
-                  sole SA-specific figure for \ac{BNPL} purchase size. Cross-checked
-                  against cfpb2025market}
+                  statistic. \textbf{DEMOTED 2026-08-12}: no longer a model input. It was
+                  the load-bearing source for \ac{BNPL} purchase size and the model's
+                  single largest driver of output; purchase size is now derived from
+                  household expenditure (statssa\_ies\_2023) and validated against a
+                  listed-issuer disclosure (homechoice2024ir, weaver2025results).
+                  Deflated to 2017 Rands it gives R1,038 against that disclosure's R992,
+                  so it is retained as the CORROBORATING second South African source}
+}
+
+% --- The South African purchase-size anchor (Submodel 4) ---------------------
+% Derived, not quoted: neither document states an average order value. It falls out of
+% dividing two disclosed aggregates, which is why extract_bnpl_anchors.py is an
+% extraction script with the sources' own cross-checks asserted.
+
+@techreport{homechoice2024ir,
+  title       = {Integrated Report 2024},
+  author      = {{HomeChoice International plc}},
+  institution = {HomeChoice International plc},
+  year        = {2025},
+  url         = {https://www.weaverfintech.com/wp-content/uploads/2025/07/HiL_2024_IAR-1.pdf},
+  note        = {Listed issuer; PayJustNow is the \ac{BNPL} business in the group and one
+                 of the four South African platforms the model represents. \ac{BNPL}
+                 gross merchandise value by financial year: R204m (FY2021), R747m
+                 (FY2022), R1,527m (FY2023), R3,924m (FY2024), against the group's own
+                 ``>R6bn since inception'' statement --- and reproducing the cumulative
+                 chart in weaver2025iar at every shared year. ⚠ This report's
+                 ``frequency 2.12 per annum, average spending R7,000'' metric is
+                 \textbf{group-wide fintech spend per customer, not a \ac{BNPL} basket},
+                 and is NOT used: read as an order value it would imply R3,302, which
+                 contradicts the R1,394 the cumulative aggregates give and would be
+                 anomalously high for South African apparel and homeware checkouts.
+                 weaver2025iar supersedes it with a \ac{BNPL}-specific frequency series.
+                 The credit-risk section states a
+                 ``low and grow'' limit policy --- first-time customers start with lower
+                 limits, which are increased as customers exhibit good repayment
+                 behaviour --- which is the audited basis for modelling the rolling limit
+                 as a function of household characteristics rather than as a constant}
+}
+
+@misc{weaver2025results,
+  title        = {Condensed consolidated group financial results for the year ended
+                  31 December 2025 and cash dividend declaration},
+  author       = {{Weaver Fintech Limited}},
+  year         = {2026},
+  month        = mar,
+  howpublished = {SENS announcement, Johannesburg Stock Exchange, 10 March 2026},
+  note         = {Results announcement for the year in which \ac{BNPL} cumulative
+                  gross merchandise value reached R13.1bn. Superseded as the anchor
+                  source by weaver2025iar, which carries the same figures on a single
+                  charted panel together with the transaction count and frequency series}
+}
+
+@techreport{weaver2025iar,
+  title       = {Integrated Report 2025},
+  author      = {{Weaver Fintech Limited}},
+  institution = {Weaver Fintech Limited},
+  year        = {2026},
+  url         = {https://www.weaverfintech.com/wp-content/uploads/2026/04/Weaver-Fintech-IAR-2025.pdf},
+  note        = {\textbf{PRIMARY SOURCE for South African \ac{BNPL} purchase size and
+                 volume.} Page 14, ``Profitable BNPL network'': cumulative \ac{BNPL}
+                 \ac{GMV} of R13.1bn over \textbf{9.4m cumulative transactions}, giving a
+                 DERIVED average order value of R1,394 nominal and \textbf{R992 in 2017
+                 Rands} at the \ac{GMV}-weighted vintage; \textbf{3.7m signed-up \ac{BNPL}
+                 customers}; and an annual purchase \textbf{frequency series of 1.8x, 2.2x,
+                 2.8x, 3.9x, 4.4x} for FY2021--FY2025. The same page states FY2025 \ac{GMV}
+                 at retailer partners grew 80\% to R7.1bn, over 3,400 retailers and 12,000
+                 points of presence. The frequency series is \ac{BNPL}-specific and
+                 supersedes the group-wide metric in homechoice2024ir. Its denominator is
+                 not defined on the page, so the volume target is reported as a BAND.
+                 Entity formerly HomeChoice International plc; renamed Weaver Fintech Ltd
+                 (JSE: WVR). Extracted by
+                 notebooks/scripts/extract\_bnpl\_anchors.py to
+                 data/config/bnpl\_anchors\_2017.json, which asserts the annual \ac{GMV}
+                 series of homechoice2024ir against this report's cumulative chart}
+}
+
+% --- Deflator and expenditure microdata (Submodels 4 and 12) -----------------
+
+@techreport{statssa_cpi,
+  title       = {Consumer Price Index},
+  author      = {{Statistics South Africa}},
+  institution = {Statistics South Africa},
+  type        = {Statistical release},
+  number      = {P0141},
+  year        = {2026},
+  month       = jun,
+  url         = {https://www.statssa.gov.za/publications/P0141/P0141June2026.pdf},
+  note        = {Headline \ac{CPI}. Supplies the single documented factor converting
+                 current-vintage \ac{BNPL} figures into the 2017 Rands every other
+                 quantity in the model is denominated in: \textbf{2017 to 2025 is a
+                 factor of 1.4391, and 2017 to mid-2026 is 1.5111}. The June 2026 release
+                 gives the mid-year anchor directly --- headline index \textbf{107.5}
+                 (Dec 2024 = 100) and \textbf{5.0\%} year-on-year --- which removes the
+                 part-year assumption the 2026-vintage Payflex figures previously rested
+                 on. Extracted by notebooks/scripts/extract\_cpi\_deflator.py to
+                 data/config/cpi\_deflator\_2017.json. Stats SA rebased at Dec 2016,
+                 Dec 2021 and Dec 2024 = 100; the chain is built from annual RATES, which
+                 are rebase-invariant, so no linking factors are required.
+                 \% VERIFY (narrowed): the 2018--2025 annual averages are from published
+                 releases rather than re-derived from Table B1, but are now constrained by
+                 two independent checks --- the 2024 rate against Stats SA's published
+                 4,4\% statement, and the whole compounded chain against the published
+                 June 2026 index, which it reproduces to within 0.8\%}
+}
+
+@misc{statssa_ies_2023,
+  title        = {Income and Expenditure Survey 2022/2023},
+  author       = {{Statistics South Africa}},
+  year         = {2023},
+  howpublished = {Household microdata, DataFirst zaf-statssa-ies-2022-2023-v1,
+                  University of Cape Town},
+  url          = {https://www.datafirst.uct.ac.za/dataportal/index.php/catalog/1116},
+  note         = {19,940 households, COICOP 2018 coded. Supplies the BNPL-financeable
+                  share of household discretionary expenditure (13.87\%) that sizes
+                  \ac{BNPL} purchases in Submodel~4. Only a RATIO is taken, never a money
+                  amount, so the 2022/23 vintage cannot contaminate the 2017-Rand model
+                  --- the identical treatment applied to the finscope2019 categorical
+                  flags. Extracted by notebooks/scripts/extract\_ies\_bnpl\_share.py,
+                  which asserts Stats SA's own published headline for this survey
+                  (clothing and footwear at 5.0\% of consumption; extraction gives
+                  5.18\%)}
 }
 
 @misc{nortonrose_bnpl_sa,
