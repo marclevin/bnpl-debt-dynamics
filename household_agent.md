@@ -115,7 +115,7 @@ size we can re-run many times.
 
 **Households do now interact.** Each agent belongs to a **reference group** (income quintile ×
 province, the same cell as the FinScope match) and its want-driven BNPL adoption probability rises
-with the group's adoption share. See [`scratchpad/decision_rules.md`](scratchpad/decision_rules.md)
+with the group's adoption share. See [`scratchpad/DECISIONS.md`](scratchpad/DECISIONS.md)
 D17. The channel is inert until BNPL is switched on, and `beta = 0` turns it off entirely.
 
 The four behavioural validation targets **are** now sourced (see [`OVERVIEW.md`](OVERVIEW.md) §7).
@@ -126,6 +126,6 @@ BNPL-provider data is an upside, not a dependency.
 ## See also
 
 - [`OVERVIEW.md`](OVERVIEW.md): living source of truth (strategy + execution plan).
-- [`scratchpad/variables.md`](scratchpad/variables.md): full column-level variable list.
-- [`scratchpad/data_fusion.md`](scratchpad/data_fusion.md): the simple cell-donor matching method.
-- [`scratchpad/decision.md`](scratchpad/decision.md): why each decision was made.
+- [`scratchpad/DECISIONS.md`](scratchpad/DECISIONS.md): full column-level variable list.
+- [`scratchpad/DECISIONS.md`](scratchpad/DECISIONS.md): the simple cell-donor matching method.
+- [`scratchpad/DECISIONS.md`](scratchpad/DECISIONS.md): why each decision was made.

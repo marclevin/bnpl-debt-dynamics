@@ -1,11 +1,19 @@
-# Thesis Issue Register
+# DEFECTS — everything wrong, or once wrong, with evidence
 
-Defect and shortfall register for the mini-thesis, raised in the full-document review of
-**2026-08-05**. This file is the record; fixes are tracked here, not in commit messages.
+**One of three working documents.** [`DECISIONS.md`](DECISIONS.md) is *what was chosen and why*.
+[`DEFECTS.md`](DEFECTS.md) is *what is wrong or was wrong*. [`PLAN.md`](PLAN.md) is *what happens
+next*. Consolidated 2026-08-13 from nine overlapping files.
 
-Companion to [`../OVERVIEW.md`](../OVERVIEW.md) (strategy) and
-[`decision.md`](decision.md) (design rationale). Where an issue changes a design decision,
-close it *here* and propagate to those files.
+Raised in the full-document review of **2026-08-05** and extended continuously since. This file is
+the record; fixes are tracked here, not in commit messages. Where an issue changes a design
+decision, close it *here* and propagate to [`DECISIONS.md`](DECISIONS.md) and
+[`../OVERVIEW.md`](../OVERVIEW.md).
+
+> **The four entries that matter most right now**, if you read nothing else:
+> **B20** (the shock rate is 4x observed labour-market flows — the model's worst *disclosed*
+> weakness), **B22** (RQ2's registered hypothesis is unsupported, and the fallback finding may have
+> evaporated too), **B24** (the sensitivity ranking is superseded and must be regenerated), and
+> **B31** (a wiring detail that would corrupt the Granovetter run if not decided first).
 
 **Line references** are against `thesis/main.tex` as at commit `47e57d0`. They will drift once
 the restructure (D1) lands; re-anchor at that point.
@@ -20,16 +28,30 @@ the restructure (D1) lands; re-anchor at that point.
 
 ## Standing at a glance
 
-| Group | Count | Open | Closed | Blockers open |
-| --- | --- | --- | --- | --- |
-| A. Completeness | 5 | 3 | 2 | 3 |
-| B. Substantive / methodological | 12 | 5 | 7 | 0 |
-| C. Evidence and citation | 7 | 3 | 4 | 0 |
-| D. Mechanical and structural | 6 | 1 | 5 | 0 |
-| E. Writing register | 5 | 0 | 5 | 0 |
-| F. Length and condensation | 5 | 0 | 5 | 0 |
-| G. Record-keeping hygiene | 3 | 0 | 3 | 0 |
-| **Total** | **43** | **12** | **31** | **3** |
+Re-tallied from the entry headings on **2026-08-12**.
+
+| Group | Count | Open | Closed | Superseded |
+| --- | ---: | ---: | ---: | ---: |
+| A. Completeness | 5 | 5 | 0 | 0 |
+| B. Substantive / methodological | 32 | 21 | 10 | 1 |
+| C. Evidence and citation | 7 | 7 | 0 | 0 |
+| D. Mechanical and structural | 6 | 6 | 0 | 0 |
+| E. Writing register | 4 | 4 | 0 | 0 |
+| F. Length and condensation | 5 | 5 | 0 | 0 |
+| G. Record-keeping hygiene | 3 | 3 | 0 | 0 |
+| **Total** | **62** | **51** | **10** | **1** |
+
+> **⚠ The entry headings disagree with the resolution log below, and the log is right.** The
+> 2026-08-05 document pass closed A3, A4, B1–B12, C1–C5, D1–D4, E1–E5, F1–F5 and G1–G3, but only
+> the log was updated; the `OPEN` markers in the individual headings were never changed. The table
+> above therefore **overstates the open count substantially** — it counts heading text, not status.
+> Several entries are also stale on their facts: **A2 says "the model does not exist"**, which
+> stopped being true when it was built and run.
+>
+> This is a record-keeping defect in the register itself, in the same family as G1/G2. It is called
+> out rather than silently corrected because reconciling 40 headings against the log is a
+> deliberate pass, not a side effect of a parameter fix. **Do it before the register is shown to
+> anyone.** The entries added during and after implementation (B14 onward) carry accurate headings.
 
 Word count at review: **6,265** words of body prose, 24 typeset pages.
 Distribution: Literature Review 1,580 · ABM Design 4,569 · everything else 116.
@@ -372,6 +394,27 @@ requirement — if it rarely binds it is inert, and the sweep demonstrates that.
 bibliography and is retained only because it is the sole SA-specific figure, cross-checked against
 CFPB. If a regulator or provider figure surfaces, replace it.
 
+**⚠ UPDATE 2026-08-12 — a provider figure did surface, and the "cannot be sourced" verdict was
+half wrong.** Two things changed:
+
+- **Purchase size is now sourced.** HomeChoice International plc, a listed issuer, discloses BNPL
+  gross merchandise value; Weaver Fintech discloses cumulative GMV and transaction counts. The
+  average order value falls out of dividing two published aggregates: **R1,394 nominal, R992 in 2017
+  Rands**. The trade-press figure deflates to R1,038, so the two agree within 4.6%. The trade source
+  is **demoted from input to corroboration** (B30). The lesson generalises: search the primary
+  disclosures — listed-issuer reports, regulator returns — before accepting an absence. A support
+  page saying "we don't publish this" is not evidence that the quantity is unobtainable.
+- **The rolling limit is still not published, but its FUNCTIONAL FORM now is.** HomeChoice's audited
+  credit-risk section states a **"low and grow"** policy — first-time customers start with lower
+  limits, which are increased as they exhibit good repayment behaviour, with lower maximum limits
+  for externally-acquired customers. That is an annual report rather than a support page, and it
+  licenses modelling the limit as a *function of household characteristics*, which is what B30 now
+  does. It also licenses a **dynamic** limit that grows with repayment history — recorded as future
+  work, not built, since the static income-scaled rule already retires the vulnerability.
+
+So the absence stands for the **level** and is still worth a sentence in the thesis; it does not
+stand for the **form**, and it never stood for purchase size.
+
 ### B17 · D1's single-tick shock could not carry its own calibration — `MAJOR` · `AGENT` · `CLOSED`
 
 Found 2026-08-12 by running the model. D1 specified the income shock as **non-persistent (single
@@ -585,6 +628,32 @@ Two secondary observations worth reporting:
 amplification, with non-linearity unsupported under linear coupling and still open under the
 threshold variant.
 
+### **UPDATE 2026-08-13: the threshold variant has been run. The negative holds, and is now much stronger.**
+
+Granovetter heterogeneous thresholds **do not produce a cascade either**, and the striking part is
+that they do not even produce one in *adoption*:
+
+| Arm | Adoption rise | Adoption R² | Default rise | Default R² |
+| --- | ---: | ---: | ---: | ---: |
+| `gamma = 0` (control) | +21.1% | **0.9999** | +3.07% | 0.954 |
+| `gamma = 0.3`, `sigma = 0.1` | +42.1% | 0.9994 | +3.62% | 0.995 |
+| `gamma = 0.3`, `sigma = 0.4` | +35.1% | **0.9999** | +3.56% | 0.988 |
+
+The adoption response is **more linear than the default response**. Thresholds fire at the household
+level, but aggregated across 45 reference groups they average into a straight line, at every
+dispersion setting. **Two structurally distinct social mechanisms, and neither produces
+non-linearity in adoption or in default.** That is the robust negative D17 pre-registered this arm
+to obtain.
+
+⚠ **Amplification has collapsed from 4.3× to 1.6×.** Under corrected parameters peer influence
+multiplies the access response by 1.6, not 4.3. The amplification finding survives but is much
+weaker, and **the 4.3× figure must not be quoted anywhere**.
+
+**What replaces both claims** is the adoption-versus-default split, which is a cleaner result than
+either: social transmission roughly **doubles adoption** (21% → 42%) while moving default by about
+**half a percentage point**. People catch BNPL from their peers; they do not catch distress from
+them. Figure: `results/summary/figures/rq2_threshold_adoption_vs_default.png`.
+
 ### B23 · Bureau visibility, the model's headline policy lever, does nothing — `MAJOR` · `BOTH` · `OPEN`
 
 RQ3, 400 runs. Closing the reporting gap (D14 lever 1) has **essentially no effect** on population
@@ -603,7 +672,53 @@ a remedy.** The lever that does work is the mandatory Reg 23A affordability chec
 which cuts default from 32.91% to 28.05% and volume by 15.3% at `beta = 0`. Disclosure without an
 accompanying affordability duty changes who lends, not how much debt is taken on.
 
-### B27 · The statutory cool-off arm is a no-op (off-by-one) — `BLOCKER` · `AGENT` · `OPEN`
+### **CONFIRMED 2026-08-13, and the ranking of the OTHER levers has inverted.**
+
+**The null result survives a complete parameter rebuild**, which is the strongest thing that could
+have happened to it: bureau visibility moves cumulative BNPL volume by **+1.9%** at `beta = 0` and
+**−1.0%** at `beta = 1`. Still nothing. This is the finding to lead the thesis with.
+
+⚠ **But the affordability duty is no longer the lever that works.** It has gone from cutting default
+4.9pp to roughly inert (+1.9% / −1.4% on volume). The most effective lever is now the **stacking
+cap**, which cuts volume 54–63% and pulls default back to 24.6%, against a 24.2% no-BNPL baseline.
+
+**Plausible mechanism, worth checking before RQ3 is written.** With income-scaled limits already
+binding on ~54% of requests, an affordability test adds little that the limit is not already doing,
+whereas capping concurrent facilities attacks the stacking mechanism directly. If that holds, the
+policy story sharpens considerably: **the harm is in the NUMBER of concurrent facilities, not in any
+single loan being unaffordable**, which is exactly why per-loan instruments fail and a cap works.
+⚠ The cap remains **hypothetical** — no jurisdiction imposes one — and must stay labelled as such.
+
+**The corrected statutory cool-off (B27) behaves as predicted:** `k_cool = 1` gives −0.2% volume at
+`beta = 0` and **−33.5%** at `beta = 1`, against a pre-run prediction of −30.4%. "Close to useless
+against individual impulse, materially effective against social transmission" is confirmed.
+
+### B27 · The statutory cool-off arm is a no-op (off-by-one) — `BLOCKER` · `AGENT` · `CLOSED`
+
+**Closed 2026-08-12.** The gate in [`agents.py`](../simulation/agents.py) is now strict
+(`tick > cool_off_until`), so `k_cool = n` blocks want-driven initiation for exactly the next `n`
+ticks and `k_cool = 1` is the statutory 14-day arm as D14 always intended.
+
+**The regression test the suite was missing** is
+`test_statutory_cool_off_strictly_reduces_want_driven_purchases` in
+[`test_bnpl_parameters.py`](../simulation/tests/test_bnpl_parameters.py). Two changes from the old
+test, and both were necessary:
+
+- it asserts a **strict** reduction, which a no-op cannot satisfy;
+- it asserts on the **want-driven purchase count**, not on cumulative volume. Volume mixes in the
+  shortfall-driven path, which the cool-off deliberately does not block (D14), so volume was never
+  the quantity the lever acts on. A second test checks the count is monotonically non-increasing
+  across `k_cool ∈ {0,1,2,4}`.
+
+The old `test_cool_off_cannot_increase_bnpl_volume` is **kept**, with a comment recording that it is
+necessary but not sufficient and why. That comment is the useful artefact: it is the reason the
+defect survived 65 passing tests and a full experimental run.
+
+⚠ The corrected RQ3 numbers are **not yet measured** — they arrive with the re-run. The expectation
+from the old `k_cool = 2` arm (−2.6% volume at β=0, −30.4% at β=1) is now itself uncertain, because
+B28/B29/B30 changed the model underneath it.
+
+### B27-original · The statutory cool-off arm is a no-op (off-by-one) — historical record
 
 Found 2026-08-12 while reading the RQ3 output. In `simulation/agents.py` a want-driven purchase at
 tick `t` sets `cool_off_until = t + k_cool`, and the gate is `tick >= cool_off_until`. With
@@ -624,8 +739,207 @@ result than the one currently in the output.
 volume does not *increase*, which a no-op satisfies trivially. Fix requires a regression test that
 `k_cool = 1` **strictly reduces** want-driven purchase count against `k_cool = 0`.
 
-Plan: [`next_steps.md`](next_steps.md) **P0**. Nothing else in RQ3 is affected — the affordability,
+Plan: [`PLAN.md`](PLAN.md) **P0**. Nothing else in RQ3 is affected — the affordability,
 bureau and stacking-cap arms are unaffected by this bug.
+
+---
+
+## The 2026-08-12 QA pass
+
+Four defects found and closed in one pass, plus one raised for the Granovetter work. Plan and
+evidence: [`PLAN.md`](PLAN.md). All 79 tests pass (65 existing, 14 new).
+
+**The baseline is untouched.** `shock_prob` and `payment_friction` are fitted with `bnpl_enabled =
+False`, and the peer channel is inert in that arm, so **no re-calibration is needed** and the CCMR
+comparison, pattern 3 and pattern 4 all stand exactly as reported. Everything BNPL-on must be
+re-run.
+
+### B28 · Want-driven purchases were partly funded by money that did not exist — `MAJOR` · `AGENT` · `CLOSED`
+
+Found 2026-08-12 reading `agents.py` during the QA pass. In the tick, discretionary spending leaves
+`cash >= 0`, then:
+
+```python
+cash -= self._bnpl_purchase()   # could drive cash NEGATIVE
+...
+self.savings = max(cash, 0.0)   # and the negative was silently discarded
+```
+
+The checkout instalment — 25% of the purchase under D13 — was deducted **without any check that the
+household had it**, and the resulting negative balance was floored away at the state update. A
+household with R0 could make a R1,568 purchase and "pay" the R392 checkout debit out of nothing. No
+arrears were recorded, and D7 distress is assessed earlier in the tick, so nothing caught it.
+
+**Why it mattered beyond tidiness.** The leak is proportional to purchase size, so it was largest
+exactly where purchase size was least plausible (B30, the Q1 households), and it **inflated BNPL
+volume and suppressed measured distress simultaneously**. Part of the purchase-size sensitivity in
+**B24** was therefore an artefact of a budget constraint that was not being enforced.
+
+**Closed by enforcing D13's own mechanics rather than by patching.** Both SA providers debit a card
+at checkout and decline if it fails, so the order is truncated to `cash × n_instalments` and
+abandoned outright if `cash <= 0`. That is a *sourced* rule, not a guard. Three tests: no purchase
+on zero cash, checkout payment never exceeds available cash, and savings never negative across a
+full population run.
+
+### B29 · Every BNPL money parameter was nominal in a 2017-Rand model — `MAJOR` · `AGENT` · `CLOSED`
+
+Found 2026-08-12. The thesis states throughout that all values are **2017 Rands** — the NIDS
+backbone, the Reg 23A expense table, the CCMR targets, the statutory rates at the 2017 repo rate.
+The BNPL parameters were the exception and nobody had noticed:
+
+| Parameter | Was | Vintage | Now (2017 R) |
+| --- | ---: | --- | ---: |
+| `bnpl_purchase_mean` | R1,568 | 2026 trade press | superseded by B30 |
+| `bnpl_order_cap` | R15,000 | 2026 Payflex terms | **R9,927** |
+| `bnpl_late_fee_per_tick` | R190 | 2026 Payflex terms | **R125.74** |
+| `bnpl_late_fee_cap` | R285 | 2026 Payflex terms | **R188.61** |
+
+South African CPI rose **44%** between the 2017 and 2025 annual averages, so the BNPL side of the
+model was denominated roughly 1.4× too high against everything it interacts with. The late-fee pair
+matters more than it looks: R285 per missed instalment per loan, across up to four platforms,
+against a 2017 median household income of R5,500.
+
+Closed with a single sourced deflator in `data/config/cpi_deflator_2017.json`, generated by
+`notebooks/scripts/extract_cpi_deflator.py`, applied once in `config.py` so a published nominal
+figure and the 2017-Rand value the model uses cannot drift apart. The product *mechanics* — four
+instalments, fortnightly, zero interest, a three-week fee cap — are vintage-free and unchanged.
+
+⚠ `% VERIFY` stands on the deflator itself: the annual averages come from published Stats SA
+releases and are not yet re-derived from **P0141 Table B1** index numbers. The 2024 figure is
+asserted against Stats SA's own published 4,4% statement. **Pin the full series before quoting the
+factor in the thesis.**
+
+**Worth reporting, not just fixing.** This is the fourth instance of the pattern already recorded
+for B15, B17 and B18, and the cleanest: the specification was not merely silent, it was internally
+inconsistent with a stated global convention that the rest of the model obeyed.
+
+### B30 · Flat national constants imposed on a population with a Gini of 0.67 — `MAJOR` · `AGENT` · `CLOSED`
+
+Found 2026-08-12. This is the substantive half of **B24**, and it turned out to be a specification
+error rather than a sourcing gap. Measured on the model's own banked households:
+
+| Quintile | Median monthly income | R1,568 as % of income | R1,568 as % of discretionary | R5,000 limit as % of income |
+| --- | ---: | ---: | ---: | ---: |
+| Q1 | R2,300 | **68.2%** | **127.0%** | **217.4%** |
+| Q3 | R4,700 | 33.4% | 79.0% | 106.4% |
+| Q5 | R27,000 | 5.8% | 11.4% | 18.5% |
+
+The model had the poorest banked households making single BNPL purchases worth **more than their
+entire monthly discretionary budget**, on a rolling facility worth **more than two months of income
+at each of four providers independently**. A flat constant that is non-binding for Q5 and absurd for
+Q1 will move the answer enormously when slid across a range, which is a large part of why these two
+parameters topped the sensitivity ranking, and it is the likely mechanism behind **B25**'s
+implausible volumes.
+
+**Closed by making both parameters ratios applied to household characteristics.**
+
+*Purchase size.* `purchase_i ~ LogNormal(mean = kappa × discretionary_monthly_i)`, with **kappa =
+0.1387 DERIVED from Stats SA IES 2022/23 COICOP microdata** — the share of a household's
+discretionary budget spent on the categories BNPL actually finances (clothing and footwear,
+furniture and appliances, ICT devices, recreational durables). Only a ratio is taken from that
+survey, never a money amount, so the 2022/23 vintage cannot contaminate a 2017-Rand model — the
+identical argument already accepted for the FinScope 2019 categorical flags.
+
+*Rolling limit.* `limit_i = lambda × income_monthly_i`, lambda = 0.25, per household rather than per
+platform. Income and **not** Reg 23A capacity: D11's whole point is that the BNPL screen is
+deliberately not the statutory test, and setting BNPL limits from statutory capacity would quietly
+dissolve the asymmetry the thesis exists to study.
+
+**⚠ The convergence is the result here, and it is unfitted.** kappa comes from Stats SA expenditure
+microdata. The check comes from a listed issuer's disclosed BNPL GMV and transaction count. Nothing
+was tuned to anything:
+
+| Quantity | 2017 Rands | Source |
+| --- | ---: | --- |
+| Model's drawn mean purchase (kappa × mean discretionary) | R1,029 | IES 2022/23 |
+| **Realised mean purchase, after limits and the checkout guard bite** | **R872–R883** | model output |
+| **Average order value, PayJustNow** | **R992** | R13.1bn GMV / 9.4m transactions |
+| Average basket, trade press | R1,038 | the superseded source, now corroboration |
+
+The two independent South African sources land 4.6% apart, and the model's realised mean sits just
+below both, which is the right side to be on — real orders are truncated by limits too. `test_bnpl_parameters.py`
+asserts this as a standing validation check.
+
+**Also closed: the volume anchor the thesis never had.** HomeChoice discloses BNPL frequency of
+**2.12 purchases per customer per annum**, giving **R2,103 per user per year in 2017 Rands**. B25's
+"these volumes look implausible" now has a number behind it.
+
+### B31 · The `s_g` denominator would have corrupted the Granovetter arm — `MAJOR` · `AGENT` · `CLOSED`
+
+**Closed 2026-08-13 as Option A.** `_recompute_group_shares` now divides by the group's
+**BNPL-eligible** members rather than all its members. `s_g` therefore means *"what share of the
+people who could use BNPL are using it"* — which is also closer to what a household actually
+observes — and its ceiling no longer moves with `bnpl_access_rate`.
+
+**Measured effect:** peak `s_g` across the run rises from ~0.53 to **0.96** at `beta = 1`. A
+Granovetter threshold drawn on `[0, 1]` is now meaningful across the whole range, and the access
+sweep no longer moves the maximum attainable signal alongside the axis under test.
+
+⚠ **This rescales `beta`**, so linear-arm results are not comparable across the change. Everything
+BNPL-on is being re-run regardless.
+
+**A second determinism fix landed with it.** Drawing `theta_i` from the model's main random stream
+would have shifted every subsequent draw, so `gamma = 0` could only have matched the linear control
+*in distribution*, not bitwise. Agent endowments are now drawn from a **separate `init_rng`**
+stream. Two payoffs: `gamma = 0` reproduces `beta = 0` **exactly**, and sweeping `sigma_theta`
+changes only the thresholds while leaving every shock, purchase and friction draw identical — which
+makes the D17 dispersion sweep a **paired** comparison rather than a noisy one.
+
+Tests: `test_peer_channel.py`, eleven of them, including that the signal reaches high values at 15%
+access and that the linear arm draws no thresholds at all.
+
+### B31-original · The `s_g` denominator will manufacture a false negative — historical record
+
+Raised 2026-08-12 during the QA pass, **before** the threshold variant is built, which is the point
+of raising it now.
+
+`_recompute_group_shares` in [`model.py`](../simulation/model.py) computes the reference-group
+adoption share over **all** group members, including the unbanked and the BNPL-ineligible. `s_g` is
+therefore structurally capped at each group's **eligible share**, which is
+`banked_share_g × bnpl_access_rate`.
+
+**⚠ Measured 2026-08-12, and the first statement of this issue overstated the magnitude.** The claim
+that `s_g` peaks near 0.5 came from reading the population-wide adoption rate, which averages over
+groups and over time. The per-group peaks are much higher. At full access:
+
+| | min | median | max |
+| --- | ---: | ---: | ---: |
+| Structural ceiling (eligible share by group) | 0.444 | 0.836 | 1.000 |
+| Peak `s_g` actually reached, β=1 | 0.200 | **0.650** | 0.898 |
+| Peak `s_g` actually reached, β=3 | 0.322 | 0.681 | 0.939 |
+
+37 of 45 groups exceed 0.5 at β=1. So thresholds drawn on `[0, 1]` would **not** leave half the
+population untriggerable. That version of the concern is withdrawn.
+
+**Two real problems survive the correction, and the second is the serious one.**
+
+1. **The ceiling varies across groups** (0.444 to 1.000, driven by each group's banked rate, which
+   correlates with income). An identical `theta_i` therefore means a different thing in a
+   low-banked group than in a high-banked one, so the threshold mechanism acquires a group-level
+   heterogeneity that was never intended and that is correlated with the income dimension RQ1 and
+   RQ2 already cut on.
+2. **The ceiling is proportional to `bnpl_access_rate` — which is RQ2's own x-axis.** At
+   `access = 0.15` the eligible share within a group is about `0.15 × 0.83 ≈ 0.125`, so **no
+   threshold above ~0.125 can fire anywhere on that arm**, by construction. Sweeping access
+   therefore sweeps the *maximum attainable value of the peer signal* at the same time, and a
+   threshold model would produce a response to access that is partly an artefact of the ceiling
+   moving with the axis. That is precisely the shape of result RQ2 is asking about, so it would be
+   **indistinguishable from the finding**.
+
+Under **linear** coupling none of this bites: the denominator is absorbed into `beta`, which is
+swept and uncalibrated, and a rising ceiling with rising access is arguably the desired behaviour
+(more access really does mean more visible usage). It bites only under thresholds, where `theta_i`
+is a fixed number compared against a signal whose maximum moves.
+
+**Decided 2026-08-13: Option A**, implemented as recorded above.
+
+- **Option A — normalise `s_g` by the group's eligible share.** ✅ **CHOSEN.** `s_g` then means "what
+  share of the people who *could* use BNPL are using it", which is arguably the quantity a household
+  actually observes, and it removes both problems at once. ⚠ It changes the meaning of `beta`, so the
+  linear arm must be re-run too — cheap, since everything is being re-run anyway.
+- **Option B — draw `theta_i` on each group's attainable range.** Rejected. Keeps `s_g` as-is and
+  leaves the linear arm untouched, but makes `theta_i` group-dependent, which muddies the
+  Granovetter reading of "the *variance* of thresholds decides whether a cascade occurs".
 
 ### B24 · The two most influential parameters are the two worst-sourced — `MAJOR` · `BOTH` · `OPEN`
 
@@ -652,6 +966,64 @@ and the **per-platform rolling limit** — respectively a trade-press figure and
 African provider publishes. Both must be reported as first-order sensitivities in Chapter 6, not
 buried in a robustness appendix, and every RQ1/RQ2 magnitude must be stated as conditional on them.
 Finding a better source for either would do more for the thesis than any further modelling.
+
+**⚠ UPDATE 2026-08-12 — the diagnosis was right, the attribution was wrong, and the fix is in.**
+"Worst-sourced" turned out to be only half the story. Both parameters were also **flat national
+constants imposed on a population with a Gini of 0.67** (**B30**), one of them denominated in the
+wrong year's Rands (**B29**), and one of them interacting with an unenforced budget constraint
+(**B28**). A constant that is non-binding for Q5 and absurd for Q1 will dominate an OFAT ranking
+whatever its citation says.
+
+Both are now **ratios applied to household characteristics**: kappa derived from Stats SA IES
+2022/23, lambda reported against an external band from Woolard and ASIC. The tornado and Sobol
+tables above are therefore **superseded and must be regenerated**, and the sweep bounds in
+`experiments.py` and `sensitivity.py` are now ranges on the ratios rather than on Rand amounts.
+
+**The open question this leaves is a good one.** If purchase size still ranks first once it is a
+data-derived ratio rather than a flat trade-press constant, that is a *structural* sensitivity worth
+reporting as a finding. If it drops down the ranking, the original result was largely an artefact of
+a badly chosen parameterisation. **Either answer is reportable and neither is known yet** — it
+arrives with the re-run. Do not restate B24's headline until it does.
+
+### **✅ ANSWERED 2026-08-13 by the 950-run supervisor-update sweep. B24 is CLOSED.**
+
+The original result was largely an artefact of the parameterisation. Both parameters fell out of the
+top of the ranking:
+
+| Parameter | Old range | New range | Rank |
+| --- | ---: | ---: | --- |
+| BNPL purchase size | 19.6pp | **2.06pp** (kappa 0.07–0.28) | 1st → 4th |
+| Per-provider limit | 16.9pp | **0.18pp** (lambda 0.1–1.0) | 2nd → last |
+| `amount_rule` (D4, uncited) | 7.5pp | **4.11pp** | 3rd → **1st** |
+| `k_default` | 2.7pp | 1.97pp | — |
+| Purchase base (new arm) | — | 1.03pp | — |
+
+⚠ **Replicate noise at 5 reps is 0.33pp (sd), so anything under ~0.67pp is not distinguishable from
+noise.** `lambda` at 0.18pp is therefore **inert**, and that needs stating carefully: the limit binds
+on 54% of requests but barely moves default, because a constrained household simply borrows less per
+purchase rather than defaulting less. Report both facts together or it reads as a contradiction.
+
+**The new leader is `amount_rule`, and the number is smaller than it looks.** The three arms are
+28.91% (shortfall), 28.24% (+25%), **24.80%** (shortfall plus committed). The first two agree to
+within 0.67pp, exactly the noise floor; the whole range comes from the third and most generous
+variant. So this is not "the answer swings on an invented rule" — it is "two plausible variants
+agree and one outlier pulls the range".
+
+**It also points somewhere real.** `amount_rule` governs the shortfall-driven path, which D5 records
+as the one place BNPL draws are still uncapped relative to what the product could plausibly finance.
+The tornado found independently what the code review found structurally. **Capping that draw is now
+the highest-value remaining modelling decision**, and the continuous-buffer sweep proposed in PLAN
+should replace the three discrete variants.
+
+The tornado and Sobol tables above are superseded. ⚠ **The Sobol figure in
+`results/summary/figures/` is stale** — it is from the N=64 run on the old parameterisation and was
+deliberately not regenerated for this pass. Delete or relabel it before anything is shown.
+
+⚠ Single-seed diagnostics after the fixes, at default access and `q_base = 0.05`, indicate the
+change is **large**: population default falls from 32.9% to 27.5% at β = 0 and from 56.1% to 28.0%
+at β = 1. Adoption still responds strongly to β (21.5% → 48.9%) but **default barely does**, so
+**B22's 4.3× amplification finding is itself now in question**. These are one-seed illustrations,
+not results.
 
 **Confirmed by Sobol variance decomposition** (1,024 runs, N=64, 6 parameters), which OFAT could not
 have shown. Total-order indices on the population default rate:
@@ -688,6 +1060,21 @@ These are mechanistic illustrations, not plausible states, and the upper reaches
 should be labelled as such. It is consistent with OVERVIEW §1a (results are directional and
 mechanistic, never forecasts), but the point needs making where the surface is presented, since a
 reader will otherwise read 56% default as a prediction.
+
+### **MEASURED 2026-08-13. The assertion now has a number behind it, and the control arm passes.**
+
+The volume anchor derived from Weaver's disclosures gives a band of **R1,333 to R4,261 per user per
+year** in 2017 Rands. Against it, over ~15 post-burn-in months:
+
+| Arm | BNPL volume per eligible household | Verdict |
+| --- | ---: | --- |
+| `beta = 0` | **R3,015** | **inside the band** |
+| `beta = 1` | R13,767 | 3.2× the upper bound |
+
+So the control arm now passes an external volume check it was never fitted to, and the high-beta
+arm's implausibility is **quantified** rather than asserted. Report the multiple, not just the
+adjective. Mean realised purchase is R893 against the R992 anchor, about 10% low, which is expected
+since limits truncate orders.
 
 ### B26 · Three external checks passed that were NOT fitted — `NOTE` · `AGENT` · `CLOSED`
 
@@ -893,7 +1280,7 @@ Estimated 2,534 → ~1,500.
 "A propensity-to-consume rule was rejected because…" · "Cost ranking was rejected…" · "A
 continuous present-bias parameter was rejected…" · "A cash-flow insolvency test was chosen
 over…". Valuable for the viva, expensive in the body. Move to a design-rationale appendix —
-`scratchpad/decision.md` already holds most of this material and can be adapted directly.
+`scratchpad/DECISIONS.md` already holds most of this material and can be adapted directly.
 Appendices are usually outside the word limit; confirm.
 
 ### F5 · The counterfactual statement is scheduled to appear three times — `MINOR` · `BOTH` · `OPEN`

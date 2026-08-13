@@ -1,4 +1,32 @@
-# Decision Rules: Open Design Register
+# DECISIONS — every choice made, and why
+
+**One of three working documents.** [`DECISIONS.md`](DECISIONS.md) is *what was chosen and why*.
+[`DEFECTS.md`](DEFECTS.md) is *what is wrong or was wrong*. [`PLAN.md`](PLAN.md) is *what happens
+next*. Consolidated 2026-08-13 from nine overlapping files.
+
+Canonical strategy: [`../OVERVIEW.md`](../OVERVIEW.md).
+Plain-language explanation of the whole project: [`../THESIS_GUIDE.md`](../THESIS_GUIDE.md).
+Data → agent mapping: [`../household_agent.md`](../household_agent.md).
+
+---
+
+## Contents
+
+**New to this document? Read Part II first** — it explains where the households came from, which is
+what Part I's rules then operate on.
+
+| | |
+| --- | --- |
+| **Part I** | **The eighteen model decision rules (D0–D17)** — one rule per agent behaviour, each with a stated choice, a citation, parameters, and a validation hook |
+| **Part II** | **The data layer** — how 5,000 households were built from two surveys: the design commitments, the matching procedure, and the column-by-column variable map |
+
+**The three rules that carry the thesis**, if you read nothing else: **D9** (the Regulation 23A
+affordability gate), **D10** (BNPL is invisible to the credit bureau — the whole mechanism), and
+**D17** (peer influence, and the `beta = 0` control arm that keeps RQ2 non-circular).
+
+---
+
+# PART I — The eighteen model decision rules
 
 **Status:** **all 18 decisions (D0 to D17) are closed and cited** (2026-08-05). Each closed rule
 carries a stated choice, a citation, parameters with sources or explicit sensitivity flags, and a
@@ -9,9 +37,6 @@ validation hook. D4 is closed **by assumption**, with no anchor found, and is fl
 > credit study, or a behavioural-economics finding, so the methodology can say *"we adopt X, following [cite],
 > because …"* rather than *"we assumed X."* A rule with no anchor is a flagged limitation, not a
 > silent guess.
-
-Canonical strategy: [`../OVERVIEW.md`](../OVERVIEW.md). Design rationale: [`decision.md`](decision.md).
-Data → agent mapping: [`../household_agent.md`](../household_agent.md).
 
 ---
 
@@ -213,6 +238,46 @@ ordered sequence; **the order itself is a modelling decision.**
     close it, and D4 remains the model's one uncited rule.
 - **This is a flagged limitation, not a cited rule.** It must appear in the limitations chapter as
   an uncited modelling choice.
+
+- **⚠ SUPERSEDED 2026-08-12 (QA pass). The BNPL purchase level is no longer a flat national
+  constant, and it is no longer the trade press.** The partial update above fixed the *number* and
+  left the *specification error*: a single purchase size imposed on every household. Measured on the
+  model's own banked population, R1,568 was **127% of the median Q1 household's monthly
+  discretionary budget and 11.4% of Q5's**. A population with a Gini of 0.67 cannot share one
+  purchase size, and the flat constant is a large part of why purchase size topped the sensitivity
+  ranking (DEFECTS.md **B24**, **B30**).
+
+  **REVISED DECISION.** A BNPL purchase is drawn lognormally about **`kappa ×` the household's own
+  monthly discretionary expenditure**, so its mean is that product and the observed heterogeneity of
+  the population is inherited rather than averaged away.
+
+  - **`kappa = 0.1387` is DERIVED, not chosen** — the share of household discretionary spending that
+    goes on the categories BNPL actually finances (clothing and footwear, furniture and appliances,
+    ICT devices, recreational durables), computed from Stats SA **IES 2022/23** COICOP microdata
+    `[statssa_ies_2023]`. Only a **ratio** is taken from that survey, never a money amount, so the
+    2022/23 vintage cannot contaminate a 2017-Rand model — the identical argument already accepted
+    for the FinScope 2019 categorical flags.
+  - **Interpretation of the rule:** a BNPL purchase is the scale of **one month** of the household's
+    own spending in the categories BNPL finances. The "one month" lumpiness is the assumption; it is
+    single and interpretable, and the evidence for it is that it independently reproduces the
+    provider figure below.
+  - **THE LEVEL IS NOW A CHECK, NOT AN INPUT.** The population mean purchase is validated against an
+    average order value **derived from a listed issuer's disclosed aggregates** — R13.1bn cumulative
+    BNPL GMV over 9.4m transactions `[weaver2025results]`, `[homechoice2024ir]` — giving **R992 in
+    2017 Rands**. The superseded trade-press basket deflates to R1,038, so the two independent SA
+    sources agree within 4.6%, and the model's drawn mean of R1,029 sits between them. **Nothing is
+    fitted to anything.**
+  - `[sa_bnpl_basket_2026]` is **demoted from input to corroboration**. A weak source used as a
+    check is legitimate; the same source load-bearing was not.
+  - **Robustness arm:** `bnpl_purchase_base = "income"` sizes the purchase against monthly income
+    instead, which is the base the three regulator figures are expressed against — CFPB US\$135
+    `[cfpb2025market]`, ASIC A\$147 `[asic2020rep672]`, Woolard £88–£110 `[woolard2021]`, all near
+    2–4% of median monthly household income in their own jurisdictions.
+  - **Sensitivity (mandatory):** `kappa` over 0.07–0.28, and both bases.
+
+  **The rule for the shortfall path is unchanged and remains uncited.** D4's status as the model's
+  first uncited rule stands; what changed is that its BNPL *level* is now derived and externally
+  checked rather than asserted.
 - **Sensitivity (mandatory, not optional):** shortfall, shortfall x 1.25, and shortfall plus one
   tick of committed expenditure. If results move materially across these, the model is
   amount-rule-sensitive and the finding must be reported as such.
@@ -238,6 +303,33 @@ ordered sequence; **the order itself is a modelling decision.**
   traditional stress *falling* when BNPL is enabled (pure substitution), it contradicts the best
   available causal evidence and the lender-choice rule is wrong. **This is the single most useful
   falsification test the model has.**
+
+- **⚠ REVIEWED AND DELIBERATELY LEFT UNCHANGED, 2026-08-13. What BNPL is used for, and the one
+  asymmetry that remains.** There are two BNPL paths and they are sized differently:
+
+  | Path | Trigger | Amount |
+  | --- | --- | --- |
+  | **Want-driven** (D0 step 6) | spontaneous, socially transmitted | `kappa ×` the household's own monthly discretionary budget |
+  | **Shortfall-driven** (D0 step 5) | realised shortfall on committed expenditure or debt service | the **full shortfall**, bounded only by the order cap and rolling limit |
+
+  BNPL cannot pay rent directly, and the model does not claim it does. The shortfall path works by
+  **liquidity substitution**: the household finances something it was going to buy anyway, pays only
+  25% at checkout, and the other 75% stays in its pocket to cover the rent. That is why
+  `_seek_credit` returns `financed × 0.75` as net cash rather than the full amount. The same
+  mechanism lets a household take BNPL to free cash for *its existing BNPL instalments*, which is
+  the financial self-reinforcing loop D0 places borrowing last in order to permit.
+
+  **The asymmetry.** The 2026-08-12 QA pass anchored the *want* path to the household's own budget
+  and left the *shortfall* path uncapped. For a median household that permits a draw of up to
+  ~4 months of BNPL-financeable spending in a single tick — more liquidity substitution than the
+  household could realistically execute, since substitution is bounded by what it would actually buy.
+
+  **Decision: leave it.** Capping the shortfall draw at the same monthly budget would be defensible
+  and would reduce BNPL's measured effect, but it is a *design change* to a registered rule, not a
+  defect fix, and it would land on the eve of a re-run. Recorded here as a **disclosed limitation**:
+  the model is permissive about how much distress BNPL can relieve, which biases its estimated
+  effect on default **upward**, and that is the conservative direction for a thesis arguing BNPL
+  raises distress. Revisit as future work.
 
 ### D6. Repayment rule and arrears
 - **Governs:** how debt is retired versus how it snowballs. Drives the default observable.
@@ -447,6 +539,65 @@ ordered sequence; **the order itself is a modelling decision.**
   will rarely bind. The binding constraint on borrowing size is the purchase amount (D4), not the
   platform cap. Verify empirically once implemented; if the cap binds for more than a few percent of
   transactions, revisit.
+
+- **⚠ REVISED 2026-08-12 (QA pass) on both counts.**
+
+  **The vintage problem was not moot; it was unnoticed.** Every Rand figure in this rule and in D13
+  was taken at **current (2026) vintage** and used unadjusted in a model whose every other quantity
+  is in **2017 Rands**. SA CPI rose 44% between the 2017 and 2025 annual averages, so the BNPL side
+  of the model was denominated ~1.4× too high against the NIDS backbone, the Reg 23A table and the
+  CCMR targets. The order cap is now **R9,927** in 2017 Rands, deflated once from a sourced factor
+  `[statssa_cpi]` (DEFECTS.md **B29**). It binds on ~2–3% of requests after the change, so the
+  "revisit if it exceeds a few percent" trigger above is now live and should be watched in the
+  re-run.
+
+  **The rolling limit is now a FUNCTION, not a constant.** The flat R5,000 was **217% of the median
+  banked Q1 household's monthly income**, at each of four platforms independently. The absence of a
+  published *level* still stands and remains citable as a finding; what does not stand is treating
+  that absence as a licence for a flat number, because both providers state the limit is set **per
+  customer**, and HomeChoice's audited credit-risk disclosure describes a **"low and grow"** policy
+  — first-time customers start with lower limits, increased as they exhibit good repayment behaviour
+  `[homechoice2024ir]`. That is an annual report, not a support page, and it licenses a functional
+  form.
+
+  **REVISED DECISION.** `rolling_limit_i = lambda × income_monthly_i`, per household rather than per
+  platform, with **`lambda = 0.10`** (set 2026-08-13; initially 0.25) and the R9,927 order cap as
+  the ceiling.
+
+  **⚠ Why 0.10 and not the middle of the band.** The limit applies at *each* of four platforms
+  independently, so what the external evidence actually measures is the **stacked total**. Woolard's
+  "relatively easy to accrue around £1,000" of bureau-invisible BNPL debt is a total across all
+  providers — roughly **37% of UK median monthly household income** — which is about **0.09 per
+  provider across four**. At `lambda = 0.25` the model's stacked total was **1.0× monthly income,
+  about 2.7× what Woolard called easy to accrue**. Since cross-provider stacking *is* the thesis's
+  subject, and Woolard measures precisely that quantity, the value is set so the model's aggregate
+  reproduces the only measurement of it. Afterpay's published initial limit (~8% of Australian
+  median monthly income) puts 0.10 at the initial-limit end of the range, which is the conservative
+  place for a baseline to sit.
+
+  ⚠ **Consequence to report, not hide:** at `lambda = 0.10` the rolling limit binds on **54% of
+  requests** at `beta = 0` (Q1 53%), against 25% at `lambda = 0.25` and 5.6% under the old flat
+  R5,000. The limit has gone from a background constraint to a first-order one. That is what the
+  Woolard anchor implies, and the 0.1–1.0 sweep is what demonstrates how much it matters.
+
+  - **Income and NOT Reg 23A capacity.** Tempting but wrong: this rule's entire point is that the
+    BNPL screen is deliberately *not* the statutory test, and setting BNPL limits from statutory
+    capacity would quietly dissolve the asymmetry with D9 that the thesis exists to study. Income is
+    what a light automated screen can plausibly infer from bank-card activity.
+  - **`lambda` is reported against an external band, not fitted to it** — the same treatment D1's
+    shock probability receives against the QLFS band. Woolard's "relatively easy to accrue around
+    £1,000" of invisible BNPL debt is a *stacked* total across providers, ~40% of UK median monthly
+    household income, so ~10% per provider; Afterpay's published initial and maximum limits are ~8%
+    and ~26% of Australian median monthly household income. The band is therefore roughly
+    **0.10–0.26**, and `lambda = 0.25` sits at its top.
+  - **Binding rates must be reported BY QUINTILE.** A limit that scales with income binds hardest at
+    the bottom, so an aggregate rate can read as inert while the constraint bites hard on Q1. First
+    measurement after the change: **Q1 35.2% against Q5 21.5%** at β = 0.
+  - **Future work, deliberately not built:** the "low and grow" disclosure also licenses a *dynamic*
+    limit that rises with repayment history, which is the mechanism by which real households
+    accumulate large invisible cross-provider exposure. Recorded rather than implemented — the
+    static rule already retires the vulnerability, and adding a dynamic on the eve of a re-run is
+    scope the thesis does not need.
 - **Validation hook:** share of eligible households ≈ 83.1% by construction; check that the order
   cap binds rarely.
 
@@ -662,6 +813,45 @@ Four levers, three of which correspond to instruments that actually exist:
   because the suppression effect has no literature anchor, and the model already carries one uncited
   rule in D4.
 
+- **⚠ IMPLEMENTED 2026-08-13: the pre-registered threshold variant now exists, and the peer signal
+  was renormalised.** Two changes, both made *before* the arm was run so neither could be chosen
+  after seeing a result.
+
+  **1. `s_g` is measured against the ELIGIBLE subpopulation** (`peer_mechanism` unaffected; see
+  DEFECTS **B31**). Counting the unbanked and the ineligible in the denominator capped the signal at
+  each group's eligible share, and that ceiling is proportional to `bnpl_access_rate` — which is
+  RQ2's own x-axis. Harmless under linear coupling, where it is absorbed into `beta`; fatal under
+  thresholds, where a fixed `theta_i` would be compared against a signal whose maximum was being
+  swept alongside the axis under test, producing a threshold-shaped response that is partly an
+  artefact. Peak `s_g` rises from ~0.53 to **0.96**. ⚠ This rescales `beta`; pre-2026-08-13 linear
+  results are not comparable.
+
+  **2. The Granovetter arm.** `peer_mechanism = "threshold"` replaces smooth coupling with a jump:
+
+  ```
+  theta_i ~ Normal(mu_theta, sigma_theta)  clamped to [0, 1], fixed for life
+  q_i(t) = q_base                          if s_g(t-1) <  theta_i
+  q_i(t) = clip(q_base + gamma, 0, 1)      if s_g(t-1) >= theta_i
+  ```
+
+  - **`sigma_theta` is the primary axis, `mu_theta` the secondary.** Granovetter's claim is that the
+    *variance* of thresholds decides whether a cascade occurs — a distribution with someone standing
+    at every level propagates, a clustered one does not, at identical means. Sweeping the mean alone
+    would test the wrong quantity.
+  - **Clamping, not resampling, is the faithful choice.** The point mass at 0 is Granovetter's
+    **instigators**, who act with no peers at all and are what seeds a cascade; the mass at 1 is
+    households social influence can never reach. Resampling would delete both.
+  - **`gamma = 0` is the control arm** and reproduces the independent-agent model **bitwise**, which
+    required drawing `theta_i` from a separate `init_rng` stream so the endowment draw cannot shift
+    the simulation's own. That also makes the `sigma_theta` sweep a **paired** comparison: only the
+    thresholds change, every shock and purchase draw is identical.
+
+  **What this arm is for, restated.** Not one more attempt to find a threshold. It **separates
+  adoption tipping from distress tipping**. The model has peer feedback in its input and none in its
+  output (DEFECTS **B1**), so a sharp adoption cascade alongside a linear default response would be
+  a much stronger answer to RQ2 than the linear arm can give: the cascade mechanism demonstrably
+  works and still does not move the outcome.
+
 ---
 
 ## Part E. Calibration & experiment knobs (tie rules → research questions)
@@ -699,12 +889,19 @@ constrains the one parameter that carries them. See D1.
 
 **All 18 decisions are closed.** Four carry explicit caveats rather than clean anchors:
 
-- **D4** (borrowing amount) is closed *by assumption* with no anchor for the rule. Its BNPL *level*
-  gained a weak SA anchor on 2026-08-12 (R1,568 basket, CFPB cross-check); the rule did not.
+- **D4** (borrowing amount) is closed *by assumption* with no anchor for the *shortfall* rule. Its
+  BNPL *level* is now **DERIVED** (2026-08-12 QA pass): purchases are `kappa ×` the household's own
+  discretionary budget, `kappa` computed from Stats SA IES 2022/23, and the level is validated
+  against a listed-issuer disclosure rather than set by trade press.
 - **D6** (minimum-payment formula) was found undefined on 2026-08-12 during implementation planning.
   Now closed by assumption, with mandatory sensitivity. **This is the model's second uncited rule.**
 - **D11** (rolling available balance) was searched on 2026-08-12 and **no published figure exists**
-  for either major SA provider. Demoted to a binding-check quantity.
+  for either major SA provider. The absence stands for the *level*; it does not stand for the
+  *form*. The limit is now `lambda ×` monthly income per household, reported against a Woolard/ASIC
+  band, with the functional form licensed by HomeChoice's audited "low and grow" disclosure.
+- **⚠ Vintage** (2026-08-12): every BNPL Rand figure in D4, D11 and D13 was nominal at current
+  vintage in a 2017-Rand model, and is now deflated once from a sourced CPI factor. See DEFECTS.md
+  **B29** — the fourth case of implementation falsifying a specification that read as complete.
 - **D14 lever 4** (stacking cap) has no real-world instrument and is labelled hypothetical.
 
 Every other rule carries a citation, parameters with sources or sweep flags, and a validation hook.
@@ -715,3 +912,178 @@ external plausibility band from the QLFS 2017 panel.
 
 Each box closes only when it has: a stated rule, a citation, parameters with sources, and a
 validation hook.
+
+---
+---
+
+# PART II — The data layer: how 5,000 households were built
+
+Merged 2026-08-13 from `decision.md` (design commitments), `DECISIONS.md` (the matching
+procedure) and `DECISIONS.md` (the column map). Those three files are deleted; this is their
+content.
+
+**In one line:** every household in the model is a real NIDS Wave 5 household from 2017, given
+financial-inclusion flags borrowed from a similar FinScope respondent, and drawn 5,000 times in
+proportion to how many real households it represents.
+
+## II.0 The claim: a counterfactual injection, not a historical fit
+
+The model is a **counterfactual experiment**. A 2017 population is calibrated against the 2017-Q1
+CCMR, and a BNPL lender class is then **injected** into that calibrated economy.
+
+*Why 2017 is the right control:* BNPL reached the South African market at scale from roughly 2021.
+Fitting to its actual arrival would require disentangling it from COVID-19 income shocks, the 2020
+credit contraction and post-pandemic inflation. **The absence of BNPL in 2017 is the experimental
+control**, and it is what makes the injection interpretable.
+
+*What this forbids:* no claim about any actual year after 2017, and no comparison to post-2020
+observed arrears. Results are directional and mechanistic, never forecasts.
+
+## II.1 The eight design commitments
+
+| Set | Commitment |
+| --- | --- |
+| 1. Temporal | **2017 only**, 14-day ticks, 24-month horizon (52 ticks), 12-tick burn-in. **No CPI forwarding of the population.** |
+| 2. Population | 5,000 households, province as a match cell, NIDS household definition, composition static across the horizon |
+| 3. Sources | NIDS W5 backbone + FinScope 2019 donor |
+| 4. Variables | Behavioural state (drives decisions) vs conditioning (profiles results); all money in 2017 Rands |
+| 5. Matching | **Simple cell-donor by income quintile x province**; categorical flags only |
+| 6. Agents | Households + one traditional lender stub + 4 BNPL platforms; multiple *traditional* lenders deferred |
+| 7. Topology | Bipartite household/lender, **plus** peer influence on BNPL adoption (D17); static income + per-earner shock |
+| 8. Validation | Internal (~5%) + match diagnostics + four external targets |
+
+**Why 2017-only.** CPI-forwarding NIDS to 2022 would have introduced a second reference year,
+distributional assumptions, and external validation targets that could not be defended. Staying in
+2017 removes all three at once.
+
+⚠ **This commitment was later broken on the BNPL side and had to be repaired** — the BNPL
+parameters were taken at current vintage and used unadjusted. See DEFECTS **B29**. The population
+itself was never affected.
+
+## II.2 The matching procedure (NIDS receives, FinScope donates)
+
+Deliberately simple ("ignorant") matching: transparent and easy to defend, not a precision fusion.
+NIDS is the backbone that is kept; FinScope only lends its financial-inclusion flags.
+
+**The match cell.** Both surveys are bucketed into the *same* cells, then donors drawn within cell:
+
+1. **Per-capita income quintile.** NIDS bounds R900 / R1,801 / R3,400 / R7,712. FinScope per-capita
+   income = `M13_MHI_Imputed` band midpoint divided by `Number_in_HH`, bucketed on the **NIDS**
+   bounds so the edges are identical. Band midpoints: No Income to 0, R1-999 to 500, R1,000-2,999
+   to 2,000, R3,000-7,999 to 5,500, R8,000-11,999 to 10,000, R12,000-29,999 to 21,000, R30,000+ to
+   40,000.
+2. **By province.** Names align exactly across surveys. 45 cells, **min 30 donors, none below 20**,
+   so the province split is used directly with no fallback needed in practice.
+3. **Fallback** to quintile-only for any thin cell (logged; not triggered).
+
+**Donor draw.** For each NIDS household, draw one FinScope respondent from its cell (weighted by
+`HH_WEIGHT16`, with replacement) and copy its flags.
+
+**Why cell-donor and not hot-deck or regression fusion:** transparent, easy to explain to an
+examiner, and it avoids over-claiming precision that the 2017-to-2019 vintage gap cannot support.
+
+**What it does NOT do:** preserve household-level joint structure beyond quintile x province;
+correct the vintage gap; or measure servicing from data.
+
+## II.3 The one number that had to be constructed
+
+**Neither survey records a debt repayment amount**, so monthly servicing is *constructed*:
+
+```
+weighted_apr, weighted_term = mix over the donor's held products (G10-G14)
+                              using data/config/credit_rate_table.csv
+monthly_trad_repayment      = amortize(D_trad, weighted_apr, weighted_term)
+```
+
+APRs are the **NCA statutory maximum prescribed rates** per sub-sector (regime in force 6 May 2016,
+so valid for 2017), at the **2017 repo rate of 7.00%**: credit facilities 21%, other credit
+agreements 24%, unsecured 28%, short-term 5% per month. ⚠ These are **ceilings, not observed
+averages**, which biases servicing upward — a stated limitation.
+
+**Two guards**, because a NIDS debt *stock* is paired with a FinScope product *type* drawn
+independently within the cell, so naive amortisation could force impossible debt service:
+
+- `MIN_TERM_MONTHS = 6`. A balance is never amortised faster than six months. **Still an
+  assumption**, not sourced.
+- **NCA Regulation 23A(9) residual-income ceiling.** Replaced an earlier flat `MAX_DSTI = 0.65`,
+  which had no statutory basis. Debt service is capped at gross income minus Reg 23A necessary
+  expenses, giving an **income-varying** ceiling: 10.4% of income at R900/month rising to 83.2% at
+  R7,712/month.
+
+Result: max DSTI 0.911, **zero** households repaying more than income, weighted-mean DSTI by
+quintile 2.8-6.1%. The guard binds for only **3.4% of debtors** (158 of 4,702).
+
+**Diagnostic kept as a finding, not capped away:** 53 debtor households have income at or below the
+Reg 23A norm, so **no NCA-compliant lender could lawfully have granted their debt**. 33 survive into
+the 5,000-agent resample, all in Q1.
+
+## II.4 Variable map
+
+All monetary values in **2017 Rands, no CPI**. Backbone: `data/raw/NIDS_W5/hhderived.csv`. Donor:
+`data/raw/FINMARK_2019/Finscope South Africa 2019.csv`.
+
+### Behavioural state, from NIDS
+
+| Field | Description | NIDS column(s) | Derivation |
+| --- | --- | --- | --- |
+| `income_monthly` | Total monthly household income | `w5_hhincome` | Direct |
+| `income_source` | Dominant source: WAGE / GRANT / OTHER | `w5_hhwage`, `w5_hhgovt`, `w5_hhremitt`, `w5_hhother`, `w5_hhagric`, `w5_hhinvest` | Largest component wins |
+| `expenditure_total` | Total monthly expenditure | `w5_expenditure` | Direct |
+| `expenditure_committed` | Non-discretionary (food + rent) | `w5_expf`, `w5_rentexpend` | food + rent |
+| `expenditure_discretionary` | Flexible spending | `w5_expnf`, `w5_rentexpend` | non-food minus rent, floored at 0 |
+| `liquid_savings` | Cash buffer | `w5_f_ass` | Financial assets as proxy, winsorised at 1st/99th pct. **Weakest field in the layer** |
+| `D_trad` | Consolidated traditional debt | `w5_f_deb` | Financial debts |
+| `monthly_trad_repayment` | Monthly servicing | constructed | See II.3 |
+
+Two further columns were joined later, for the model rather than the population: `w5_hhwage` (the
+wage component, which is the income-shock magnitude under D1) and an employed-member count from the
+NIDS individual file (`n_earners`, which makes the shock a per-earner hazard).
+
+### Behavioural state, from FinScope (categorical, no deflation)
+
+| Field | Rule | National rate |
+| --- | --- | --- |
+| `banked` | `F1 == "Yes"` | 82.4% |
+| `credit_access_formal` | `G5` in {Bank, Retail store, Micro finance, Insurance} **OR** any of `G10`-`G14` == Yes (lay-by `G15` excluded: not credit) | 26.4% |
+| `informal_finance` | `G5` in {Mashonisa, Stokvel/burial, Friends/family, Colleagues, Employer advance} | 9.1% |
+| `savings_product` | `K7` is a valid Rand band | 49.9% |
+
+`banked` is the one that matters most: BNPL requires a bank card, so it caps BNPL eligibility at
+**83.1%** of the resampled population.
+
+### Conditioning, from NIDS
+
+`income_quintile` (primary grouping **and** match cell), `household_size`, `household_composition`,
+`dependency_ratio`, and head demographics: `age_head`, `gender_head`, `race_head`, `education_head`,
+`education_band`.
+
+### Sampling fields, not agent attributes
+
+`w5_wgt` (post-stratified household weight, used as the resampling probability), `w5_hhid` (record
+key for joins, not carried into the ABM).
+
+## II.5 Validation of the data layer
+
+- **National marginals** reproduce FinScope national rates: banked +0.4, credit +1.5, informal +0.1,
+  savings +1.8 (pp).
+- **Cell marginals** match by construction (correctness check).
+- **14 checks in P4, all passing**, including the Gini check: 0.651 weighted per-capita on the
+  10,841-household backbone against 0.671 unweighted on the 5,000-agent resample, a 0.019 gap
+  against a 0.02 tolerance — passing with almost no margin.
+
+## II.6 Known limitations of the data layer
+
+- **2017 reference year.** Not forwarded to a current year. Deliberate, and stated up front.
+- **FinScope 2019 as a 2017 proxy.** Two-year vintage gap on categorical flags, uncorrected.
+- **Cell-donor matching is crude:** preserves cell-level marginals, not household-level joint
+  structure beyond quintile x province.
+- **`liquid_savings` is the weakest NIDS field**, proxied by financial assets — and pattern 4
+  validates against it, which needs saying out loud (DEFECTS B11).
+- **Committed/discretionary split is approximate:** NIDS gives only food / non-food / rent, so
+  "discretionary" carries transport, utilities and education, none of which is truly discretionary.
+- **Reg 23A is a per-consumer test applied to a household**, because the agent is a household.
+- No informal credit supply, no spatial heterogeneity beyond the match cell, static household
+  composition, one static lender rule.
+- **Social structure is minimal, not absent.** Households interact only through the D17 reference
+  group and only on BNPL adoption. Three Northern Cape groups hold 23-31 agents, so their peer share
+  is noise-prone.
