@@ -47,6 +47,7 @@ class BNPLPlatform:
 
     platform_id: int
     order_cap: float
+    #: Fallback rolling limit, used only where no per-household limit has been set.
     rolling_limit: float
     late_fee_per_tick: float
     late_fee_cap: float
@@ -56,6 +57,11 @@ class BNPLPlatform:
     loans: dict[int, list[BNPLLoan]] = field(default_factory=dict)
     #: Households cut off after exhausting the fee cap. Still eligible elsewhere (D12).
     cut_off: set[int] = field(default_factory=set)
+    #: agent_id -> that household's rolling available balance (D11). Set by the model
+    #: from household characteristics: no SA provider publishes a rolling limit, but
+    #: both state it is set PER CUSTOMER from credit profile and repayment behaviour,
+    #: so a flat constant was never what the sources described (DEFECTS.md B16/B30).
+    rolling_limits: dict[int, float] = field(default_factory=dict)
 
     # -- diagnostics for the D11 binding check --------------------------------
     n_requests: int = 0
@@ -63,6 +69,15 @@ class BNPLPlatform:
     n_blocked_rolling_limit: int = 0
     n_blocked_cut_off: int = 0
     n_originated: int = 0
+    #: Per-household request and block counts. A limit that scales with income binds
+    #: hardest at the bottom, so an aggregate binding rate can read as inert while the
+    #: constraint is biting hard on Q1. Reported by quintile in metrics.py.
+    requests_by_agent: dict[int, int] = field(default_factory=dict)
+    blocked_rolling_by_agent: dict[int, int] = field(default_factory=dict)
+
+    def limit_for(self, agent_id: int) -> float:
+        """This household's rolling available balance on this platform."""
+        return self.rolling_limits.get(agent_id, self.rolling_limit)
 
     def exposure(self, agent_id: int) -> float:
         """Outstanding receivable: what the household still owes this platform."""
@@ -70,7 +85,7 @@ class BNPLPlatform:
 
     def available(self, agent_id: int) -> float:
         """Headroom in RECEIVABLE terms, which is what the limit caps."""
-        return max(self.rolling_limit - self.exposure(agent_id), 0.0)
+        return max(self.limit_for(agent_id) - self.exposure(agent_id), 0.0)
 
     def max_order(self, agent_id: int) -> float:
         """Largest order whose receivable still fits the rolling limit.
@@ -92,6 +107,7 @@ class BNPLPlatform:
         applied by the household before it gets here, not by the platform.
         """
         self.n_requests += 1
+        self.requests_by_agent[agent_id] = self.requests_by_agent.get(agent_id, 0) + 1
 
         if agent_id in self.cut_off:
             self.n_blocked_cut_off += 1
@@ -102,6 +118,9 @@ class BNPLPlatform:
         ceiling = self.max_order(agent_id)
         if amount > ceiling:
             self.n_blocked_rolling_limit += 1
+            self.blocked_rolling_by_agent[agent_id] = (
+                self.blocked_rolling_by_agent.get(agent_id, 0) + 1
+            )
             amount = ceiling
         if amount <= 0:
             return 0.0

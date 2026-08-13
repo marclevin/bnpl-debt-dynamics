@@ -98,6 +98,107 @@ def baseline_and_pattern1() -> None:
     print(f"  zero liquid savings: {off.zero_savings_rate_mean.mean():.1%}  [UNFITTED]")
 
 
+def linear_departure(x, y) -> dict:
+    """How far a response departs from a straight line over the swept range.
+
+    `linear_r2` near 1 and a small `max_dev_frac` mean the response is smooth; a genuine
+    tipping point shows a low R^2 and a large residual relative to the total rise. Shared
+    by the linear and threshold arms so the two are judged on identical terms, which is
+    the whole point of running both.
+    """
+    import numpy as np
+
+    x = np.asarray(x, dtype=float)
+    y = np.asarray(y, dtype=float)
+    rise = float(y[-1] - y[0])
+    slope, intercept = np.polyfit(x, y, 1)
+    resid = y - (slope * x + intercept)
+    ss_tot = float(((y - y.mean()) ** 2).sum())
+    r2 = 1.0 - float((resid**2).sum()) / ss_tot if ss_tot > 0 else 1.0
+    max_dev = float(abs(resid).max() / abs(rise)) if abs(rise) > 1e-12 else 0.0
+    return {"rise": rise, "linear_r2": r2, "max_dev_frac": max_dev}
+
+
+def rq2_threshold_figure() -> None:
+    """RQ2 under Granovetter thresholds: does ADOPTION tip while DEFAULT does not?
+
+    This is the arm's real purpose. The model carries peer feedback in its input
+    (adoption) and none in its output (default), so the interesting comparison is not
+    "did we find a threshold" but "does the cascade mechanism visibly work, and does the
+    outcome move when it does". Both responses are therefore measured on the same
+    linear-departure diagnostic and plotted on one figure.
+    """
+    df = load("rq2t")
+    if df is None:
+        return
+    surf = df[df.label.str.startswith("rq2t_a")]
+    if surf.empty:
+        return
+    g = agg(
+        surf,
+        ["bnpl_access_rate", "sigma_theta", "gamma"],
+        ["default_rate_final", "bnpl_adoption_final", "threshold_triggered_final"],
+    )
+    g.to_csv(RESULTS_SUMMARY / "rq2_threshold_surface.csv", index=False)
+
+    live = g[g.gamma > 0]
+    fig, axes = plt.subplots(1, 2, figsize=(11.5, 4.6), sharex=True)
+    for s, sub in live.groupby("sigma_theta"):
+        sub = sub.sort_values("bnpl_access_rate")
+        axes[0].plot(sub.bnpl_access_rate, sub.bnpl_adoption_final_mean, marker="o",
+                     label=f"sigma = {s:g}")
+        axes[1].plot(sub.bnpl_access_rate, sub.default_rate_final_mean, marker="o",
+                     label=f"sigma = {s:g}")
+    ctrl = g[g.gamma == 0].groupby("bnpl_access_rate", as_index=False).mean(numeric_only=True)
+    if not ctrl.empty:
+        ctrl = ctrl.sort_values("bnpl_access_rate")
+        for ax, col in zip(axes, ("bnpl_adoption_final_mean", "default_rate_final_mean")):
+            ax.plot(ctrl.bnpl_access_rate, ctrl[col], color="black", lw=2.5, marker="s",
+                    zorder=5, label="gamma = 0  (control arm)")
+    axes[0].set_title("ADOPTION: does the cascade fire?")
+    axes[0].set_ylabel("BNPL adoption rate")
+    axes[1].set_title("DEFAULT: does the outcome follow?")
+    axes[1].set_ylabel("Population default rate")
+    for ax in axes:
+        ax.set_xlabel("BNPL access rate (share of the banked subpopulation)")
+        ax.grid(alpha=0.3)
+        ax.legend(fontsize=8)
+    fig.suptitle(
+        "RQ2, Granovetter heterogeneous thresholds: adoption tipping vs distress tipping",
+        fontsize=11,
+    )
+    fig.tight_layout()
+    FIGDIR.mkdir(parents=True, exist_ok=True)
+    fig.savefig(FIGDIR / "rq2_threshold_adoption_vs_default.png", dpi=200)
+    plt.close(fig)
+
+    print("\n=== RQ2 THRESHOLD ARM (pre-registered D17 alternative) ===")
+    print("  Granovetter's claim is about the VARIANCE of thresholds, so sigma is the axis.")
+    print("  Both responses get the SAME diagnostic, because the question is whether")
+    print("  adoption and default behave differently, not whether either is non-linear.")
+    rows = []
+    for (s, gam), sub in g.groupby(["sigma_theta", "gamma"]):
+        sub = sub.sort_values("bnpl_access_rate")
+        d = linear_departure(sub.bnpl_access_rate, sub.default_rate_final_mean)
+        a = linear_departure(sub.bnpl_access_rate, sub.bnpl_adoption_final_mean)
+        rows.append({"sigma_theta": s, "gamma": gam,
+                     **{f"default_{k}": v for k, v in d.items()},
+                     **{f"adoption_{k}": v for k, v in a.items()}})
+        tag = "  <- CONTROL" if gam == 0 else ""
+        print(f"  sigma={s:<5g} gamma={gam:<4g} | adoption rise {a['rise']:+.2%} "
+              f"R^2 {a['linear_r2']:.4f} | default rise {d['rise']:+.2%} "
+              f"R^2 {d['linear_r2']:.4f}{tag}")
+    pd.DataFrame(rows).to_csv(RESULTS_SUMMARY / "rq2_threshold_nonlinearity.csv", index=False)
+
+    mu = df[df.label.str.startswith("rq2t_mu")]
+    if not mu.empty:
+        m = agg(mu, ["mu_theta"], ["bnpl_adoption_final", "default_rate_final"])
+        print("\n  mu_theta sensitivity (secondary axis, full access, sigma=0.20):")
+        for _, r in m.sort_values("mu_theta").iterrows():
+            print(f"    mu={r.mu_theta:<5g} adoption {r.bnpl_adoption_final_mean:.1%}  "
+                  f"default {r.default_rate_final_mean:.1%}")
+
+
 def rq2_surface_figure() -> None:
     df = load("rq2")
     if df is None:
@@ -380,9 +481,16 @@ def fig_robustness_tornado() -> None:
         return
     g = df.groupby("label", as_index=False)["default_rate_final"].mean()
 
+    # Labels carry the PROVENANCE, because the point of this figure is which parameters
+    # move the answer AND how well each is grounded. Both BNPL parameters changed
+    # character on 2026-08-12: they were a flat trade-press purchase size and a flat
+    # unsourceable platform limit, and they are now ratios applied to household
+    # characteristics (DEFECTS.md B30). Whether they still top the ranking is an open
+    # question this figure answers.
     groups = {
-        "BNPL purchase size (trade press)": "rob_basket",
-        "Rolling platform limit (unsourced)": "rob_limit",
+        "BNPL purchase size, kappa (IES-derived)": "rob_kappa",
+        "BNPL purchase base (discretionary vs income)": "rob_base",
+        "Rolling limit, lambda (band-reported)": "rob_limit",
         "Amount rule (uncited, D4)": "rob_amount",
         "Default horizon k": "rob_k",
         "Population size": "rob_n",
@@ -399,12 +507,11 @@ def fig_robustness_tornado() -> None:
     rows.sort(key=lambda r: r[1])
 
     fig, ax = plt.subplots(figsize=(8.5, 4.6))
-    colors = ["crimson" if ("trade press" in n or "unsourced" in n or "uncited" in n)
-              else "tab:blue" for n, _ in rows]
+    colors = ["crimson" if "uncited" in n else "tab:blue" for n, _ in rows]
     ax.barh([r[0] for r in rows], [r[1] for r in rows], color=colors)
     ax.set_xlabel("Range of population default rate across the swept values (pp)")
     ax.set_title("Robustness: what actually moves the answer\n"
-                 "red = the parameter is uncited, unsourced or trade press", fontsize=10)
+                 "red = the rule has no citation", fontsize=10)
     ax.grid(alpha=0.3, axis="x")
     fig.tight_layout()
     fig.savefig(FIGDIR / "robustness_tornado.png", dpi=200)
@@ -451,6 +558,7 @@ def main() -> None:
     baseline_and_pattern1()
     rq1_stacking_figure()
     rq2_surface_figure()
+    rq2_threshold_figure()
     rq3_interventions_table()
     robustness_table()
     # Figures for Chapter 6.

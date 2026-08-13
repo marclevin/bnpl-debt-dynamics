@@ -53,6 +53,9 @@ class HouseholdRecord:
     # -- flows, monthly (the Reg 23A test is specified on monthly income) --------
     income_monthly: float
     nca_capacity_monthly: float
+    #: D4: BNPL purchase size is sized against a MONTHLY budget, not a per-tick one --
+    #: a BNPL purchase is a lumpy monthly-scale item, not a fortnightly flow.
+    discretionary_monthly: float
     # -- stocks ------------------------------------------------------------------
     d_trad: float
     liquid_savings: float
@@ -111,7 +114,7 @@ def load_population_frame() -> pd.DataFrame:
     # --- D1: join the earner count -------------------------------------------
     # A separation costs the household ONE earner's wage, not all of it. Without this
     # a two-earner household loses everything at once, which leaves the mild CCMR
-    # arrears bands empty (issues.md B21). It also makes `p` a per-EARNER hazard,
+    # arrears bands empty (DEFECTS.md B21). It also makes `p` a per-EARNER hazard,
     # directly comparable to the QLFS individual transition rate.
     ind = pd.read_stata(NIDS_INDDERIVED, columns=["w5_hhid", "w5_empl_stat"])
     earners = (
@@ -199,6 +202,7 @@ def build_records(
                 scheduled_service_tick=scheduled_monthly * MONTHLY_TO_TICK,
                 income_monthly=income_monthly,
                 nca_capacity_monthly=capacity_monthly,
+                discretionary_monthly=float(row.expenditure_discretionary),
                 d_trad=float(row.D_trad),
                 liquid_savings=float(row.liquid_savings),
                 apr_annual=float(row.apr_annual),

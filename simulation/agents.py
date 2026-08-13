@@ -51,6 +51,20 @@ class HouseholdAgent(Agent):
         #: D1: how many of the household's earners are currently out of work.
         self.n_unemployed = 0
 
+        # D17 threshold mechanism: this household's personal tipping point, fixed for
+        # life (Granovetter 1978). Drawn ONLY under the threshold mechanism, so the
+        # linear arm's random stream is byte-for-byte what it was before this existed.
+        # Clamped to [0,1] rather than resampled, and that is faithful rather than lazy:
+        # the point mass at 0 is Granovetter's INSTIGATORS, who act with no peers at all
+        # and are what seeds a cascade, and the mass at 1 is households social influence
+        # can never reach. Resampling would delete both groups.
+        # Drawn from `init_rng`, NOT the simulation stream, so that `gamma = 0`
+        # reproduces the linear control bitwise and a `sigma_theta` sweep is paired.
+        self.theta = 0.0
+        if model.params.peer_mechanism == "threshold":
+            p = model.params
+            self.theta = min(max(model.init_rng.gauss(p.mu_theta, p.sigma_theta), 0.0), 1.0)
+
         # -- per-tick accumulators, read by the collector -------------------------
         self.interest_charged_tick = 0.0
         self.bnpl_fees_tick = 0.0
@@ -199,16 +213,20 @@ class HouseholdAgent(Agent):
         cash -= spend
 
         # --- 6. want-driven BNPL, using the LAGGED group adoption share --------
+        # The cool-off gate is STRICT (`>`), not `>=`. With `>=` a purchase at tick t
+        # setting cool_off_until = t + k_cool re-opened the gate at t + k_cool, so
+        # k_cool = 1 -- the statutory 14-day arm -- blocked nothing at all, because a
+        # household could not purchase twice within one tick anyway (DEFECTS.md B27).
         if (
             p.bnpl_enabled
             and self.bnpl_eligible
             and not self.defaulted
-            and self.model.tick >= self.cool_off_until
+            and self.model.tick > self.cool_off_until
         ):
             s_g = self.model.group_share_lagged.get(self.reference_group, 0.0)
-            q = min(max(p.q_base + p.beta * s_g, 0.0), 1.0)
+            q = self._appetite(s_g)
             if self.model.rng.random() < q:
-                cash -= self._bnpl_purchase()
+                cash -= self._bnpl_purchase(cash)
 
         # --- 7. state updates --------------------------------------------------
         self.savings = max(cash, 0.0)
@@ -227,6 +245,33 @@ class HouseholdAgent(Agent):
         if not self.defaulted and self.distress_streak >= p.k_default:
             self.defaulted = True
             self.model.bureau.record_default(self.agent_id)
+
+    # ------------------------------------------------------------ peer influence
+    def _appetite(self, s_g: float) -> float:
+        """D17: want-driven BNPL propensity, given the lagged group adoption share.
+
+        Two mechanisms, both with a control arm that recovers the independent-agent
+        model exactly, and both reading the SAME lagged share so neither is sensitive to
+        activation order.
+
+        **linear** — `q = q_base + beta * s_g`. Every household responds identically and
+        smoothly. `beta = 0` switches the channel off.
+
+        **threshold** — Granovetter (1978). The household ignores its peers entirely
+        until the group's usage crosses its own fixed tipping point `theta_i`, then
+        steps up by `gamma`. `gamma = 0` switches the channel off.
+
+        The two are structurally distinct in the way that matters for RQ2: linear
+        coupling cannot produce a tipping point in adoption at any parameter value,
+        whereas a spread of thresholds can, because there is always another household
+        just above the current level waiting to be triggered.
+        """
+        p = self.model.params
+        if p.peer_mechanism == "threshold":
+            q = p.q_base + (p.gamma if s_g >= self.theta else 0.0)
+        else:
+            q = p.q_base + p.beta * s_g
+        return min(max(q, 0.0), 1.0)
 
     # --------------------------------------------------------------- borrowing
     def _requested_amount(self, shortfall: float) -> float:
@@ -264,23 +309,60 @@ class HouseholdAgent(Agent):
 
         return net_cash
 
-    def _bnpl_purchase(self) -> float:
+    def _purchase_scale(self) -> float:
+        """The household's own monthly budget that a BNPL purchase is sized against (D4).
+
+        A flat national purchase size was the model's single largest driver of output
+        and its worst-sourced input (DEFECTS.md B24). It was also indefensible on its own
+        terms: R1,568 imposed uniformly is 127% of the median banked Q1 household's
+        monthly discretionary spend and 5.8% of Q5's. A population with a Gini of 0.67
+        cannot share one purchase size.
+        """
+        if self.model.params.bnpl_purchase_base == "income":
+            return self.income_monthly
+        return self.rec.discretionary_monthly
+
+    def _bnpl_purchase(self, cash: float) -> float:
         """A want-driven discretionary BNPL purchase (D3, D4).
 
         Returns the checkout payment the household must fund this tick. The purchase is
         consumption, so unlike the shortfall path it frees no cash: it costs 25% now and
         creates an obligation for the remaining 75%.
+
+        The purchase is drawn lognormally about `kappa x` the household's own monthly
+        budget, so the MEAN is that product and the whole observed heterogeneity of the
+        population is inherited rather than averaged away. `kappa` is derived from IES
+        2022/23 (config.BNPL_PURCHASE_SHARE_OF_DISCRETIONARY), so the population mean
+        purchase is free to be checked against the SA provider disclosure rather than
+        being set by it.
+
+        THE CHECKOUT DEBIT MUST CLEAR. Both SA providers debit a card at checkout and
+        decline if it fails, so a household cannot buy what it cannot fund the first
+        instalment of. Until DEFECTS.md B28 this was unenforced: the checkout payment was
+        subtracted without a balance check and the resulting negative cash was silently
+        floored to zero at the state update, so purchases were partly funded by money
+        that did not exist -- worst exactly where purchase size was least plausible.
         """
         p = self.model.params
-        # Lognormal around the SA average basket. ASSUMPTION on level and dispersion.
+        if cash <= 0.0:
+            return 0.0
+
+        scale = self._purchase_scale()
+        if scale <= 0.0:
+            return 0.0
+
         sigma = math.sqrt(math.log(1.0 + p.bnpl_purchase_cv**2))
-        mu = math.log(p.bnpl_purchase_mean) - 0.5 * sigma**2
+        mu = math.log(p.bnpl_purchase_ratio * scale) - 0.5 * sigma**2
         amount = math.exp(self.model.rng.gauss(mu, sigma))
+
+        # The largest order whose checkout instalment the household can actually pay.
+        amount = min(amount, cash * p.bnpl_instalments)
 
         financed = self._bnpl_draw(amount)
         if financed <= 0:
             return 0.0
 
+        self.model.record_want_purchase(financed)
         if p.k_cool > 0:
             self.cool_off_until = self.model.tick + p.k_cool
         return financed / p.bnpl_instalments

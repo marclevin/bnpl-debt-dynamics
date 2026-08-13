@@ -19,16 +19,24 @@ from __future__ import annotations
 import argparse
 
 from .batch import replicate, run_batch, save
-from .config import ParamSet
+from .config import BNPL_PURCHASE_SHARE_OF_DISCRETIONARY, ParamSet
 
 # ---------------------------------------------------------------------------
 # The calibrated baseline. Both values are FITTED (calibrate.py):
 #   shock_prob      -> the CCMR 90+ band
 #   payment_friction -> the CCMR 1-30 band
 # Held fixed across every BNPL run, so nothing downstream is re-tuned.
+#
+# NOTE: neither is disturbed by the BNPL parameter work of 2026-08-12. Both are fitted
+# with `bnpl_enabled=False`, and the peer channel is inert in that arm, so the CCMR
+# comparison, pattern 3 and pattern 4 all stand unchanged.
 # ---------------------------------------------------------------------------
 FITTED_SHOCK_PROB = 0.048
 FITTED_PAYMENT_FRICTION = 0.09
+
+#: kappa as derived from IES 2022/23. Held here so the robustness grid centres on the
+#: derived value rather than on a number typed twice.
+PURCHASE_RATIO = BNPL_PURCHASE_SHARE_OF_DISCRETIONARY
 
 
 def calibrated(**kw) -> ParamSet:
@@ -101,6 +109,68 @@ def rq2_surface(reps: int) -> list[ParamSet]:
                 reps,
                 seed0=30_000,
             )
+    return out
+
+
+#: Threshold dispersion, the primary axis of the Granovetter arm. 0.0 is near-homogeneous
+#: (everyone tips at the same point, so either nobody starts or everyone goes at once) and
+#: 0.40 is highly dispersed (someone stands at every level, so adoption can ratchet).
+SIGMA_THETA_GRID = [0.05, 0.10, 0.20, 0.30, 0.40]
+#: The threshold arm's control. gamma=0 recovers the independent-agent model exactly.
+GAMMA_GRID = [0.0, 0.3]
+
+
+def rq2_threshold(reps: int) -> list[ParamSet]:
+    """RQ2 under Granovetter heterogeneous thresholds, the PRE-REGISTERED alternative.
+
+    D17 registered this as the structural robustness check should linear coupling produce
+    only a smooth response, which is exactly what happened (DEFECTS.md B22). A linear rule
+    producing a linear response is close to tautological, so the negative result needs a
+    structurally different mechanism before it can be believed.
+
+    **`sigma_theta` is the axis, not `mu_theta`.** Granovetter's claim is about the
+    VARIANCE of thresholds: a distribution with someone standing at every level cascades,
+    a tightly clustered one does not, at identical means. `mu_theta` gets a small separate
+    sensitivity rather than a full cross, which keeps this arm at the same run count as the
+    linear surface it is compared against.
+
+    **What this arm is really for.** Not "one more attempt to find a threshold". It
+    separates ADOPTION tipping from DISTRESS tipping. The model has peer feedback in its
+    input and none in its output, so if this arm produces a sharp adoption cascade and
+    default still responds linearly to access, that is a much stronger answer to RQ2 than
+    the linear arm can give: the cascade mechanism demonstrably works and still does not
+    move the outcome.
+    """
+    out: list[ParamSet] = []
+    for a in ACCESS_GRID:
+        for s in SIGMA_THETA_GRID:
+            for g in GAMMA_GRID:
+                out += replicate(
+                    calibrated(
+                        bnpl_enabled=True,
+                        bnpl_access_rate=a,
+                        peer_mechanism="threshold",
+                        sigma_theta=s,
+                        gamma=g,
+                        label=f"rq2t_a{a}_s{s}_g{g}",
+                    ),
+                    reps,
+                    seed0=60_000,
+                )
+    # mu_theta sensitivity, at full access and the mid dispersion only.
+    for m in (0.15, 0.30, 0.45):
+        out += replicate(
+            calibrated(
+                bnpl_enabled=True,
+                peer_mechanism="threshold",
+                sigma_theta=0.20,
+                gamma=0.3,
+                mu_theta=m,
+                label=f"rq2t_mu{m}",
+            ),
+            reps,
+            seed0=61_000,
+        )
     return out
 
 
@@ -193,23 +263,43 @@ def robustness(reps: int) -> list[ParamSet]:
     for n in (1000, 5000, 10000):
         out += replicate(calibrated(**base, n_agents=n, label=f"rob_n{n}"), reps, seed0=55_000)
 
-    # D11 rolling limit -- the binding-check parameter (no published figure exists).
-    for lim in (1000.0, 5000.0, 15000.0):
+    # D11 rolling limit -- MANDATORY. No SA provider publishes one, so the range is set
+    # from the external band: ~0.1 months of income per provider implied by Woolard, and
+    # ~0.26 by Afterpay's published maximum. 1.0 is deliberately outside it, to show what
+    # the old flat R5,000 constant was really assuming (DEFECTS.md B30).
+    for lam in (0.1, 0.25, 0.5, 1.0):
         out += replicate(
-            calibrated(**base, bnpl_platform_limit=lim, label=f"rob_limit{lim}"),
+            calibrated(**base, bnpl_limit_income_multiple=lam, label=f"rob_limit{lam}"),
             reps,
             seed0=56_000,
         )
 
-    # D4 BNPL purchase size -- rests on a trade-press figure.
-    for amt in (784.0, 1568.0, 3136.0):
+    # D4 BNPL purchase size -- MANDATORY. Half to double the IES-derived budget share.
+    for ratio in (0.07, PURCHASE_RATIO, 0.28):
         out += replicate(
-            calibrated(**base, bnpl_purchase_mean=amt, label=f"rob_basket{amt}"),
+            calibrated(**base, bnpl_purchase_ratio=ratio, label=f"rob_kappa{ratio}"),
             reps,
             seed0=57_000,
         )
 
-    # D1 shock persistence -- recovers the ORIGINAL single-tick rule (issues.md B17).
+    # D4 purchase BASE -- MANDATORY. Discretionary is the primary rule; income is the
+    # base the international regulator ratios are expressed against, so it is the arm
+    # that answers "does the anchor choice drive the result?".
+    for basis in ("discretionary", "income"):
+        out += replicate(
+            calibrated(
+                **base,
+                bnpl_purchase_base=basis,
+                # Sized so the two bases produce a comparable population mean purchase,
+                # otherwise the arm would confound the base with the level.
+                bnpl_purchase_ratio=PURCHASE_RATIO if basis == "discretionary" else 0.073,
+                label=f"rob_base_{basis}",
+            ),
+            reps,
+            seed0=59_000,
+        )
+
+    # D1 shock persistence -- recovers the ORIGINAL single-tick rule (DEFECTS.md B17).
     out += replicate(
         calibrated(**base, shock_persistent=False, label="rob_shock_single_tick"),
         reps,
@@ -222,6 +312,7 @@ SUITES = {
     "rq0": rq0_baseline,
     "rq1": rq1_stacking,
     "rq2": rq2_surface,
+    "rq2t": rq2_threshold,
     "rq3": rq3_interventions,
     "robustness": robustness,
 }

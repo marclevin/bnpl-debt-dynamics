@@ -11,7 +11,7 @@ the point of the register:
     DERIVED     the value is computed from the data, not chosen
     ASSUMPTION  no anchor exists; mandatory sensitivity analysis
 
-Decision rules: ../scratchpad/decision_rules.md
+Decision rules: ../scratchpad/DECISIONS.md
 """
 
 from __future__ import annotations
@@ -66,11 +66,79 @@ NIDS_INDDERIVED = DATA_RAW / "NIDS_W5" / "indderived_W5_Anon_V1.0.0.dta"
 RATE_TABLE = DATA_CONFIG / "credit_rate_table.csv"
 CCMR_BASELINE = DATA_CONFIG / "ccmr_2017_baseline.json"
 QLFS_FLOWS = DATA_CONFIG / "qlfs_2017_labour_flows.json"
+CPI_DEFLATOR = DATA_CONFIG / "cpi_deflator_2017.json"
+BNPL_ANCHORS = DATA_CONFIG / "bnpl_anchors_2017.json"
+IES_BNPL_SHARE = DATA_CONFIG / "ies_2022_bnpl_share.json"
 
 Provenance = Literal["SOURCED", "DERIVED", "ASSUMPTION"]
 
 AmountRule = Literal["shortfall", "shortfall_125", "shortfall_plus_committed"]
 Activation = Literal["random", "uniform", "synchronous"]
+PurchaseBase = Literal["discretionary", "income"]
+PeerMechanism = Literal["linear", "threshold"]
+
+# ---------------------------------------------------------------------------
+# 2017 Rands. EVERY monetary quantity in this model is denominated in 2017 Rands:
+# the NIDS W5 backbone, the Reg 23A expense table, the CCMR targets, the statutory
+# rates at the 2017 repo rate. The BNPL parameters were the exception until
+# DEFECTS.md B29 -- purchase size, the per-order cap and the late fees were all taken
+# at CURRENT vintage and used unadjusted, denominating the BNPL side of the model
+# roughly 1.4x too high against everything it interacts with.
+#
+# The conversion now happens HERE, once, from a sourced deflator, so a published
+# nominal figure and the 2017-Rand value the model uses can never drift apart.
+# ---------------------------------------------------------------------------
+
+
+def load_cpi_factors() -> dict[int, float]:
+    """Cumulative price factors from 2017, keyed by year (see cpi_deflator_2017.json)."""
+    raw = json.loads(CPI_DEFLATOR.read_text(encoding="utf-8"))["factor_from_2017"]
+    return {int(y): float(v) for y, v in raw.items()}
+
+
+def to_2017_rands(nominal: float, vintage_year: int) -> float:
+    """Convert a nominal amount observed in `vintage_year` into 2017 Rands."""
+    factors = load_cpi_factors()
+    if vintage_year not in factors:
+        raise KeyError(
+            f"no CPI factor for {vintage_year}; extend "
+            "notebooks/scripts/extract_cpi_deflator.py"
+        )
+    return nominal / factors[vintage_year]
+
+
+def load_bnpl_anchors() -> dict[str, Any]:
+    """SA BNPL purchase-size and volume VALIDATION TARGETS (not inputs)."""
+    return json.loads(BNPL_ANCHORS.read_text(encoding="utf-8"))
+
+
+def load_ies_bnpl_share() -> float:
+    """BNPL-financeable share of discretionary expenditure, derived from IES 2022/23."""
+    payload = json.loads(IES_BNPL_SHARE.read_text(encoding="utf-8"))
+    return float(payload["model_target"]["bnpl_financeable_share_of_discretionary"])
+
+
+#: Vintage of the published Payflex terms the model takes its product mechanics from.
+PAYFLEX_TERMS_VINTAGE = 2026
+
+#: Payflex figures as published (nominal), and as the model uses them (2017 Rands).
+PAYFLEX_ORDER_CAP_NOMINAL = 15_000.0
+PAYFLEX_LATE_FEE_PER_TICK_NOMINAL = 190.0   # R95 per week x 2 weeks
+PAYFLEX_LATE_FEE_CAP_NOMINAL = 285.0        # 3 weeks x R95
+
+BNPL_ORDER_CAP_2017 = round(
+    to_2017_rands(PAYFLEX_ORDER_CAP_NOMINAL, PAYFLEX_TERMS_VINTAGE), 2
+)
+BNPL_LATE_FEE_PER_TICK_2017 = round(
+    to_2017_rands(PAYFLEX_LATE_FEE_PER_TICK_NOMINAL, PAYFLEX_TERMS_VINTAGE), 2
+)
+BNPL_LATE_FEE_CAP_2017 = round(
+    to_2017_rands(PAYFLEX_LATE_FEE_CAP_NOMINAL, PAYFLEX_TERMS_VINTAGE), 2
+)
+
+#: kappa: a BNPL purchase is the scale of one month of the household's own spending in
+#: the categories BNPL finances. DERIVED from IES 2022/23, not chosen.
+BNPL_PURCHASE_SHARE_OF_DISCRETIONARY = round(load_ies_bnpl_share(), 4)
 
 
 def _p(
@@ -145,7 +213,7 @@ class ParamSet:
             "An unemployment spell persists until re-employment. Madeira models FLOWS "
             "into and out of unemployment, and QLFS 2017 shows 68.4% of the unemployed "
             "remain unemployed the next quarter. False recovers D1's original "
-            "single-tick shock, which cannot carry the calibration (see issues.md B17)."
+            "single-tick shock, which cannot carry the calibration (see DEFECTS.md B17)."
         ),
         sweep="False = the original non-persistent rule, reported as a robustness arm",
     )
@@ -182,10 +250,69 @@ class ParamSet:
         rule="D17",
         provenance="ASSUMPTION",
         source=(
-            "Peer imitation strength. NOT SOURCED. beta=0 is the CONTROL ARM and "
-            "recovers the independent-agent model exactly."
+            "Peer imitation strength under the LINEAR mechanism. NOT SOURCED. beta=0 is "
+            "the CONTROL ARM and recovers the independent-agent model exactly. Note that "
+            "beta's scale changed on 2026-08-13 when s_g was renormalised onto the "
+            "eligible subpopulation (DEFECTS.md B31), so values are not comparable with "
+            "pre-2026-08-13 runs."
         ),
         sweep="RQ1/RQ2 primary experimental axis; the beta=0 row is always reported",
+    )
+
+    # -- D17 peer mechanism: the pre-registered structural robustness check -------
+    # Linear coupling produced a linear response in every arm (DEFECTS.md B22), which is
+    # close to tautological. D17 pre-registered Granovetter's heterogeneous-threshold
+    # formulation as the alternative to try before concluding no threshold exists. Both
+    # mechanisms remain runnable so they can be compared on identical access grids.
+    peer_mechanism: PeerMechanism = _p(
+        "linear",
+        rule="D17",
+        provenance="SOURCED",
+        source=(
+            "Which social-transmission rule is active. 'linear' is q = q_base + beta*s_g. "
+            "'threshold' is Granovetter (1978): each household carries a fixed personal "
+            "tipping point and ignores its peers until the group crosses it. "
+            "MANDATORY comparison -- RQ2's negative result under linear coupling is weak "
+            "evidence on its own, since a linear rule producing a linear response is "
+            "nearly tautological."
+        ),
+        sweep="RQ2: both mechanisms on identical access grids",
+    )
+    mu_theta: float = _p(
+        0.3,
+        rule="D17",
+        provenance="ASSUMPTION",
+        source=(
+            "Mean adoption threshold: the share of a household's reference group that "
+            "must already be using BNPL before it responds. NOT SOURCED. Held fixed as "
+            "the SECONDARY axis -- see sigma_theta for why."
+        ),
+        sweep="3-point sensitivity at one access level, not a full cross",
+    )
+    sigma_theta: float = _p(
+        0.2,
+        rule="D17",
+        provenance="SOURCED",
+        source=(
+            "Dispersion of adoption thresholds, truncated to [0,1]. THE PRIMARY "
+            "EXPERIMENTAL AXIS of the threshold arm, because Granovetter's actual claim "
+            "is that the VARIANCE of thresholds, not their mean, decides whether a "
+            "cascade occurs: a chain of thresholds with someone standing at every level "
+            "propagates, a tightly clustered one does not. Sweeping mu_theta alone would "
+            "test the wrong quantity and misrepresent the citation."
+        ),
+        sweep="MANDATORY: 0.05-0.40",
+    )
+    gamma: float = _p(
+        0.0,
+        rule="D17",
+        provenance="ASSUMPTION",
+        source=(
+            "Appetite increment once a household's threshold is crossed. NOT SOURCED. "
+            "gamma=0 is the CONTROL ARM of the threshold mechanism and recovers the "
+            "independent-agent model exactly, exactly as beta=0 does for the linear one."
+        ),
+        sweep="RQ2 threshold arm; the gamma=0 row is always reported",
     )
 
     # -- D4 borrowing amount ----------------------------------------------------
@@ -196,22 +323,39 @@ class ParamSet:
         source="No anchor found in the literature sweep. The model's first uncited rule.",
         sweep="MANDATORY: shortfall / +25% / plus one tick of committed expenditure",
     )
-    bnpl_purchase_mean: float = _p(
-        1568.0,
+    bnpl_purchase_base: PurchaseBase = _p(
+        "discretionary",
         rule="D4/D11",
-        provenance="ASSUMPTION",
+        provenance="SOURCED",
         source=(
-            "SA average BNPL basket ~R1,568 (trade press, % VERIFY, current vintage). "
-            "Cross-checked against CFPB $135/loan. Weakest source in the thesis."
+            "What a BNPL purchase is sized AGAINST. BNPL finances discretionary "
+            "consumption, so the household's own discretionary budget is the observed "
+            "scale at which it makes discretionary purchases. 'income' is the "
+            "robustness arm, and is the base the international regulator ratios are "
+            "expressed against."
         ),
-        sweep="0.5x to 2x",
+        sweep="MANDATORY: discretionary / income",
+    )
+    bnpl_purchase_ratio: float = _p(
+        BNPL_PURCHASE_SHARE_OF_DISCRETIONARY,
+        rule="D4/D11",
+        provenance="DERIVED",
+        source=(
+            "kappa. Share of a household's discretionary budget spent on the categories "
+            "BNPL finances (clothing and footwear, furniture and appliances, ICT "
+            "devices, recreational durables), DERIVED from Stats SA IES 2022/23 COICOP "
+            "microdata -- see ies_2022_bnpl_share.json. A ratio, never a money amount, "
+            "so the 2022/23 vintage cannot contaminate the 2017-Rand model. "
+            "REPLACES the flat R1,568 trade-press constant (DEFECTS.md B24/B30)."
+        ),
+        sweep="MANDATORY: 0.07-0.28 (half to double the derived share)",
     )
     bnpl_purchase_cv: float = _p(
         0.6,
         rule="D4",
         provenance="ASSUMPTION",
-        source="Dispersion of BNPL purchase size. No source; lognormal.",
-        sweep="with bnpl_purchase_mean",
+        source="Dispersion of BNPL purchase size around its household-relative mean. No source; lognormal.",
+        sweep="with bnpl_purchase_ratio",
     )
 
     # -- D6 repayment and arrears -----------------------------------------------
@@ -231,7 +375,7 @@ class ParamSet:
             "cash. Kuchler & Pagel (2021): present-biased borrowers fail to execute "
             "planned paydown. Applies to traditional debt only, since BNPL auto-debits a "
             "card. CALIBRATED to the CCMR 1-30 day band, which the unemployment channel "
-            "alone leaves nearly empty (issues.md B21)."
+            "alone leaves nearly empty (DEFECTS.md B21)."
         ),
         sweep="calibration grid; second fitted parameter",
     )
@@ -242,7 +386,7 @@ class ParamSet:
         source=(
             "The contractual minimum itself. D6 fixes the SHARE of minimum-payers but "
             "never defined the minimum; the NCA prescribes no formula either. "
-            "The model's SECOND uncited rule (issues.md B15)."
+            "The model's SECOND uncited rule (DEFECTS.md B15)."
         ),
         sweep="MANDATORY: 0.025-0.10",
     )
@@ -297,22 +441,44 @@ class ParamSet:
         sweep="1-6; N=1 isolates single-platform accumulation from cross-firm stacking",
     )
     bnpl_order_cap: float = _p(
-        15000.0,
+        BNPL_ORDER_CAP_2017,
         rule="D11",
         provenance="SOURCED",
-        source="Payflex per-order cap of R15,000 (current vintage).",
+        source=(
+            f"Payflex per-order cap of R{PAYFLEX_ORDER_CAP_NOMINAL:,.0f} as published "
+            f"({PAYFLEX_TERMS_VINTAGE} vintage), DEFLATED to 2017 Rands "
+            "(cpi_deflator_2017.json). Every other quantity in the model is 2017 Rands; "
+            "using the nominal figure denominated the BNPL side ~1.4x too high "
+            "(DEFECTS.md B29)."
+        ),
         sweep="verify it binds rarely at LMI incomes",
     )
-    bnpl_platform_limit: float = _p(
-        5000.0,
+    bnpl_limit_income_multiple: float = _p(
+        0.10,
         rule="D11",
         provenance="ASSUMPTION",
         source=(
-            "Rolling available balance per platform. SEARCHED AND NOT PUBLISHED by "
-            "either major SA provider (issues.md B16). Demoted to a BINDING-CHECK "
-            "quantity: measure how often it blocks a transaction rather than tuning it."
+            "lambda. Rolling available balance per platform, as a multiple of the "
+            "household's MONTHLY income, applied independently at each of n_platforms. "
+            "No SA provider publishes a rolling limit (DEFECTS.md B16), but both state "
+            "the limit is set per customer from credit profile and repayment behaviour, "
+            "and the group's audited credit-risk disclosure describes a 'low and grow' "
+            "policy -- which licenses a FUNCTION of household characteristics rather "
+            "than a flat constant. REPLACES the flat R5,000, which was 217% of the "
+            "median banked Q1 household's monthly income (DEFECTS.md B30). "
+            "VALUE CHOSEN 2026-08-13 to make the model's STACKED total match the only "
+            "measurement of that quantity: Woolard found it 'relatively easy' to accrue "
+            "~GBP1,000 of bureau-invisible BNPL debt, ~37% of UK median monthly "
+            "household income ACROSS ALL PROVIDERS, so ~0.09 each across four. "
+            "lambda=0.10 x 4 platforms reproduces that; the earlier 0.25 gave a stacked "
+            "total of 1.0x monthly income, ~2.7x what Woolard called easy to accrue. "
+            "Cross-check: Afterpay's published initial and maximum limits are ~8% and "
+            "~26% of AU median monthly income, so 0.10 sits at the initial-limit end. "
+            "Reported against that band, NOT fitted to it -- the same treatment "
+            "shock_prob receives against the QLFS band. The income denominators are the "
+            "author's arithmetic and must be pinned before the band is published."
         ),
-        sweep="MANDATORY, with the binding rate reported",
+        sweep="MANDATORY: 0.1-1.0, with the binding rate reported BY QUINTILE",
     )
 
     # -- D13 BNPL repayment and penalties ----------------------------------------
@@ -324,16 +490,23 @@ class ParamSet:
         sweep="Pay in 3 monthly (PayJustNow) as the structural alternative",
     )
     bnpl_late_fee_per_tick: float = _p(
-        190.0,
+        BNPL_LATE_FEE_PER_TICK_2017,
         rule="D13",
         provenance="SOURCED",
-        source="Payflex late fee R95 per week = R190 per 14-day tick.",
+        source=(
+            "Payflex late fee R95 per week = R190 per 14-day tick as published "
+            f"({PAYFLEX_TERMS_VINTAGE} vintage), DEFLATED to 2017 Rands (DEFECTS.md B29)."
+        ),
     )
     bnpl_late_fee_cap: float = _p(
-        285.0,
+        BNPL_LATE_FEE_CAP_2017,
         rule="D13",
         provenance="SOURCED",
-        source="Payflex caps the late fee at three weeks: 3 x R95 = R285 per missed instalment.",
+        source=(
+            "Payflex caps the late fee at three weeks: 3 x R95 = R285 per missed "
+            f"instalment as published ({PAYFLEX_TERMS_VINTAGE} vintage), DEFLATED to "
+            "2017 Rands (DEFECTS.md B29)."
+        ),
     )
 
     # -- D14 intervention levers (RQ3) -------------------------------------------
@@ -352,8 +525,11 @@ class ParamSet:
         rule="D14",
         provenance="SOURCED",
         source=(
-            "Lever 3. Baseline 0 = lever OFF. k_cool=1 tick = 14 days = the CCA s.66A "
-            "statutory right of withdrawal, which lands exactly on a tick boundary."
+            "Lever 3. Baseline 0 = lever OFF. k_cool=1 tick = 14 days = the UK CCA "
+            "s.66A statutory right of withdrawal, which lands exactly on a tick "
+            "boundary. SEMANTICS: k_cool=n blocks want-driven initiation for the next n "
+            "ticks. Until DEFECTS.md B27 was fixed the gate was off by one and k_cool=1 "
+            "blocked nothing, so the statutory arm reported precisely zero effect."
         ),
         sweep="RQ3 lever 3, 0-4 ticks",
     )

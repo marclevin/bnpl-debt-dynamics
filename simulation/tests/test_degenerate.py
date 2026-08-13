@@ -30,7 +30,8 @@ _PARAM_ECHO = {
     "seed", "label", "shock_prob", "q_base", "beta", "bnpl_enabled", "bnpl_access_rate",
     "n_platforms", "bnpl_bureau_visible", "bnpl_affordability_check", "k_cool",
     "stacking_cap", "amount_rule", "min_payer_share", "min_payment_frac", "k_default",
-    "activation", "bnpl_platform_limit",
+    "activation", "bnpl_purchase_base", "bnpl_purchase_ratio",
+    "bnpl_limit_income_multiple", "peer_mechanism", "mu_theta", "sigma_theta", "gamma",
 }
 
 
@@ -49,7 +50,8 @@ def test_bnpl_disabled_reproduces_the_baseline_exactly():
         n_platforms=6,
         q_base=0.9,
         beta=5.0,
-        bnpl_platform_limit=999_999.0,
+        bnpl_limit_income_multiple=99.0,
+        bnpl_purchase_ratio=0.9,
         k_cool=4,
     )
     assert outcomes(base) == outcomes(fiddled)
@@ -156,7 +158,15 @@ def test_bureau_visibility_tightens_the_gate():
 
 
 def test_cool_off_cannot_increase_bnpl_volume():
-    """RQ3: a cool-off blocks want-driven initiation, so volume cannot rise."""
+    """RQ3: a cool-off blocks want-driven initiation, so volume cannot rise.
+
+    ⚠ This test is NECESSARY BUT NOT SUFFICIENT, and that is why DEFECTS.md B27 survived
+    the suite for a full experimental run: a no-op satisfies `<=` trivially, and volume
+    mixes in the shortfall-driven path, which the cool-off deliberately does not block.
+    The test that has teeth is
+    `test_bnpl_parameters.test_statutory_cool_off_strictly_reduces_want_driven_purchases`,
+    which asserts a STRICT reduction in the want-driven purchase COUNT. Keep both.
+    """
     off = run(bnpl_enabled=True, q_base=0.5, k_cool=0)
     on = run(bnpl_enabled=True, q_base=0.5, k_cool=4)
     assert on["bnpl_volume_cumulative"] <= off["bnpl_volume_cumulative"]

@@ -100,6 +100,30 @@ def collect_tick(model) -> dict:
             sum(d * c for d, c in stacking.items()) / n if stacking else 0.0
         ),
         "stacking_2plus": sum(c for d, c in stacking.items() if d >= 2) / n,
+        # --- D17 peer channel diagnostics ------------------------------------------
+        # `s_g` is now normalised onto the eligible subpopulation, so it can reach 1.0
+        # and a Granovetter threshold drawn on [0,1] is meaningful everywhere. Tracking
+        # the peak matters: if the signal never approaches the threshold distribution,
+        # a null result in the threshold arm is mechanical rather than substantive.
+        "peer_share_mean": (
+            sum(model.group_share_lagged.values()) / len(model.group_share_lagged)
+            if model.group_share_lagged
+            else 0.0
+        ),
+        "peer_share_max": max(model.group_share_lagged.values(), default=0.0),
+        # Share of ELIGIBLE households whose personal threshold has been crossed. This
+        # is the adoption-tipping quantity RQ2 needs to separate from default.
+        "threshold_triggered": (
+            sum(
+                1
+                for a in agents
+                if a.bnpl_eligible
+                and model.group_share_lagged.get(a.reference_group, 0.0) >= a.theta
+            )
+            / max(model.n_bnpl_eligible, 1)
+            if model.params.peer_mechanism == "threshold"
+            else 0.0
+        ),
         # --- pattern 4 (TransUnion 36%) ------------------------------------------
         "zero_savings_rate": n_zero_savings / n,
         # --- D1 diagnostic ----------------------------------------------------------
@@ -167,6 +191,31 @@ def summarise_run(model) -> dict:
     n_order_cap = sum(pl.n_blocked_order_cap for pl in model.platforms)
     n_rolling = sum(pl.n_blocked_rolling_limit for pl in model.platforms)
 
+    # The rolling limit now scales with household income, so it binds hardest at the
+    # bottom. An aggregate binding rate can read as inert while the constraint is biting
+    # hard on Q1, which is exactly the failure the flat constant hid.
+    quintile_of = {a.agent_id: a.rec.income_quintile for a in agents}
+    req_q: dict[str, int] = {}
+    blk_q: dict[str, int] = {}
+    for pl in model.platforms:
+        for agent_id, count in pl.requests_by_agent.items():
+            q = quintile_of.get(agent_id)
+            if q:
+                req_q[q] = req_q.get(q, 0) + count
+        for agent_id, count in pl.blocked_rolling_by_agent.items():
+            q = quintile_of.get(agent_id)
+            if q:
+                blk_q[q] = blk_q.get(q, 0) + count
+
+    # --- D4 purchase-size validation ------------------------------------------------
+    # Checked against the SA provider disclosure (bnpl_anchors_2017.json), never fitted
+    # to it. The rule's scale comes from the IES budget share.
+    realised_purchase_mean = (
+        model.want_purchase_value / model.want_purchase_count
+        if model.want_purchase_count
+        else 0.0
+    )
+
     summary = {
         **{f: getattr(p, f) for f in ("seed", "label")},
         **{
@@ -188,7 +237,13 @@ def summarise_run(model) -> dict:
                 "payment_friction",
                 "k_default",
                 "activation",
-                "bnpl_platform_limit",
+                "bnpl_purchase_base",
+                "bnpl_purchase_ratio",
+                "bnpl_limit_income_multiple",
+                "peer_mechanism",
+                "mu_theta",
+                "sigma_theta",
+                "gamma",
             )
         },
         # --- headline -----------------------------------------------------------
@@ -225,6 +280,12 @@ def summarise_run(model) -> dict:
         "bnpl_outstanding_final": final["bnpl_outstanding_total"],
         "stacking_mean_final": final["stacking_mean"],
         "stacking_2plus_final": final["stacking_2plus"],
+        # --- D17 peer channel: the adoption-vs-default separation (RQ2) -------------
+        "peer_share_mean_final": final["peer_share_mean"],
+        "peer_share_max_final": final["peer_share_max"],
+        "peer_share_max_ever": max(r["peer_share_max"] for r in post),
+        "threshold_triggered_final": final["threshold_triggered"],
+        "threshold_triggered_mean": mean("threshold_triggered"),
         # --- D1 diagnostic --------------------------------------------------------
         "shocked_rate_mean": mean("shocked_rate"),
         # --- population / eligibility --------------------------------------------
@@ -236,11 +297,20 @@ def summarise_run(model) -> dict:
         "bnpl_requests": n_requests,
         "bnpl_order_cap_bind_rate": (n_order_cap / n_requests) if n_requests else 0.0,
         "bnpl_rolling_limit_bind_rate": (n_rolling / n_requests) if n_requests else 0.0,
+        # --- D4 purchase-size validation ------------------------------------------
+        "bnpl_want_purchases": model.want_purchase_count,
+        "bnpl_purchase_mean_realised": realised_purchase_mean,
         # --- lender ----------------------------------------------------------------
         "trad_applications": model.lender.n_applications,
         "trad_granted": model.lender.n_granted,
         "trad_refused_gate": model.lender.n_refused_gate,
     }
+    summary.update(
+        {
+            f"bnpl_rolling_bind_{q}": (blk_q.get(q, 0) / req_q[q]) if req_q.get(q) else 0.0
+            for q in sorted(set(quintile_of.values()))
+        }
+    )
     # `dti_` is the PRIMARY (aggregate) statistic; the others are the secondary readings.
     summary.update({f"dti_{q}": v for q, v in dti_aggregate.items()})
     summary.update({f"dti_mean_{q}": v for q, v in dti_mean.items()})

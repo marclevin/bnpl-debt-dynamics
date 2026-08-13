@@ -36,6 +36,16 @@ class BNPLModel(Model):
         # draw so a run is reproducible from its seed alone.
         self.rng = random.Random(params.seed)
 
+        # A SEPARATE stream for fixed agent endowments drawn at initialisation, so that
+        # drawing them cannot shift the simulation's own stream. Two payoffs:
+        #   * `gamma = 0` under the threshold mechanism reproduces the linear `beta = 0`
+        #     control BITWISE, rather than merely in distribution;
+        #   * sweeping `sigma_theta` changes only the thresholds, leaving every shock,
+        #     purchase and friction draw identical, which makes the D17 dispersion sweep
+        #     a PAIRED comparison instead of a noisy one.
+        # Offset by a fixed prime so it cannot coincide with the main stream.
+        self.init_rng = random.Random(params.seed + 999_983)
+
         records, groups = build_records(params.n_agents, seed=params.seed)
         self.records = records
         self.groups = groups
@@ -48,6 +58,13 @@ class BNPLModel(Model):
         self.n_banked = len(banked)
         self.n_bnpl_eligible = len(eligible)
 
+        # D17 denominator: how many members of each reference group COULD use BNPL.
+        # See `_recompute_group_shares` for why this, and not group size, is the
+        # denominator (DEFECTS.md B31).
+        self.group_eligible: dict[tuple[str, str], int] = {
+            g: sum(1 for i in members if i in eligible) for g, members in groups.items()
+        }
+
         # --- D6: the minimum-payer arm --------------------------------------------
         n_min = int(round(params.min_payer_share * len(records)))
         min_payers = set(self.rng.sample(range(len(records)), n_min)) if n_min else set()
@@ -55,11 +72,25 @@ class BNPLModel(Model):
         # --- entities ---------------------------------------------------------------
         self.bureau = CreditBureau(bnpl_visible=params.bnpl_bureau_visible)
         self.lender = TraditionalLender(self.bureau)
+
+        # D11: the rolling available balance is set PER HOUSEHOLD from monthly income,
+        # which is what a light automated screen can infer from card activity. It is
+        # deliberately NOT the Reg 23A capacity: that asymmetry with D9 is the mechanism
+        # the thesis exists to study, and setting BNPL limits from statutory capacity
+        # would quietly dissolve it.
+        limits = {
+            rec.agent_id: max(params.bnpl_limit_income_multiple * rec.income_monthly, 0.0)
+            for rec in records
+        }
         self.platforms: list[BNPLPlatform] = [
             BNPLPlatform(
                 platform_id=i,
                 order_cap=params.bnpl_order_cap,
-                rolling_limit=params.bnpl_platform_limit,
+                # Every household carries an explicit limit, so the fallback is unused
+                # in a normal run; it exists so a platform is still well defined when
+                # constructed directly in a unit test.
+                rolling_limit=0.0,
+                rolling_limits=dict(limits),
                 late_fee_per_tick=params.bnpl_late_fee_per_tick,
                 late_fee_cap=params.bnpl_late_fee_cap,
                 n_instalments=params.bnpl_instalments,
@@ -78,7 +109,22 @@ class BNPLModel(Model):
         # D17: zero at t=0 everywhere, which is why q_base > 0 is structurally required.
         self.group_share_lagged: dict[tuple[str, str], float] = {g: 0.0 for g in groups}
 
+        # --- want-driven purchase counters ------------------------------------------
+        # Two jobs. (1) The realised mean purchase is the VALIDATION quantity for the
+        # new household-relative purchase rule: it is checked against the SA provider
+        # disclosure rather than being set by it (bnpl_anchors_2017.json). (2) The
+        # cool-off regression test needs a purchase COUNT, because cumulative volume is
+        # confounded by the shortfall-driven path, which the cool-off deliberately does
+        # not block -- asserting on volume is what let DEFECTS.md B27 through the suite.
+        self.want_purchase_count = 0
+        self.want_purchase_value = 0.0
+
         self.history: list[dict] = []
+
+    def record_want_purchase(self, financed: float) -> None:
+        """Record one want-driven BNPL origination (D3)."""
+        self.want_purchase_count += 1
+        self.want_purchase_value += financed
 
     # ------------------------------------------------------------------ scheduling
     def _activate(self) -> None:
@@ -112,6 +158,25 @@ class BNPLModel(Model):
         self.tick += 1
 
     def _recompute_group_shares(self) -> None:
+        """The D17 peer signal: what share of my reference group is using BNPL.
+
+        The denominator is the group's **BNPL-ELIGIBLE** members, not all its members
+        (DEFECTS.md B31, resolved 2026-08-13 as Option A). Counting the unbanked and the
+        ineligible in the denominator capped `s_g` at each group's eligible share, and
+        that ceiling is proportional to `bnpl_access_rate` -- which is RQ2's own x-axis.
+        Under linear coupling the effect is absorbed into `beta` and is harmless, but a
+        Granovetter threshold is a fixed number compared against this signal: at 15%
+        access nothing above `theta_i ~ 0.125` could ever fire, so sweeping access would
+        also sweep the maximum attainable signal and produce a threshold-shaped response
+        that is partly an artefact.
+
+        Normalising also gives the quantity a cleaner reading -- "what share of the
+        people who *could* use BNPL are using it" is closer to what a household observes
+        than a share diluted by neighbours who have no bank card.
+
+        ⚠ This changes the meaning of `beta`, so linear-arm results are not comparable
+        across the change. Everything BNPL-on is being re-run regardless.
+        """
         if not self.params.bnpl_enabled:
             # s_g is identically zero with BNPL disabled, so the peer channel is inert
             # in the baseline and the CCMR calibration is untouched.
@@ -120,8 +185,11 @@ class BNPLModel(Model):
         for agent in self.agents:
             if agent.bnpl_outstanding() > 0:
                 holders[agent.reference_group] += 1
+        # A group with no eligible members emits no signal. It cannot: nobody in it can
+        # hold BNPL, so the numerator is zero too.
         self.group_share_lagged = {
-            g: holders[g] / len(members) for g, members in self.groups.items()
+            g: (holders[g] / n_elig) if (n_elig := self.group_eligible[g]) else 0.0
+            for g in self.groups
         }
 
     # ----------------------------------------------------------------------- run

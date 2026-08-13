@@ -55,7 +55,7 @@ def test_shock_costs_one_earners_share_not_the_whole_wage():
     """A two-earner household losing one job keeps the other earner's wage.
 
     This is what puts households in the mild CCMR arrears bands instead of sending
-    them straight to 120+ (issues.md B21).
+    them straight to 120+ (DEFECTS.md B21).
     """
     records, _ = build_records()
     multi = [r for r in records if r.n_earners >= 2 and r.income_wage_tick > 0]

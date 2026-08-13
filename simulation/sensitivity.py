@@ -29,26 +29,34 @@ from .batch import run_batch
 from .config import RESULTS_SUMMARY, ParamSet
 
 #: The uncalibrated and fitted parameters, with the ranges each is defensible over.
-#: `beta` and `q_base` are the two admitted uncalibratable parameters (issues.md B8);
-#: min_payment_frac is the model's second uncited rule (B15); bnpl_platform_limit is
-#: unsourceable (B16); bnpl_purchase_mean rests on trade press; shock_prob is fitted but
+#: `beta` and `q_base` are the two admitted uncalibratable parameters (DEFECTS.md B8);
+#: min_payment_frac is the model's second uncited rule (B15); shock_prob is fitted but
 #: sits 4x above the QLFS band (B20), so its uncertainty belongs here too.
+#:
+#: The two BNPL parameters changed character on 2026-08-12. They were a flat trade-press
+#: purchase size and a flat unsourceable platform limit, and they were the model's two
+#: largest drivers (B24). They are now RATIOS applied to household characteristics --
+#: kappa derived from IES 2022/23, lambda reported against an external band -- so the
+#: bounds below are ranges on the ratio, not on a Rand amount. Whether the variance
+#: decomposition still ranks them first is now an open question worth reporting either
+#: way: if it does, the sensitivity is structural rather than an artefact of a badly
+#: chosen constant.
 PROBLEM = {
     "num_vars": 6,
     "names": [
         "q_base",
         "beta",
         "min_payment_frac",
-        "bnpl_purchase_mean",
-        "bnpl_platform_limit",
+        "bnpl_purchase_ratio",
+        "bnpl_limit_income_multiple",
         "shock_prob",
     ],
     "bounds": [
         [0.01, 0.30],      # spontaneous want-driven BNPL propensity
         [0.0, 3.0],        # peer imitation strength; 0 is the control arm
         [0.025, 0.10],     # contractual minimum payment (mandatory sweep)
-        [800.0, 3200.0],   # ~0.5x to 2x the SA average basket of R1,568
-        [1000.0, 20000.0], # rolling limit; no published figure exists
+        [0.07, 0.28],      # kappa: half to double the IES-derived budget share
+        [0.10, 1.00],      # lambda: months of income per provider; band is 0.10-0.26
         [0.012, 0.064],    # shock probability, bracketing the fitted 0.048
     ],
 }
