@@ -1,0 +1,125 @@
+{
+  "resample_seed": 20260818,
+  "n_agents": 5000,
+  "unique_source_households": 3221,
+  "n_checks": 14,
+  "n_passed": 14,
+  "gini_pc_source_weighted": 0.651,
+  "gini_pc_agents_unweighted": 0.667,
+  "banked_pct_agents": 82.8,
+  "mean_hh_size_source_weighted": 3.03,
+  "checks": [
+    {
+      "check": "A. quintile shares \u224820%",
+      "metric": "max |share-0.20|",
+      "value": 0.004,
+      "benchmark": "\u22640.02",
+      "tolerance": "\u00b12pp",
+      "pass": true
+    },
+    {
+      "check": "A. mean household size",
+      "metric": "weighted mean",
+      "value": 3.03,
+      "benchmark": "~3.3",
+      "tolerance": "\u00b10.5",
+      "pass": true
+    },
+    {
+      "check": "A. no impossible values",
+      "metric": "neg savings/debt/disc",
+      "value": 0,
+      "benchmark": "0",
+      "tolerance": "exact",
+      "pass": true
+    },
+    {
+      "check": "B. banked (national)",
+      "metric": "synthetic\u2212finscope",
+      "value": 0.4,
+      "benchmark": "0",
+      "tolerance": "\u00b13pp",
+      "pass": true
+    },
+    {
+      "check": "B. credit_access_formal (national)",
+      "metric": "synthetic\u2212finscope",
+      "value": 2.3,
+      "benchmark": "0",
+      "tolerance": "\u00b13pp",
+      "pass": true
+    },
+    {
+      "check": "B. informal_finance (national)",
+      "metric": "synthetic\u2212finscope",
+      "value": 0.1,
+      "benchmark": "0",
+      "tolerance": "\u00b13pp",
+      "pass": true
+    },
+    {
+      "check": "B. savings_product (national)",
+      "metric": "synthetic\u2212finscope",
+      "value": 1.8,
+      "benchmark": "0",
+      "tolerance": "\u00b13pp",
+      "pass": true
+    },
+    {
+      "check": "B. by-quintile flags",
+      "metric": "max |diff| across all q\u00d7flag",
+      "value": 3.0,
+      "benchmark": "0",
+      "tolerance": "\u00b15pp",
+      "pass": true
+    },
+    {
+      "check": "C. per-capita income Gini",
+      "metric": "weighted Gini",
+      "value": 0.651,
+      "benchmark": "(0.63, 0.7)",
+      "tolerance": "in band",
+      "pass": true
+    },
+    {
+      "check": "D. Servicing plausible pre-guard",
+      "metric": "share of debtors hitting NCA cap",
+      "value": "3.4%",
+      "benchmark": "<=10%",
+      "tolerance": "10pp",
+      "pass": true
+    },
+    {
+      "check": "F. resample quintile shares",
+      "metric": "max |unweighted-weighted|",
+      "value": 1.3,
+      "benchmark": "0",
+      "tolerance": "\u00b12pp",
+      "pass": true
+    },
+    {
+      "check": "F. resample flag rates",
+      "metric": "max |unweighted-weighted|",
+      "value": 0.5,
+      "benchmark": "0",
+      "tolerance": "\u00b13pp",
+      "pass": true
+    },
+    {
+      "check": "F. resample income ECDF",
+      "metric": "KS max gap",
+      "value": 0.016,
+      "benchmark": "0",
+      "tolerance": "\u22640.05",
+      "pass": true
+    },
+    {
+      "check": "F. resample Gini",
+      "metric": "|agents-source|",
+      "value": 0.015,
+      "benchmark": "0",
+      "tolerance": "\u22640.02",
+      "pass": true
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "resample_seed": 20260818,
+  "ks_gap": 0.016,
+  "gini_source_weighted": 0.651,
+  "gini_agents_unweighted": 0.667,
+  "max_quintile_share_gap_pp": 1.27,
+  "max_province_share_gap_pp": 0.33,
+  "max_hhsize_share_gap_pp": 1.06,
+  "max_income_source_gap_pp": 1.39,
+  "mean_hh_size_source": 3.03,
+  "mean_hh_size_agents": 3.0,
+  "national_flags_pct": {
+    "Banked": {
+      "finscope": 82.4,
+      "source": 82.8,
+      "agents": 82.8
+    },
+    "Formal credit": {
+      "finscope": 26.4,
+      "source": 28.7,
+      "agents": 28.1
+    },
+    "Savings product": {
+      "finscope": 49.9,
+      "source": 51.8,
+      "agents": 51.7
+    },
+    "Informal finance": {
+      "finscope": 9.1,
+      "source": 9.2,
+      "agents": 9.2
+    }
+  },
+  "max_abs_quintile_deviation_pp": 3.0,
+  "max_abs_agent_flag_gap_pp": 0.51
+}

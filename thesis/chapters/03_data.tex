@@ -1,7 +1,7 @@
 \section{The Household Population}
 \label{ch:population}
 
-We construct a synthetic population of 5{,}000 household agents, derived directly from empirical South African survey microdata rather than assumed theoretical distributions. This section details the construction of this population framework, outlining the primary data sources, the derivation of household-level variables, the imputation of financial inclusion metrics, and the subsequent validation of the constructed population against external benchmarks. 
+We construct a synthetic population of 5{,}000 household agents, derived from South African survey microdata. This section details the construction of this population framework, outlining the primary data sources, the derivation of household-level variables, the imputation of financial inclusion metrics, and the subsequent validation of the constructed population against external benchmarks. 
 
 Establishing a representative baseline population is necessary to address the study's primary research questions. However, while this section validates the static structural characteristics of the population, the dynamic behavioural realism of these households is evaluated separately in Section~\ref{sec:results-baseline}. All monetary values are denominated in 2017 South African Rand (ZAR) to align with the primary dataset, with no inflation adjustments applied to the data layer.
 
@@ -13,44 +13,79 @@ The core structural data is drawn from the National Income Dynamics Study (NIDS)
 Six primary economic variables are derived for each household directly from the survey:
 \begin{itemize}
     \item \textbf{Monthly income:} The aggregated household income as derived in NIDS.
-    \item \textbf{Income source:} Categorised by the dominant income stream (wage, government grant, or remittance/other). This distinction is necessary for Submodel~1, which isolates labour-income shocks to wage-reliant households, given the statutory stability of South African social grants.
+    \item \textbf{Income source:} Categorised by the dominant income stream (wage, government grant, or remittance/other).
     \item \textbf{Committed expenditure:} The sum of food and rent expenditures, establishing a minimum consumption floor.
-    \item \textbf{Discretionary expenditure:} Total non-food expenditure exclusive of rent, floored at zero. Segmenting expenditure facilitates the two-tier consumption structure implemented in Submodel~2, grounding it in empirical household spending rather than an arbitrary propensity-to-consume parameter.
+    \item \textbf{Discretionary expenditure:} Total non-food expenditure exclusive of rent, floored at zero.
     \item \textbf{Liquid savings:} Proxied via the NIDS financial-assets field and winsorised at the 99th percentile (ZAR 133{,}662) to mitigate the influence of extreme outliers.
     \item \textbf{Traditional debt:} The consolidated financial-debt field as reported in NIDS.
 \end{itemize}
 
-Households are subsequently stratified into per-capita income quintiles, bounded at ZAR 900, ZAR 1{,}801, ZAR 3{,}400, and ZAR 7{,}712 per person per month. Demographic characteristics of the household head—specifically age, gender, race, and educational attainment—are joined from the NIDS individual-derived file, resulting in successful matches for 10{,}736 of the 10{,}841 households.
+Households are subsequently divided into per-capita income quintiles, bounded at ZAR 900, ZAR 1{,}801, ZAR 3{,}400, and ZAR 7{,}712 per person per month. Demographic characteristics of the household head including age, gender, race, and educational attainment are joined from the NIDS individual-derived file, resulting in successful matches for 10{,}736 of the 10{,}841 households.
 
 \subsection{Imputing Financial Inclusion: FinScope 2019}
 \label{sec:match}
 
-Because NIDS lacks granular data on financial product utilisation, four binary financial inclusion indicators—banked status, formal credit access, savings product ownership, and informal finance usage—are imputed using the FinScope 2019 survey \cite{finscope2019}. These indicators serve as gating parameters in the model; for instance, Submodel~12 restricts \ac{BNPL} eligibility to banked households, organically capping market access at the observed 83.1\% rather than relying on a free parameter.
+Since NIDS lacks granular data on financial product use, we impute four binary indicators from the FinScope 2019 survey \cite{finscope2019}: banked status, formal credit access, savings product ownership, and informal finance usage. These flags act as structural gates in the simulation. For example, restricting \ac{BNPL} eligibility to only banked households naturally caps market access at the observed rate of 82.8\%, avoiding the need for an arbitrary parameter.
 
-Imputation is executed via a cell-donor matching algorithm. Each NIDS household is assigned to a stratum defined by the cross-tabulation of per-capita income quintile and province. A donor respondent is randomly drawn from the corresponding FinScope stratum, and the four inclusion flags are transferred. This process yields 45 distinct cells, each containing a minimum of 30 donors, ensuring no imputation requires fallback to a broader aggregation. While this methodology preserves cell marginals, minor deviations at the national level emerge: differences between the synthetic population and FinScope marginals are 0.4 percentage points for banked status, 2.3 for formal credit, 1.8 for savings products, and 0.1 for informal finance. The maximum observed discrepancy across all quintile-by-flag combinations is 3.0 percentage points.
+To assign these traits, we apply a cell-donor matching algorithm. The population is divided into specific demographic subgroups, or strata, based on a cross-tabulation of per-capita income quintile and province. Each NIDS household looks into its matching FinScope subgroup and randomly adopts a donor's financial inclusion flags (draw seed: 42). This process creates 45 distinct demographic cells containing at least 30 donors each, ensuring every household finds a match without having to pull data from a broader, less accurate pool.
 
-Beyond imputation, these assigned cells establish the reporting strata for quintile-level analysis and define the reference networks driving peer-influence dynamics in Submodel~11.
+While this method preserves the local characteristics of each cell, slight deviations naturally emerge at the national level. As Table~\ref{tab:imputation_errors} details, these discrepancies are minor: the largest national gap is 2.3 percentage points, on formal credit access. Figure~\ref{fig:inclusion-fidelity} decomposes the same comparison by income quintile, where the largest deviation across the twenty quintile-by-flag combinations is 3.0 percentage points. The final column of Table~\ref{tab:imputation_errors} also confirms that the resampling step of Section~\ref{sec:resample} carries these rates through to the agent population essentially unchanged, the largest shift being 0.5 percentage points.
+
+\begin{table}[H]
+\centering
+\caption{National financial inclusion rates: the FinScope 2019 benchmark, the weighted synthetic population carrying the imputed flags, and the unweighted 5{,}000 agent population. The difference column reports the synthetic population less FinScope, and is computed before rounding.}
+\label{tab:imputation_errors}
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Financial indicator} & \textbf{FinScope 2019} & \textbf{Synthetic} & \textbf{Agents} & \textbf{Difference} \\
+ & \textbf{(\%)} & \textbf{(\%)} & \textbf{(\%)} & \textbf{(pp)} \\
+\midrule
+Banked status & 82.4 & 82.8 & 82.8 & 0.4 \\
+Formal credit & 26.4 & 28.7 & 28.1 & 2.3 \\
+Savings products & 49.9 & 51.8 & 51.7 & 1.8 \\
+Informal finance & 9.1 & 9.2 & 9.2 & 0.1 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_inclusion_fidelity.pdf}
+\caption{Fidelity of the imputed financial inclusion flags. Panel (a) compares national rates across the FinScope 2019 benchmark, the weighted synthetic population, and the unweighted agent population. Panel (b) decomposes the synthetic-to-FinScope gap by income quintile; the largest single deviation is 3.0 percentage points, against a tolerance of 5 percentage points.}
+\label{fig:inclusion-fidelity}
+\end{figure}
+
+The geographic and income-based cells establish the reporting categories for quintile-level analysis and define the reference networks that drive peer-influence dynamics in the simulation.
 
 \subsection{Debt Servicing Construction}
 \label{sec:servicing}
 
-As neither NIDS nor FinScope records the actual monthly cost of debt servicing, these obligations must be computationally estimated. This construction follows a three-step algorithmic approach grounded in South African regulatory frameworks:
+Because neither NIDS nor FinScope records the actual monthly cost of carrying debt, the model estimates these obligations in three distinct steps. 
 
-First, consolidated debt balances are amortised using the statutory maximum interest rates prescribed by the National Credit Act (NCA) regulations effective 6 May 2016 \cite{sa_ncr_ratecaps_2016}. Evaluated against the 2017 repurchase rate of 7.00\%, these maximums are 21\% for credit facilities, 24\% for other credit agreements, and 28\% for unsecured credit. A minimum term of six months is applied to prevent small balances from generating mathematically inflated, implausible monthly instalments.
+First, the model amortises consolidated debt balances using the maximum statutory interest rates set by the \ac{NCA} in 2016 \cite{sa_ncr_ratecaps_2016}. Based on the 2017 repurchase rate of 7.00\%, these maximums stand at 21\% for credit facilities, 24\% for standard credit agreements, and 28\% for unsecured credit. To prevent small balances from generating mathematically distorted and unrealistic monthly payments, the calculation applies a strict six-month minimum repayment term.
 
-Second, the resulting instalment is constrained by the NCA Regulation 23A residual-income test, mirroring the affordability assessments executed by lenders in Submodel~9. The resultant ceiling scales with income, ranging from 10.4\% at the ZAR 900 threshold to 83.2\% at ZAR 7{,}712. This regulatory cap binds for only 3.4\% (158 households) of the 4{,}702 indebted households, indicating that the baseline amortisation assumptions do not systematically overestimate servicing costs.
+Second, the calculated instalment is capped using the \ac{NCA} Regulation 23A residual income test, mirroring the exact affordability checks that regulated lenders perform. This ceiling scales with income, ranging from 10.4\% at the ZAR 900 threshold up to 83.2\% at ZAR 7{,}712. This regulatory cap only actively restricts 3.4\% (158 households) of the 4{,}702 indebted households. That low binding rate suggests the baseline amortisation assumptions do not systematically inflate servicing costs.
 
-Finally, the data reveals 53 indebted households whose gross income falls below the Regulation 23A minimum-expense norm, meaning compliant lenders could not legally extend this credit. These observations are retained in the model, as the underlying data cannot definitively distinguish between survey misreporting, non-compliant formal lending, or unrecorded informal debt arrangements.
+Finally, the data contains 53 indebted households whose gross income falls completely below the \ac{NCA} Regulation 23A minimum expense norm. Under strict compliance, registered lenders could not legally extend credit to these households. The model retains these observations anyway, as the survey data cannot definitively distinguish between simple misreporting, non-compliant formal lending, or unrecorded informal loans.
 
 \subsection{Population Resampling}
 \label{sec:resample}
 
-To generate a computationally tractable and consistent ABM environment, the 10{,}841 weighted NIDS households are resampled with replacement to construct a fixed population of 5{,}000 agents. This procedure, executed with probability proportional to the survey weight (seed: 20240601), yields a population comprising 3{,}250 unique source households. While this step allows the unweighted agent population to mimic national distributions, the resampling process introduces a marginal distortion in inequality: the per-capita income Gini coefficient shifts from 0.651 in the weighted source to 0.671 in the unweighted agent population.
+To generate a computationally tractable and consistent ABM environment, the 10{,}841 weighted NIDS households are resampled with replacement to construct a fixed population of 5{,}000 agents. This procedure, executed with probability proportional to the survey weight (seed: 20260818), yields a population comprising 3{,}221 unique source households. Each agent thereafter carries equal weight, so every downstream statistic is computed unweighted and must reproduce the weighted source distribution rather than being constructed to match it.
+
+Figure~\ref{fig:pop-fidelity} shows that it does. The per-capita income distribution is reproduced across its full range, from the grant-dependent left tail to the top percentile, with a Kolmogorov-Smirnov gap of 0.016. The four categorical attributes that structure the simulation, namely income quintile, household size, province, and dominant income source, deviate by at most 1.4 percentage points across the twenty-four categories shown. The resampling introduces one distortion, visible in panel (b): drawing with replacement mildly amplifies inequality, and the per-capita income Gini coefficient rises by 0.015, from 0.651 in the weighted source to 0.667 in the unweighted agent population.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_population_fidelity.pdf}
+\caption{Distributional fidelity of the agent population. Each panel compares the unweighted 5{,}000 agents against the weighted NIDS source they are drawn from. Panels (a) and (b) cover the per-capita income distribution and its concentration; panels (c) to (f) cover the categorical attributes that gate behaviour and define the peer reference groups in the simulation.}
+\label{fig:pop-fidelity}
+\end{figure}
 
 \subsection{Validation of the Synthetic Population}
 \label{sec:data-validation}
 
-The integrity of the synthetic population is verified through fourteen diagnostic checks categorised into five dimensions: internal consistency against NIDS (A), match diagnostics against FinScope marginals (B), external distributional benchmarking (C), servicing plausibility (D), and resample fidelity (F). The results, summarised in Table~\ref{tab:validation}, confirm that all parameters fall within predefined tolerances.
+The integrity of the synthetic population is verified through fourteen diagnostic checks categorised into five dimensions: internal consistency against NIDS (A), match diagnostics against FinScope marginals (B), external distributional benchmarking (C), servicing plausibility (D), and resample fidelity (F). The results, summarised in Table~\ref{tab:validation}, confirm that all fourteen fall within their predefined tolerances. Group B is the numerical counterpart of Figure~\ref{fig:inclusion-fidelity} and Group F of Figure~\ref{fig:pop-fidelity}.
 
 \begin{table}[H]
 \centering
@@ -74,10 +109,10 @@ C. Per-capita income Gini & weighted Gini & 0.651 & in (0.63, 0.70) \\
 \addlinespace
 D. Servicing plausible pre-guard & share of debtors the guard binds & 3.4\% & $\leq$10\% \\
 \addlinespace
-F. Resample quintile shares & max $|$unwtd $-$ wtd$|$ & 1.1pp & $\pm$2pp \\
-F. Resample flag rates & max $|$unwtd $-$ wtd$|$ & 0.3pp & $\pm$3pp \\
-F. Resample income ECDF & KS max gap & 0.012 & $\leq$0.05 \\
-F. Resample Gini & $|$agents $-$ source$|$ & 0.019 & $\leq$0.02 \\
+F. Resample quintile shares & max $|$unwtd $-$ wtd$|$ & 1.3pp & $\pm$2pp \\
+F. Resample flag rates & max $|$unwtd $-$ wtd$|$ & 0.5pp & $\pm$3pp \\
+F. Resample income ECDF & KS max gap & 0.016 & $\leq$0.05 \\
+F. Resample Gini & $|$agents $-$ source$|$ & 0.015 & $\leq$0.02 \\
 \bottomrule
 \end{tabular}
 \end{table}
