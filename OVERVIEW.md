@@ -499,15 +499,15 @@ Plus two standing references:
   - **Humanised.** "rather than" 45 → 6; antithesis constructions 20+ → 4, kept only where the
     contrast carries the claim. Self-critical passages deliberately retained.
   - ⚠ **Gini disambiguated.** 0.651 is the *weighted backbone* per-capita Gini (0.611 household);
-    **0.671** is the *5,000-agent resample*. The 0.019 gap is validation check F and passes its
-    0.02 tolerance with almost no margin.
+    **0.667** is the *5,000-agent resample*. The 0.015 gap is validation check F and passes its
+    0.02 tolerance.
   - **Still blocking:** the ABM itself (P5 → `simulation/`). Chapters 5, 6 and 8 are skeletons
     with per-section content requirements, ready to fill the day the first run lands.
 
 - **2026-08-05 (D11 to D16 closed: all 18 decisions now closed).** The BNPL platform is specified
   from **published South African provider terms** rather than from provider cooperation, confirming
   no firm contact is needed. **D11:** eligibility is *banked-only*, since both major providers debit
-  a bank card at checkout, which caps access at **83.1% of the population by observed data**, so the
+  a bank card at checkout, which caps access at **82.8% of the population by observed data**, so the
   RQ2 sweep runs inside the banked subpopulation rather than over a free parameter. Screen is
   deliberately **not** the Reg 23A test; that asymmetry is the mechanism. **D12:** platforms are
   blind to each other, which *follows from* D10 rather than being a new assumption; stacking depth is
@@ -529,7 +529,7 @@ Plus two standing references:
   function of BNPL access, so **RQ2 was asking for a threshold the topology could not produce**.
   Peer influence acts on the **want-driven BNPL trigger only** (`q_i(t) = clip(q_base + beta·s_g(t-1), 0, 1)`),
   over a reference group of **income quintile × province**, the same cell already used for the
-  FinScope match (45 groups, min 23 agents, median 84, verified against the 5,000-agent parquet).
+  FinScope match (45 groups, min 17 agents, median 82, verified against the 5,000-agent parquet).
   Need-driven borrowing is not socially transmitted. Key discovery justifying the change:
   **Cardaci (2018), already the primary ABM anchor, models peer effects and expenditure cascades
   centrally**, so the no-interaction design was the deviation, not the addition. Mechanism anchored
@@ -574,8 +574,8 @@ Plus two standing references:
   P2/P3 into `synthetic_population_5000.parquet`; added a demographics section to the visualizer.
   Education×quintile gradient is textbook (Q1 4% tertiary → Q5 54%). **Static data layer complete.**
 - **2026-06-01 (P3).** Built `notebooks/p3_resample.ipynb`: weighted resample to **5,000 agents**
-  (from 3,250 unique source households) → `synthetic_population_5000.parquet`. P4 extended with a
-  live resample-fidelity section (income KS gap 0.012, flag gap 0.3pp, shares ±1.5pp), now **14/14
+  (from 3,221 unique source households) → `synthetic_population_5000.parquet`. P4 extended with a
+  live resample-fidelity section (income KS gap 0.016, flag gap 0.5pp, shares ±1.4pp), now **14/14
   pass**. Population-size stability checked at 1k/5k/10k. The static household-agent data layer is
   complete; next is the ABM (rules, environment, lender).
 - **2026-06-01 (P4 + fixes).** Diagnostics surfaced servicing/DSTI outliers (68 hh with

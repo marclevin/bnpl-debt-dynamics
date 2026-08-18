@@ -105,7 +105,7 @@ Building the population took four steps:
    match**: the "cell" is the income-quintile × province combination.
 3. **Resample.** Draw 5,000 households from the 10,800, with each household's chance of being drawn
    proportional to its **survey weight** — the number of real households it represents. This makes
-   the 5,000 nationally representative at a fixed, re-runnable size. They come from 3,250 distinct
+   the 5,000 nationally representative at a fixed, re-runnable size. They come from 3,221 distinct
    source households, so some appear more than once.
 4. **Validate.** Confirm the 5,000 reproduce the survey's distributions and FinScope's national
    rates. Fourteen checks, all passing.
@@ -117,7 +117,7 @@ Building the population took four steps:
   person per month.
 - **Committed expenditure.** Food and rent. Treated as impossible to cut.
 - **Discretionary expenditure.** Everything else. Can be cut to zero under pressure.
-- **Banked.** Has a bank account. **83.1%** of this population. This matters enormously, because
+- **Banked.** Has a bank account. **82.8%** of this population. This matters enormously, because
   BNPL requires a bank card, so it caps who can use BNPL at all.
 
 ## 5. Money in, money out: the household balance sheet
@@ -250,7 +250,7 @@ possible: holding several BNPL debts at once, each invisible to the others.
 Households in this model influence each other in exactly one way.
 
 Each household belongs to a **reference group** — everyone in the same income quintile in the same
-province. There are **45 such groups**, the smallest with 23 households.
+province. There are **45 such groups**, the smallest with 17 households.
 
 Each tick, a household observes **what share of its reference group is currently using BNPL**, and
 its own appetite for a BNPL purchase rises with that share:

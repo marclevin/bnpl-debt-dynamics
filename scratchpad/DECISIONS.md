@@ -505,7 +505,7 @@ ordered sequence; **the order itself is a modelling decision.**
 
 - **DECISION (eligibility).** A household is BNPL-eligible only if it is **banked**. Both major
   South African providers debit a bank card for the checkout instalment, so an unbanked household
-  cannot transact at all. This uses the existing `banked` flag, which caps eligibility at **83.1% of
+  cannot transact at all. This uses the existing `banked` flag, which caps eligibility at **82.8% of
   the population** by data rather than by assumption. **The RQ2 access sweep therefore runs within
   the banked subpopulation, not over the whole population**, and the ceiling is observed rather than
   chosen.
@@ -598,7 +598,7 @@ ordered sequence; **the order itself is a modelling decision.**
     accumulate large invisible cross-provider exposure. Recorded rather than implemented — the
     static rule already retires the vulnerability, and adding a dynamic on the eve of a re-run is
     scope the thesis does not need.
-- **Validation hook:** share of eligible households ≈ 83.1% by construction; check that the order
+- **Validation hook:** share of eligible households ≈ 82.8% by construction; check that the order
   cap binds rarely.
 
 ### D12. Multi-platform stacking (RQ1, RQ2)
@@ -750,14 +750,14 @@ Four levers, three of which correspond to instruments that actually exist:
 
 - **DECISION (reference group).** `g(i) = (income_quintile_i, province_i)`. This is the **same cell
   already used for the FinScope donor match**, so no new construct enters the thesis. Verified
-  against `data/processed/synthetic_population_5000.parquet`: **45 groups, min 23 agents, median 84,
-  max 353, none below 20.** Groups are fixed at initialisation and static, consistent with static
+  against `data/processed/synthetic_population_5000.parquet`: **45 groups, min 17 agents, median 82,
+  max 357, none below 15.** Groups are fixed at initialisation and static, consistent with static
   household composition (decision.md Set 2).
   - *Why not province alone:* 9 groups with less noise, but it drops income homophily, so a Q1
     household would treat Q5 households as peers.
   - *Why not an explicit contact network:* no South African data exists to calibrate degree or
     clustering, so it would add several free parameters. Recorded as future work.
-  - ⚠ Three Northern Cape cells sit between 23 and 31 agents, so their peer share is noise-prone.
+  - ⚠ All five Northern Cape cells sit between 17 and 35 agents, so their peer share is noise-prone.
     Report Northern Cape separately, or pool it, in any group-level result.
 
 - **DECISION (mechanism).** Let `s_g(t-1)` be the share of households in group `g` holding a
@@ -1049,7 +1049,7 @@ NIDS individual file (`n_earners`, which makes the shock a per-earner hazard).
 | `savings_product` | `K7` is a valid Rand band | 49.9% |
 
 `banked` is the one that matters most: BNPL requires a bank card, so it caps BNPL eligibility at
-**83.1%** of the resampled population.
+**82.8%** of the resampled population.
 
 ### Conditioning, from NIDS
 
@@ -1064,12 +1064,12 @@ key for joins, not carried into the ABM).
 
 ## II.5 Validation of the data layer
 
-- **National marginals** reproduce FinScope national rates: banked +0.4, credit +1.5, informal +0.1,
+- **National marginals** reproduce FinScope national rates: banked +0.4, credit +2.3, informal +0.1,
   savings +1.8 (pp).
 - **Cell marginals** match by construction (correctness check).
 - **14 checks in P4, all passing**, including the Gini check: 0.651 weighted per-capita on the
-  10,841-household backbone against 0.671 unweighted on the 5,000-agent resample, a 0.019 gap
-  against a 0.02 tolerance — passing with almost no margin.
+  10,841-household backbone against 0.667 unweighted on the 5,000-agent resample, a 0.015 gap
+  against a 0.02 tolerance.
 
 ## II.6 Known limitations of the data layer
 

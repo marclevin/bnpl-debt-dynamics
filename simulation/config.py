@@ -428,8 +428,8 @@ class ParamSet:
         rule="D11",
         provenance="DERIVED",
         source=(
-            "Share of the BANKED subpopulation that is BNPL-eligible. Banked = 83.1% of "
-            "households by observed data, so access_rate=1.0 means 83.1% of all households."
+            "Share of the BANKED subpopulation that is BNPL-eligible. Banked = 82.8% of "
+            "households by observed data, so access_rate=1.0 means 82.8% of all households."
         ),
         sweep="RQ2 axis 1, 0.0-1.0 within the banked subpopulation",
     )

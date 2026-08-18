@@ -6,7 +6,7 @@ with the `beta = 0` row always present, because that is what makes the RQ2 claim
 non-circular. The grids below enforce this by construction: `BETA_GRID` always starts
 at 0.
 
-Access rates are expressed as a share of the BANKED subpopulation (83.1% of households),
+Access rates are expressed as a share of the BANKED subpopulation (82.8% of households),
 never of all households (D11).
 
 Usage:

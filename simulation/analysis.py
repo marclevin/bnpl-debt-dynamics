@@ -4,7 +4,7 @@ Reporting rules enforced here rather than left to the writing-up:
 
   * Every RQ1/RQ2 result is a surface over the swept parameter AND beta, with the
     beta = 0 row always shown. That is what makes the RQ2 claim non-circular.
-  * Access rates are labelled as a share of the BANKED subpopulation (83.1% ceiling),
+  * Access rates are labelled as a share of the BANKED subpopulation (82.8% ceiling),
     so they cannot be misread as a share of all households.
   * The concurrent-facility cap is labelled HYPOTHETICAL wherever it appears.
   * Dispersion is shown, not just means.
@@ -28,7 +28,7 @@ from .config import RESULTS_RAW, RESULTS_SUMMARY, load_ccmr_target
 FIGDIR = RESULTS_SUMMARY / "figures"
 
 #: Stated wherever an access rate is reported (D11).
-BANKED_CEILING = 0.831
+BANKED_CEILING = 0.828
 
 
 def load(name: str) -> pd.DataFrame | None:

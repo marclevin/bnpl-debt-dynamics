@@ -103,11 +103,11 @@ scorecard table in `03_data.tex`.
 
 ### B14 · Two different Gini figures circulate in the project — `MINOR` · `AGENT` · `CLOSED`
 
-`OVERVIEW.md` reports 0.651 and `p3_resample_summary.json` reports 0.671, with nothing
+`OVERVIEW.md` reports 0.651 and `p3_resample_summary.json` reports 0.667, with nothing
 distinguishing them. Both are correct and they measure different objects: **0.651** is the
 weighted per-capita Gini of the 10,841-household backbone (0.611 at household level), and
-**0.671** is the unweighted per-capita Gini of the 5,000-agent resample. The 0.019 gap between
-them is itself validation check F, which passes its 0.02 tolerance with almost no margin.
+**0.667** is the unweighted per-capita Gini of the 5,000-agent resample. The 0.015 gap between
+them is itself validation check F, which passes its 0.02 tolerance.
 
 Chapter~3 now states both, names which is which, and reports the narrow margin rather than
 presenting a single unqualified Gini.
@@ -300,7 +300,7 @@ self-reinforcing" therefore risks resolving to "when `q_base` and β are large e
 The β=0 control arm handles the *circularity*. It does not handle *plausibility*: a reader will
 still ask which region of the surface corresponds to the real world.
 
-Available anchors: the 83.1% banked ceiling, the TransUnion 20% intention figure, and the CFPB
+Available anchors: the 82.8% banked ceiling, the TransUnion 20% intention figure, and the CFPB
 stacking shares (63% simultaneous, 32% cross-firm). Consider using the CFPB shares to **bound**
 `q_base` rather than only to check output after the fact — that converts a free parameter into
 a calibrated one and materially strengthens RQ1.

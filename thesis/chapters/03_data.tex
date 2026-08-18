@@ -71,7 +71,7 @@ Finally, the data contains 53 indebted households whose gross income falls compl
 \subsection{Population Resampling}
 \label{sec:resample}
 
-To generate a computationally tractable and consistent ABM environment, the 10{,}841 weighted NIDS households are resampled with replacement to construct a fixed population of 5{,}000 agents. This procedure, executed with probability proportional to the survey weight (seed: 20260818), yields a population comprising 3{,}221 unique source households. Each agent thereafter carries equal weight, so every downstream statistic is computed unweighted and must reproduce the weighted source distribution rather than being constructed to match it.
+To generate a computationally feasible and consistent ABM environment, the 10{,}841 weighted NIDS households are resampled with replacement to construct a fixed population of 5{,}000 agents. This procedure, executed with probability proportional to the survey weight (seed: 20260818), yields a population comprising 3{,}221 unique source households. Each agent thereafter carries equal weight, so every downstream statistic is computed unweighted and must reproduce the weighted source distribution rather than being constructed to match it.
 
 Figure~\ref{fig:pop-fidelity} shows that it does. The per-capita income distribution is reproduced across its full range, from the grant-dependent left tail to the top percentile, with a Kolmogorov-Smirnov gap of 0.016. The four categorical attributes that structure the simulation, namely income quintile, household size, province, and dominant income source, deviate by at most 1.4 percentage points across the twenty-four categories shown. The resampling introduces one distortion, visible in panel (b): drawing with replacement mildly amplifies inequality, and the per-capita income Gini coefficient rises by 0.015, from 0.651 in the weighted source to 0.667 in the unweighted agent population.
 
@@ -99,10 +99,10 @@ A. Quintile shares $\approx 20\%$ & max $|$share $-0.20|$ & 0.004 & $\pm$2pp \\
 A. Mean household size & weighted mean & 3.03 & 3.3 $\pm$0.5 \\
 A. No impossible values & negative savings/debt/disc. & 0 & exact \\
 \addlinespace
-B. Banked (national) & synthetic $-$ \ac{FinScope} & 0.4pp & $\pm$3pp \\
-B. Formal credit access & synthetic $-$ \ac{FinScope} & 2.3pp & $\pm$3pp \\
-B. Informal finance & synthetic $-$ \ac{FinScope} & 0.1pp & $\pm$3pp \\
-B. Savings product & synthetic $-$ \ac{FinScope} & 1.8pp & $\pm$3pp \\
+B. Banked (national) & synthetic $-$ FinScope & 0.4pp & $\pm$3pp \\
+B. Formal credit access & synthetic $-$ FinScope & 2.3pp & $\pm$3pp \\
+B. Informal finance & synthetic $-$ FinScope & 0.1pp & $\pm$3pp \\
+B. Savings product & synthetic $-$ FinScope & 1.8pp & $\pm$3pp \\
 B. By-quintile flags & max $|$diff$|$ over q$\times$flag & 3.0pp & $\pm$5pp \\
 \addlinespace
 C. Per-capita income Gini & weighted Gini & 0.651 & in (0.63, 0.70) \\
@@ -117,7 +117,7 @@ F. Resample Gini & $|$agents $-$ source$|$ & 0.015 & $\leq$0.02 \\
 \end{tabular}
 \end{table}
 
-It is important to qualify the scope of this validation. With the exception of the Gini coefficient benchmark (Check C), which successfully aligns with the established 0.63 to 0.70 range for South Africa \cite{worldbank_gini_zaf}, these diagnostics primarily confirm sample fidelity rather than absolute real-world accuracy. The validation demonstrates that the synthetic population accurately reflects the underlying surveys, without introducing significant sampling errors. Establishing whether these agents engage in realistic borrowing, repayment, and default behaviours requires validation against out-of-sample dynamic targets, which is conducted in Section~\ref{sec:results-baseline}.
+With the exception of the Gini coefficient benchmark (Check C), which successfully aligns with the established 0.63 to 0.70 range for South Africa \cite{worldbank_gini_zaf}, these diagnostics primarily confirm sample fidelity rather than absolute real-world accuracy. The validation demonstrates that the synthetic population accurately reflects the underlying surveys, without introducing significant sampling errors. Establishing whether these agents engage in realistic borrowing, repayment, and default behaviours requires validation against out-of-sample dynamic targets, which is conducted in Section~\ref{sec:results-baseline}.
 
 \subsection{Agent Attribute Mapping}
 \label{sec:agent-mapping}
@@ -132,24 +132,26 @@ The culmination of the data layer is the fully initialised household agent, deta
 \toprule
 \textbf{Agent field} & \textbf{Description} & \textbf{Source} \\
 \midrule
-\texttt{income\_monthly} & Total monthly liquidity inflows & \ac{NIDS} \\
-\texttt{income\_source} & Dominant component: wage, grant, other & \ac{NIDS}, derived \\
-\texttt{expenditure\_committed} & Incompressible food and rent costs & \ac{NIDS}, derived \\
-\texttt{expenditure\_discretionary} & Remaining non-food expenditure, floored at zero & \ac{NIDS}, derived \\
-\texttt{liquid\_savings} & Proxy for immediate cash buffer & \ac{NIDS}, winsorised \\
-\texttt{D\_trad} & Outstanding traditional debt balance & \ac{NIDS} \\
+\texttt{income\_monthly} & Total monthly liquidity inflows & NIDS \\
+\texttt{income\_source} & Dominant component: wage, grant, other & NIDS, derived \\
+\texttt{expenditure\_committed} & Incompressible food and rent costs & NIDS, derived \\
+\texttt{expenditure\_discretionary} & Remaining non-food expenditure, floored at zero & NIDS, derived \\
+\texttt{liquid\_savings} & Proxy for immediate cash buffer & NIDS, winsorised \\
+\texttt{D\_trad} & Outstanding traditional debt balance & NIDS \\
 \texttt{monthly\_trad\_repayment} & Estimated monthly debt servicing obligation & Constructed (Section~\ref{sec:servicing}) \\
-\texttt{banked\_status} & Categorisation: banked, underbanked, unbanked & \ac{FinScope}, imputed \\
-\texttt{credit\_access\_formal} & Utilisation of formal credit products & \ac{FinScope}, imputed \\
-\texttt{savings\_product} & Ownership of formal savings facilities & \ac{FinScope}, imputed \\
-\texttt{informal\_finance} & Engagement with mashonisas or stokvels & \ac{FinScope}, imputed \\
-\texttt{income\_quintile} & Relative wealth bracket; donor match key & \ac{NIDS}, weighted \\
+\texttt{banked\_status} & Categorisation: banked, underbanked, unbanked & FinScope, imputed \\
+\texttt{credit\_access\_formal} & Utilisation of formal credit products & FinScope, imputed \\
+\texttt{savings\_product} & Ownership of formal savings facilities & FinScope, imputed \\
+\texttt{informal\_finance} & Engagement with mashonisas or stokvels & FinScope, imputed \\
+\texttt{income\_quintile} & Relative wealth bracket; donor match key & NIDS, weighted \\
 \texttt{reference\_group} & Network topology for peer adoption observation & Derived (quintile $\times$ province) \\
-\texttt{household\_size} & Total household members & \ac{NIDS} \\
-\texttt{household\_composition} & Demographic distribution (adults, children, elderly) & \ac{NIDS} member records \\
-\texttt{head\_demographics} & Head of household age, gender, race, education & \ac{NIDS} individual file \\
+\texttt{household\_size} & Total household members & NIDS \\
+\texttt{household\_composition} & Demographic distribution (adults, children, elderly) & NIDS member records \\
+\texttt{head\_demographics} & Head of household age, gender, race, education & NIDS individual file \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Notably, two dimensions of the model are absent from the underlying data by design. First, every agent is initialised with a \ac{BNPL} balance of zero, acting as the controlled system injection detailed in Section~\ref{sec:purpose}. Second, because empirical surveys do not systematically record individual psychological repayment heuristics, specific repayment behaviour profiles (such as the minimum-payer archetype outlined in Submodel~6) are assigned stochastically during model initialisation.
+Two dimensions of the model are deliberately absent from the underlying survey data. First, every agent is initialised with a \ac{BNPL} balance of exactly zero, which establishes a clean baseline for the controlled system injection. Second, because empirical surveys do not systematically capture individual psychological biases, the specific heuristics that govern repayment behaviour are assigned stochastically during model initialisation.
+
+With the static household population fully constructed and mapped to empirical data, the focus now shifts to how these agents behave and interact over time.
