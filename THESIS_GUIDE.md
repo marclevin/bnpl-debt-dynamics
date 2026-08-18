@@ -132,13 +132,27 @@ what it owes:
 | **What it owns** | liquid savings — a cash buffer. The median household has just **R90**. |
 | **What it owes** | traditional debt, and the monthly repayment on it |
 
-**One number had to be constructed rather than measured.** Neither survey records how much
-households actually repay each month. So it is calculated: take the debt, apply the legal maximum
-interest rate for that type of credit, spread it over a typical term, and then cap it at what the
-law says the household can afford. The interest rates are the **statutory maximum** rates set under
-the National Credit Act — 21% for store cards, 28% for personal loans, and so on, at 2017's 7% repo
-rate. These are ceilings rather than observed averages, which biases repayments upward; that is
-recorded as a limitation.
+**One number is derived rather than read straight off the survey.** NIDS records what a household
+*owes*, not what it *pays* each month on all of it. So the payment is calculated: take the debt,
+apply the legal maximum interest rate for that type of credit, spread it over a repayment horizon,
+and cap it at what the law says the household can afford. The interest rates are the **statutory
+maximum** rates set under the National Credit Act — 21% for store cards, 28% for personal loans,
+and so on, at 2017's 7% repo rate. These are ceilings rather than observed averages, which biases
+repayments upward; that is recorded as a limitation.
+
+The repayment horizons are **not** guesses. NIDS itself asks how much a household spent on hire
+purchase and on clothing store accounts in the last 30 days, so for those two products the payment
+is measured directly and the horizon falls out of it — about 11 months for a store account and 8
+for hire purchase. For personal loans the horizon comes from the National Credit Regulator's own
+2017 figures: the outstanding book divided by new lending per quarter says the average Rand sits
+on an unsecured book for roughly 25 months. Only revolving credit has no term at all, because
+revolving credit by definition never ends; that one is tied to the minimum-payment rule, which the
+sensitivity analysis sweeps.
+
+Those same NIDS answers give something the model did not have before: a way to check the derived
+payment against a real one. Households that report a payment are spending a median 5.4% of income
+on it, and FinScope's budget exercise puts debt repayment near 10% of monthly spending for people
+holding these products. The model lands at 2.8–6.1%.
 
 ## 6. How the simulation runs
 

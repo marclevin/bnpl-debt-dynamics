@@ -39,14 +39,15 @@ why random reseeded activation is the baseline rather than a fixed sweep.
 \subsection{Further Caveats}
 \label{app:caveats}
 
-Table~\ref{tab:further-caveats} records seven limitations that are real but do not bound the
+Table~\ref{tab:further-caveats} records eight limitations that are real but do not bound the
 thesis's central claims. The five that do are argued in Section~\ref{ch:discussion}.
 
-\begin{table}[H]
-\centering
+\begingroup
+\setlength{\tabcolsep}{4pt}
+\small
+\begin{longtable}{L{3.1cm}L{6.2cm}L{4.1cm}}
 \caption{Further limitations, with the claim each one bounds.}
-\label{tab:further-caveats}
-\begin{tabular}{L{3.2cm}L{6.4cm}L{4.4cm}}
+\label{tab:further-caveats} \\
 \toprule
 \textbf{Caveat} & \textbf{Statement} & \textbf{What it bounds} \\
 \midrule
@@ -60,10 +61,16 @@ than an accessible cash balance, and winsorised to remove implausible outliers &
 pattern~4 measures the share reaching zero savings, so the model is judged partly on its weakest
 input \\
 \addlinespace
-Servicing constructed & Statutory maxima are ceilings and the \ac{CCMR} publishes no realised
-rates, so opening servicing is an upper bound; loan terms are assumed with a six-month floor; the
-product mix implied by assigning sub-sector rates to a consolidated balance is itself an assumption
+Servicing derived & Statutory maxima are ceilings and the \ac{CCMR} publishes no realised rates,
+so opening servicing is an upper bound. Repayment horizons are now sourced -- two measured in
+\ac{NIDS}, three from \ac{CCMR} stock-flow implied life -- except revolving credit, which has no
+contractual term and is tied to the swept minimum-payment fraction. The product mix implied by
+assigning sub-sector rates to a consolidated balance remains an assumption
 & Opening balance sheets, and therefore the level of baseline distress \\
+\addlinespace
+Debt service double-counted & \ac{NIDS} non-food expenditure already contains hire-purchase,
+clothing-account and car payments, and the model deducts derived servicing separately on top
+& Overstates total outgoings for the 8.9\% of households reporting such a payment \\
 \addlinespace
 Regulation 23A unit & The regulation prescribes a minimum-expense norm for an individual consumer
 and the model applies it to household income & For multi-earner households the gate is more
@@ -82,8 +89,8 @@ re-derived from the underlying index table, reproducing the published index to w
 All \ac{BNPL} Rand parameters, which are published at current vintage and deflated once to 2017
 Rands \\
 \bottomrule
-\end{tabular}
-\end{table}
+\end{longtable}
+\endgroup
 
 \subsection{Supplementary Sensitivity Results}
 \label{app:sensitivity}

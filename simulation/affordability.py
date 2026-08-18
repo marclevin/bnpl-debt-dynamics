@@ -36,8 +36,12 @@ NCA_EXPENSE_NORMS: tuple[tuple[float, float, float], ...] = (
 #: cannot silently drift, exactly as the P2 notebook does.
 NCA_WORKED_EXAMPLES: tuple[tuple[float, float], ...] = ((2000.0, 881.00), (10000.0, 1505.38))
 
-#: ASSUMPTION carried over from P2: stock debt is not amortised faster than 6 months.
-MIN_TERM_MONTHS = 6
+#: Numerical guard only: keeps a zero or negative term out of the amortisation formula.
+#: This was 6 months, an unsourced assumption inherited from P2. It never bound, because
+#: the shortest term in the rate table was itself 6. Now that the terms are sourced, a
+#: 6-month floor WOULD bind, silently overriding the 1-month short_term_loan term for
+#: 1.1% of donors. The affordability guard is the Reg 23A residual-income ceiling below.
+MIN_TERM_MONTHS = 1.0
 
 PRODUCT_MAP = {
     "G10": "store_card",

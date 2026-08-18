@@ -20,10 +20,11 @@ from .affordability import (
 from .config import MONTHLY_TO_TICK
 
 #: New traditional credit is priced as an unsecured credit transaction: the NCA statutory
-#: maximum of repo + 21% at the 2017 repo rate of 7.00%, over 24 months. Matches the
+#: maximum of repo + 21% at the 2017 repo rate of 7.00%. The term is the CCMR 2017-Q1
+#: stock-flow implied life of the unsecured book (24.8 months, rounded to 25). Matches the
 #: `other_default` row of credit_rate_table.csv.
 NEW_LOAN_APR = 0.28
-NEW_LOAN_TERM_MONTHS = 24.0
+NEW_LOAN_TERM_MONTHS = 25.0
 
 
 class CreditBureau:

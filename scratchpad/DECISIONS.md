@@ -987,7 +987,16 @@ correct the vintage gap; or measure servicing from data.
 
 ## II.3 The one number that had to be constructed
 
-**Neither survey records a debt repayment amount**, so monthly servicing is *constructed*:
+> **CORRECTED 2026-08-18.** The claim below that neither survey records a repayment amount was
+> **wrong**. The NIDS W5 household questionnaire measures monthly repayments directly for two
+> product classes in its non-food expenditure module: `w5_h_nfhpspn` (e2_2_30, hire purchase,
+> 243 payers, median R620/month) and `w5_h_nfclthaspn` (e2_2_33, clothing store accounts, 1,044
+> payers, median R455/month). 1,219 households (8.9%) report one or both. These are the same
+> households, survey and vintage as the backbone. Servicing is still *derived* by amortisation,
+> because the measurement covers only two of five product classes, but the repayment horizons
+> are no longer assumptions -- see the revised term table below and `data/config/README.md`.
+
+NIDS records a debt **stock** and the model needs a monthly **flow**, so servicing is *derived*:
 
 ```
 weighted_apr, weighted_term = mix over the donor's held products (G10-G14)
@@ -1003,8 +1012,27 @@ averages**, which biases servicing upward — a stated limitation.
 **Two guards**, because a NIDS debt *stock* is paired with a FinScope product *type* drawn
 independently within the cell, so naive amortisation could force impossible debt service:
 
-- `MIN_TERM_MONTHS = 6`. A balance is never amortised faster than six months. **Still an
-  assumption**, not sourced.
+- `MIN_TERM_MONTHS = 1.0` (was 6). The old 6-month floor was never sourced and **never bound**:
+  the shortest term in the rate table was itself 6, so `max(term_raw, 6) == term_raw` for every
+  household. With the terms now sourced it *would* bind, overriding the 1-month short-term loan
+  for 1.1% of donors, so it is reduced to a numerical guard against a zero or negative term.
+  The affordability guard is Reg 23A, which is sourced and does bind.
+- **Repayment horizons, sourced 2026-08-18.** store card 11m and hire purchase 8m measured
+  directly in NIDS (balance / observed payment, n=782 and n=121); personal loan and unflagged
+  balances 25m from the CCMR 2017-Q1 stock-flow implied life of the unsecured book (24.8m,
+  cross-checked against Table 5.2 origination terms at 28m); short-term loan 1m from the
+  FinScope G13 wording ("repayable within 31 days") and CCMR Table 6.2 (65.8% at <=1 month).
+  Only revolving credit remains underived, and it is tied to `min_payment_frac`, already swept.
+  Two old values were materially wrong: hire purchase at 36m implied a third of the observed
+  payment, and short-term at 6m came from the NCA statutory ceiling, not the product surveyed.
+  Mean applied horizon moves 21.95 -> 21.45 months, so the centre barely shifts; the tails do.
+- **Servicing now has external validation targets.** NIDS observed DSTI among the 1,219 payers:
+  median 5.36%, mean 11.19%. FinScope C8 (21-matchstick budget game), categories 5 and 9, among
+  holders of >=1 modelled product: 9.78% of monthly spending. Model DSTI by quintile 2.8-6.1%.
+- **OPEN: debt service is double-counted.** e2_2_30 and e2_2_33 are components of NIDS non-food
+  expenditure (sum of all 54 E2 components / `w5_expnf` has median ratio 1.04), so
+  `expenditure_discretionary` already contains them (median 12.6% of non-food spend for payers)
+  and the model deducts derived servicing on top. `w5_h_nfcarspn` too. Not yet fixed.
 - **NCA Regulation 23A(9) residual-income ceiling.** Replaced an earlier flat `MAX_DSTI = 0.65`,
   which had no statutory basis. Debt service is capped at gross income minus Reg 23A necessary
   expenses, giving an **income-varying** ceiling: 10.4% of income at R900/month rising to 83.2% at

@@ -60,13 +60,40 @@ The geographic and income-based cells establish the reporting categories for qui
 \subsection{Debt Servicing Construction}
 \label{sec:servicing}
 
-Because neither NIDS nor FinScope records the actual monthly cost of carrying debt, the model estimates these obligations in three distinct steps. 
+\ac{NIDS} records a debt \emph{stock}, but the model requires a monthly \emph{flow}. Debt servicing is therefore derived through a three-step amortisation process using statutory interest rates and empirical repayment horizons.
 
-First, the model amortises consolidated debt balances using the maximum statutory interest rates set by the \ac{NCA} in 2016 \cite{sa_ncr_ratecaps_2016}. Based on the 2017 repurchase rate of 7.00\%, these maximums stand at 21\% for credit facilities, 24\% for standard credit agreements, and 28\% for unsecured credit. To prevent small balances from generating mathematically distorted and unrealistic monthly payments, the calculation applies a strict six-month minimum repayment term.
+First, consolidated debt balances are amortised using the maximum statutory interest rates set by the \ac{NCA} in 2016 \cite{sa_ncr_ratecaps_2016}. Evaluated against the 2017 repurchase rate of 7.00\%, these limits stand at 21\% for credit facilities, 24\% for standard credit agreements, and 28\% for unsecured credit. Because the \ac{CCMR} \cite{ncr_ccmr_2017} does not publish realised average \acp{APR} by product class, the statutory maximum serves as the most rigorous available proxy. This inherently biases the estimated servicing costs upward, which is carried as a stated model limitation.
 
-Second, the calculated instalment is capped using the \ac{NCA} Regulation 23A residual income test, mirroring the exact affordability checks that regulated lenders perform. This ceiling scales with income, ranging from 10.4\% at the ZAR 900 threshold up to 83.2\% at ZAR 7{,}712. This regulatory cap only actively restricts 3.4\% (158 households) of the 4{,}702 indebted households. That low binding rate suggests the baseline amortisation assumptions do not systematically inflate servicing costs.
+Second, each product class is assigned a specific repayment horizon, detailed in Table~\ref{tab:credit-terms}. For store cards and hire purchase, horizons are derived from \ac{NIDS} by dividing the reported balance by the observed monthly payment. For the remaining classes, horizons are set to match the \ac{CCMR} stock-flow implied life of the corresponding book (calculated as three times the gross debtors book divided by quarterly credit granted). This effectively measures the average time a Rand remains outstanding and aligns with \ac{CCMR} term-of-agreement distributions to within approximately three months.
 
-Finally, the data contains 53 indebted households whose gross income falls completely below the \ac{NCA} Regulation 23A minimum expense norm. Under strict compliance, registered lenders could not legally extend credit to these households. The model retains these observations anyway, as the survey data cannot definitively distinguish between simple misreporting, non-compliant formal lending, or unrecorded informal loans.
+\begin{table}[H]
+\centering
+\caption{Repayment horizons by product class, with provenance. Interest rates are the \ac{NCA} statutory maxima at the 2017 repurchase rate throughout.}
+\label{tab:credit-terms}
+\begin{tabular}{L{2.9cm}L{1.5cm}L{1.5cm}L{6.4cm}}
+\toprule
+\textbf{Product class} & \textbf{\ac{APR}} & \textbf{Horizon (months)} & \textbf{Provenance} \\
+\midrule
+Store card & 21\% & 11 & Measured in \ac{NIDS}: median balance over observed monthly clothing-account payment, $n=782$ \cite{nids_w5_2018} \\
+\addlinespace
+Hire purchase & 24\% & 8 & Measured in \ac{NIDS}: median balance over observed monthly hire-purchase payment, $n=121$ \cite{nids_w5_2018} \\
+\addlinespace
+Short-term loan & 60\% & 1 & \ac{FinScope} defines the product as repayable within 31 days; the \ac{CCMR} places 65.8\% of such agreements at one month or less \cite{finscope2019, ncr_ccmr_2017} \\
+\addlinespace
+Personal loan & 28\% & 25 & \ac{CCMR} stock-flow implied life of the unsecured book, 24.8 months \cite{ncr_ccmr_2017} \\
+\addlinespace
+Revolving credit & 21\% & 20 & No contractual term exists. Derived as the reciprocal of the mid-range minimum-payment fraction, which is swept over 0.025 to 0.10 \\
+\addlinespace
+Unflagged balance & 28\% & 25 & Fallback for the 74.0\% of donors flagging no specific product; mapped as personal loan \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Third, the resulting instalment is constrained by the \ac{NCA} Regulation 23A residual-income test. This ceiling scales with income, ranging from 10.4\% at the ZAR 900 threshold up to 83.2\% at ZAR 7{,}712. 
+
+The data contains 53 indebted households whose gross income falls completely below the Regulation 23A minimum expense norm. While registered lenders could not legally extend new credit to these households, they are retained in the simulation. The data cannot definitively distinguish whether this debt represents legacy credit held prior to an income shock, unrecorded informal loans, or non-compliant formal lending. Retaining them ensures the simulation preserves the true empirical distribution of debt and income.
+
+Debt servicing is verified against two independent measures. Among the 1,219 \ac{NIDS} households reporting a hire-purchase or clothing-account payment, observed debt service accounts for a median 5.36\% of gross household income. \ac{FinScope}'s budget-allocation exercise puts debt repayment at 9.78\% of monthly spending for users of formal credit \cite{finscope2019}. The model's weighted-mean \ac{DSTI} ranges from 2.8\% to 6.1\% across quintiles. This metric lies between the two benchmarks, which is the expected outcome given that the higher FinScope measure includes mortgage and vehicle finance excluded from this model's scope.
 
 \subsection{Population Resampling}
 \label{sec:resample}

@@ -65,6 +65,11 @@ results/raw/
 # and uncomment the line below:
 # !results/summary/*.csv
 
+# data/config holds hand-curated, cited inputs -- not run artifacts. The blanket
+# *.csv rule above was silently excluding credit_rate_table.csv, which carries the
+# APR and repayment-horizon provenance for the whole servicing construction.
+!data/config/*.csv
+
 # ── OS & editor cruft ────────────────────────────────────────────────────────
 .DS_Store
 Thumbs.db

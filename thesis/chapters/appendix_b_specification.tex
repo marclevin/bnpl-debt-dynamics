@@ -52,7 +52,11 @@ than only in accompanying text.
 %   - repurchase rate: 7.00% (2017), static
 %   - NCA statutory maxima by sub-sector: credit facilities 21%, other agreements 24%,
 %     unsecured 28%, short-term 5%/month
-%   - minimum loan term: 6 months
+%   - repayment horizons (credit_rate_table.csv): store card 11m and hire purchase 8m
+%     measured in NIDS W5 e2_2_33/e2_2_30; personal loan and unflagged 25m from CCMR
+%     2017-Q1 stock-flow implied life; short-term loan 1m from the FinScope G13 wording;
+%     revolving credit 20m = 1/mid-range min_payment_frac, swept 0.025-0.10
+%   - MIN_TERM_MONTHS: 1.0, a numerical guard only (was an unsourced 6-month floor)
 %   - tick length: 14 days; horizon 52 ticks; burn-in 12 ticks
 %   - population size: 5,000; seed 20260818
 %   - cool-off duration: 1 tick (14 days, UK CCA s.66A)

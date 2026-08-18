@@ -209,8 +209,8 @@ quarters, so the band bounds shock **onset**, not the stock of unemployed househ
 
 ## `credit_rate_table.csv`
 
-Drives `monthly_trad_repayment` in the P2 notebook. Because **neither NIDS nor FinScope records a
-debt repayment amount**, monthly servicing is *constructed*, not measured:
+Drives `monthly_trad_repayment` in the P2 notebook. NIDS records a debt *stock* (`w5_f_deb`) and
+the model needs a monthly *flow*, so servicing is derived by amortisation:
 
 ```
 monthly_trad_repayment = min( amortize(D_trad, weighted_apr, weighted_term),
@@ -219,6 +219,11 @@ monthly_trad_repayment = min( amortize(D_trad, weighted_apr, weighted_term),
 
 APR and term are a **product-mix-weighted** average over the FinScope credit products the matched
 donor holds (`G10`–`G14`).
+
+> **Corrected 2026-08-18.** This file previously stated that *neither NIDS nor FinScope records a
+> debt repayment amount*. That is wrong. The NIDS W5 household questionnaire measures monthly
+> repayments directly for two product classes in its non-food expenditure module — see
+> **Where the terms come from** below.
 
 ### Where the APRs come from
 
@@ -244,13 +249,107 @@ granted, gross debtors book, and age analysis (arrears) only. No public 2017 sou
 average APRs by product class for this population, so the statutory maximum is used as the
 best-sourced available figure. This **biases servicing upward**. It is defensible for a low-to-middle
 income population, where unsecured lenders price at or near the cap, but must be stated as a
-limitation and swept in sensitivity analysis.
+limitation. **A confirmed absence, not an unexamined gap.**
 
-### Terms are still assumptions
+### Where the terms come from
 
-The NCA prescribes rates, not terms. Only `short_term_loan` has a statutory term basis (NCA s.1
-caps short-term credit transactions at 6 months). Every other `term_months` value is an
-**assumption** flagged in the `term_source` column and must be sensitivity-tested.
+The NCA prescribes rates, not terms, so every `term_months` value was an unsourced assumption until
+2026-08-18. Five of the six are now sourced, by three routes.
+
+**1. Measured directly in NIDS W5.** The household questionnaire's non-food expenditure module (E2)
+records the Rand amount paid in the last 30 days for two credit products. These are the same
+households, the same survey and the same 2017 vintage as the population backbone.
+
+| Variable | Question | Payers | Median R/month |
+| --- | --- | --- | --- |
+| `w5_h_nfhpspn` | e2_2_30 — amount spent on **hire purchase payments**, last 30 days | 243 | R620 |
+| `w5_h_nfclthaspn` | e2_2_33 — amount spent on **account payments on clothes**, last 30 days | 1,044 | R455 |
+
+Dividing `w5_f_deb` by the observed payment gives an implied payoff horizon per household. Isolating
+single-product payers gives **11.0 months for store cards** (n=782, IQR 4–42) and **8.2 months for
+hire purchase** (n=121, IQR 2.2–20). Both are *upper bounds*: the numerator covers two products
+while the denominator is total financial debt, so the true product horizon is shorter and the true
+instalment higher.
+
+**2. CCMR 2017-Q1 stock-flow implied life.** Three times the gross debtors book divided by quarterly
+credit granted is the average time a Rand stays on the book — which is what converts a stock into a
+payment. Both series are in `ncr_ccmr_2017`, vintage-exact.
+
+| | Book, Table 1.6 (R000) | Granted (R000) | Implied months |
+| --- | --- | --- | --- |
+| Unsecured | 165,744,844 | 20,066,170 (T5.1) | **24.8** |
+| Secured | 389,388,153 | 38,817,928 (T3.1) | 30.1 |
+| Short-term | 2,666,933 | 3,010,186 (T6.1) | **2.7** |
+| Developmental | 43,164,963 | 4,974,639 (T7.1) | 26.0 |
+
+⚠ This does **not** work for credit facilities. The CCMR definitions section states that facilities
+"granted" includes new limits *and limit increases*, and represents "the potential exposure of the
+credit providers and not the actual usage/consumption by consumers." The flow is limits, not
+drawdowns. ⚠ Gross debtors book includes capitalised interest and fees, so these run slightly long.
+
+**3. CCMR 2017-Q1 term-of-agreement distributions**, as a cross-check on route 2. Table 5.2
+(unsecured, account-weighted) gives ≈28 months at origination against 24.8 implied. Table 6.2
+(short-term) puts 65.8% of agreements at ≤1 month, an account-weighted mean of 2.2 months against
+2.7 implied. The two methods agree within a couple of months on both.
+
+### The resulting terms
+
+| Product | Was | Now | Basis |
+| --- | --- | --- | --- |
+| `store_card` | 12 | **11** | NIDS e2_2_33, measured |
+| `revolving_credit` | 18 | **20** | swept parameter — see below |
+| `hire_purchase` | 36 | **8** | NIDS e2_2_30, measured |
+| `short_term_loan` | 6 | **1** | FinScope G13 wording; CCMR T6.2 |
+| `personal_loan` | 24 | **25** | CCMR unsecured stock-flow, 24.8 |
+| `other_default` | 24 | **25** | as `personal_loan` |
+
+Two of these were materially wrong. `hire_purchase` at 36 months implied an instalment about a
+third of what NIDS observes these households actually paying. `short_term_loan` at 6 months came
+from the NCA's statutory *outer limit* for the sub-sector, but FinScope G13 asks about "a
+short-term loan repayable **within 31 days** after take up" — the 6 was the regulatory ceiling, not
+the product the question describes.
+
+Aggregate effect is small: the mean term applied across FinScope donors moves from 21.95 to 21.45
+months, the median from 24 to 25. The distribution changes at the tails, not the centre.
+
+### `revolving_credit` is the one term that stays unsourceable
+
+A revolving facility has no contractual term by construction, and route 2 is unavailable for
+facilities because the CCMR flow is limits rather than drawdowns. It is therefore tied to
+`min_payment_frac`, which **is** already in the Sobol problem (`simulation/sensitivity.py`, swept
+0.025–0.10): a constant fractional payment `f` implies a payoff horizon near `1/f` months, so the
+swept range spans 40–10 months and the mid-range 0.05 gives the 20 months in the table. This makes
+it a *derived* value inside an existing sweep rather than a free assumption. It is also the
+least-held product — 215 of 4,969 FinScope respondents, 25 of them holding nothing else.
+
+Note this is **traditional** revolving credit (FinScope G11: "a revolving credit or revolving loan
+facility, i.e. cashing money you have already repaid on your loan... excludes overdraft, credit
+cards and store account that revolve"). It is unrelated to the BNPL rolling limit, which is the
+separate `bnpl_limit_income_multiple` (λ) parameter.
+
+### External validation targets for constructed servicing
+
+`monthly_trad_repayment` previously had no external check. Two now exist:
+
+- **NIDS observed DSTI** among the 1,219 households reporting a hire-purchase or clothing-account
+  payment: median 5.36%, mean 11.19% of gross household income.
+- **FinScope C8**, a 21-matchstick budget-allocation game. Categories 5 (bond/credit card/car
+  financing) and 9 (other debt repayments — clothing accounts, hire purchase) are debt service.
+  Among holders of ≥1 modelled product (n=1,291) they take **9.78%** of monthly spending; category
+  9 alone takes 6.07%.
+
+Model weighted-mean DSTI by quintile is 2.8–6.1%, so it sits at the top of that range against two
+independent measures.
+
+### ⚠ Known accounting overlap, not yet fixed
+
+`w5_h_nfhpspn` and `w5_h_nfclthaspn` are components of NIDS non-food expenditure — summing all 54
+E2 components against `w5_expnf` gives a median ratio of 1.04. `expenditure_discretionary` is
+`w5_expnf` minus rent, so it **already contains these debt payments** (median 12.6% of non-food
+spend for payers, 6.7% of total expenditure), and the model then deducts `monthly_trad_repayment`
+separately on top. `w5_h_nfcarspn` (car payments) sits in there too. Debt service is therefore
+charged twice for those households. Removing the debt components from discretionary spending would
+fix the double count and source the servicing in the same operation.
 
 | Column | Meaning |
 | --- | --- |
@@ -259,11 +358,11 @@ caps short-term credit transactions at 6 months). Every other `term_months` valu
 | nca_subsector | NCA sub-sector the class maps to |
 | apr_annual | Annual rate (decimal): statutory max for the sub-sector |
 | apr_source | Provenance of the rate |
-| term_months | Representative repayment term |
-| term_source | Provenance, or the explicit marker `ASSUMPTION` |
+| term_months | Representative repayment horizon |
+| term_source | Provenance: measured, derived, or an explicit assumption marker |
 
 `other_default` (no `finscope_col`) is the fallback when `D_trad > 0` but the donor flags no
-specific product.
+specific product. It covers 74.0% of FinScope respondents.
 
 ---
 
