@@ -379,7 +379,7 @@
   author      = {{FinMark Trust}},
   institution = {FinMark Trust},
   year        = {2019},
-  note        = {Donor source for the financial-inclusion flags of Chapter~\ref{ch:data}
+  note        = {Donor source for the financial-inclusion flags of Section~\ref{ch:population}
                  (banked status, formal credit access, savings product, informal finance).
                  Also the source for informal-finance prevalence: stokvels, burial societies
                  and mashonisa lending, none of which reports to a credit bureau}
@@ -616,4 +616,33 @@
   url    = {https://www.nortonrosefulbright.com/en-za/knowledge/publications/397bf640/buy-now-pay-later-regulation-around-the-world},
   note   = {BNPL falls outside the National Credit Act 2005: no mandatory
             affordability assessment, no NCR registration, no bureau reporting}
+}
+
+@misc{nids_w5_2018,
+  author       = {{Southern Africa Labour and Development Research Unit}},
+  title        = {National Income Dynamics Study 2017, Wave 5 [dataset]},
+  year         = {2018},
+  edition      = {Version 1.0.0},
+  publisher    = {DataFirst [distributor], Cape Town},
+  howpublished = {Dataset},
+  doi          = {10.25828/fw3h-v708},
+  note         = {The backbone source for the entire data layer. Fielded 2017, which
+                  fixes the model's single monetary reference year. 13,719 household
+                  records, of which 10,841 are valid after dropping missing or unusable
+                  income, expenditure or weight fields, representing a weighted
+                  population of approximately 18.67 million households. Supplies income,
+                  expenditure, assets, debt, household composition, head demographics
+                  and survey weights}
+}
+
+@misc{worldbank_gini_zaf,
+  author       = {{World Bank}},
+  title        = {Gini Index: South Africa},
+  year         = {2025},
+  howpublished = {World Development Indicators, indicator SI.POV.GINI},
+  url          = {https://data.worldbank.org/indicator/SI.POV.GINI?locations=ZA},
+  note         = {External benchmark for data-layer validation check C. The constructed
+                  population's weighted per-capita income Gini of 0.651 falls inside the
+                  0.63--0.70 band; no step in the construction targeted it, which makes
+                  this the only genuinely external check in the data layer}
 }

@@ -349,13 +349,21 @@ somewhat high.
 
 Three research questions, and 3,304 simulation runs.
 
-### RQ1 — When does debt stacking become self-reinforcing?
+> **⚠ The research questions were renumbered on 18 August 2026** for the 10,000-word limit. The
+> authoritative set is in the thesis introduction; see
+> [`scratchpad/SCOPE_REDUCTION.md`](scratchpad/SCOPE_REDUCTION.md) §4. In brief: **RQ1** is now
+> whether the synthetic population reproduces behaviour it was not fitted to; **RQ2** absorbs the
+> old RQ1 and RQ2 into *do households stack facilities, and does default rise*; **RQ3** is
+> unchanged. The findings below are correct — only the labels have moved. The old RQ1 heading maps
+> to the stacking half of the new RQ2, and the old RQ2 heading to its non-linearity half.
+
+### Old RQ1 — When does debt stacking become self-reinforcing?
 
 Households do accumulate BNPL debts across several providers, and this is **emergent** — never
 programmed. At full access, **37% hold two or more BNPL facilities at once**, against an American
 regulator's finding of 32% holding loans across different firms. Close, and it was never tuned.
 
-### RQ2 — Does default rise suddenly past some level of BNPL access?
+### Old RQ2 — Does default rise suddenly past some level of BNPL access?
 
 The registered expectation was that default would respond *non-linearly* — smoothly at first, then
 sharply — but only when the social channel is switched on.
@@ -669,20 +677,24 @@ None of these were visible on paper. We suggest this is worth a short passage in
 chapter as evidence for implementation and quality assurance as verification steps in their own
 right, rather than presenting the corrections as errata.
 
-## Decisions requested
+## Decisions requested — all settled 18 August 2026
 
-1. **Does the 16,000-word limit include appendices, tables, figure captions and bibliography?** This
-   materially changes what can be reported in the body. The project has substantially more validated
-   material than 16,000 words can carry, and the intended approach is demotion to appendices rather
-   than deletion.
+1. **Word limit and what counts.** The limit is **10,000 words, not 16,000**. Appendices, the
+   bibliography, tables and figures are all **excluded**; only body prose counts. The reduction was
+   carried out accordingly, and the primary tool was converting prose to tables rather than deleting
+   material. See [`scratchpad/SCOPE_REDUCTION.md`](scratchpad/SCOPE_REDUCTION.md).
 
-2. **Is a negative result on RQ2 acceptable**, assuming the pre-registered threshold variant has been
-   run and also returns a negative? Our view is that "no threshold under two distinct social
-   mechanisms" is a defensible contribution, but we would rather confirm than assume.
+2. **A negative result on RQ2 is acceptable** and is reported prominently — named in the abstract
+   and as a titled finding. The pre-registered Granovetter threshold variant has been run and also
+   returns a negative, so the claim is "no threshold under two structurally distinct social
+   mechanisms".
 
-3. **May the four validation targets be reduced in prominence?** Two are strong and independent; two
-   are weaker, relying on foreign data or on the least reliable variable in the dataset. We propose
-   foregrounding the two strong ones and demoting the others to an appendix.
+3. **The four validation targets are reduced in prominence.** The two strong independent ones, the
+   60+ day arrears band and the average purchase size, are foregrounded; the two weaker ones are
+   demoted to a table.
+
+4. **The research questions were free to change** and have been restructured. The authoritative set
+   is in the thesis introduction.
 
 ## Remaining work
 

@@ -1,4 +1,4 @@
-\documentclass[12pt, a4paper]{report}
+\documentclass[12pt, a4paper]{article}
 
 % --- layout -----------------------------------------------------------------
 \usepackage{geometry}
@@ -43,8 +43,8 @@
 % FRONT MATTER
 % ============================================================================
 
-\chapter*{Declaration}
-\addcontentsline{toc}{chapter}{Declaration}
+\section*{Declaration}
+\addcontentsline{toc}{section}{Declaration}
 
 % TODO (front matter): replace with the wording required by the UCT declaration
 % and plagiarism form. Blocked on the departmental template.
@@ -56,8 +56,8 @@ not been submitted for any other degree or examination at any other university.
 \vspace{2em}
 \noindent Signed: \hrulefill \qquad Date: \hrulefill
 
-\chapter*{Abstract}
-\addcontentsline{toc}{chapter}{Abstract}
+\section*{Abstract}
+\addcontentsline{toc}{section}{Abstract}
 
 % TODO (abstract): write last, once Chapter 6 exists. Roughly 300 words, covering
 % the regulatory gap, the counterfactual injection design, the four registered
@@ -65,8 +65,8 @@ not been submitted for any other degree or examination at any other university.
 
 \tableofcontents
 
-\chapter*{Acronyms}
-\addcontentsline{toc}{chapter}{Acronyms}
+\section*{Acronyms}
+\addcontentsline{toc}{section}{Acronyms}
 
 \begin{acronym}
     \acro{ABM}{Agent-Based Model}
@@ -93,10 +93,9 @@ not been submitted for any other degree or examination at any other university.
 \input{chapters/02_literature}
 \input{chapters/03_data}
 \input{chapters/04_design}
-\input{chapters/05_implementation}
-\input{chapters/06_results}
-\input{chapters/07_limitations}
-\input{chapters/08_conclusions}
+\input{chapters/05_results}
+\input{chapters/06_discussion}
+\input{chapters/07_conclusion}
 
 % ============================================================================
 % BACK MATTER
@@ -108,5 +107,7 @@ not been submitted for any other degree or examination at any other university.
 \appendix
 \input{chapters/appendix_a_rationale}
 \input{chapters/appendix_b_specification}
+\input{chapters/appendix_c_supplementary}
 
 \end{document}
+

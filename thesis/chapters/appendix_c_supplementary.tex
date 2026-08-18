@@ -1,0 +1,120 @@
+\section{Supplementary Specification and Results}
+\label{app:supplementary}
+
+This appendix holds material demoted from the body for length: specification detail that
+Table~\ref{tab:submodels} states in summary, the caveats that Section~\ref{ch:discussion} does not
+argue at length, and the sensitivity analyses that Section~\ref{sec:results-robustness} reports
+only in summary.
+
+\subsection{Submodel 9: The Credit-Granting Gate}
+\label{app:gate}
+
+The lender applies a residual-income test and not a debt-service-to-income cap, because Regulation
+23A \cite{sa_ncr_affordability_2015} prescribes no such ratio. Credit is granted only where gross
+income, less statutory deductions, less the Regulation 23A necessary expenses for the applicant's
+income band, less visible existing obligations, covers the new instalment. The resulting ceiling
+varies with income, from 10.4\% of income at R900 per month to 83.2\% at R7{,}712 per month, and
+both worked examples published with the regulation are asserted in the verification suite.
+
+Regulation 23A applies to an individual consumer and is applied here to household income, because
+\ac{NIDS} is a household survey. For a multi-earner household this makes the test more permissive
+than the regulation would be in practice, so the model's lender is somewhat more willing to lend
+than a compliant lender would be.
+
+\subsection{Submodel 17: Activation Order}
+\label{app:activation}
+
+Households act in random asynchronous order, reseeded every tick. The peer channel of Submodel~11
+is activation-order independent by construction, since it reads the reference-group adoption share
+lagged one tick, so every household within a tick sees the same settled share regardless of when it
+acts. The model is nonetheless re-run under uniform and under fully synchronous activation, and any
+material movement is reported as activation-order sensitivity, since Comer and Loerch
+\cite{comer2013activation} and Alizadeh and Cioffi-Revilla \cite{alizadeh2015activation} both find
+emergent population behaviour to be sensitive to the activation regime.
+
+Credit in this model is scarce, rationed by the affordability gate and by per-platform limits, so a
+fixed order would hand the same households first claim on that scarce resource every tick, which is
+why random reseeded activation is the baseline rather than a fixed sweep.
+
+\subsection{Further Caveats}
+\label{app:caveats}
+
+Table~\ref{tab:further-caveats} records seven limitations that are real but do not bound the
+thesis's central claims. The five that do are argued in Section~\ref{ch:discussion}.
+
+\begin{table}[H]
+\centering
+\caption{Further limitations, with the claim each one bounds.}
+\label{tab:further-caveats}
+\begin{tabular}{L{3.2cm}L{6.4cm}L{4.4cm}}
+\toprule
+\textbf{Caveat} & \textbf{Statement} & \textbf{What it bounds} \\
+\midrule
+\ac{FinScope} vintage & No 2017 wave exists, so the 2019 wave supplies the four
+financial-inclusion flags for a population otherwise fixed at 2017. The imported variables are
+categorical and need no deflation & Banked status gates \ac{BNPL} eligibility, so the 83.1\%
+access ceiling carries a two-year vintage gap \\
+\addlinespace
+Liquid savings proxy & Derived from a \ac{NIDS} field measuring reported financial assets rather
+than an accessible cash balance, and winsorised to remove implausible outliers & Validation
+pattern~4 measures the share reaching zero savings, so the model is judged partly on its weakest
+input \\
+\addlinespace
+Servicing constructed & Statutory maxima are ceilings and the \ac{CCMR} publishes no realised
+rates, so opening servicing is an upper bound; loan terms are assumed with a six-month floor; the
+product mix implied by assigning sub-sector rates to a consolidated balance is itself an assumption
+& Opening balance sheets, and therefore the level of baseline distress \\
+\addlinespace
+Regulation 23A unit & The regulation prescribes a minimum-expense norm for an individual consumer
+and the model applies it to household income & For multi-earner households the gate is more
+permissive than in practice \\
+\addlinespace
+Resample distortion & Weighted resampling raises the per-capita income Gini from 0.651 to 0.671,
+passing its tolerance with little margin. Measured, not corrected & If anything, modestly
+overstates distress among the lowest-income agents \\
+\addlinespace
+Weak interaction & Each household observes its group's aggregate adoption share, never another
+household individually. No South African data exists on who influences whom & The social channel
+is a mean-field one, as in Granovetter's threshold models, not an explicit network \\
+\addlinespace
+\ac{CPI} derivation & The deflator is taken from published Stats SA releases rather than
+re-derived from the underlying index table, reproducing the published index to within 0.8\% &
+All \ac{BNPL} Rand parameters, which are published at current vintage and deflated once to 2017
+Rands \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Supplementary Sensitivity Results}
+\label{app:sensitivity}
+
+% CONTENT REQUIRED, all as tables, generated from results/summary/:
+% - Sobol first-order and total-order indices for the default rate (sobol_indices.json,
+%   sobol_default_rate.png).
+% - Activation-order re-runs: random asynchronous vs uniform vs fully synchronous.
+% - Population-size stability at 1,000 / 5,000 / 10,000 agents.
+% - Minimum-payer share swept 0.20-0.40, bracketing the transferred US estimate of 0.29.
+% - Income-shock magnitude sweep.
+% - Full platform-count detail, 1 through 6 (the body reports endpoints only).
+% - The beta=0 intervention panel (rq3_interventions_beta0.png).
+% - Validation patterns 3 and 4 in full: pattern3_dti_by_quintile.png and the
+%   zero-savings comparison, both demoted from the body per decision D4.
+
+\subsection{Further Extensions}
+\label{app:extensions}
+
+Two extensions were considered and are recorded here rather than in
+Section~\ref{sec:future-work}, being further from the thesis's own results.
+
+\textbf{Macroeconomic dynamics.} Submodel~16 holds the environment static to protect the
+experimental control. A successor design could relax this, since \ac{BNPL} grew in South Africa
+through a period of rising rates, and the interaction between \ac{BNPL} stress and a downturn is
+what a regulator would want to know. The injection effect and the macro effect would then have to
+be separately identified, which requires a more elaborate design than a single counterfactual
+injection.
+
+\textbf{Competition among traditional lenders.} The traditional side is a single non-adaptive stub.
+Hamill et al. \cite{hamill2023creditcard} show that promotional strategies chosen by
+profit-maximising lenders raise borrower indebtedness, so a competing, adapting traditional sector
+would add a driver of distress that this model holds fixed.
+

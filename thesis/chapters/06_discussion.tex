@@ -1,0 +1,100 @@
+\section{Discussion and Limitations}
+\label{ch:discussion}
+
+Five limitations bound what this thesis can claim. They are given here in full; seven further
+caveats, each real but none of them load-bearing, are recorded in
+Table~\ref{tab:further-caveats} of Appendix~\ref{app:supplementary}.
+
+\subsection{The Baseline Is Calibrated, Not Validated}
+\label{sec:lim-calibration}
+
+The most important limitation in the thesis is that the baseline is calibrated rather than
+validated. The income-shock probability of Submodel~1 cannot be estimated from the data, since
+\ac{NIDS} Wave 5 enters this design as a single wave and within-household income volatility is not
+identified from one wave, so it is fitted until baseline arrears reproduce pattern~2. Agreement
+with the 2017 \ac{CCMR} on the fitted bands is consequently not evidence that the model is right;
+only the bands left free, and the results obtained after \ac{BNPL} is injected with that parameter
+held fixed, are genuine out-of-sample tests.
+
+The fitted value is also implausibly high, reproducing observed arrears requiring a job-separation
+rate roughly four times the one the labour force survey records. The reason is structural: this
+model has exactly one thing that can go wrong, where real households fall behind through illness,
+unexpected bills, rate rises and family change as well, so one channel is doing the work of
+several. This is disclosed rather than corrected, since correcting it means adding shock channels
+the data cannot parameterise.
+
+\subsection{The Validation Targets Are Uneven}
+\label{sec:lim-validation}
+
+Only pattern~2 is both South African and vintage-matched to the 2017 population, and it is measured
+on an account basis while the model's unit is the household. An account-level arrears share is not
+a household-level distress rate, so the comparison asks only whether the profile is of the right
+shape and scale; because pattern~2 is also the calibration target, that imprecision propagates into
+the fitted shock probability.
+
+Pattern~1 is not fully independent of the design. The want-driven borrowing path of Submodel~3 was
+adopted partly because a purely shortfall-driven \ac{BNPL} agent would treat the product as a pure
+substitute and could not reproduce the complementarity result under any parameterisation. The
+direction of the effect is therefore partly built into the lender-choice rule; its magnitude is
+not, and the pattern can still fail if the Regulation 23A gate crowds out traditional borrowing
+sufficiently. Patterns 3 and 4 rest respectively on a United Kingdom credit-card model and on a
+2025 survey compared across a period the counterfactual design otherwise forbids. All three are
+accordingly reported as plausibility checks and not as tests.
+
+\subsection{Behavioural Parameters Are Imported}
+\label{sec:lim-transfer}
+
+The behavioural micro-foundations of Section~\ref{sec:lit-behavioural} are drawn from United States
+evidence and applied to South African borrowers: the minimum-payer share of 0.29, the present-bias
+results, and the experiment that motivates the want-driven borrowing path. No developing-market
+evidence of comparable quality was located for any of the three. The parameter that matters most is
+swept from 0.20 to 0.40, and the mechanisms transferred are claims about general features of
+decision-making under credit contracts rather than about United States institutions, but neither
+argument establishes that the parameters are right for South Africa.
+
+The coefficients of Equation~\ref{eq:peer} are fixed by no source at all. The $\beta = 0$ control
+arm addresses the circularity this creates but not the plausibility problem, since it does not
+identify which region of the $(q_{\text{base}}, \beta)$ surface corresponds to the actual market.
+The available anchors are indirect: the 83.1\% banked ceiling, the 20\% of consumers naming
+\ac{BNPL}, and the \ac{CFPB} stacking shares.
+
+\subsection{One Rule Has No Anchor, and It Is the Largest Sensitivity}
+\label{sec:lim-amount}
+
+Submodel~4 governs how much a household asks for when it comes up short, and the literature search
+located no study that settles it. Sensitivity analysis across three specifications is therefore
+mandatory rather than optional, and this rule is the largest remaining bar on the tornado. Two of
+the three agree to within the replicate noise floor and the whole range comes from the third and
+most generous, so the sensitivity reflects one unconstrained variant rather than general
+instability.
+
+\subsection{The Model Cannot Produce a Cascade}
+\label{sec:lim-structural}
+
+Six exclusions were adopted by design: \textbf{no macroeconomic dynamics}, since any time-variation
+would confound the injection effect with a macro effect; \textbf{no contagion}, there being one
+aggregate lender with no balance sheet that can fail and no feedback from household default to
+income; \textbf{no competition among traditional lenders}, which suppresses the lender-conduct
+mechanism Hamill et al. show to matter; \textbf{no learning and no scarring}; \textbf{no peer
+effects on consumption}, so peer influence acts only on \ac{BNPL} adoption; and \textbf{static
+household composition}.
+
+The second of these is not merely a caveat but the explanation of the thesis's central negative
+result. With no channel by which one household's default affects another's income, what the model
+produces is many correlated individual defaults rather than a cascade, and a threshold in the
+population default rate requires feedback in the outcome itself. The absence of a cliff edge in
+Section~\ref{sec:results-rq2} is therefore a property of a model built this way, and a successor
+design with an impairable lender or a default-to-income channel could plausibly produce one. This
+is stated here so that the negative result is read as bounded rather than as general.
+
+\subsection{How Results Should Be Read}
+\label{sec:lim-reading}
+
+Results are directional and mechanistic: they describe what happens to a population of this kind
+when a lender class with these properties is introduced, and are informative about the sign, the
+rough magnitude and the mechanism of that change. They are not forecasts, and no number in
+Section~\ref{ch:results} should enter a policy calculation without the qualifications above. What
+survives all of them is the comparison the model was built to make, between two runs identical
+except for the presence of a bureau-reporting obligation, which holds every uncalibrated parameter
+fixed across both arms.
+

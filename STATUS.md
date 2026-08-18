@@ -2,6 +2,13 @@
 
 **13 August 2026.** Where the model is, what it's built from, and what it's produced so far. This covers the simulation only, not the write-up.
 
+> **Write-up status, 18 August 2026.** The word limit is **10,000**, and the thesis has been
+> restructured to fit it: chapters became sections, the research questions were renumbered, and the
+> body now projects to 9,605 words. See
+> [`scratchpad/SCOPE_REDUCTION.md`](scratchpad/SCOPE_REDUCTION.md). The findings below are
+> unaffected — only their labels moved. Two items in §8 remain and should be done together before
+> the results section is written: cap the shortfall borrowing path, then the final run.
+
 ---
 
 ## 1. Where things stand

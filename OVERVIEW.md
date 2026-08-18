@@ -4,6 +4,17 @@
 **This file is the canonical strategy + execution plan.** When a decision changes, change it here
 first, then propagate to the companion docs. Last updated: **2026-08-12**.
 
+> **⚠ Out of date on two points as of 2026-08-18.**
+> **(1) The word limit is 10,000, not 16,000** — appendices, bibliography, tables and figures
+> excluded; only body prose counts. **(2) The research questions were renumbered.** RQ1 is now
+> whether the synthetic population reproduces behaviour it was not fitted to; RQ2 absorbs the old
+> RQ1 and RQ2 into *do households stack facilities, and does default rise*; RQ3 is unchanged.
+> Every RQ1/RQ2 reference below uses the **old** numbering. The authoritative set is the thesis
+> introduction; the reduction plan is
+> [`scratchpad/SCOPE_REDUCTION.md`](scratchpad/SCOPE_REDUCTION.md). The `beta = 0` control arm
+> requirement is unchanged and still binds, now on the new RQ2 and RQ3.
+> This file needs a full pass against the new structure.
+
 > **Defect register:** [`scratchpad/DEFECTS.md`](scratchpad/DEFECTS.md) records every known shortfall
 > in the thesis with evidence, severity and owner. Check it before starting work.
 

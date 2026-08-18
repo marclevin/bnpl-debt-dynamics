@@ -1,10 +1,10 @@
-\chapter{Design Rationale: Alternatives Considered and Rejected}
+\section{Design Rationale: Alternatives Considered and Rejected}
 \label{app:rationale}
 
-Chapter~\ref{ch:design} states the rules the model uses. This appendix records the alternatives
+Section~\ref{ch:model} states the rules the model uses. This appendix records the alternatives
 considered and rejected for each.
 
-\section{Population Construction}
+\subsection{Population Construction}
 
 \textbf{Statistical fusion of \ac{NIDS} and \ac{FinScope}.} A hot-deck or model-based fusion would
 recover finer joint structure between the two instruments than copying flags within an
@@ -17,7 +17,7 @@ reproduces cell marginals, which is what the model needs.
 the two, and 2022-vintage validation targets. Working entirely in 2017 Rands removes all three, and
 the 2017 anchor is independently required by the counterfactual injection design.
 
-\section{Household Decision Rules}
+\subsection{Household Decision Rules}
 
 \textbf{A propensity-to-consume or buffer-stock consumption rule (Submodel~2).} Both require a
 calibrated propensity for which no South African estimate exists, and both discard the
@@ -44,7 +44,7 @@ observed default rates in a middle-income economy \cite{madeira2018chile}.
 against which to calibrate one, so it would add a free parameter with no discipline. The model
 carries a single binary behavioural type instead, whose share is sourced and swept.
 
-\section{Lender and Platform Rules}
+\subsection{Lender and Platform Rules}
 
 \textbf{A flat \ac{DSTI} cap as the credit-granting gate (Submodel~9).} An earlier version of this
 model used a ceiling of 0.65. It was unsourced, the \ac{NCA} prescribes no such ratio, and it was
@@ -62,7 +62,7 @@ asymmetry between the Regulation 23A test that binds registered lenders and the 
 adoption could never begin. The additive form of Equation~\ref{eq:peer} gives $q_{\text{base}}$ and
 $\beta$ the roles that $p$ and $q$ play in Bass diffusion.
 
-\section{Environment and Scheduling}
+\subsection{Environment and Scheduling}
 
 \textbf{Macroeconomic dynamics (Submodel~16).} Both Cardaci \cite{cardaci2018inequality} and
 Madeira \cite{madeira2018chile} carry macro dynamics because both ask macro questions. Any
@@ -75,3 +75,4 @@ first claim on that scarce resource every tick. Comer and Loerch \cite{comer2013
 significant differences in emergent behaviour across activation regimes, and Alizadeh and
 Cioffi-Revilla \cite{alizadeh2015activation} find that no scheme dominates, so the choice is
 reported and tested instead of assumed away.
+

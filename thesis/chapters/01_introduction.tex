@@ -1,121 +1,57 @@
-\chapter{Introduction}
+\section{Introduction}
 \label{ch:introduction}
 
-\section{Background and Context}
+\subsection{Background and Context}
 \label{sec:background}
 
 South Africa regulates consumer credit tightly. The \ac{NCA} \cite{sa_nca_2005} requires every
 registered credit provider to assess whether an applicant can afford a proposed agreement before
 granting it, and Regulation 23A of the Affordability Assessment Regulations
-\cite{sa_ncr_affordability_2015} prescribes a residual-income test for doing so. The Act also caps
-the cost of credit by sub-sector \cite{sa_ncr_ratecaps_2016}. Registered lenders report their
-exposures to the credit bureaus, so each lender assesses an applicant against a record of what
-every other registered lender has advanced.
+\cite{sa_ncr_affordability_2015} prescribes a residual-income test for doing so. Registered lenders
+report their exposures to the credit bureaus, so each lender assesses an applicant against a record
+of what every other registered lender has advanced.
 
 \ac{BNPL} providers sit outside that regime. Because they levy neither interest nor fees on the
-deferred amount, they argue that they do not transact credit within the meaning of the \ac{NCA},
-and so do not register with the \ac{NCR}, do not perform the Regulation 23A assessment, and do not
+deferred amount, they argue that they do not transact credit within the meaning of the \ac{NCA}, and
+so do not register with the \ac{NCR}, do not perform the Regulation 23A assessment, and do not
 report what they have lent to any credit bureau \cite{nortonrose_bnpl_sa}. TransUnion, a consumer
-credit bureau, confirms the absence of \ac{BNPL} information from South African credit reports \cite{transunion_cps_sa_2025}.
-A registered lender running a lawful and diligent affordability assessment therefore computes
-residual income from a liability record that is incomplete by regulatory construction. It cannot
-see \ac{BNPL} obligations, and neither can any \ac{BNPL} provider see another's, so a household can
-hold several concurrent facilities that no party to any of those agreements has assessed in
-aggregate.
+credit bureau, confirms the absence of \ac{BNPL} information from South African credit reports
+\cite{transunion_cps_sa_2025}. A registered lender running a lawful and diligent affordability
+assessment therefore computes residual income from a liability record that is incomplete by
+regulatory construction. It cannot see \ac{BNPL} obligations, and neither can any \ac{BNPL} provider
+see another's, so a household can hold several concurrent facilities that no party to any of those
+agreements has assessed in aggregate.
 
-deHaan et al. \cite{dehaan2024bnpl}, tracking banking records for 10.6 million United States consumers,
-find that adopting \ac{BNPL} is followed by higher overdraft charges, credit-card interest and late fees,
-with the effects concentrated among liquidity-constrained consumers.
-The \ac{CFPB} \cite{cfpb2025bnpl} found that across 2021 and 2022, 63\% of \ac{BNPL} borrowers across
-five of the largest \ac{BNPL} platforms in the United States, held simultaneous loans at some point and 32\% held them across different firms.
-South Africa has no equivalent evidence base, and the reporting exemption for \ac{BNPL} firms makes it
-unobservable, since no party, including the regulator, can measure aggregate \ac{BNPL} exposure
-from administrative data.
+deHaan et al. \cite{dehaan2024bnpl}, tracking banking
+records for 10.6 million United States consumers, find that adopting \ac{BNPL} is followed by higher
+overdraft charges, credit-card interest and late fees, concentrated among liquidity-constrained
+consumers. The \ac{CFPB} \cite{cfpb2025bnpl} finds that across 2021 and 2022, 63\% of \ac{BNPL}
+borrowers held simultaneous loans at some point and 32\% held them across different firms. South
+Africa has no equivalent evidence base, and the reporting exemption makes one impossible to
+assemble from administrative data, since no party, the regulator included, can measure aggregate
+\ac{BNPL} exposure.
 
-\section{Research Questions and Objectives}
+\subsection{Research Questions}
 \label{sec:rqs}
 
-\subsection{Research questions}
-
-This thesis is guided by the following primary research question:
-
 \begin{quote}
-    How does the availability of multiple concurrent \ac{BNPL} facilities affect the trajectory of
-    consumer financial distress among \ac{LMI} South African households, and which platform-level
-    interventions reduce population-level default?
+    How does the exemption of \ac{BNPL} from South Africa's credit-reporting and affordability
+    regime affect credit distress among \ac{LMI} households, and which platform-level interventions
+    reduce it?
 \end{quote}
 
-This is decomposed into three subsidiary questions:
+Three subsidiary questions decompose it.
 
 \begin{enumerate}
-    \item Under what conditions does debt stacking become self-reinforcing?
-    \item Does the population-level default rate respond non-linearly to the level of \ac{BNPL}
-    access, and if so, under what conditions?
-    \item Do ``cool-off period'' or ``anti-stacking'' interventions meaningfully alter outcomes, or do agents simply
-    defer rather than desist?
+    \item Can a synthetic household population built from South African survey microdata reproduce
+    credit-market behaviour it was not fitted to?
+    \item Do households accumulate concurrent \ac{BNPL} facilities that no lender observes in
+    aggregate, and does that raise population default?
+    \item Which platform-level interventions curb that increase?
 \end{enumerate}
 
-\subsection{Research objectives}
-
-The questions above resolve into five objectives.
-
-\begin{enumerate}
-    \item Construct a representative household population for South Africa in 2017 from survey microdata, with a
-    complete balance sheet per household.
-    \item Specify an agent-based model of that population containing a regulated, bureau-informed
-    lender class and a lender class exempt from both requirements.
-    \item Calibrate the population's credit behaviour, with \ac{BNPL} disabled, against the 2017
-    first-quarter \ac{CCMR} \cite{ncr_ccmr_2017}.
-    \item Inject the \ac{BNPL} lender class and measure the change in arrears, servicing burden,
-    stacking depth and population default across sweeps of \ac{BNPL} access, platform count and
-    peer-influence strength.
-    \item Evaluate four platform-level interventions against that baseline.
-\end{enumerate}
-
-\section{Methodology}
-\label{sec:methodology}
-
-This work proceeds in three stages.
-
-The first constructs the household population. \ac{NIDS} Wave 5, conducted in 2017, supplies the
-balance sheet and demographics for 10{,}841 valid households, and \ac{FinScope} 2019 supplies four
-financial-inclusion flags through a cell-donor match. The matched population is resampled with
-probability proportional to survey weight to a fixed 5{,}000 agents, all in 2017 Rands
-(Chapter~\ref{ch:data}).
-
-The second stage specifies the model under the \ac{ODD} protocol \cite{grimm2006odd, grimm2020odd},
-with the patterns that judge its realism registered before any result is presented. Households
-borrow on realised shortfall, repay by salience instead of by optimisation, and adopt \ac{BNPL}
-partly in response to adoption within their reference group. The traditional lender applies
-Regulation 23A against a bureau record containing traditional debt only, while \ac{BNPL} platforms
-apply a light screen, cannot see one another, and are invisible to the bureau.
-
-The third stage runs the experiment. The baseline is calibrated with \ac{BNPL} disabled, \ac{BNPL}
-is injected, and outcomes are swept over access rate, platform count, peer-influence strength and
-the four intervention levers. Because the peer-influence coefficient cannot be calibrated from any
-South African source, every result is reported as a surface in which the zero-influence row is
-shown, so that non-linearity attributable to social transmission can be distinguished from
-non-linearity that is not.
-
-\section{Research Outcomes}
-\label{sec:outcomes}
-
-The thesis is expected to deliver four things: a reusable, survey-grounded synthetic population of
-South African households with complete balance sheets in 2017 Rands and its validation record; an
-agent-based model containing a regulated and an unregulated lender class over that population,
-specified to \ac{ODD} standard; an estimate, internal to the model, of how much of the change in
-household distress under \ac{BNPL} is attributable to the reporting exemption itself, obtained by
-comparing runs with bureau visibility switched on and off; and a ranking of four platform-level
-interventions by their effect on population default.
-
-\section{Thesis Outline}
-\label{sec:outline}
-
-Chapter~\ref{ch:literature} reviews the four literatures the design draws on and identifies the gap
-this thesis occupies. Chapter~\ref{ch:data} constructs and validates the household population.
-Chapter~\ref{ch:design} specifies the model under the \ac{ODD} protocol.
-Chapter~\ref{ch:implementation} describes the implementation and the experimental protocol.
-Chapter~\ref{ch:results} reports results against each research question in turn.
-Chapter~\ref{ch:limitations} states the limitations and Chapter~\ref{ch:conclusions} concludes.
-Appendix~\ref{app:rationale} records the design alternatives considered and rejected, and
-Appendix~\ref{app:specification} holds the full parameter register.
+The first is a precondition for the other two: a model whose households do not behave like South
+African households cannot support a claim about what happens when a new lender class is introduced
+to them. It is answered in two parts, by the construction of Section~\ref{ch:population} and by the
+baseline of Section~\ref{ch:results}. The second and third are answered in
+Section~\ref{ch:results}.
