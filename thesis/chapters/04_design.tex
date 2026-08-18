@@ -1,21 +1,20 @@
 \section{Model Design and Implementation}
 \label{ch:model}
 
-This section specifies the agent-based model following the \ac{ODD} (Overview, Design concepts, and Details) protocol \cite{grimm2006odd, grimm2020odd} and outlines its computational implementation. Adhering to the protocol's updated \emph{purpose and patterns} element, the empirical criteria used to evaluate the model's realism are established prior to the presentation of any simulation results. Tables~\ref{tab:submodels} and~\ref{tab:design-concepts} provide the comprehensive specification, while the submodels driving the primary causal mechanisms are detailed in the text. Appendices~\ref{app:rationale} and~\ref{app:supplementary} document rejected structural alternatives and supplementary technical details.
+This section specifies the ABM following the \ac{ODD} protocol \cite{grimm2006odd, grimm2020odd} and outlines its computational implementation. Adhering to the protocol's \emph{purpose and patterns} element. Tables~\ref{tab:submodels} and~\ref{tab:design-concepts} provide the comprehensive specification, while the submodels driving the primary causal mechanisms are detailed in the text. Appendices~\ref{app:rationale} and~\ref{app:supplementary} document rejected structural alternatives and supplementary technical details.
 
 \subsection{Purpose and Patterns}
 \label{sec:purpose}
-\label{sec:injection}
 
-The primary objective of the model is to evaluate the research questions outlined in Section~\ref{sec:rqs}. To achieve this, the simulation employs a \textbf{counterfactual injection} methodology: every household agent is initialised with a \ac{BNPL} balance of zero, and the macroeconomic environment is held static at 2017 conditions. The baseline model is calibrated with \ac{BNPL} disabled. \ac{BNPL} is subsequently introduced into the environment with all other parameters held constant. Consequently, the model outputs do not forecast a specific chronological year post-2017; rather, they provide directional and mechanistic insights into the isolated impact of \ac{BNPL} introduction.
+To evaluate the research questions outlined in Section~\ref{sec:rqs}, the simulation employs a \textbf{counterfactual injection} methodology: every household agent is initialised with a \ac{BNPL} balance of zero, and the macroeconomic environment is held static at 2017 conditions. The baseline model is calibrated with \ac{BNPL} disabled. \ac{BNPL} is subsequently introduced into the environment with all other parameters held constant. Consequently, the model outputs do not forecast a specific chronological year post-2017; rather, they provide directional and mechanistic insights into the isolated impact of \ac{BNPL} introduction.
 
-Table~\ref{tab:patterns} establishes four empirical patterns as predefined validation criteria for the model's realism. Pattern 2—the 2017 \ac{CCMR} arrears profile—is the primary calibration target, as it is strictly South African and vintage-matched to the underlying population data. The remaining three patterns rely on international evidence or subsequent surveys and serve as secondary structural checks (detailed further in Section~\ref{sec:lim-validation}).
+Table~\ref{tab:patterns} establishes four empirical patterns as predefined validation criteria for the model's realism. Pattern 2, the 2017 \ac{CCMR} arrears profile, is the primary calibration target, as it is strictly South African and vintage-matched to the underlying population data. The remaining three patterns rely on international evidence or subsequent surveys and serve as secondary structural checks.
 
 \begin{table}[H]
 \centering
 \caption{Empirical patterns registered as predefined validation criteria for model realism.}
 \label{tab:patterns}
-\begin{tabular}{L{2.6cm}L{4.5cm}L{5.3cm}L{1.9cm}}
+\begin{tabular}{L{2.4cm}L{4.2cm}L{4.8cm}L{1.5cm}}
 \toprule
 \textbf{Pattern} & \textbf{Empirical Observation} & \textbf{Model Analogue \& Falsification Condition} & \textbf{Source} \\
 \midrule
@@ -32,7 +31,7 @@ Table~\ref{tab:patterns} establishes four empirical patterns as predefined valid
 
 \begin{table}[H]
 \centering
-\caption{2017-Q1 \ac{CCMR} arrears profile, unsecured credit and credit facilities combined, on an account basis. Derived from Appendix~D, Tables 21 and 23 \cite{ncr_ccmr_2017}. Aggregate bands are cumulative.}
+\caption{2017-Q1 \ac{CCMR} arrears profile, unsecured credit and credit facilities combined, on an account basis. Tables 21 and 23 \cite{ncr_ccmr_2017}. Aggregate bands are cumulative.}
 \label{tab:ccmr}
 \begin{tabular}{lr}
 \toprule
@@ -54,60 +53,82 @@ Current                  & 71.63 \\
 \subsection{Entities, Scales and Scheduling}
 \label{sec:entities}
 
-\textbf{Household agents} represent the sole adaptive entities within the simulation. Each agent corresponds to an empirical NIDS Wave 5 household, inheriting the static attributes defined in Table~\ref{tab:agent-mapping}. Agents maintain a dynamic internal state tracking cash reserves, traditional debt, \ac{BNPL} obligations, accrued arrears, consecutive periods of financial distress, default status, and a deterministic behavioural archetype (minimum-payer or scheduled-payer) assigned at initialisation. The \textbf{traditional lender} functions as a static, aggregate entity holding all traditional debt; it exhibits no adaptive behaviour and operates strictly as a deterministic affordability gate. The \textbf{credit bureau} acts as a shared information structure recording traditional debt, dictating the traditional lender's observational scope. The \textbf{\ac{BNPL} platforms} represent the injected entities. Four platforms operate in the baseline to mirror the South African market structure; each maintains isolated receivables, applies a lightweight automated screening process, imposes per-order caps, and operates with zero visibility into competitor exposures. \textbf{Reference groups} constitute the model's social topology, defined by the intersection of income quintile and province. This creates 45 distinct groups over the 5{,}000 agents. 
+The model consists of five core entities:
+\begin{itemize}
+    \item \textbf{Household agents} are the adaptive entities. Each maps to an empirical NIDS Wave 5 household (Table~\ref{tab:agent-mapping}) and tracks its dynamic state: cash reserves, traditional debt, \ac{BNPL} obligations, arrears, financial distress, default status, and a fixed repayment archetype (minimum-payer or scheduled-payer).
+    \item \textbf{The traditional lender} is a static aggregate entity holding all traditional debt. It acts strictly as a deterministic affordability gate.
+    \item \textbf{The credit bureau} is a shared registry of traditional debt that defines the traditional lender's observational scope.
+    \item \textbf{\ac{BNPL} platforms} are the injected entities. Four platforms operate in the baseline to mirror the South African market structure. Each maintains isolated receivables, applies automated screening, sets per-order caps, and operates with zero visibility into competitor exposures.
+    \item \textbf{Reference groups} define the social topology, each household belongs to a single reference group, defined by its income quintile and province.
+\end{itemize}
 
-The simulated environment remains homogeneous and exogenously fixed at 2017 conditions. The temporal scale operates on a 14-day tick, aligning with the standard ``pay-in-four'' \ac{BNPL} repayment cadence while cleanly subdividing monthly survey income. The simulation horizon spans 52 ticks, with the initial 12 ticks discarded as burn-in to eliminate initialisation artefacts.
+The environment is static and fixed at 2017 macroeconomic conditions. Time advances in 14-day ticks. This interval matches the standard ``pay-in-four'' \ac{BNPL} cadence and cleanly subdivides monthly survey income. The simulation runs for 52 ticks, discarding the first 12 as burn-in to clear initialisation artefacts.
 
-Scheduling operates synchronously at the tick level. Within each tick, households execute actions in a randomised, asynchronous order that is reseeded every step. Following household actions, the lender processes credit applications, after which global states update. A household's intra-tick execution strictly follows this sequence: income is received subject to exogenous shocks; committed expenditures are deducted; scheduled debt servicing is attempted; discretionary consumption is allocated; if liquidity is exhausted at either payment step, credit applications are generated; the agent then observes the \ac{BNPL} adoption rate of its reference group from the \emph{previous} tick to update its want-driven consumption propensity; finally, balances, arrears, distress counters, and default flags are updated.
+Scheduling is synchronous at the tick level. Within each tick, households act in a randomised, asynchronous order that reseeds every step. After household actions, the lender processes credit applications, and global states update. A household's intra-tick execution follows this strict sequence:
+\begin{enumerate}
+    \item Receive income, subject to exogenous shocks.
+    \item Deduct committed expenditures.
+    \item Execute scheduled debt servicing.
+    \item Allocate discretionary consumption.
+    \item Generate credit applications if liquidity fails at step 2 or 3.
+    \item Update want-driven consumption propensity by observing the reference group's \ac{BNPL} adoption rate from the previous tick.
+    \item Update balances, arrears, distress counters, and default flags.
+\end{enumerate}
 
-This specific execution order isolates two critical mechanisms. First, prioritising committed expenditure over debt servicing ensures that the default condition (defined as the failure to finance minimum consumption \cite{madeira2018chile}) is logically coherent; placing debt service first would mathematically preclude this definition of default. Second, positioning borrowing late in the sequence ensures credit is utilised to address a realised, rather than anticipated, liquidity shortfall \cite{dorazio2017micro}. This allows agents to borrow to service existing debt, driving the primary financial feedback loop. The one-tick lag on social observation stabilises the secondary, norm-driven feedback loop, ensuring it remains independent of the asynchronous activation order.
+This execution order isolates two mechanisms. First, prioritising committed expenditure over debt servicing ensures the default condition (defined as the failure to finance minimum consumption \cite{madeira2018chile}) is mathematically possible. Second, positioning borrowing late in the sequence ensures credit directly addresses a realised liquidity shortfall \cite{dorazio2017micro}. This allows agents to borrow to service existing debt, which drives the primary financial feedback loop. Finally, the one-tick lag on social observation stabilises the norm-driven feedback loop, keeping it independent of the asynchronous activation order.
 
 \subsection{Design Concepts}
 \label{sec:design-concepts}
 
 Table~\ref{tab:design-concepts} summarises the integration of the eleven \ac{ODD} design concepts.
 
-\begin{table}[H]
-\centering
+\begin{longtable}{L{2.9cm}L{7.3cm}L{3.2cm}}
 \caption{\ac{ODD} design concepts defining the simulation mechanics.}
-\label{tab:design-concepts}
-\begin{tabular}{L{3.0cm}L{7.6cm}L{3.4cm}}
+\label{tab:design-concepts} \\
 \toprule
 \textbf{Concept} & \textbf{Treatment} & \textbf{Source} \\
 \midrule
-Basic principles & Balance sheet functions as the accounting core; heuristic decision rules replace intertemporal optimisation; statutory regulations act as explicit computational gates. & \cite{cardaci2018inequality, dorazio2017micro, meier2010present, Keys2019, yun2020housing} \\
+\endfirsthead
+\toprule
+\textbf{Concept} & \textbf{Treatment} & \textbf{Source} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Basic principles & Balance sheets form the accounting core. Heuristic decision rules replace intertemporal optimisation. Statutory regulations act as explicit computational gates. & \cite{cardaci2018inequality, dorazio2017micro, meier2010present, Keys2019, yun2020housing} \\
 \addlinespace
 Emergence & Population default rates, aggregate debt trajectories, and stacking depths arise endogenously from household interactions and constraints. & None \\
 \addlinespace
-Adaptation & Households dynamically compress consumption and select borrowing/repayment strategies based strictly on immediate liquidity constraints. The traditional lender is non-adaptive. & \cite{dorazio2017micro} \\
+Adaptation & Households dynamically compress consumption and select borrowing or repayment strategies based strictly on immediate liquidity constraints. The traditional lender is non-adaptive. & \cite{dorazio2017micro} \\
 \addlinespace
-Objectives & Households lack explicit forward-looking utility functions. They attempt to satisfy obligations in a strict priority order, compressing discretionary spending when distressed. & \cite{meier2010present} \\
+Objectives & Households lack explicit forward-looking utility functions. They satisfy obligations in a strict priority order, compressing discretionary spending when distressed. & \cite{meier2010present} \\
 \addlinespace
 Learning & Excluded. Behavioural rules remain static throughout the simulation horizon. & None \\
 \addlinespace
-Prediction & Excluded, assuming agents heuristically treat current income as persistent. & None \\
+Prediction & Excluded. Agents heuristically treat current income as persistent. & None \\
 \addlinespace
 Sensing & Agents possess perfect knowledge of their own balance sheets and observe the lagged aggregate \ac{BNPL} adoption rate of their reference group. The traditional lender is blind to \ac{BNPL} and informal debt. & \cite{nortonrose_bnpl_sa} \\
 \addlinespace
 Interaction & Bipartite interactions occur between households and lenders via credit applications. Peer-to-peer interaction operates indirectly via reference-group adoption rates influencing want-driven borrowing. & \cite{ackert2025bnpl} \\
-\addlinespace
-Stochasticity & Governs Bernoulli income shocks, the initial assignment of behavioural archetypes, and state-dependent purchase triggers. Simulations are strictly seeded, with results aggregated across replicates to demonstrate dispersion. & None \\
+\pagebreak
+Stochasticity & Governs Bernoulli income shocks, the initial assignment of behavioural archetypes, and state-dependent purchase triggers. Simulations are strictly seeded, with results aggregated across replicates to report dispersion. & None \\
 \addlinespace
 Collectives & Reference groups (income quintile $\times$ province) act as collectives, aggregating individual states to drive peer-influence feedback loops. & \cite{cardaci2018inequality} \\
 \addlinespace
 Observation & Tracked per tick: population default rate, \ac{CCMR} arrears distribution, aggregate traditional and \ac{BNPL} debt volumes, mean and quintile debt-service-to-income (DSTI), consumption compression rates, and application/rejection metrics. & None \\
-\bottomrule
-\end{tabular}
-\end{table}
+\end{longtable}
 
-\textbf{Emergence.} The model does not exogenously impose default rates, stacking depths, or systemic tipping points; rather, these metrics emerge dynamically from two distinct feedback loops. The \emph{financial} loop is driven by liquidity-constrained households borrowing to satisfy existing obligations, thereby inflating future servicing requirements. The \emph{social} loop is driven by aggregate adoption rates positively influencing individual adoption propensities within peer networks. Setting the peer-influence coefficient to zero effectively neutralises the social loop while preserving the financial loop, permitting isolated causal analysis.
+\textbf{Emergence.} The model does not exogenously impose default rates, stacking depths, or systemic tipping points. Instead, these metrics emerge dynamically from two distinct feedback loops. The \emph{financial} loop is driven by liquidity-constrained households borrowing to satisfy existing obligations, which inflates future servicing requirements. The \emph{social} loop is driven by aggregate adoption rates positively influencing individual adoption propensities within peer networks. Setting the peer-influence coefficient to zero neutralises the social loop while preserving the financial loop, permitting isolated causal analysis.
 
 \subsection{Submodels}
 \label{sec:submodels}
 
-The agent population is instantiated using the empirical data framework developed in Section~\ref{ch:population}. Opening balance sheets reflect survey values, and all initial \ac{BNPL} balances are uniformly set to zero. The model relies entirely on endogenous dynamics, utilising no external time series during execution. Table~\ref{tab:submodels} outlines the seventeen submodels comprising the simulation. The four submodels central to the model's transmission mechanisms are detailed thereafter.
+The agent population is instantiated using the empirical data framework developed in Section~\ref{ch:population}. Opening balance sheets reflect survey values, and all initial \ac{BNPL} balances are uniformly set to zero. Table~\ref{tab:submodels} outlines the seventeen submodels comprising the simulation. The four submodels central to the primary transmission mechanisms are detailed thereafter.
 
-\begin{longtable}{L{1.9cm}L{5.3cm}L{2.8cm}L{4.1cm}}
+\begingroup
+\setlength{\tabcolsep}{4pt}
+\small
+\begin{longtable}{L{2.35cm}L{4.75cm}L{2.3cm}L{4.0cm}}
 \caption{Submodel specification. Every behavioural rule is grounded in literature or explicitly flagged as an assumption. All free parameters are empirically sourced or systematically swept.}
 \label{tab:submodels} \\
 \toprule
@@ -121,47 +142,48 @@ The agent population is instantiated using the empirical data framework develope
 \bottomrule
 \endfoot
 
-1. Income and shock & Baseline income is static. A Bernoulli shock is applied exclusively to \emph{labour} income (exempting grant-dependent households). Shocks reduce income for a single tick without permanent scarring. & \cite{madeira2018chile} & Probability fitted to pattern 2, held fixed across all runs. Magnitude swept. \\
+Income and shock & Baseline income is static. A Bernoulli shock hits \emph{labour} income only, exempting grant-dependent households. It lasts one tick and leaves no scarring. & \cite{madeira2018chile} & Probability fitted to Pattern 2 and held fixed across runs. Magnitude swept. \\
 \addlinespace
-2. Consumption & Two-tier structure. Committed expenditure (food and rent) acts as an incompressible floor. Discretionary expenditure compresses to zero prior to any missed debt instalment. & Data layer (Section~\ref{ch:population}) & No free parameter. \\
+Consumption & Two tiers. Committed expenditure (food, rent) is an incompressible floor. Discretionary spending compresses to zero before any instalment is missed. & Data layer (Section~\ref{ch:population}) & No free parameter. \\
 \addlinespace
-3. Borrowing trigger & Traditional credit is sought strictly for realised shortfalls. \ac{BNPL} introduces an additional want-driven borrowing path, governed by peer adoption rates. & \cite{dorazio2017micro, ackert2025bnpl, dehaan2024bnpl} & $q_{\text{base}}$, $\beta$; detailed in Submodel 11. \\
+Borrowing trigger & Traditional credit is sought only for realised shortfalls. \ac{BNPL} adds a want-driven path governed by peer adoption. & \cite{dorazio2017micro, ackert2025bnpl, dehaan2024bnpl} & $q_{\text{base}}$, $\beta$; see Submodel 11. \\
 \addlinespace
-4. Borrowing amount & \textbf{Structural assumption.} Households request exact liquidity shortfalls without precautionary buffers. \ac{BNPL} requests are anchored to synthetic purchase sizes. & None located & \textbf{Mandatory parameter sweep:} shortfall, shortfall $+25\%$, shortfall $+$ one tick of committed expenditure. \\
+Borrowing amount & \textbf{Structural assumption.} Households request the exact shortfall, with no precautionary buffer. \ac{BNPL} requests are anchored to synthetic purchase sizes. & None located & \textbf{Mandatory sweep:} shortfall; shortfall $+25\%$; shortfall $+$ one tick of committed expenditure. \\
 \addlinespace
-5. Lender choice & Eligible households prioritise \ac{BNPL}. Remaining shortfalls are routed to traditional credit. The baseline model relies exclusively on traditional credit. & \cite{ackert2025bnpl} & No free parameter. Falsification tied to Pattern 1. \\
+Lender choice & Eligible households take \ac{BNPL} first; any remainder routes to traditional credit. The baseline uses traditional credit only. & \cite{ackert2025bnpl} & No free parameter. Falsification tied to Pattern 1. \\
 \addlinespace
-6. Repayment and arrears & Heterogeneous strategies. Minimum-payers cover contractual minimums; scheduled-payers cover full amortised instalments. Unpaid obligations accrue as arrears tracked in \ac{CCMR} age bands. & \cite{Keys2019} & Minimum-payer share 0.29 (swept 0.20--0.40). \\
+Repayment and arrears & Minimum-payers cover contractual minimums; scheduled-payers cover full amortised instalments. Unpaid amounts accrue as arrears, tracked in \ac{CCMR} age bands. & \cite{Keys2019} & Minimum-payer share 0.29 (swept 0.20--0.40). \\
 \addlinespace
-7. Distress and default & A household is distressed when liquidity cannot cover committed expenditure plus scheduled debt service. Default triggers after seven consecutive ticks of distress. & \cite{madeira2018chile} & $k=7$ ticks (98 days), aligned with the \ac{CCMR} 91--120 day band. \\
+Distress and default & A household is distressed when liquidity cannot cover committed expenditure plus scheduled debt service. Seven consecutive distressed ticks trigger default. & \cite{madeira2018chile} & $k=7$ ticks (98 days), aligned with the \ac{CCMR} 91--120 day band. \\
 \addlinespace
-8. Heterogeneity & Behavioural parameters vary structurally by income quintile, demographic status, and financial-inclusion markers derived from the data layer. & \cite{Keys2019} & No continuous present-bias parameter included due to lack of local calibration data. \\
+Heterogeneity & Behavioural parameters vary by income quintile, demographic status, and financial-inclusion markers from the data layer. & \cite{Keys2019} & No continuous present-bias parameter: no local calibration data. \\
 \addlinespace
-9. Credit-granting gate & Implements the NCA Regulation 23A residual-income test, resulting in income-scaled ceilings (10.4\% to 83.2\% of income). Evaluated at the household level. & \cite{sa_ncr_affordability_2015} & No free parameter; hard-coded statutory limits. \\
+Credit-granting gate & The NCA Regulation 23A residual-income test, applied at household level. Ceilings scale with income, from 10.4\% to 83.2\%. & \cite{sa_ncr_affordability_2015} & No free parameter; statutory limits hard-coded. \\
 \addlinespace
-10. Information asymmetry & The credit bureau tracks traditional debt exclusively. Lenders cannot observe \ac{BNPL} or informal debt obligations. & \cite{nortonrose_bnpl_sa, transunion_cps_sa_2025} & \texttt{bureau\_visibility} boolean (default disabled); functions as Lever 1 (Submodel 15). \\
+Information asymmetry & The bureau tracks traditional debt only. Lenders cannot observe \ac{BNPL} or informal debt. & \cite{nortonrose_bnpl_sa, transunion_cps_sa_2025} & \texttt{bureau\_visibility} boolean (default off); Lever 1 in Submodel 15. \\
 \addlinespace
-11. Peer influence & $q_i(t) = \mathrm{clip}(q_{\text{base}} + \beta s_{g(i)}(t-1), 0, 1)$ operating within reference groups (income quintile $\times$ province). & \cite{ackert2025bnpl, cardaci2018inequality, granovetter1978threshold} & \textbf{$\beta=0$ control arm required in all baseline comparisons.} \\
+Peer influence & $q_i(t) = \mathrm{clip}(q_{\text{base}} + \beta s_{g(i)}(t-1), 0, 1)$, applied within reference groups (income quintile $\times$ province). & \cite{ackert2025bnpl, cardaci2018inequality, granovetter1978threshold} & \textbf{$\beta=0$ control arm required in all baseline comparisons.} \\
 \addlinespace
-12. \ac{BNPL} eligibility & Restricted to banked households. Utilises a lightweight automated screen, explicitly bypassing Regulation 23A. Per-order caps set to ZAR 9{,}927 (2017 adjusted); rolling limits set to $\lambda$ months of income. & \cite{payflex_terms, payjustnow_terms, homechoice2024ir} & Caps access at empirical 82.8\%. $\lambda$ swept 0.1--1.0 against a 0.10--0.26 external benchmark \cite{woolard2021, asic2020rep672}. \\
+\ac{BNPL} eligibility & Banked households only. A lightweight automated screen replaces Regulation 23A. Per-order cap ZAR 9{,}927 (2017 adjusted); rolling limit $\lambda$ months of income. & \cite{payflex_terms, payjustnow_terms, homechoice2024ir} & Access capped at the empirical 82.8\%. $\lambda$ swept 0.1--1.0 against a 0.10--0.26 external benchmark \cite{woolard2021, asic2020rep672}. \\
 \addlinespace
-13. Stacking & Permits concurrent facilities across platforms with no aggregate limit. Platforms remain blind to competitor exposures. & Follows Submodel 10 & Platforms swept 1--6 (baseline 4). Evaluated against \ac{CFPB} structural benchmarks. \\
+Stacking & Concurrent facilities across platforms, with no aggregate limit. Platforms stay blind to competitor exposures. & Follows Submodel 10 & Platforms swept 1--6 (baseline 4), benchmarked against \ac{CFPB} structural measures. \\
 \addlinespace
-14. \ac{BNPL} repayment & Exogenous ``Pay-in-4'' structure: 25\% at checkout, 25\% across next three ticks (interest-free). Initial debit must clear. Late fees capped at ZAR 188.61 (2017 adjusted). & \cite{payflex_terms} & No free parameters. Debt amortisation maps cleanly to model ticks. \\
+\ac{BNPL} repayment & Exogenous ``Pay-in-4'': 25\% at checkout, then 25\% over each of the next three ticks, interest-free. The initial debit must clear. Late fees capped at ZAR 188.61 (2017 adjusted). & \cite{payflex_terms} & No free parameters; amortisation maps cleanly onto ticks. \\
 \addlinespace
-15. Intervention levers & Evaluates: bureau visibility, mandatory Regulation 23A integration, 14-day cooling-off periods, and hypothetical concurrent facility caps. & \cite{fca_ps26_1, woolard2021} & Binary triggers. Evaluated based on total systemic debt mitigation versus temporal deferral. \\
+Intervention levers & Bureau visibility, mandatory Regulation 23A, 14-day cooling-off periods, and hypothetical concurrent-facility caps. & \cite{fca_ps26_1, woolard2021} & Binary triggers. Judged on systemic debt mitigated versus merely deferred. \\
 \addlinespace
-16. Macro environment & Strictly static. The repurchase rate is fixed at 7.00\%, freezing statutory maximum interest rates. & Experimental design (Section~\ref{sec:injection}) & Exogenous constraint. \\
+Macro environment & Static. The repurchase rate is fixed at 7.00\%, freezing statutory maximum interest rates. & Experimental design (Section~\ref{sec:purpose}) & Exogenous constraint. \\
 \addlinespace
-17. Activation order & Random, asynchronous, and reseeded per tick. Lenders process batch applications ex-post. & \cite{comer2013activation, alizadeh2015activation} & Robustness verified against uniform/synchronous activation setups (Appendix~\ref{app:supplementary}). \\
+Activation order & Random, asynchronous, reseeded each tick. Lenders batch-process applications ex-post. & \cite{comer2013activation, alizadeh2015activation} & Robustness checked against uniform and synchronous activation (Appendix~\ref{app:supplementary}). \\
 \end{longtable}
+\endgroup
 
 \subsubsection*{Submodel 10: Information Asymmetry}
 \label{sec:asymmetry}
 
-Agents possess perfect internal knowledge of their balance sheets and observe the aggregate \ac{BNPL} adoption rate of their reference group with a one-tick lag. In contrast, the traditional lender acts on restricted information: it observes an applicant's declared gross income, its own institutional exposure, and external traditional debt listed on the credit bureau. Crucially, it cannot observe \ac{BNPL} obligations—which currently operate outside South African statutory bureau reporting requirements \cite{nortonrose_bnpl_sa, transunion_cps_sa_2025}—nor informal debt structures such as stokvels or mashonisa loans \cite{finscope2019}.
+Agents possess perfect internal knowledge of their balance sheets and observe the aggregate \ac{BNPL} adoption rate of their reference group with a one-tick lag. In contrast, the traditional lender acts on restricted information: it observes an applicant's declared gross income, its own institutional exposure, and external traditional debt listed on the credit bureau. Crucially, it cannot observe \ac{BNPL} obligations (which currently operate outside South African statutory bureau reporting requirements \cite{nortonrose_bnpl_sa, transunion_cps_sa_2025}) nor informal debt structures such as stokvels or mashonisa loans \cite{finscope2019}.
 
-Consequently, the statutory Regulation 23A affordability test is executed over an incomplete liability profile. This dynamic reflects a systemic regulatory gap rather than non-compliant lender behaviour. Bureau visibility is implemented as a boolean parameter (default disabled) and serves as the primary policy intervention lever. Activating visibility allows the affordability gate to assess the complete liability stack. The divergence in outcomes between the visible and blind states provides a direct quantitative measure of the systemic risk introduced by the reporting exemption.
+Consequently, the statutory Regulation 23A affordability test evaluates an incomplete liability profile. This dynamic reflects a systemic regulatory gap rather than non-compliant lender behaviour. Bureau visibility is implemented as a boolean parameter (default disabled) and serves as the primary policy intervention lever. Activating visibility allows the affordability gate to assess the complete liability stack. The divergence in outcomes between the visible and blind states provides a direct quantitative measure of the systemic risk introduced by the reporting exemption.
 
 \subsubsection*{Submodel 11: Peer Influence}
 \label{sec:peer-influence}
@@ -173,25 +195,32 @@ Let $s_g(t-1)$ denote the proportion of households within reference group $g$ ma
     \label{eq:peer}
 \end{equation}
 
-A strictly positive base propensity ($q_{\text{base}}$) is structurally necessary to initiate adoption; under a purely multiplicative specification, an initial state of zero balances would preclude adoption permanently. Therefore, the coefficients function analogously to the innovation and imitation parameters in Bass diffusion models. This formulation is grounded in empirical observations that \ac{BNPL} consumption is heavily norm-driven \cite{ackert2025bnpl}, aligns with established macroeconomic ABM methodologies \cite{cardaci2018inequality}, and maps to Granovetter's threshold models of collective behaviour \cite{granovetter1978threshold}.
+A strictly positive base propensity ($q_{\text{base}}$) is structurally necessary to initiate adoption. Under a purely multiplicative specification, an initial state of zero balances would preclude adoption permanently. The coefficients function analogously to the innovation and imitation parameters in Bass diffusion models. This formulation is grounded in empirical observations that \ac{BNPL} consumption is heavily norm-driven \cite{ackert2025bnpl}, aligns with established macroeconomic ABM methodologies \cite{cardaci2018inequality}, and maps directly to Granovetter's threshold models of collective behaviour \cite{granovetter1978threshold}.
 
-Given that neither coefficient can be precisely calibrated using existing South African data, the $\beta = 0$ condition is treated as an independent control arm rather than a standard parameter bound. Presenting this null-social row across all results successfully isolates the mechanical financial feedback loop from the sociological transmission mechanism.
+Because neither coefficient can be precisely calibrated using existing South African data, the $\beta = 0$ condition acts as an independent control arm rather than a standard parameter bound. Presenting this null-social row across all results isolates the mechanical financial feedback loop from the sociological transmission mechanism.
 
 \subsubsection*{Submodel 13: Stacking}
 \label{sec:stacking}
 
-Agents are permitted to maintain concurrent credit facilities across multiple \ac{BNPL} platforms without an aggregate limit. The inability of platforms to observe one another is a direct, endogenous consequence of the information asymmetry established in Submodel~10. Lacking a centralised reporting infrastructure, each platform screens applicants against an incomplete liability set, mirroring the traditional lender's vulnerability. The total number of active platforms is swept from one to six. The single-platform environment serves as a control to differentiate internal rolling accumulation from genuine cross-firm stacking. Systemic stacking depth emerges endogenously and is benchmarked against \ac{CFPB} observations indicating that approximately 63\% of borrowers hold simultaneous loans and 32\% hold them across multiple firms \cite{cfpb2025bnpl}. 
+Agents can maintain concurrent credit facilities across multiple \ac{BNPL} platforms without an aggregate limit. The inability of platforms to observe one another is a direct, endogenous consequence of the information asymmetry established in Submodel~10. Lacking a centralised reporting infrastructure, each platform screens applicants against an incomplete liability set. The total number of active platforms is swept from one to six, with the single-platform environment serving as a control to differentiate internal rolling accumulation from genuine cross-firm stacking. Systemic stacking depth emerges endogenously and is benchmarked against \ac{CFPB} observations, which indicate that approximately 63\% of borrowers hold simultaneous loans and 32\% hold them across multiple firms \cite{cfpb2025bnpl}. 
 
 \subsubsection*{Submodel 15: Intervention Levers}
 \label{sec:levers}
 
-The simulation incorporates four distinct policy intervention levers to address the study's third research question. \textbf{Bureau visibility} eliminates the reporting gap established in Submodel 10. A \textbf{mandatory affordability check} enforces the rigorous Regulation 23A assessment on \ac{BNPL} transactions, operationalising international regulatory recommendations \cite{fca_ps26_1, woolard2021} within a South African context. A \textbf{cooling-off period} imposes a mandatory one-tick (14-day) moratorium on subsequent want-driven \ac{BNPL} originations following a transaction, explicitly targeting impulsive consumption while leaving shortfall-driven emergency borrowing unhindered. Finally, a \textbf{concurrent facility cap} physically restricts cross-platform stacking; this lever is explicitly noted as a hypothetical test, as it currently lacks a direct jurisdictional precedent. The structural efficacy of these interventions is evaluated by analysing cumulative \ac{BNPL} volume over the simulation horizon: an intervention that merely shifts transaction timing (deferral) will exhibit stable cumulative volume, whereas one that structural alters behaviour (desistance) will demonstrably depress cumulative volume.
+The simulation incorporates four distinct policy intervention levers to address the study's third research question:
+\begin{itemize}
+    \item \textbf{Bureau visibility} eliminates the reporting gap established in Submodel 10.
+    \item \textbf{Mandatory affordability checks} enforce the rigorous Regulation 23A assessment on \ac{BNPL} transactions, operationalising international regulatory recommendations \cite{fca_ps26_1, woolard2021} within a South African context.
+    \item \textbf{Cooling-off periods} impose a mandatory one-tick (14-day) moratorium on subsequent want-driven \ac{BNPL} originations following a transaction, targeting impulsive consumption while leaving emergency borrowing unhindered.
+    \item \textbf{Concurrent facility caps} physically restrict cross-platform stacking. This lever acts as a hypothetical test, as it currently lacks a direct jurisdictional precedent.
+\end{itemize}
+The structural efficacy of these interventions is evaluated by analysing cumulative \ac{BNPL} volume over the simulation horizon. An intervention that merely shifts transaction timing (deferral) will exhibit stable cumulative volume, whereas one that structurally alters behaviour (desistance) will demonstrably depress cumulative volume.
 
 \subsection{Implementation and Experimental Protocol}
 \label{sec:implementation}
 
 The ABM is implemented programmatically in Python using the Mesa framework, compartmentalised within the \texttt{simulation/} directory. The architecture maps one class to each \ac{ODD} entity, governed by a central model class managing the scheduler and data aggregation. The synthetic population is instantiated directly from the parquet files generated during the data construction phase (Section~\ref{ch:population}).
 
-Model verification—ensuring the computational implementation faithfully executes the conceptual specification—is distinct from empirical validation and is enforced via a rigorous automated test suite. This suite asserts core invariances: balance-sheet conservation, chronological arrears ageing across \ac{CCMR} cohorts, faithful execution of Regulation 23A mathematical worked examples, precise tick-alignment of Pay-in-4 amortisation schedules, and statutory caps on late fees. Furthermore, the architecture is verified against degenerate edge cases: disabling \ac{BNPL} perfectly reconstructs the baseline model, setting $\beta = 0$ isolates the independent-agent paradigm, and restricting the environment to a single platform mathematically forces cross-firm stacking to zero. 
+Model verification (ensuring the code faithfully executes the conceptual specification) is distinct from empirical validation and relies on a strict automated test suite. This suite asserts core invariances: balance-sheet conservation, chronological arrears ageing across \ac{CCMR} cohorts, faithful execution of Regulation 23A mathematical worked examples, precise tick-alignment of Pay-in-4 amortisation schedules, and statutory caps on late fees. The architecture is further verified against degenerate edge cases. Disabling \ac{BNPL} perfectly reconstructs the baseline model, setting $\beta = 0$ isolates the independent-agent paradigm, and restricting the environment to a single platform mathematically forces cross-firm stacking to zero. 
 
 Two parameters are empirically fitted: the probability of an income shock and the payment-inattention rate. Each is calibrated against a single \ac{CCMR} arrears band, leaving the remaining bands entirely free to serve as out-of-sample structural checks. All other parameters are empirically sourced or systematically swept across predefined spaces. Executions are strictly seeded, replicated, and aggregated, with statistical dispersion transparently reported. The parameter sweep grid and noise floors are detailed in Section~\ref{sec:results-robustness}, with the complete parameter register documented in Appendix~\ref{app:specification}.
