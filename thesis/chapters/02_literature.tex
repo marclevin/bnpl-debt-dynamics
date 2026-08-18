@@ -32,100 +32,55 @@ validation target.
 
 \subsection{Empirical Evidence on Buy Now, Pay Later}
 \label{sec:lit-bnpl}
+As established, deHaan et al. \cite{dehaan2024bnpl} demonstrate that \ac{BNPL} adoption exacerbates financial distress among liquidity-constrained consumers.
+Their conclusion, that \ac{BNPL} inherently facilitates overborrowing, provides the empirical rationale for testing these mechanisms in a South African context. 
 
-Tracking 10.6 million United States consumers, deHaan et al. \cite{dehaan2024bnpl} show that
-adopting \ac{BNPL} leads to immediate increases in overdraft charges, credit-card interest and late
-fees, concentrated among liquidity-constrained households, with causally identified estimates
-putting the rise in overdraft fees at nearly 9\%. Their conclusion, that \ac{BNPL} facilitates
-overborrowing among vulnerable consumers, is the primary empirical rationale for testing these
-mechanisms in South Africa.
+While deHaan et al. outline the financial fallout, the \ac{CFPB} \cite{cfpb2025bnpl} illustrates exactly how this exposure builds up. Concurrent borrowing is an established pattern: between 2021 and 2022, 63\% of \ac{BNPL} users held simultaneous loans, and nearly a third held them across entirely different providers. These figures form the foundation for the debt-stacking mechanism. When a consumer holds several obligations at once, across providers who cannot see each other's ledgers, what looks like a harmless, interest-free deferral on a single transaction quickly balloons into an aggregate servicing burden that no individual lender ever assessed.
 
-Where deHaan et al. establish that \ac{BNPL} damages financial health, the \ac{CFPB}
-\cite{cfpb2025bnpl} establishes the shape of the exposure. From roughly 145 million applications
-originated between 2017 and 2022, concurrent borrowing is normal: across 2021 and 2022, 63\% of
-\ac{BNPL} borrowers held simultaneous loans at some point and 32\% held them across different
-firms. Those two figures are the empirical foundation of the debt-stacking mechanism, since holding
-several obligations at once, particularly across providers who cannot see one another, converts
-what looks at the level of a single transaction like a small interest-free deferral into an
-aggregate servicing burden that no individual lender has assessed.
-
-Distress concentrates in the \ac{LMI} population \cite{hayashi2025constraints, wang2026buynow}.
-Ackert et al. \cite{ackert2025bnpl} explain the demand: in an incentivised experiment consumers
-chose \ac{BNPL} over a credit-card loan for the same purchase and expected their social networks to
-approve, from which the authors conclude that a payment scheme carrying social approval raises
-indebtedness. That claim licenses both the want-driven borrowing path and the peer channel of this
-model.
+We know this distress is heavily concentrated in \ac{LMI} populations \cite{hayashi2025constraints, wang2026buynow}, but Ackert et al. \cite{ackert2025bnpl} help explain the demand side. In an incentivised experiment, they found consumers prefer \ac{BNPL} over traditional credit cards for the same purchase, largely because they expect their social networks to approve of it. The idea that social approval directly drives up indebtedness provides the behavioral justification for both the want-driven borrowing path and the peer effects modeled in this paper.
 
 \subsection{Behavioural Foundations for the Decision Rules}
 \label{sec:lit-behavioural}
 
-Experimentally elicited present bias predicts credit-card borrowing \cite{meier2010present}, which
-justifies a borrowing trigger answering to immediate shortfall rather than to a lifetime budget
-constraint, and the same argument carries to repayment, present-biased borrowers systematically
-failing to execute the paydown they planned \cite{Kuchler2021}. Keys and Wang \cite{Keys2019} find
-that 29\% of United States credit-card accounts regularly pay at or near the contractual minimum,
-and that at least 22\% of near-minimum payers shift their payments when the formula changes, which
-is a clear signal of anchoring. Scheduled amortisation is therefore rejected as a repayment rule
-here, because a substantial minority of borrowers pay the salient amount instead of the amount that
-retires the debt, so obligations persist and compound. Together these results describe an agent
-that borrows on shortfall, repays by salience, and varies in how strongly it does both.
+Experimentally elicited present bias is a strong predictor of credit-card borrowing \cite{meier2010present}. This justifies using a borrowing trigger that reacts to an immediate financial shortfall rather than a strict lifetime budget constraint. The exact same logic applies to repayment, as present-biased borrowers systematically fail to execute the debt paydowns they originally planned \cite{Kuchler2021}. 
+
+Furthermore, Keys and Wang \cite{Keys2019} note that 29\% of United States credit-card accounts regularly pay at or near the contractual minimum. Crucially, at least 22\% of these near-minimum payers adjust their payments whenever the minimum formula changes, providing a clear signal of anchoring. 
+
+Because of this, scheduled amortisation is rejected as a repayment rule in this model. A substantial minority of borrowers simply pay the salient minimum amount instead of the amount actually required to retire the debt, causing their obligations to persist and compound. Taken together, these findings describe an agent that borrows based on immediate shortfall, repays based on salience, and naturally varies in how strongly it does both.
 
 \subsection{The South African Regulatory Setting}
 \label{sec:lit-regulatory}
 
-The \ac{NCA} \cite{sa_nca_2005} obliges registered credit providers to conduct a mandatory
-affordability assessment, prescribed in Regulation 23A \cite{sa_ncr_affordability_2015}. That
-regulation prescribes no \ac{DSTI} ceiling. It prescribes a residual-income test: discretionary
-income is gross income less statutory deductions, less a table of minimum necessary living expenses
-by income band, less every other committed obligation the consumer discloses or the bureau records,
-and affordability is judged against what survives that subtraction. The \ac{NCA} also caps the cost
-of credit by sub-sector, with maximum rates in force from 6 May 2016 running to the repurchase rate
-plus 21\% for unsecured credit transactions \cite{sa_ncr_ratecaps_2016}.
+As outlined in Section~\ref{sec:background}, the \ac{NCA} \cite{sa_nca_2005} and Regulation 23A \cite{sa_ncr_affordability_2015} define the mandatory residual income test that registered credit providers must use. While the mechanics of that affordability test are established, it is also important to note that the \ac{NCA} caps the cost of standard credit. For unsecured transactions, the maximum rate in force since May 2016 is the repurchase rate plus 21\% \cite{sa_ncr_ratecaps_2016}, which defines the cost boundaries for the traditional credit products in this simulation.
 
-The exemption \ac{BNPL} providers claim from that regime is set out in
-Section~\ref{sec:background}. Two points from it bear on the model. TransUnion
-\cite{transunion_cps_sa_2025} finds \ac{BNPL} named by 20\% of consumers intending to apply for
-credit, behind only credit cards at 30\% and personal loans at 28\%, which is the only available
-indication of South African demand. And the invisibility of \ac{BNPL} obligations is a documented
-feature of the regulatory perimeter rather than a simplification adopted for tractability, so
-bureau visibility enters the model as a switchable lever rather than a fixed assumption.
+Building on the regulatory exemptions claimed by \ac{BNPL} providers discussed earlier, two specific points directly shape the architecture of this model. First, while local data is scarce, in 2025, TransUnion \cite{transunion_cps_sa_2025} reports that 20\% of South African consumers intend to apply for \ac{BNPL}, trailing only credit cards at 30\% and personal loans at 28\%. This provides the baseline for simulating local demand. Second, because the invisibility of \ac{BNPL} obligations is a structural feature of the South African regulatory perimeter, credit bureau visibility is programmed into the model as a switchable policy lever rather than a fixed constant. This allows the simulation to test exactly what happens when that regulatory blind spot is removed.
 
 \subsection{Synthesis and Gap}
 \label{sec:lit-gap}
 
-Each of these literatures answers a different part of the question and none answers it whole, as
-Table~\ref{tab:gap} sets out.
+While each body of literature reviewed addresses a piece of the puzzle, none captures the complete picture of the South African market. Table~\ref{tab:gap} summarises where the reviewed research stops and where this study fills the gap.
 
 \begin{table}[H]
 \centering
-\caption{What each literature establishes, and what it leaves open.}
+\caption{What each literature establishes, and the methodological gap it leaves open.}
 \label{tab:gap}
 \begin{tabular}{L{3.4cm}L{5.2cm}L{5.4cm}}
 \toprule
 \textbf{Literature} & \textbf{Establishes} & \textbf{Leaves open} \\
 \midrule
-Empirical \ac{BNPL} \newline \cite{dehaan2024bnpl, cfpb2025bnpl} & That \ac{BNPL} harms financial
-health, and that concurrent borrowing across providers is normal at scale & Observed in a United
-States market where the product is at least partly visible to bureaus, and described rather than
-explained \\
+Empirical \ac{BNPL} \newline \cite{dehaan2024bnpl, cfpb2025bnpl} & That \ac{BNPL} adoption harms financial health, and that concurrent, multi-firm borrowing is widespread. & Relies on United States data where bureaus have some visibility. Observes the outcomes but lacks a mechanistic explanation of how distress compounds locally. \\
 \addlinespace
-Behavioural \newline \cite{meier2010present, Keys2019, Kuchler2021, ackert2025bnpl} & Why
-individuals borrow on shortfall, repay by salience, and choose a socially approved payment scheme &
-Stops at the individual; says nothing about how those choices aggregate \\
+Behavioural \newline \cite{meier2010present, Keys2019, Kuchler2021, ackert2025bnpl} & The individual drivers of debt: shortfall borrowing, payment anchoring, and social influence. & Focuses strictly on isolated consumer psychology. Cannot explain how these individual biases aggregate into systemic market failure. \\
 \addlinespace
 Household credit \ac{ABM} \newline \cite{cardaci2018inequality, dorazio2017micro,
-madeira2018chile, hamill2023creditcard} & How individual credit behaviour aggregates into
-population-level instability, and that such models can be held to external targets & None includes
-a lender class exempt from affordability regulation and invisible to its competitors \\
+madeira2018chile, hamill2023creditcard} & How to successfully simulate individual credit decisions scaling up into macroeconomic instability. & Existing models assume a unified regulatory environment. None incorporate a shadow lender class that bypasses both affordability checks and bureau visibility. \\
 \addlinespace
 South African regulatory \newline \cite{sa_ncr_affordability_2015, nortonrose_bnpl_sa,
-transunion_cps_sa_2025} & That exactly such a two-lender-type perimeter exists in law, and that
-\ac{BNPL} is absent from the credit report & No estimate of what that perimeter does to household
-balance sheets, and none obtainable from administrative data \\
+transunion_cps_sa_2025} & The legal reality of a bifurcated market where regulated lenders share data and \ac{BNPL} providers do not. & The actual impact on household balance sheets. Since administrative data is fundamentally blind to \ac{BNPL}, empirical measurement is impossible. \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The South African regulatory perimeter \cite{sa_ncr_affordability_2015, nortonrose_bnpl_sa, transunion_cps_sa_2025} produces a credit
-market containing two lender types, one regulated and informed and the other neither, lending to
-the same households.
+The South African regulatory perimeter effectively creates a dual credit market. Traditional lenders operate strictly within the bounds of mandatory affordability tests and shared data, while an invisible counterpart operates completely outside of it, lending to the exact same households. 
+
+Because the administrative data required to measure this dynamic simply does not exist, standard empirical methods hit a dead end. Bridging this gap requires a structural approach. If we cannot observe this aggregate exposure in the real world, we must simulate the environment where it occurs. To do this, the following section details the construction of a synthetic South African household population, designed from the bottom up to model how these overlapping, invisible liabilities actually behave.
