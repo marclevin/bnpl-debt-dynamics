@@ -9,28 +9,26 @@ registered credit provider to assess whether an applicant can afford a proposed 
 granting it, and Regulation 23A of the Affordability Assessment Regulations
 \cite{sa_ncr_affordability_2015} prescribes a residual-income test for doing so. The Act also caps
 the cost of credit by sub-sector \cite{sa_ncr_ratecaps_2016}. Registered lenders report their
-exposures to the credit bureaux, so each lender assesses an applicant against a record of what
+exposures to the credit bureaus, so each lender assesses an applicant against a record of what
 every other registered lender has advanced.
 
 \ac{BNPL} providers sit outside that regime. Because they levy neither interest nor fees on the
 deferred amount, they argue that they do not transact credit within the meaning of the \ac{NCA},
 and so do not register with the \ac{NCR}, do not perform the Regulation 23A assessment, and do not
-report what they have lent to any credit bureau \cite{nortonrose_bnpl_sa}. TransUnion confirms the
-last point from inside the bureau system, listing \ac{BNPL} history among the categories of
-information absent from the standard South African credit report \cite{transunion_cps_sa_2025}. A
-registered lender running a lawful and diligent affordability assessment therefore computes
+report what they have lent to any credit bureau \cite{nortonrose_bnpl_sa}. TransUnion, a consumer
+credit bureau, confirms the absence of \ac{BNPL} information from South African credit reports \cite{transunion_cps_sa_2025}.
+A registered lender running a lawful and diligent affordability assessment therefore computes
 residual income from a liability record that is incomplete by regulatory construction. It cannot
 see \ac{BNPL} obligations, and neither can any \ac{BNPL} provider see another's, so a household can
 hold several concurrent facilities that no party to any of those agreements has assessed in
 aggregate.
 
-The international evidence suggests this matters. deHaan et al. \cite{dehaan2024bnpl}, tracking
-banking records for 10.6 million United States consumers, find that adopting \ac{BNPL} is followed
-by higher overdraft charges, credit-card interest and late fees, with the effects concentrated
-among liquidity-constrained consumers. The \ac{CFPB} \cite{cfpb2025bnpl} finds concurrent borrowing
-to be the norm: across 2021 and 2022, 63\% of \ac{BNPL} borrowers held simultaneous loans at some
-point and 32\% held them across different firms. South Africa has no equivalent evidence base, and
-the reporting exemption that makes the question urgent is the same feature that makes it
+deHaan et al. \cite{dehaan2024bnpl}, tracking banking records for 10.6 million United States consumers,
+find that adopting \ac{BNPL} is followed by higher overdraft charges, credit-card interest and late fees,
+with the effects concentrated among liquidity-constrained consumers.
+The \ac{CFPB} \cite{cfpb2025bnpl} found that across 2021 and 2022, 63\% of \ac{BNPL} borrowers across
+five of the largest \ac{BNPL} platforms in the United States, held simultaneous loans at some point and 32\% held them across different firms.
+South Africa has no equivalent evidence base, and the reporting exemption for \ac{BNPL} firms makes it
 unobservable, since no party, including the regulator, can measure aggregate \ac{BNPL} exposure
 from administrative data.
 
@@ -53,7 +51,7 @@ This is decomposed into three subsidiary questions:
     \item Under what conditions does debt stacking become self-reinforcing?
     \item Does the population-level default rate respond non-linearly to the level of \ac{BNPL}
     access, and if so, under what conditions?
-    \item Do ``cool-off period'' interventions meaningfully alter outcomes, or do agents simply
+    \item Do ``cool-off period'' or ``anti-stacking'' interventions meaningfully alter outcomes, or do agents simply
     defer rather than desist?
 \end{enumerate}
 
@@ -62,7 +60,7 @@ This is decomposed into three subsidiary questions:
 The questions above resolve into five objectives.
 
 \begin{enumerate}
-    \item Construct a household population for South Africa in 2017 from survey microdata, with a
+    \item Construct a representative household population for South Africa in 2017 from survey microdata, with a
     complete balance sheet per household.
     \item Specify an agent-based model of that population containing a regulated, bureau-informed
     lender class and a lender class exempt from both requirements.
@@ -74,25 +72,10 @@ The questions above resolve into five objectives.
     \item Evaluate four platform-level interventions against that baseline.
 \end{enumerate}
 
-\section{The Claim: A Counterfactual Injection}
-\label{sec:injection}
-
-The model is a counterfactual experiment rather than a historical fit. We calibrate a household
-population to South African conditions in 2017, when \ac{BNPL} was effectively absent from the
-market, and validate its credit behaviour against the 2017 first-quarter \ac{CCMR}
-\cite{ncr_ccmr_2017}. A \ac{BNPL} lender class is then injected into that calibrated economy and
-the change in dynamics is measured.
-
-\ac{BNPL} reached South Africa at scale from roughly 2021. Fitting the model to its actual arrival
-would require separating that arrival from pandemic income shocks, the 2020 credit contraction and
-subsequent inflation, none of which this thesis can identify. Results are therefore read as
-directional and mechanistic, and no model output describes an actual year after 2017 or is compared
-against post-2020 observed arrears.
-
 \section{Methodology}
 \label{sec:methodology}
 
-The work proceeds in three stages.
+This work proceeds in three stages.
 
 The first constructs the household population. \ac{NIDS} Wave 5, conducted in 2017, supplies the
 balance sheet and demographics for 10{,}841 valid households, and \ac{FinScope} 2019 supplies four

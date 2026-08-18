@@ -16,59 +16,57 @@ a hybrid agent-based stock-flow-consistent model in which heterogeneous househol
 interact through a credit network, and finds that the link between inequality, household debt and
 financial instability runs through the structure of that network rather than through aggregate
 leverage. Household consumption there follows a behavioural rule based on \emph{expenditure
-cascades}, so that rising inequality exerts upward pressure on the consumption norms of lower and
-middle-income households. That social pressure drives the debt-financed consumption boom, and the
-accumulation of non-performing loans that follows produces a banking crisis endogenously. Peer
-influence in this literature is part of the mechanism that generates the crisis, not an optional
-embellishment.
+cascades}, so that rising inequality exerts upward pressure on the consumption patterns of lower and
+middle-income households. Cardaci claims that this social pressure drives the debt-financed consumption boom, and the
+accumulation of non-performing loans that follows produces a banking crisis endogenously.
 
-D'Orazio and Giulioni \cite{dorazio2017micro} reach a compatible conclusion from a different
+D'Orazio and Giulioni \cite{dorazio2017micro} reach a similar conclusion to Cardaci from a different
 direction. Households in their model form beliefs about future employment, set desired consumption
-accordingly, and approach the bank when consumption outruns income; the bank rations credit
+accordingly, and approach the bank when consumption outpaces income; the bank rations credit
 proportionally once lending exceeds a multiple of deposits. Unsustainable debt and financial
-fragility emerge from those local rules without being written into them. Both papers support the
-methodological premise of this thesis, since the mechanism under investigation, a single household
-holding obligations to several lenders none of whom can observe the others, exists only on the
-individual balance sheet and cannot be expressed by a representative agent.
+fragility emerge from those local rules without being explicitly written into the model.
+Both Cardaci and D'Orazio and Giulioni's findings provide the methodological premise of this thesis,
+since the mechanism under investigation, a single household holding obligations to several lenders none of whom can observe the others,
+exists only on the individual balance sheet and cannot be expressed by a representative agent.
 
-Two further models supply procedural precedent. Madeira \cite{madeira2018chile} is the closest
-analogue in both method and setting. Writing at the Central Bank of Chile, he models households
+Madeira \cite{madeira2018chile}, at the Central Bank of Chile, modeled households
 that absorb labour-income shocks, choose among available loan contracts, and default when they can
-no longer finance minimum consumption. His default condition is a cash-flow insolvency test rather
-than a leverage threshold, and that is the definition this thesis adopts. He also validates the
-model against observed Chilean default rates, demonstrating that a household-level credit \ac{ABM}
+no longer finance minimum consumption. Madeira's model's default condition is a cash-flow insolvency test rather
+than a leverage threshold. This framing was adopted in this thesis, since the \ac{NCA} affordability assessment
+is a residual-income test that produces a cash-flow insolvency condition.
+Madeira also validates the model against observed Chilean default rates, demonstrating that a household-level credit \ac{ABM}
 in a middle-income economy can be held to external behavioural targets.
 
-Hamill et al. \cite{hamill2023creditcard} model the United Kingdom credit-card market and are
-relevant for the lender side. Promotional strategies chosen by profit-maximising lenders raise
-borrower indebtedness in their model, which reproduces the non-monotonic relationship between
+Hamill et al. \cite{hamill2023creditcard} model the United Kingdom credit-card market using \ac{ABM}.
+They find that promotional strategies chosen by profit-maximising lenders raise
+borrower indebtedness within their model, which reproduces the non-monotonic relationship between
 income and debt-to-income ratio, with middle-income households carrying the highest
-balance-to-income values, so lender conduct is a driver of household distress in its own right. Yun
-and Moon \cite{yun2020housing} contribute the remaining piece, implementing loan-to-value and
-\ac{DSTI} constraints as explicit rule-based credit gates and treating them as policy levers, which
+balance-to-income values, indicating that lender conduct is a driver of household distress.
+Yun and Moon \cite{yun2020housing} model the South Korean housing market using \ac{ABM}.
+They implement loan-to-value and \ac{DSTI} constraints as explicit rule-based credit gates and treat them as policy levers, which
 establishes that regulatory ratios can be modelled as first-class parameters whose variation
 produces non-linear population responses.
 
-This thesis follows all four in treating the balance sheet as the accounting core, and describes
-its model using the \ac{ODD} protocol \cite{grimm2006odd, grimm2020odd}. The second update's
-requirement that a model state the patterns against which its realism should be judged is adopted
+The model later described in this paper is utilizes the findings of the previously described papers, in both structure and validation.
+It is a household-level \ac{ABM} in which heterogeneous households and lenders interact through a credit network, with household consumption and borrowing following behavioural rules.
+The model implements a cash-flow insolvency default condition, and regulatory ratios are treated as policy levers.
+The model is validated against observed South African default rates, demonstrating that a household-level credit \ac{ABM} in a middle-income economy can be held to external behavioural targets, as described
 directly in the validation strategy of Chapter~\ref{ch:design}.
 
 \section{Empirical Evidence on Buy Now, Pay Later}
 \label{sec:lit-bnpl}
 
-The strongest causal evidence comes from deHaan et al. \cite{dehaan2024bnpl}, who track banking
-records for 10.6 million United States consumers between 2015 and 2021. Adopting \ac{BNPL} is
-followed by a 4.0\% rise in bank overdraft charges, a 1.1\% rise in credit-card interest and a
-2.3\% rise in credit-card late fees. An instrumental-variables specification exploiting
-pre-adoption shopping habits at \ac{BNPL} partner retailers produces larger estimates still: 8.9\%,
-2.5\% and 8.4\% respectively. The effects arrive quickly and fall hardest on consumers without
-credit cards or facing liquidity constraints. Their conclusion, that \ac{BNPL} facilitates
-overborrowing, is the empirical claim this model is built to interrogate.
+Empirical evidence from mature credit markets highlights the risks of unmonitored facilities.
+Tracking 10.6 million US consumers, deHaan et al. \cite{dehaan2024bnpl} show that adopting \ac{BNPL}
+leads to immediate increases in overdraft charges, credit-card interest, and late fees; effects
+that hit liquidity-constrained households hardest.
+Causally identified estimates indicate even steeper rises, with overdraft fees increasing by nearly 9\% post-adoption.
+Their core conclusion, that \ac{BNPL} facilitates overborrowing among vulnerable consumers, provides
+the primary empirical rationale for testing these debt-stacking mechanisms in South Africa.
 
 Where deHaan et al. establish that \ac{BNPL} damages financial health, the \ac{CFPB}
 \cite{cfpb2025bnpl} explains the shape of the exposure. Its analysis of roughly 145 million
-applications originated between 2017 and 2022 shows that \ac{BNPL} is not a marginal product, with
+applications within the United States originated between 2017 and 2022 shows that \ac{BNPL} is not a marginal product, with
 21\% of consumers holding a consumer record financing at least one purchase in 2022 against 17.6\%
 in 2021. More consequentially, concurrent borrowing is normal: across 2021 and 2022, 63\% of
 \ac{BNPL} borrowers held simultaneous loans at some point and 32\% held them across different
@@ -77,47 +75,39 @@ several obligations at once, particularly across providers who cannot see one an
 what looks at the level of a single transaction like a small interest-free deferral into an
 aggregate servicing burden that no individual lender has assessed.
 
-Two further findings sharpen the picture. Hayashi and Routh \cite{hayashi2025constraints} report
-that \ac{BNPL} users are more financially constrained than non-users, and that 96\% of users who
+Hayashi and Routh \cite{hayashi2025constraints} report that \ac{BNPL} users are more financially constrained than non-users, and that 96\% of surveyed users who
 paid late were at least mildly financially constrained against 86\% of those who did not, so
-distress concentrates in the \ac{LMI} population this thesis models. Ackert et al.
-\cite{ackert2025bnpl} add an explanation for the demand side: in an incentivised experiment,
+distress concentrates in the \ac{LMI} population. Ackert et al.
+\cite{ackert2025bnpl} add an explanation for the observed demand: in an incentivised experiment,
 consumers chose \ac{BNPL} over a credit-card loan for the same purchase and expected their social
 networks to approve, from which the authors conclude that a payment scheme carrying social approval
-raises indebtedness. Wang \cite{wang2026buynow} surveys developments since.
+raises indebtedness. Wang \cite{wang2026buynow} found that BNPL users in the United States consistently hold higher balances on
+unsecured credit facilities, and that the effect is concentrated among liquidity-constrained consumers, which is consistent with the findings of deHaan et al. \cite{dehaan2024bnpl}.
 
 \section{Behavioural Foundations for the Decision Rules}
 \label{sec:lit-behavioural}
 
-Behaviour of this kind resists a rational-optimisation account, so the model draws its decision
-rules from behavioural economics instead. Meier and Sprenger \cite{meier2010present} connect
-experimentally elicited present bias to credit-card borrowing, which justifies a borrowing trigger
-that answers to immediate shortfall and not to a lifetime budget constraint. Kuchler and Pagel
-\cite{Kuchler2021} carry the argument to repayment, showing that present-biased borrowers
-systematically fail to execute the paydown they planned, so intention and execution come apart.
+Meier and Sprenger \cite{meier2010present} connect experimentally elicited present bias to credit-card borrowing,
+which justifies a borrowing trigger that answers to immediate shortfall and not to a lifetime budget constraint.
+Kuchler and Pagel \cite{Kuchler2021} carry the same argument to repayment, showing that present-biased borrowers
+systematically fail to execute the paydown they planned, so intention and execution come apart. 
 
-Repayment needs a further ingredient. Keys and Wang \cite{Keys2019} find that 29\% of credit-card
-accounts regularly pay at or near the contractual minimum, and that at least 22\% of near-minimum
-payers shift their payments when the minimum-payment formula changes, which is the signature of
-anchoring. Scheduled amortisation would be the wrong rule here, because a substantial minority of
+Keys and Wang \cite{Keys2019} find that 29\% of credit-card accounts surveyed in the United States regularly pay
+at or near the contractual minimum, and that at least 22\% of near-minimum
+payers shift their payments when the minimum-payment formula changes, which is a clear behavioural signal of
+anchoring. Scheduled amortisation is therefore rejected as a repayment rule in this model, because a substantial minority of
 borrowers pay the salient amount instead of the amount that retires the debt, and obligations
 persist and compound as a result. Together these results describe a consumer agent that borrows on
 shortfall, repays by salience, and varies across the population in how strongly it does both.
 
-The transfer these papers require is not innocuous. All three are United States credit-card
-studies, Ackert et al. is a United States experiment, and the model applies them to South African
-unsecured credit and \ac{BNPL}. Section~\ref{sec:lim-transfer} takes the problem up, and the
-minimum-payer share it turns on is swept rather than fixed.
-
-% TODO (external validity): still no developing-market behavioural source located. Either find
-% one or the defence in Section~\ref{sec:lim-transfer} has to carry the whole weight.
-% Raise with supervisor. [DEFECTS.md B7]
+All three referenced papers are United States credit-card studies, Ackert et al. is a United States experiment, and the model applies them to South African
+unsecured credit and \ac{BNPL}. Section~\ref{sec:lim-transfer} adresses this limitation, and the model is validated against observed South African default rates, demonstrating that a household-level credit \ac{ABM} in a middle-income economy can be held to external behavioural targets, as described
+directly in the validation strategy of Chapter~\ref{ch:design}.
 
 \section{The South African Regulatory Setting}
 \label{sec:lit-regulatory}
 
-South Africa differs from those jurisdictions in a way that sharpens the question. The \ac{NCA}
-\cite{sa_nca_2005} obliges registered credit providers to conduct a mandatory affordability
+The \ac{NCA} \cite{sa_nca_2005} obliges registered credit providers to conduct a mandatory affordability
 assessment, prescribed in Regulation 23A of the Affordability Assessment Regulations
 \cite{sa_ncr_affordability_2015}. That regulation does not prescribe a \ac{DSTI} ceiling. It
 prescribes a residual-income test built on a table of minimum necessary monthly living expenses by
@@ -128,10 +118,10 @@ subtraction. The \ac{NCA} also caps the cost of credit by sub-sector, with maxim
 in force from 6 May 2016 running from the repurchase rate plus 12\% for mortgages to the repurchase
 rate plus 21\% for unsecured credit transactions \cite{sa_ncr_ratecaps_2016}.
 
-\ac{BNPL} providers sit outside this regime. Levying neither interest nor fees on the deferred
+\ac{BNPL} providers in South Africa sit outside this regime. Levying neither interest nor fees on the deferred
 amount, they argue that they do not transact credit within the meaning of the \ac{NCA}, and so are
 not required to register with the \ac{NCR}, not required to perform the Regulation 23A assessment,
-and, decisively for this thesis, not required to report obligations to credit bureaux
+and, decisively for this thesis, not required to report obligations to credit bureaus
 \cite{nortonrose_bnpl_sa}. TransUnion \cite{transunion_cps_sa_2025} confirms the last point from
 inside the bureau system, listing \ac{BNPL} history among the categories of information absent from
 the standard South African credit report. The same survey finds \ac{BNPL} named by 20\% of
@@ -143,17 +133,12 @@ traditional lenders is not a simplification adopted for tractability but a docum
 the South African regulatory perimeter, and the model treats bureau visibility accordingly, as a
 switchable intervention lever.
 
-% TODO (calibration): South African BNPL market-size estimates come only from commercial vendors
-% and disagree badly (2024 estimates range R717m to R1.07bn). Do not cite a headline value or
-% CAGR. Use penetration rates from TransUnion Consumer Pulse instead, which is what RQ2 actually
-% sweeps. [DEFECTS.md B10]
-
 \section{Synthesis and Gap}
 \label{sec:lit-gap}
 
 Each of these literatures answers a different part of the question and none answers it whole.
 deHaan et al. \cite{dehaan2024bnpl} establish that \ac{BNPL} harms financial health, but observe a
-United States market in which the product is at least partly visible to bureaux. The \ac{CFPB}
+United States market in which the product is at least partly visible to bureaus. The \ac{CFPB}
 \cite{cfpb2025bnpl} measures concurrent borrowing at scale and describes it without explaining it.
 The behavioural work \cite{meier2010present, Keys2019, Kuchler2021, ackert2025bnpl} explains why
 individuals borrow and fail to repay, but stops at the individual. The agent-based models
@@ -166,8 +151,3 @@ That last gap is where this thesis sits. The South African regulatory perimeter
 market containing two lender types, one regulated and informed and the other neither, lending to
 the same households. Modelling that market at the balance-sheet level, over a survey-derived
 household population, is what makes the subsidiary questions of Section~\ref{sec:rqs} tractable.
-
-% TODO (novelty): a targeted search of JASSS, JEDC, JEBO and the arXiv econ.GN listing found no
-% ABM combining a regulated and an unregulated lender class over a survey-derived population, and
-% no South African BNPL modelling study. Run one systematic search before submission and record
-% the strings, databases and dates so the claim can be defended in the viva. [DEFECTS.md B9]
