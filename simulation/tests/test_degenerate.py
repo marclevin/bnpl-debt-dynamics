@@ -60,7 +60,7 @@ def test_bnpl_disabled_reproduces_the_baseline_exactly():
 def test_beta_zero_recovers_the_independent_agent_model():
     """D17: beta=0 must recover the pre-D17 model exactly.
 
-    This is the control arm for RQ1 and RQ2. If it does not hold exactly, every RQ2
+    This is the control arm for RQ2 and RQ3. If it does not hold exactly, every RQ2
     claim about social transmission is contaminated.
     """
     a = run(bnpl_enabled=True, beta=0.0, q_base=0.05)

@@ -273,7 +273,7 @@ def summarise_run(model) -> dict:
         "trad_debt_final": final["trad_debt_total"],
         # --- pattern 4 ------------------------------------------------------------
         "zero_savings_rate_mean": mean("zero_savings_rate"),
-        # --- BNPL / RQ1 / RQ3 -----------------------------------------------------
+        # --- BNPL / RQ2 / RQ3 -----------------------------------------------------
         "bnpl_adoption_final": final["bnpl_adoption_rate"],
         "bnpl_volume_cumulative": sum(r["bnpl_volume_tick"] for r in post),
         "bnpl_fees_cumulative": sum(r["bnpl_fees_tick"] for r in post),

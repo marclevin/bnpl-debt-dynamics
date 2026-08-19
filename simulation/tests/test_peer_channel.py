@@ -9,7 +9,7 @@ Covers the two changes of 2026-08-13:
     linear coupling, with `gamma = 0` as its control arm.
 
 The control-arm tests are the important ones. If `beta = 0` or `gamma = 0` fails to
-reproduce the independent-agent model exactly, every RQ1 and RQ2 claim about social
+reproduce the independent-agent model exactly, every RQ2 and RQ3 claim about social
 transmission is contaminated.
 """
 

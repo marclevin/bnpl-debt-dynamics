@@ -246,7 +246,7 @@ table), the complete robustness suite (to the tornado figure plus a table), the 
 1. Baseline arrears profile vs CCMR — the calibration evidence.
 2. Pattern 3 debt-to-income by quintile — the statistic-dependence point.
 3. RQ2 access x beta surface with the plausibility band — the central figure.
-4. RQ1 emergent stacking vs the CFPB benchmark.
+4. RQ2 emergent stacking vs the CFPB benchmark.
 5. RQ3 intervention ranking and the defer-vs-desist volume test.
 6. Robustness tornado — makes the B24 vulnerability legible in five seconds.
 

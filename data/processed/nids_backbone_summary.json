@@ -16,5 +16,12 @@
     "Q5": 0.1999
   },
   "liquid_savings_winsor_99pct": 133662.35000000166,
+  "zero_fill_pct": {
+    "w5_f_ass": 48.2,
+    "w5_f_deb": 56.6,
+    "w5_tot_deb": 54.4,
+    "w5_rentexpend": 80.2
+  },
+  "imputed_rent_excluded_pct": 82.6,
   "head_demographics_coverage": 10736
 }

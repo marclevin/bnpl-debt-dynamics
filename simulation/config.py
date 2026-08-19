@@ -243,7 +243,7 @@ class ParamSet:
         rule="D3/D17",
         provenance="ASSUMPTION",
         source="Spontaneous want-driven BNPL propensity. NOT SOURCED; swept.",
-        sweep="RQ2 access sweep",
+        sweep="RQ2 adoption sweep; sets the level that beta then amplifies",
     )
     beta: float = _p(
         0.0,
@@ -256,7 +256,11 @@ class ParamSet:
             "eligible subpopulation (DEFECTS.md B31), so values are not comparable with "
             "pre-2026-08-13 runs."
         ),
-        sweep="RQ1/RQ2 primary experimental axis; the beta=0 row is always reported",
+        sweep=(
+            "RQ2 primary experimental axis -- it is what makes peer effects in BNPL "
+            "adoption visible -- and toggled on/off for RQ3, whose cool-off lever only "
+            "bites where beta > 0. The beta=0 row is always reported."
+        ),
     )
 
     # -- D17 peer mechanism: the pre-registered structural robustness check -------

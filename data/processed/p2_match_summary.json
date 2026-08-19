@@ -3,15 +3,25 @@
   "province_fallback_draws": 0,
   "match_diagnostics_pp": {
     "banked": 0.4,
-    "credit_access_formal": 2.3,
-    "informal_finance": 0.1,
-    "savings_product": 1.8
+    "G10": 1.8,
+    "G11": 0.5,
+    "G12": 0.5,
+    "G13": 0.6,
+    "G14": 0.2
   },
   "servicing_computed": true,
   "servicing_apr_basis": "NCA maximum prescribed interest rates (in force 6 May 2016), repo 7.00% (SARB 2017)",
   "affordability_rule": "NCA Regulation 23A(9) residual-income test (GN R202, GG 38557, 13 Mar 2015)",
-  "min_term_months": 6,
-  "n_affordability_capped": 158,
+  "min_term_months": 1.0,
+  "n_debtors": 4702,
+  "n_affordability_capped": 178,
   "n_debtors_zero_nca_capacity": 53,
-  "max_dsti": 0.911
+  "max_dsti": 0.9137,
+  "nca_ceiling_pct_of_income": {
+    "min": 0.0,
+    "max": 93.2
+  },
+  "guard_pct_of_aggregate_service_removed": 22.8,
+  "dsti_debtors_weighted_mean_pct": 10.87,
+  "dsti_debtors_median_pct": 3.29
 }

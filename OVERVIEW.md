@@ -4,16 +4,24 @@
 **This file is the canonical strategy + execution plan.** When a decision changes, change it here
 first, then propagate to the companion docs. Last updated: **2026-08-12**.
 
-> **⚠ Out of date on two points as of 2026-08-18.**
-> **(1) The word limit is 10,000, not 16,000** — appendices, bibliography, tables and figures
-> excluded; only body prose counts. **(2) The research questions were renumbered.** RQ1 is now
-> whether the synthetic population reproduces behaviour it was not fitted to; RQ2 absorbs the old
-> RQ1 and RQ2 into *do households stack facilities, and does default rise*; RQ3 is unchanged.
-> Every RQ1/RQ2 reference below uses the **old** numbering. The authoritative set is the thesis
-> introduction; the reduction plan is
-> [`scratchpad/SCOPE_REDUCTION.md`](scratchpad/SCOPE_REDUCTION.md). The `beta = 0` control arm
-> requirement is unchanged and still binds, now on the new RQ2 and RQ3.
-> This file needs a full pass against the new structure.
+> **⚠ The word limit is 10,000, not 16,000** — appendices, bibliography, tables and figures
+> excluded; only body prose counts.
+>
+> **Research questions, settled 2026-08-18.** The thesis introduction is authoritative:
+> **RQ1** — does a synthetic population built from SA survey microdata reproduce credit-market
+> behaviour it was not fitted to? **RQ2** — do households accumulate concurrent BNPL facilities
+> that no lender observes in aggregate, and does that raise population default? **RQ3** — which
+> platform-level interventions curb the increase?
+>
+> Old numbering maps forward as: old RQ0 → RQ1, old RQ1 **and** old RQ2 → RQ2, old RQ3 → RQ3.
+> Prose below uses the new numbering. **Dated changelog entries in §9 are left as written**, since
+> they record what was found on a date; read any `RQ1` there as the stacking half of today's RQ2.
+> Experiment grid keys and figure filenames also keep the original scheme deliberately — see the
+> numbering note at the top of `simulation/experiments.py`.
+>
+> `beta` is the **RQ2** experimental axis: it is what makes peer effects in BNPL adoption visible.
+> It is then toggled on and off for **RQ3**, because the cool-off lever only bites where
+> `beta > 0`. The `beta = 0` control arm is reported throughout.
 
 > **Defect register:** [`scratchpad/DEFECTS.md`](scratchpad/DEFECTS.md) records every known shortfall
 > in the thesis with evidence, severity and owner. Check it before starting work.
@@ -216,8 +224,9 @@ non-linear threshold in RQ2 structurally possible.
   the model shocks a **household** — the same class of unit mismatch as the CCMR account basis.
 - ⚠ **The `beta = 0` control arm (D17).** The peer-influence strength `beta` is uncalibrated, and
   D17 was added partly because RQ2 needs non-linearity to be structurally possible. Reporting
-  non-linearity as a finding would therefore be circular unless controlled. **All RQ1 and RQ2 output
-  is reported as a surface over the swept parameter × `beta`, with the `beta = 0` row shown.** At
+  non-linearity as a finding would therefore be circular unless controlled. **All RQ2 output
+  is reported as a surface over the swept parameter × `beta`, with the `beta = 0` row shown**, and
+  every RQ3 lever is reported at both `beta = 0` and `beta > 0`. At
   `beta = 0` the model reduces exactly to independent agents. The claim becomes *"default responds
   non-linearly to BNPL access only when social transmission is present"*, which is stronger than
   asserting a threshold. The four targets above are unaffected: the peer channel is **inert in the
@@ -534,7 +543,7 @@ Plus two standing references:
   **Cardaci (2018), already the primary ABM anchor, models peer effects and expenditure cascades
   centrally**, so the no-interaction design was the deviation, not the addition. Mechanism anchored
   to Granovetter (1978) threshold models; domain to Ackert et al. `beta = 0` recovers the previous
-  model exactly and is the **control arm**, which also lets RQ1 separate the financial loop (borrow
+  model exactly and is the **control arm**, which also lets RQ2 separate the financial loop (borrow
   to service) from the social loop (adopt because peers adopted). **No data-pipeline change:**
   `province` and `income_quintile` are already columns, so the reference group is derived at model
   init. Baseline calibration untouched, since the channel is inert with BNPL disabled.

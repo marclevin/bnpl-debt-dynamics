@@ -15,22 +15,32 @@
       "source": 82.8,
       "agents": 82.8
     },
-    "Formal credit": {
-      "finscope": 26.4,
-      "source": 28.7,
-      "agents": 28.1
+    "Store card": {
+      "finscope": 20.8,
+      "source": 22.6,
+      "agents": 21.8
     },
-    "Savings product": {
-      "finscope": 49.9,
-      "source": 51.8,
-      "agents": 51.7
+    "Revolving credit": {
+      "finscope": 3.7,
+      "source": 4.1,
+      "agents": 3.8
     },
-    "Informal finance": {
-      "finscope": 9.1,
-      "source": 9.2,
-      "agents": 9.2
+    "Hire purchase": {
+      "finscope": 6.5,
+      "source": 6.9,
+      "agents": 6.5
+    },
+    "Short-term loan": {
+      "finscope": 2.7,
+      "source": 3.4,
+      "agents": 3.3
+    },
+    "Personal loan": {
+      "finscope": 2.1,
+      "source": 2.3,
+      "agents": 2.3
     }
   },
-  "max_abs_quintile_deviation_pp": 3.0,
-  "max_abs_agent_flag_gap_pp": 0.51
+  "max_abs_quintile_deviation_pp": 2.3,
+  "max_abs_agent_flag_gap_pp": 0.79
 }

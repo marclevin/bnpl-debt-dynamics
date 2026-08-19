@@ -62,9 +62,8 @@ class HouseholdRecord:
     # -- debt pricing -------------------------------------------------------------
     apr_annual: float
     term_months: float
-    # -- FinScope flags -----------------------------------------------------------
+    # -- FinScope flag: gates BNPL eligibility -------------------------------------
     banked: bool
-    credit_access_formal: bool
     # -- D17 --------------------------------------------------------------------
     reference_group: tuple[str, str]
 
@@ -208,7 +207,6 @@ def build_records(
                 apr_annual=float(row.apr_annual),
                 term_months=float(row.term_months),
                 banked=bool(row.banked),
-                credit_access_formal=bool(row.credit_access_formal),
                 reference_group=group,
             )
         )

@@ -1,7 +1,18 @@
-"""Experiment grids for RQ1, RQ2, RQ3 and the robustness suite.
+"""Experiment grids for the research questions and the robustness suite.
+
+NUMBERING. The grid keys below (`rq1`, `rq2`, `rq2t`, `rq3`) are the ORIGINAL scheme and
+are deliberately frozen: they are baked into every label in `results/raw/`, into the
+`load()` keys in analysis.py, and into figure filenames cited by the thesis. Renaming
+them would orphan the existing runs for no gain. Map them to the thesis as:
+  * `rq1_stacking`   -> thesis RQ2, the stacking half
+  * `rq2_surface`    -> thesis RQ2, the access-and-default half
+  * `rq2_threshold`  -> thesis RQ2, pre-registered structural alternative
+  * `rq3_*`          -> thesis RQ3, unchanged
+Thesis RQ1 (does the population reproduce behaviour it was not fitted to) has no grid
+here: it is answered by the data layer and the calibrated baseline, not by a sweep.
 
 Design principle inherited from D17: `beta = 0` is the CONTROL ARM, not one row among
-many. Every RQ1 and RQ2 result is a surface over the swept parameter and `beta` jointly,
+many. Every thesis-RQ2 result is a surface over the swept parameter and `beta` jointly,
 with the `beta = 0` row always present, because that is what makes the RQ2 claim
 non-circular. The grids below enforce this by construction: `BETA_GRID` always starts
 at 0.
@@ -69,7 +80,9 @@ def rq0_baseline(reps: int) -> list[ParamSet]:
 
 
 def rq1_stacking(reps: int) -> list[ParamSet]:
-    """RQ1: when does stacking become self-reinforcing?
+    """Thesis RQ2, stacking half: do households accumulate facilities no lender sees?
+
+    Grid key `rq1` is frozen -- see the numbering note at the top of this module.
 
     Platform count x beta. N=1 isolates single-platform accumulation from genuine
     cross-firm stacking; beta separates the financial loop (borrow to service) from the

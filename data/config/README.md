@@ -213,12 +213,14 @@ Drives `monthly_trad_repayment` in the P2 notebook. NIDS records a debt *stock* 
 the model needs a monthly *flow*, so servicing is derived by amortisation:
 
 ```
-monthly_trad_repayment = min( amortize(D_trad, weighted_apr, weighted_term),
+monthly_trad_repayment = min( amortize(D_trad, apr, term),
                               NCA Reg 23A affordable capacity )
 ```
 
-APR and term are a **product-mix-weighted** average over the FinScope credit products the matched
-donor holds (`G10`–`G14`).
+APR and term are an **unweighted mean** over the FinScope credit products the matched donor holds
+(`G10`–`G14`). They cannot be weighted by product: NIDS records one consolidated balance
+(`w5_f_deb`) and no split across products. A donor holding a store card and a personal loan is
+priced at (21+28)/2 = 24.5% over (11+25)/2 = 18 months.
 
 > **Corrected 2026-08-18.** This file previously stated that *neither NIDS nor FinScope records a
 > debt repayment amount*. That is wrong. The NIDS W5 household questionnaire measures monthly
@@ -338,18 +340,25 @@ separate `bnpl_limit_income_multiple` (λ) parameter.
   Among holders of ≥1 modelled product (n=1,291) they take **9.78%** of monthly spending; category
   9 alone takes 6.07%.
 
-Model weighted-mean DSTI by quintile is 2.8–6.1%, so it sits at the top of that range against two
-independent measures.
+**Corrected 2026-08-18.** The comparison previously made here was not like-for-like: it put the
+model's DSTI (service / gross **income**, averaged over **all** households, 56% of which hold no
+debt) against two benchmarks that are shares of **spending** measured on **credit holders**. On the
+FinScope denominator and conditioned on debtors, the model gives **12.8% of monthly outlay** against
+the 6.07–9.78% band — it sits *above* both, in the direction the ceiling APRs predict, not between
+them. This is check `D. Debt service vs FinScope C8` in P4, and it is the one check the population
+does not pass. The NIDS 5.36% figure is **not** an independent measure: it is built from the same
+`w5_h_nfhpspn` / `w5_h_nfclthaspn` variables used to set the store-card and hire-purchase terms.
 
 ### ⚠ Known accounting overlap, not yet fixed
 
 `w5_h_nfhpspn` and `w5_h_nfclthaspn` are components of NIDS non-food expenditure — summing all 54
 E2 components against `w5_expnf` gives a median ratio of 1.04. `expenditure_discretionary` is
-`w5_expnf` minus rent, so it **already contains these debt payments** (median 12.6% of non-food
-spend for payers, 6.7% of total expenditure), and the model then deducts `monthly_trad_repayment`
-separately on top. `w5_h_nfcarspn` (car payments) sits in there too. Debt service is therefore
-charged twice for those households. Removing the debt components from discretionary spending would
-fix the double count and source the servicing in the same operation.
+`w5_expnf`, so it **already contains these debt payments** (median 12.6% of non-food spend for
+payers, 6.7% of total expenditure), and the model then deducts `monthly_trad_repayment` separately
+on top. `w5_h_nfcarspn` (car payments) sits in there too. Debt service is therefore charged twice
+for those households. Removing the debt components from discretionary spending would fix the double
+count and source the servicing in the same operation. Note this overlap pushes the failing check
+above **further** up: discretionary spending is inflated by the instalments it double-counts.
 
 | Column | Meaning |
 | --- | --- |

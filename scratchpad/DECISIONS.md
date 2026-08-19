@@ -284,7 +284,7 @@ ordered sequence; **the order itself is a modelling decision.**
 
 ### D5. Lender choice
 - **Governs:** substitution versus complementarity between traditional credit and BNPL. Central to
-  RQ1.
+  RQ2.
 - **Anchors:** `[ANCHOR: BNPL]` Ackert et al. `[ackert2025bnpl]` (consumers chose BNPL over a
   credit-card loan for the same purchase); CFPB `[cfpb2025bnpl]` (32% of BNPL borrowers held loans
   across different firms); deHaan et al. `[dehaan2024bnpl]` (BNPL adoption is followed by *rising*
@@ -601,8 +601,8 @@ ordered sequence; **the order itself is a modelling decision.**
 - **Validation hook:** share of eligible households ≈ 82.8% by construction; check that the order
   cap binds rarely.
 
-### D12. Multi-platform stacking (RQ1, RQ2)
-- **Governs:** the self-reinforcing debt mechanism. The core of RQ1.
+### D12. Multi-platform stacking (RQ2)
+- **Governs:** the self-reinforcing debt mechanism. The core of RQ2.
 - **Anchors:** `[ANCHOR: BNPL]` CFPB `[cfpb2025bnpl]`: across 2021 and 2022, **63% of BNPL borrowers
   held simultaneous loans** at some point, **32% held them across different firms**, and roughly
   **20% originated more than one loan per month**.
@@ -792,9 +792,9 @@ Four levers, three of which correspond to instruments that actually exist:
   Granovetter-style heterogeneous thresholds are **pre-registered now** as the structural robustness
   check should the linear form give only a smooth response.
 
-- **Consequence for RQ1.** The model now holds two distinct self-reinforcing loops: a **financial**
+- **Consequence for RQ2.** The model now holds two distinct self-reinforcing loops: a **financial**
   one (borrow to service existing debt, D0 step 5) and a **social** one (adopt because peers
-  adopted). Running `beta = 0` isolates the financial loop, so RQ1 can be answered for each
+  adopted). Running `beta = 0` isolates the financial loop, so RQ2 can be answered for each
   mechanism separately. Distinguishing them is a genuine analytical contribution.
 
 - **Baseline safety.** With BNPL disabled, `s_g` is identically zero, so **the peer channel is inert
@@ -858,12 +858,15 @@ Four levers, three of which correspond to instruments that actually exist:
 
 | RQ | Mechanism it tests | Rules involved | Swept parameter(s) |
 | -- | ------------------ | -------------- | ------------------ |
-| RQ1: when does stacking self-reinforce? | two loops: **financial** (borrow to service) and **social** (adopt because peers adopted) | D5, D6, D12, **D17** | stacking depth, BNPL-first propensity, **`beta`** |
-| RQ2: non-linear default threshold | population default vs BNPL access, amplified by social transmission | D3, D7, D11, **D17** | BNPL access rate × **`beta`** (2-D surface) |
+| RQ1: does the population reproduce behaviour it was not fitted to? | the data layer and the calibrated baseline, judged against patterns nothing was fitted to | D0-D2, D6, D9 | none - answered by construction and baseline, not by a sweep |
+| RQ2: do households stack facilities no lender sees, and does default rise? | two loops: **financial** (borrow to service) and **social** (adopt because peers adopted), plus population default vs BNPL access | D3, D5, D6, D7, D11, D12, **D17** | stacking depth, BNPL-first propensity, BNPL access rate × **`beta`** (2-D surface) |
 | RQ3: do cool-off periods work? | **defer vs desist, measured as total BNPL volume over the horizon, not timing** | D3, D14 | cool-off length `k_cool` (0 to 4 ticks; **1 tick = the CCA s.66A 14-day statutory figure**), and each lever on/off |
 
-**`beta = 0` is the control arm for RQ1 and RQ2.** It recovers the independent-agent model exactly,
-isolating the financial loop in RQ1 and providing the no-social-transmission comparison in RQ2.
+**`beta` is the RQ2 experimental axis and the RQ3 toggle.** It is the strength of peer influence on
+BNPL adoption, so sweeping it is what makes social transmission visible at all in RQ2; it is then
+switched on and off under RQ3, because the cool-off lever only bites where `beta > 0`. **`beta = 0`
+is the control arm and is always reported.** It recovers the independent-agent model exactly,
+isolating the financial loop from the social one.
 See D17 for why this matters methodologically.
 
 **Validation targets:** four external targets, listed in OVERVIEW §7. The baseline (no-BNPL) arrears
@@ -1056,9 +1059,9 @@ All monetary values in **2017 Rands, no CPI**. Backbone: `data/raw/NIDS_W5/hhder
 | --- | --- | --- | --- |
 | `income_monthly` | Total monthly household income | `w5_hhincome` | Direct |
 | `income_source` | Dominant source: WAGE / GRANT / OTHER | `w5_hhwage`, `w5_hhgovt`, `w5_hhremitt`, `w5_hhother`, `w5_hhagric`, `w5_hhinvest` | Largest component wins |
-| `expenditure_total` | Total monthly expenditure | `w5_expenditure` | Direct |
-| `expenditure_committed` | Non-discretionary (food + rent) | `w5_expf`, `w5_rentexpend` | food + rent |
-| `expenditure_discretionary` | Flexible spending | `w5_expnf`, `w5_rentexpend` | non-food minus rent, floored at 0 |
+| `expenditure_total` | Total monthly **cash** expenditure | `w5_expf`, `w5_expnf`, `w5_rentexpend` | committed + discretionary; excludes imputed rentals |
+| `expenditure_committed` | Non-discretionary (food + rent paid) | `w5_expf`, `w5_rentexpend` | food + rent |
+| `expenditure_discretionary` | Flexible spending | `w5_expnf` | non-food; rent is a separate NIDS component, so it is not subtracted |
 | `liquid_savings` | Cash buffer | `w5_f_ass` | Financial assets as proxy, winsorised at 1st/99th pct. **Weakest field in the layer** |
 | `D_trad` | Consolidated traditional debt | `w5_f_deb` | Financial debts |
 | `monthly_trad_repayment` | Monthly servicing | constructed | See II.3 |

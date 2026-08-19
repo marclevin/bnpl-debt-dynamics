@@ -19,7 +19,10 @@ both worked examples published with the regulation are asserted in the verificat
 Regulation 23A applies to an individual consumer and is applied here to household income, because
 \ac{NIDS} is a household survey. For a multi-earner household this makes the test more permissive
 than the regulation would be in practice, so the model's lender is somewhat more willing to lend
-than a compliant lender would be.
+than a compliant lender would be. It also means the ceilings above, which are evaluated at
+per-capita quintile bounds, understate what the test permits a large household at the same bound:
+across the population the applied ceiling spans zero to 93.2\% of gross income, with a mean of
+49.6\% in the bottom quintile.
 
 \subsection{Submodel 17: Activation Order}
 \label{app:activation}
@@ -39,7 +42,7 @@ why random reseeded activation is the baseline rather than a fixed sweep.
 \subsection{Further Caveats}
 \label{app:caveats}
 
-Table~\ref{tab:further-caveats} records eight limitations that are real but do not bound the
+Table~\ref{tab:further-caveats} records nine limitations that are real but do not bound the
 thesis's central claims. The five that do are argued in Section~\ref{ch:discussion}.
 
 \begingroup
@@ -71,6 +74,11 @@ assigning sub-sector rates to a consolidated balance remains an assumption
 Debt service double-counted & \ac{NIDS} non-food expenditure already contains hire-purchase,
 clothing-account and car payments, and the model deducts derived servicing separately on top
 & Overstates total outgoings for the 8.9\% of households reporting such a payment \\
+\addlinespace
+No calendar & Flows are smooth per-tick rates. The model has no pay date, no month-end and no
+clustering of debit orders, so it cannot represent a household that is solvent over a month but
+illiquid on the day a debit presents & Understates short-horizon liquidity distress, the timing of
+which is a plausible driver of the arrears the model calibrates against \\
 \addlinespace
 Regulation 23A unit & The regulation prescribes a minimum-expense norm for an individual consumer
 and the model applies it to household income & For multi-earner households the gate is more

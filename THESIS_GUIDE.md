@@ -361,25 +361,30 @@ somewhat high.
 
 ## 13. What the experiments found
 
-Three research questions, and 3,304 simulation runs.
+Three research questions, and 3,304 simulation runs. The questions were renumbered on 18 August
+2026 for the 10,000-word limit; the thesis introduction is authoritative and the numbering below
+matches it.
 
-> **⚠ The research questions were renumbered on 18 August 2026** for the 10,000-word limit. The
-> authoritative set is in the thesis introduction; see
-> [`scratchpad/SCOPE_REDUCTION.md`](scratchpad/SCOPE_REDUCTION.md) §4. In brief: **RQ1** is now
-> whether the synthetic population reproduces behaviour it was not fitted to; **RQ2** absorbs the
-> old RQ1 and RQ2 into *do households stack facilities, and does default rise*; **RQ3** is
-> unchanged. The findings below are correct — only the labels have moved. The old RQ1 heading maps
-> to the stacking half of the new RQ2, and the old RQ2 heading to its non-linearity half.
+### RQ1 — Does the population reproduce behaviour it was not fitted to?
 
-### Old RQ1 — When does debt stacking become self-reinforcing?
+Yes, on four of five independent checks. Section 11 sets out what was fitted and what was not, and
+section 12 gives the three behavioural tests the model was never tuned to. The headline is that
+sixty-plus-day arrears land at 16.0% against the regulator's 16.5%, from a baseline whose two
+fitted parameters were tied to two *other* bands.
 
-Households do accumulate BNPL debts across several providers, and this is **emergent** — never
-programmed. At full access, **37% hold two or more BNPL facilities at once**, against an American
-regulator's finding of 32% holding loans across different firms. Close, and it was never tuned.
+The one failure is named rather than buried: about 45% of agents reach zero savings against a
+survey figure of 36%. Same order, but high, and it rests on the weakest variable in the data layer.
 
-### Old RQ2 — Does default rise suddenly past some level of BNPL access?
+### RQ2 — Do households stack facilities no lender sees, and does default rise?
 
-The registered expectation was that default would respond *non-linearly* — smoothly at first, then
+Two halves. The first is whether stacking happens at all; the second is the shape of its effect on
+default.
+
+**Stacking is emergent, never programmed.** At full access, **37% hold two or more BNPL facilities
+at once**, against an American regulator's finding of 32% holding loans across different firms.
+Close, and it was never tuned.
+
+**Default rises, but smoothly.** The registered expectation was that default would respond *non-linearly* — smoothly at first, then
 sharply — but only when the social channel is switched on.
 
 **This is not what happened.** Every case is close to a straight line, including the control arm
@@ -394,6 +399,11 @@ coupling produced only a smooth response, a second mechanism — **Granovetter's
 thresholds**, where each household has its own tipping point — should be tried before concluding no
 threshold exists. That has not been run yet. Not running it would look like avoidance, and a linear
 rule producing a linear result is weak evidence of anything.
+
+`beta` is the axis that makes this half of RQ2 answerable: it is the strength of peer influence on
+BNPL adoption, so sweeping it is what separates a social explanation from a purely financial one.
+It is then switched on and off again under RQ3, because one of the four levers only works at all
+where peer influence is present.
 
 ### RQ3 — Do interventions stop BNPL borrowing, or merely postpone it?
 

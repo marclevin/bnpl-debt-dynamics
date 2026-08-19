@@ -2,8 +2,10 @@
 
 Reporting rules enforced here rather than left to the writing-up:
 
-  * Every RQ1/RQ2 result is a surface over the swept parameter AND beta, with the
+  * Every thesis-RQ2 result is a surface over the swept parameter AND beta, with the
     beta = 0 row always shown. That is what makes the RQ2 claim non-circular.
+  * Grid keys and figure filenames use the ORIGINAL numbering and are frozen; see the
+    numbering note at the top of experiments.py for the map to thesis RQs.
   * Access rates are labelled as a share of the BANKED subpopulation (82.8% ceiling),
     so they cannot be misread as a share of all households.
   * The concurrent-facility cap is labelled HYPOTHETICAL wherever it appears.
@@ -306,7 +308,7 @@ def rq1_stacking_figure() -> None:
     ax.text(1.05, 0.325, "CFPB 32% cross-firm (US, order-of-magnitude)", fontsize=7, c="crimson")
     ax.set_xlabel("Number of BNPL platforms (N=1 isolates single-platform accumulation)")
     ax.set_ylabel("Share of households holding 2+ concurrent facilities")
-    ax.set_title("RQ1: emergent cross-platform stacking")
+    ax.set_title("RQ2: emergent cross-platform stacking")
     ax.legend(fontsize=8)
     ax.grid(alpha=0.3)
     fig.tight_layout()

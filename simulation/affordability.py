@@ -108,12 +108,13 @@ def weighted_apr_and_term(
     product_flags: dict[str, str] | pd.Series,
     rate_table: pd.DataFrame,
 ) -> tuple[float, float]:
-    """Product-mix-weighted APR and term for a household's traditional debt.
+    """APR and term for a household's traditional debt.
 
-    Reproduces the P2 `servicing()` construction: an unweighted mean over the FinScope
-    product classes the matched donor holds, falling back to unsecured when none is held.
+    NIDS records one consolidated balance, so neither can be weighted by product. Both are
+    an unweighted mean over the classes the matched donor holds, falling back to unsecured
+    when none is held. Reproduces the P2 `servicing()` construction.
     """
-    held = [PRODUCT_MAP[c] for c in PRODUCT_MAP if product_flags.get(c) == "Yes"]
+    held = [PRODUCT_MAP[c] for c in PRODUCT_MAP if bool(product_flags.get(c))]
     if not held:
         held = [DEFAULT_PRODUCT]
     apr = float(np.mean([rate_table.at[c, "apr_annual"] for c in held]))

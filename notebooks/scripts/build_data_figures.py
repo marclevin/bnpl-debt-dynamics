@@ -83,9 +83,9 @@ def wgini(x, w):
 
 # ---------------------------------------------------------------- data
 QORDER = ["Q1", "Q2", "Q3", "Q4", "Q5"]
-FLAGS = ["banked", "credit_access_formal", "savings_product", "informal_finance"]
-FLAG_LABEL = {"banked": "Banked", "credit_access_formal": "Formal credit",
-              "savings_product": "Savings product", "informal_finance": "Informal finance"}
+FLAGS = ["banked", "G10", "G11", "G12", "G13", "G14"]
+FLAG_LABEL = {"banked": "Banked", "G10": "Store card", "G11": "Revolving credit",
+              "G12": "Hire purchase", "G13": "Short-term loan", "G14": "Personal loan"}
 PROV_ABBR = {"Western Cape": "WC", "Eastern Cape": "EC", "Northern Cape": "NC",
              "Free State": "FS", "KwaZulu-Natal": "KZN", "North West": "NW",
              "Gauteng": "GP", "Mpumalanga": "MP", "Limpopo": "LP"}
@@ -225,32 +225,24 @@ fs["pc"] = fs.M13_MHI_Imputed.map(MID) / pd.to_numeric(fs.Number_in_HH, errors="
 fs = fs.dropna(subset=["pc"])
 BOUNDS = [900.0, 1801.42, 3400.0, 7712.14]
 fs["income_quintile"] = pd.cut(fs.pc, [-np.inf] + BOUNDS + [np.inf], labels=QORDER, include_lowest=True)
-FORMAL = ["Bank", "Retail store (e.g. Woolworths, Edgars etc)",
-          "Micro finance institution e.g. Wonga", "Insurance company"]
 fs["banked"] = (fs.F1 == "Yes").astype(int)
-fs["credit_access_formal"] = (fs.G5.isin(FORMAL)
-                              | (fs[["G10", "G11", "G12", "G13", "G14"]] == "Yes").any(axis=1)).astype(int)
-fs["savings_product"] = fs.K7.astype(str).str.strip().str.startswith("R").astype(int)
-fs["informal_finance"] = fs.G5.isin([
-    "Mashonisa or loan shark",
-    "Stokvel society, burial society, umgalelo or savings club",
-    "Friends or family or household member", "Colleagues or neighbours",
-    "Employer including getting an advance on your salary"]).astype(int)
+for _c in ["G10", "G11", "G12", "G13", "G14"]:
+    fs[_c] = (fs[_c] == "Yes").astype(int)
 FW = fs.HH_WEIGHT16.values
 
-fig2, (ax_g, ax_h) = plt.subplots(1, 2, figsize=(TW, 2.75),
+fig2, (ax_g, ax_h) = plt.subplots(1, 2, figsize=(TW, 3.15),
                                   gridspec_kw={"width_ratios": [1.10, 1.0]})
 
 nat_fs = np.array([np.average(fs[f], weights=FW) * 100 for f in FLAGS])
 nat_src = np.array([np.average(src[f], weights=W) * 100 for f in FLAGS])
 nat_agt = np.array([agt[f].mean() * 100 for f in FLAGS])
 labels = [FLAG_LABEL[f] for f in FLAGS]
-wrapped = ["Banked", "Formal\ncredit", "Savings\nproduct", "Informal\nfinance"]
-grouped(ax_g, wrapped, {"FinScope 2019 (benchmark)": nat_fs, SRC_LBL: nat_src, AGT_LBL: nat_agt},
+grouped(ax_g, labels, {"FinScope 2019 (benchmark)": nat_fs, SRC_LBL: nat_src, AGT_LBL: nat_agt},
         [BENCH, SRC, AGT], width=0.26, gap=0.015)
+ax_g.set_xticklabels(labels, rotation=28, ha="right")
 ax_g.set_ylim(0, 104)
 ax_g.set_ylabel("Share of households (%)")
-ax_g.set_title("(a) National inclusion rates")
+ax_g.set_title("(a) National rates")
 dress(ax_g)
 ax_g.legend(frameon=False, fontsize=6.4, loc="upper right", handlelength=1.2,
             borderpad=0.1, labelspacing=0.35, handletextpad=0.5)

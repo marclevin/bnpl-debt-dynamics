@@ -290,7 +290,7 @@ observable in `w5_hhwage`. It is now data-driven, South African, and carries no 
 That is the pattern this issue wants: replace a transferred number with a local observable where the
 data allows it. **It does not close B7.**
 
-### B8 · RQ1's answer will be a function of two uncalibrated parameters — `MAJOR` · `BOTH` · `OPEN`
+### B8 · RQ2's answer will be a function of two uncalibrated parameters — `MAJOR` · `BOTH` · `OPEN`
 
 `q_base` and β are both admitted uncalibratable
 ([main.tex:613](../thesis/main.tex#L613)), and Submodel 13 imposes no aggregate stacking limit
@@ -303,7 +303,7 @@ still ask which region of the surface corresponds to the real world.
 Available anchors: the 82.8% banked ceiling, the TransUnion 20% intention figure, and the CFPB
 stacking shares (63% simultaneous, 32% cross-firm). Consider using the CFPB shares to **bound**
 `q_base` rather than only to check output after the fact — that converts a free parameter into
-a calibrated one and materially strengthens RQ1.
+a calibrated one and materially strengthens RQ2.
 
 **Related precedent set 2026-08-12 (`AGENT`).** The same "bound it, don't just check it afterwards"
 move has now been applied to the *third* uncalibrated parameter, the income-shock probability `p`.
@@ -916,8 +916,8 @@ population untriggerable. That version of the concern is withdrawn.
 1. **The ceiling varies across groups** (0.444 to 1.000, driven by each group's banked rate, which
    correlates with income). An identical `theta_i` therefore means a different thing in a
    low-banked group than in a high-banked one, so the threshold mechanism acquires a group-level
-   heterogeneity that was never intended and that is correlated with the income dimension RQ1 and
-   RQ2 already cut on.
+   heterogeneity that was never intended and that is correlated with the income dimension RQ2 and
+   RQ3 already cut on.
 2. **The ceiling is proportional to `bnpl_access_rate` — which is RQ2's own x-axis.** At
    `access = 0.15` the eligible share within a group is about `0.15 × 0.83 ≈ 0.125`, so **no
    threshold above ~0.125 can fire anywhere on that arm**, by construction. Sweeping access
@@ -964,7 +964,7 @@ independent by construction is **confirmed empirically**, not merely asserted.
 **Bad news, and it is the headline.** The model's output is driven mainly by **BNPL purchase size**
 and the **per-platform rolling limit** — respectively a trade-press figure and a quantity no South
 African provider publishes. Both must be reported as first-order sensitivities in Chapter 6, not
-buried in a robustness appendix, and every RQ1/RQ2 magnitude must be stated as conditional on them.
+buried in a robustness appendix, and every RQ2/RQ3 magnitude must be stated as conditional on them.
 Finding a better source for either would do more for the thesis than any further modelling.
 
 **⚠ UPDATE 2026-08-12 — the diagnosis was right, the attribution was wrong, and the fix is in.**
@@ -1088,6 +1088,49 @@ Worth recording as positives alongside the problems above:
   R5,000, so it is largely inert at that value — though B24 shows it is *not* inert at R1,000.
 - **Internal consistency.** BNPL enabled at zero access reproduces the BNPL-disabled baseline
   (24.43% versus 24.56% default), and adoption is exactly zero, confirming the injection design.
+
+---
+
+### B32 · Two calibration checks moved when P0 stopped counting imputed rent — `MAJOR` · `BOTH` · `OPEN`
+
+`w5_expenditure` decomposes exactly into `w5_expf + w5_expnf + w5_hhimprent + w5_rentexpend`. P0
+built `expenditure_discretionary` as total less food less rent, which leaves **`w5_expnf` plus
+imputed rentals** — the consumption value of owner-occupied housing, carried by **82.6%** of
+households at a median of **R700/month**, and not cash. Agents could therefore compress a
+non-existent flow to service debt. Discretionary spending was inflated by ~78% at the median
+(R2,105 against R1,336). Fixed 2026-08-18; P0–P4 re-run.
+
+Two consequences, both of which were previously masked:
+
+- **`test_realised_mean_purchase_lands_near_the_sa_provider_anchor` now fails**, R629 against the
+  R992 Weaver anchor. The old agreement was an artefact: IES `kappa` was already computed on an
+  imputed-rent-free denominator (`ies_2022_bnpl_share.json`), so the two sides were mismatched and
+  the inflation happened to close the gap. The means are over **different populations** — R992 is a
+  provider's own customers, which `kappa` puts at ~R7,151 monthly discretionary, the Q4/Q5 boundary
+  and above 80% of banked agents; banked Q4 alone gives R613 and Q5 R2,186. Marked `xfail(strict)`.
+  **Resolving it means choosing the comparison population, which is a design decision, not a
+  tolerance.**
+- **Every arrears/default result shifts**, since discretionary spending is the buffer compressed
+  before an instalment is missed. A smaller buffer means less absorption, so the fitted shock
+  probability should re-fit **lower** — this bears directly on **B20**.
+
+---
+
+### B33 · The DSTI validation compared unlike quantities — `MAJOR` · `AGENT` · `CLOSED`
+
+Section 3.3 reported model DSTI of 2.8–6.1% "between" benchmarks of 5.36% and 9.78%. The model
+figure was service / gross **income** over **all** households (56% hold no debt); both benchmarks
+are shares of **spending** among **credit holders**. Three mismatches at once: denominator,
+conditioning population, and mean-versus-median.
+
+On the FinScope denominator, conditioned on debtors, the model gives **12.8% of monthly outlay**
+against a 6.07–9.78% band. It sits **above** both, in the direction ceiling APRs predict, not
+between them. The NIDS 5.36% figure is also **not independent**: it is built from the same
+`w5_h_nfhpspn` / `w5_h_nfclthaspn` variables that set the store-card and hire-purchase terms.
+
+Now check `D. Debt service vs FinScope C8` in P4, and **the one check of eighteen that fails**. It
+is reported as a failure in Section 3.5, with traditional debt service stated as an upper bound.
+The known double-count (`data/config/README.md`) pushes it further up, not down.
 
 ---
 
