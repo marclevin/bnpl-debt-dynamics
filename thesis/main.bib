@@ -53,6 +53,20 @@
 }
 
 
+@article{windrum2007validation,
+  title   = {Empirical Validation of Agent-Based Models: Alternatives and Prospects},
+  author  = {Windrum, Paul and Fagiolo, Giorgio and Moneta, Alessio},
+  journal = {Journal of Artificial Societies and Social Simulation},
+  volume  = {10},
+  number  = {2},
+  pages   = {8},
+  year    = {2007},
+  url     = {https://www.jasss.org/10/2/8.html},
+  annote    = {Canonical statement of the validation problem for economic ABMs;
+             grounds the out-of-sample pattern discipline behind RQ1}
+}
+
+
 % ---------------------------------------------------------------------------
 % [ABM] Credit / household-finance agent-based models
 % ---------------------------------------------------------------------------
@@ -101,23 +115,26 @@
   volume  = {39},
   pages   = {209--220},
   year    = {2018},
-  note    = {Central Bank of Chile. Emerging-market consumer-credit ABM;
+  annote    = {Central Bank of Chile. Emerging-market consumer-credit ABM;
              households default when unable to finance minimum consumption;
              validated against observed default rates}
 }
 
-@misc{hamill2023creditcard,
-  title  = {Agent-based Modelling of Credit Card Promotions},
-  author = {Hamill, Conor B. and Khraishi, Raad and Gherghel, Simona and
-            Lawrence, Jerrard and Mercuri, Salvatore and Okhrati, Ramin and
-            Cowan, Greig A.},
-  year   = {2023},
-  eprint = {2311.01901},
-  archivePrefix = {arXiv},
-  primaryClass  = {cs.MA},
-  doi    = {10.48550/arXiv.2311.01901},
-  note   = {\% VERIFY: a UCL repository copy is labelled an International Journal
-            of Bank Marketing final manuscript; check for a published version}
+@article{hamill2023creditcard,
+  title   = {Agent-based modelling of credit card promotions},
+  author  = {Hamill, Conor B. and Khraishi, Raad and Gherghel, Simona and
+             Lawrence, Jerrard and Mercuri, Salvatore and Okhrati, Ramin and
+             Cowan, Greig A.},
+  journal = {International Journal of Bank Marketing},
+  volume  = {43},
+  number  = {4},
+  pages   = {849--870},
+  year    = {2025},
+  doi     = {10.1108/IJBM-02-2024-0082},
+  annote    = {NatWest Group / UCL. UK credit-card market ABM, calibrated to 2019--2020
+             benchmarks. Source of the non-monotonic income-to-debt-burden profile
+             used as Pattern 3 (a cross-model plausibility check, not an empirical
+             validation target). Published version of arXiv:2311.01901}
 }
 
 
@@ -134,7 +151,7 @@
   pages   = {5586--5598},
   year    = {2024},
   doi     = {10.1287/mnsc.2022.03266},
-  note    = {Banking data on 10.6m US consumers, 2015--2021; BNPL adoption raises
+  annote    = {Banking data on 10.6m US consumers, 2015--2021; BNPL adoption raises
              overdraft charges, credit-card interest and late fees, more so for
              liquidity-constrained consumers}
 }
@@ -155,10 +172,16 @@
   author      = {{TransUnion}},
   institution = {TransUnion South Africa},
   year        = {2025},
-  note        = {BNPL named by 20\% of consumers intending to apply for credit,
-                 behind new credit cards (30\%) and personal loans (28\%);
-                 BNPL history listed as information NOT on the standard South
-                 African credit report}
+  annote        = {Fielded 25 September to 9 October 2025. 57\% of respondents hold a
+                 \ac{BNPL} product and 36\% used one multiple times in the prior 12
+                 months; 36\% anticipate being unable to meet at least one bill or
+                 loan payment (Pattern 4); \ac{BNPL} payment histories listed as
+                 alternative data absent from the standard South African credit
+                 report. \textbf{CORRECTED 2026-08-24:} an earlier note claimed 20\%
+                 of consumers intend to apply for \ac{BNPL}; the press release's 20\%
+                 is car loans (among the 36\% planning to apply: credit cards 30\%,
+                 personal loans 28\%, car loans 20\%), and \ac{BNPL} is not listed as
+                 an application category at all}
 }
 
 @techreport{cfpb2025bnpl,
@@ -168,7 +191,7 @@
   year        = {2025},
   month       = jan,
   url         = {https://files.consumerfinance.gov/f/documents/cfpb_BNPL_Report_2025_01.pdf},
-  note        = {Analysis of 145 million BNPL applications, 2017--2022; documents
+  annote        = {Analysis of 145 million BNPL applications, 2017--2022; documents
                  concurrent-loan (stacking) prevalence}
 }
 
@@ -179,12 +202,30 @@
   year        = {2025},
   month       = dec,
   url         = {https://www.consumerfinance.gov/data-research/research-reports/the-buy-now-pay-later-market/},
-  note        = {Six large \ac{BNPL} lenders, calendar years 2019--2023: 335.8m loans
+  annote        = {Six large \ac{BNPL} lenders, calendar years 2019--2023: 335.8m loans
                  worth \$45.2bn, average loan \$135, 6.3 loans per user per lender per
                  year, \$848 average annual \ac{BNPL} amount per user per lender.
                  Distinct from cfpb2025bnpl (January 2025), which is the
                  concurrent-loan/stacking source. Used as the foreign cross-check on
                  \ac{BNPL} purchase size in Submodel~4}
+}
+
+@techreport{dimaggio2022bnpl,
+  title       = {Buy Now, Pay Later Credit: User Characteristics and Effects on
+                 Spending Patterns},
+  author      = {Di Maggio, Marco and Katz, Justin and Williams, Emily},
+  institution = {National Bureau of Economic Research},
+  type        = {Working Paper},
+  number      = {30508},
+  year        = {2022},
+  month       = sep,
+  doi         = {10.3386/w30508},
+  url         = {https://www.nber.org/papers/w30508},
+  annote        = {BNPL access raises total spending and its retail share by more than
+                 intertemporal substitution can explain, for constrained and
+                 unconstrained users alike (a ``liquidity flypaper effect'').
+                 Cited as the evidence against the substitution hypothesis that
+                 Pattern 1 tests}
 }
 
 @article{hayashi2025constraints,
@@ -224,7 +265,7 @@
   pages   = {1420--1443},
   year    = {1978},
   doi     = {10.1086/226707},
-  note    = {Canonical account of how share-dependent adoption with heterogeneous
+  annote    = {Canonical account of how share-dependent adoption with heterogeneous
              individual thresholds produces discontinuous aggregate outcomes.
              Anchors the D17 peer-influence mechanism}
 }
@@ -278,7 +319,7 @@
   volume    = {20},
   pages     = {183--188},
   year      = {2013},
-  note      = {Replication showing statistically significant differences in emergent
+  annote      = {Replication showing statistically significant differences in emergent
                population behaviour across uniform, synchronous and random activation}
 }
 
@@ -292,7 +333,7 @@
   pages   = {8},
   year    = {2015},
   doi     = {10.18564/jasss.2733},
-  note    = {Four activation regimes compared; different regimes produce different
+  annote    = {Four activation regimes compared; different regimes produce different
              results and no scheme dominates}
 }
 
@@ -306,7 +347,7 @@
   author       = {{Payflex}},
   year         = {2026},
   howpublished = {\url{https://payflex.co.za/terms-conditions/}},
-  note         = {Pay in 4: 25\% at checkout then three further 25\% instalments every
+  annote         = {Pay in 4: 25\% at checkout then three further 25\% instalments every
                   two weeks over six weeks, interest free; late fee R95 per week capped
                   at three weeks; automated credit assessment; orders capped at R15,000.
                   \textbf{All Rand figures here are NOMINAL at 2026 vintage} and are
@@ -321,7 +362,7 @@
   author       = {{PayJustNow}},
   year         = {2026},
   howpublished = {\url{https://payjustnow.com/terms-and-conditions/}},
-  note         = {Pay in 3, interest free: first instalment at checkout, two further
+  annote         = {Pay in 3, interest free: first instalment at checkout, two further
                   monthly instalments. Available balance rather than a credit limit}
 }
 
@@ -332,7 +373,7 @@
   institution = {Financial Conduct Authority},
   year        = {2026},
   url         = {https://www.fca.org.uk/publications/policy-statements/ps26-1-regulation-deferred-payment-credit},
-  note        = {Regulation Day 15 July 2026; proportionate affordability checks required;
+  annote        = {Regulation Day 15 July 2026; proportionate affordability checks required;
                  CCA s.66A 14-day right of withdrawal applies}
 }
 
@@ -342,7 +383,7 @@
   author      = {Woolard, Christopher},
   institution = {Financial Conduct Authority},
   year        = {2021},
-  note        = {26 recommendations; initiated the process of bringing BNPL within
+  annote        = {26 recommendations; initiated the process of bringing BNPL within
                  FCA regulation. Also reports average \ac{BNPL} transaction values of
                  \pounds88 and \pounds110, and finds it ``relatively easy'' to accrue
                  around \pounds1,000 of \ac{BNPL} debt invisible to credit reference
@@ -361,7 +402,7 @@
   year        = {2020},
   month       = nov,
   url         = {https://www.asic.gov.au/regulatory-resources/find-a-document/reports/rep-672-buy-now-pay-later-an-industry-update/},
-  note        = {Six Australian \ac{BNPL} providers. Average transaction value of A\$147
+  annote        = {Six Australian \ac{BNPL} providers. Average transaction value of A\$147
                  for the lowest-value provider; 21\% of surveyed users missed a payment
                  in the prior year. Used in Submodel~4 as one of the three regulator
                  figures behind the purchase-size RATIO benchmark: the levels are in
@@ -379,7 +420,7 @@
   author      = {{FinMark Trust}},
   institution = {FinMark Trust},
   year        = {2019},
-  note        = {Donor source for the financial-inclusion flags of Section~\ref{ch:population}
+  annote        = {Donor source for the financial-inclusion flags of Section~\ref{ch:population}
                  (banked status, formal credit access, savings product, informal finance).
                  Also the source for informal-finance prevalence: stokvels, burial societies
                  and mashonisa lending, none of which reports to a credit bureau}
@@ -389,6 +430,20 @@
 % claim it supported (informal finance runs through stokvels and mashonisa lending) is
 % better sourced from FinScope, which is already a data dependency of this thesis.
 % [issues.md C5]
+
+@techreport{statssa_cs_2016,
+  title       = {Community Survey 2016},
+  author      = {{Statistics South Africa}},
+  institution = {Statistics South Africa},
+  type        = {Statistical release},
+  number      = {P0301},
+  year        = {2016},
+  url         = {https://cs2016.statssa.gov.za/},
+  annote        = {National household count of 16.9 million in 2016 (up from 14.5
+                 million in 2011). Benchmark for validation check A on mean
+                 household size and for the national household total the weighted
+                 \ac{NIDS} population overshoots by roughly 10\%}
+}
 
 @misc{sa_nca_2005,
   title        = {National Credit Act 34 of 2005},
@@ -402,7 +457,7 @@
   author       = {{Republic of South Africa}},
   year         = {2015},
   howpublished = {Government Notice R202, Government Gazette 38557, 13 March 2015},
-  note         = {Regulation 23A(9) prescribes the minimum expense norms table and the
+  annote         = {Regulation 23A(9) prescribes the minimum expense norms table and the
                   residual (discretionary) income affordability test. The NCA prescribes
                   no debt-service-to-income ratio}
 }
@@ -413,7 +468,7 @@
   year         = {2016},
   howpublished = {In force from 6 May 2016},
   url          = {https://www.ncr.org.za/documents/Limitation-on-fees-and-interest-rates.pdf},
-  note         = {Maximum prescribed interest rates: mortgages repo+12\%, credit facilities
+  annote         = {Maximum prescribed interest rates: mortgages repo+12\%, credit facilities
                   repo+14\%, other credit agreements repo+17\%, unsecured repo+21\%,
                   developmental repo+27\%; short-term 5\% per month}
 }
@@ -423,7 +478,7 @@
   author      = {{National Credit Regulator}},
   institution = {National Credit Regulator},
   year        = {2017},
-  note        = {Baseline validation target, vintage-matched to the NIDS W5 population.
+  annote        = {Baseline validation target, vintage-matched to the NIDS W5 population.
                  2017-Q1 account basis, unsecured plus credit facilities combined:
                  71.63\% current, 16.54\% 60+ days, 14.21\% 90+ days (Appendix D,
                  Tables 21 and 23). Does NOT publish interest rates}
@@ -434,7 +489,7 @@
   author      = {{National Credit Regulator}},
   institution = {National Credit Regulator},
   year        = {2025},
-  note        = {Retained for post-period context only. The 2017 report is the validation
+  annote        = {Retained for post-period context only. The 2017 report is the validation
                  target; see ncr\_ccmr\_2017}
 }
 
@@ -446,7 +501,7 @@
   number      = {02-11-02},
   year        = {2023},
   url         = {https://www.statssa.gov.za/publications/Report-02-11-02/Report-02-11-022022.pdf},
-  note        = {\ac{QLFS} panel, 2017--2022, so a \textbf{vintage-matched 2017} figure is
+  annote        = {\ac{QLFS} panel, 2017--2022, so a \textbf{vintage-matched 2017} figure is
                  available. Table 2.1a (p.15), Q3:2017 to Q4:2017: 93.14\% retained
                  employment, 3.53\% moved to unemployment, 3.32\% to not economically
                  active. Table A.1 (p.149) reproduces the same transition. Extracted by
@@ -465,7 +520,7 @@
   author       = {{Payflex}},
   year         = {2025},
   howpublished = {\url{https://support.myboost.co/hc/en-us/articles/12980246778777-What-is-my-PayFlex-limit}},
-  note         = {No published rolling limit. The spend limit is set per customer from
+  annote         = {No published rolling limit. The spend limit is set per customer from
                   credit history and repayment behaviour. Payflex publishes only the
                   R15,000 per-order cap (payflex\_terms)}
 }
@@ -475,7 +530,7 @@
   author       = {{PayJustNow}},
   year         = {2025},
   howpublished = {\url{https://community.payjustnow.com/support/solutions/articles/154000149850-why-don-t-i-have-a-spend-limit-}},
-  note         = {No published limit of any kind. Limits are set per shopper from
+  annote         = {No published limit of any kind. Limits are set per shopper from
                   identity verification and credit profile}
 }
 
@@ -484,7 +539,7 @@
   author       = {{Ecommerce Development}},
   year         = {2026},
   howpublished = {\url{https://www.ecommercedevelopment.co.za/buy-now-pay-later-south-africa/}},
-  note         = {Average South African \ac{BNPL} basket $\approx$ R1,568 (nominal, 2026).
+  annote         = {Average South African \ac{BNPL} basket $\approx$ R1,568 (nominal, 2026).
                   \% VERIFY: trade press, not a provider disclosure or a regulator
                   statistic. \textbf{DEMOTED 2026-08-12}: no longer a model input. It was
                   the load-bearing source for \ac{BNPL} purchase size and the model's
@@ -506,7 +561,7 @@
   institution = {HomeChoice International plc},
   year        = {2025},
   url         = {https://www.weaverfintech.com/wp-content/uploads/2025/07/HiL_2024_IAR-1.pdf},
-  note        = {Listed issuer; PayJustNow is the \ac{BNPL} business in the group and one
+  annote        = {Listed issuer; PayJustNow is the \ac{BNPL} business in the group and one
                  of the four South African platforms the model represents. \ac{BNPL}
                  gross merchandise value by financial year: R204m (FY2021), R747m
                  (FY2022), R1,527m (FY2023), R3,924m (FY2024), against the group's own
@@ -532,7 +587,7 @@
   year         = {2026},
   month        = mar,
   howpublished = {SENS announcement, Johannesburg Stock Exchange, 10 March 2026},
-  note         = {Results announcement for the year in which \ac{BNPL} cumulative
+  annote         = {Results announcement for the year in which \ac{BNPL} cumulative
                   gross merchandise value reached R13.1bn. Superseded as the anchor
                   source by weaver2025iar, which carries the same figures on a single
                   charted panel together with the transaction count and frequency series}
@@ -544,7 +599,7 @@
   institution = {Weaver Fintech Limited},
   year        = {2026},
   url         = {https://www.weaverfintech.com/wp-content/uploads/2026/04/Weaver-Fintech-IAR-2025.pdf},
-  note        = {\textbf{PRIMARY SOURCE for South African \ac{BNPL} purchase size and
+  annote        = {\textbf{PRIMARY SOURCE for South African \ac{BNPL} purchase size and
                  volume.} Page 14, ``Profitable BNPL network'': cumulative \ac{BNPL}
                  \ac{GMV} of R13.1bn over \textbf{9.4m cumulative transactions}, giving a
                  DERIVED average order value of R1,394 nominal and \textbf{R992 in 2017
@@ -573,7 +628,7 @@
   year        = {2026},
   month       = jun,
   url         = {https://www.statssa.gov.za/publications/P0141/P0141June2026.pdf},
-  note        = {Headline \ac{CPI}. Supplies the single documented factor converting
+  annote        = {Headline \ac{CPI}. Supplies the single documented factor converting
                  current-vintage \ac{BNPL} figures into the 2017 Rands every other
                  quantity in the model is denominated in: \textbf{2017 to 2025 is a
                  factor of 1.4391, and 2017 to mid-2026 is 1.5111}. The June 2026 release
@@ -598,7 +653,7 @@
   howpublished = {Household microdata, DataFirst zaf-statssa-ies-2022-2023-v1,
                   University of Cape Town},
   url          = {https://www.datafirst.uct.ac.za/dataportal/index.php/catalog/1116},
-  note         = {19,940 households, COICOP 2018 coded. Supplies the BNPL-financeable
+  annote         = {19,940 households, COICOP 2018 coded. Supplies the BNPL-financeable
                   share of household discretionary expenditure (13.87\%) that sizes
                   \ac{BNPL} purchases in Submodel~4. Only a RATIO is taken, never a money
                   amount, so the 2022/23 vintage cannot contaminate the 2017-Rand model
@@ -614,7 +669,7 @@
   author = {{Norton Rose Fulbright}},
   year   = {2025},
   url    = {https://www.nortonrosefulbright.com/en-za/knowledge/publications/397bf640/buy-now-pay-later-regulation-around-the-world},
-  note   = {BNPL falls outside the National Credit Act 2005: no mandatory
+  annote   = {BNPL falls outside the National Credit Act 2005: no mandatory
             affordability assessment, no NCR registration, no bureau reporting}
 }
 
@@ -626,7 +681,7 @@
   publisher    = {DataFirst [distributor], Cape Town},
   howpublished = {Dataset},
   doi          = {10.25828/fw3h-v708},
-  note         = {The backbone source for the entire data layer. Fielded 2017, which
+  annote         = {The backbone source for the entire data layer. Fielded 2017, which
                   fixes the model's single monetary reference year. 13,719 household
                   records, of which 10,841 are valid after dropping missing or unusable
                   income, expenditure or weight fields, representing a weighted
@@ -641,7 +696,7 @@
   year         = {2025},
   howpublished = {World Development Indicators, indicator SI.POV.GINI},
   url          = {https://data.worldbank.org/indicator/SI.POV.GINI?locations=ZA},
-  note         = {External benchmark for data-layer validation check C. The constructed
+  annote         = {External benchmark for data-layer validation check C. The constructed
                   population's weighted per-capita income Gini of 0.651 falls inside the
                   0.63--0.70 band; no step in the construction targeted it, which makes
                   this the only genuinely external check in the data layer}

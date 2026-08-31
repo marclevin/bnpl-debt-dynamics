@@ -6,13 +6,14 @@
 
 South Africa regulates consumer credit tightly. The \ac{NCA} \cite{sa_nca_2005} requires every
 registered credit provider to assess whether an applicant can afford a proposed agreement before
-granting it, and Regulation 23A of the Affordability Assessment Regulations
+granting it, and Regulation 23A of the National Credit Regulations
 \cite{sa_ncr_affordability_2015} prescribes a residual-income test for doing so. Registered lenders
 report their exposures to the credit bureaus, so each lender assesses an applicant against a record
 of what every other registered lender has advanced.
 
 \ac{BNPL} providers sit outside that regime. Because they levy neither interest nor fees on the
-deferred amount and typically rely on late payment penalties, they argue that they do not transact credit within the meaning of the \ac{NCA}, and
+deferred amount, with late-payment penalties their only charge, they argue that they do not
+transact credit within the meaning of the \ac{NCA}, and
 so do not register with the \ac{NCR}, do not perform the Regulation 23A assessment, and do not
 report what they have lent to any credit bureau \cite{nortonrose_bnpl_sa}. TransUnion, a consumer
 credit bureau, confirms the absence of \ac{BNPL} information from South African credit reports
@@ -31,13 +32,23 @@ Africa has no equivalent evidence base, and the reporting exemption makes one im
 assemble from administrative data, since no party, the regulator included, can measure aggregate
 \ac{BNPL} exposure.
 
+This thesis builds an \ac{ABM} of the South African
+household credit market: 5{,}000 synthetic households, constructed from national survey microdata
+and subject to the statutory rules above, earn, spend, borrow, repay and default over a simulated
+two-year horizon. \ac{BNPL} platforms with the observed South African contract structure are then injected
+into an otherwise unchanged 2017 environment, so that any difference between the two runs is
+attributable to the new lender class. The thesis contributes
+three things: a survey-grounded agent-based model of South African household credit, a quantified
+account of what the reporting exemption does to household distress, and a test of the
+intervention repertoire regulators abroad have already adopted.
+
 \subsection{Research Questions}
 \label{sec:rqs}
 
 \begin{quote}
     How does the exemption of \ac{BNPL} from South Africa's credit-reporting and affordability
-    regime affect credit distress among \ac{LMI} households, and which platform-level interventions
-    reduce it?
+    regime affect household credit distress, and which interventions in the \ac{BNPL} lending
+    environment reduce it?
 \end{quote}
 
 Three subsidiary questions decompose it.
@@ -45,13 +56,20 @@ Three subsidiary questions decompose it.
 \begin{enumerate}
     \item Can a synthetic household population built from South African survey microdata reproduce
     credit-market behaviour it was not fitted to?
-    \item Do households accumulate concurrent \ac{BNPL} facilities that no lender observes in
-    aggregate, and does that raise population default?
-    \item Which platform-level interventions curb that increase?
+    \item Does the mutual invisibility of \ac{BNPL} platforms produce concurrent-facility
+    stacking, and does population default rise with the number of platforms a household can stack
+    across?
+    \item Which interventions in the \ac{BNPL} lending environment reduce the resulting distress
+    and default?
 \end{enumerate}
 
-The first is a precondition for the other two: a model whose households do not behave like South
-African households cannot support a claim about what happens when a new lender class is introduced
-to them. It is answered in two parts, by the construction of Section~\ref{ch:population} and by the
-baseline of Section~\ref{ch:results}. The second and third are answered in
-Section~\ref{ch:results}.
+Where the distress concentrates in the income distribution is treated as a finding rather than a
+scope restriction: the empirical record places \ac{BNPL} harm among lower-income,
+liquidity-constrained consumers \cite{hayashi2025constraints, wang2026buynow}, and results are
+reported by income quintile throughout.
+
+The first question is a precondition for the other two: a model whose households do not behave
+like South African households cannot support a claim about what happens when a new lender class is
+introduced to them. It is answered in two parts, by the population construction of
+Section~\ref{ch:population} and by the baseline results of Section~\ref{ch:results}. The second
+and third are answered in Section~\ref{ch:results}.
