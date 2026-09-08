@@ -1,64 +1,28 @@
 \section{Full Parameter Register}
 \label{app:specification}
 
-% =============================================================================
-% SKELETON. Populate from the model's config file once simulation/ exists, and
-% generate it programmatically rather than typing it --- this table, the parameter
-% table and Table~\ref{tab:submodels} must agree,
-% and three hand-maintained copies will drift.
-% =============================================================================
-
 Table~\ref{tab:submodels} gives the rule and source for each submodel. This appendix holds the
-complete numerical register: every parameter, its baseline value, its sweep range where it is
-swept, and its provenance.
+complete numerical register: every parameter, its baseline value, its provenance, and its sweep
+range where one applies. The table is generated from the model's parameter declarations in
+\texttt{simulation/config.py} by \texttt{notebooks/scripts/generate\_param\_register.py}, so the
+register and the code cannot drift apart. All Rand values are 2017 Rands; the \ac{BNPL} money
+parameters are published at current vintage and deflated once by a sourced \ac{CPI} factor, and
+the source column keeps the published nominal figure so a reader checking against a provider's
+website is not misled.
 
-Three entries require flagging wherever they appear, and are marked in the register itself rather
-than only in accompanying text.
-
+Four groups of entries carry standing flags:
 \begin{itemize}
-    \item \textbf{Submodel~4, borrowing amount.} An assumption with no literature anchor. Carries
-    mandatory sensitivity analysis over three specifications.
-    \item \textbf{$q_{\text{base}}$ and $\beta$, Submodel~11.} Neither can be calibrated from any
-    South African source. The $\beta = 0$ control arm is reported in every result.
-    \item \textbf{Income-shock probability, Submodel~1.} Fitted to validation pattern~2, which is
-    what makes the baseline calibrated rather than validated
+    \item \textbf{The two fitted parameters.} The income-shock probability (Submodel~1) and the
+    payment-friction rate (Submodel~6) are fitted to the \ac{CCMR} 90+ and 1--30 day bands, which
+    is what makes the baseline calibrated rather than validated
     (Section~\ref{sec:lim-calibration}).
+    \item \textbf{The two uncited rules.} The shortfall borrowing amount (Submodel~4) and the
+    minimum-payment fraction (Submodel~6) have no literature anchor. Both carry mandatory sweeps.
+    \item \textbf{The uncalibrated peer coefficients.} $q_{\text{base}}$, $\beta$ and the
+    threshold parameters of Submodel~11 cannot be calibrated from any South African source. The
+    $\beta = 0$ and $\gamma = 0$ control arms are reported in every result.
+    \item \textbf{The rolling limit.} $\lambda = 0.10$ derives from Woolard's observed stacked
+    total, since no provider publishes a limit; it is swept 0.1--1.0.
 \end{itemize}
 
-% CONTENT REQUIRED: a longtable with columns
-%   Parameter | Symbol | Baseline | Sweep range | Source / status
-% covering at minimum:
-%   - income shock probability (FITTED) and magnitude (swept)
-%   - minimum-payer share: 0.29 baseline, swept 0.20-0.40, Keys & Wang (transfer)
-%   - default horizon k: 7 ticks = 98 days, fixed by CCMR band mapping
-%   - q_base, beta: UNCALIBRATED, swept, beta=0 always reported
-%   - platform count: 4 baseline, swept 1-6
-%   - BNPL purchase size: kappa = 0.1387 x household monthly discretionary expenditure,
-%     DERIVED from Stats SA IES 2022/23 COICOP microdata; swept 0.07-0.28; base swept
-%     discretionary/income. Validated (NOT fitted) against R992, the average order value
-%     derived from PayJustNow's disclosed cumulative GMV and transaction count.
-%   - BNPL rolling limit: lambda = 0.25 x household MONTHLY INCOME, per household.
-%     No SA provider publishes a level; the functional form comes from HomeChoice's
-%     audited "low and grow" disclosure. Swept 0.1-1.0 against a 0.10-0.26 external band
-%     (Woolard, ASIC REP 672). Binding rate reported BY QUINTILE.
-%   - BNPL per-order cap: R15,000 nominal (Payflex terms) -> R9,927 in 2017 Rands
-%   - BNPL late fee: R95/week, capped 3 weeks (R285) nominal -> R125.74/tick, cap
-%     R188.61, in 2017 Rands
-%   CAUTION: ALL BNPL Rand figures are published at current vintage and are deflated to 2017
-%     Rands by a single sourced CPI factor (data/config/cpi_deflator_2017.json). The
-%     table MUST show both the published nominal figure and the 2017-Rand value used,
-%     or a reader checking against Payflex's website will think the model is wrong.
-%   - banked eligibility ceiling: 82.8%, observed from the data layer
-%   - repurchase rate: 7.00% (2017), static
-%   - NCA statutory maxima by sub-sector: credit facilities 21%, other agreements 24%,
-%     unsecured 28%, short-term 5%/month
-%   - repayment horizons (credit_rate_table.csv): store card 11m and hire purchase 8m
-%     measured in NIDS W5 e2_2_33/e2_2_30; personal loan and unflagged 25m from CCMR
-%     2017-Q1 stock-flow implied life; short-term loan 1m from the FinScope G13 wording;
-%     revolving credit 20m = 1/mid-range min_payment_frac, swept 0.025-0.10
-%   - MIN_TERM_MONTHS: 1.0, a numerical guard only (was an unsourced 6-month floor)
-%   - tick length: 14 days; horizon 52 ticks; burn-in 12 ticks
-%   - population size: 5,000; seed 20260818
-%   - cool-off duration: 1 tick (14 days, UK CCA s.66A)
-%   - bureau_visibility, mandatory_affordability, cool_off, facility_cap: booleans
-
+\input{chapters/appendix_b_register}

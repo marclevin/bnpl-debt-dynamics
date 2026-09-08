@@ -5,7 +5,14 @@ Reviewed against `01_introduction.tex`, `04_design.tex`, `main.bib`, and `main.l
 Contestable citations were verified against source abstracts — evidence is recorded inline so
 nothing needs re-checking tomorrow.
 
-**Nothing has been edited yet.** This is the work list.
+**APPLIED 2026-08-24.** Every item below was implemented in a single pass (see git diff of that
+date): ch2 was rewritten in full (A1–A7, B1–B6, C1–C3, D1–D3, all E items), the Keys & Wang figure
+was corrected here and in `appendix_a_rationale.tex`, and the Hamill entry was upgraded to its
+published version (IJBM 43(4):849–870, 2025). Two findings from the same pass went beyond this
+list: the TransUnion "20% intend to apply for BNPL" claim was a misattribution (the source's 20% is
+car loans; replaced with the verified 57%-holding / 36%-bill-stress figures, also fixed in
+`06_discussion.tex` and the bib note), and the A4 substitution counter-hypothesis is now grounded
+in Di Maggio, Katz & Williams (NBER w30508). The file is kept for its verification evidence.
 
 ---
 

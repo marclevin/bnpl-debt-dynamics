@@ -553,7 +553,7 @@ class ParamSet:
         "random",
         rule="D16",
         provenance="SOURCED",
-        source="Random asynchronous, reseeded every tick (Comer & Loerch; Alizadeh).",
+        source="Random asynchronous order, re-drawn every tick (Comer & Loerch; Alizadeh).",
         sweep="MANDATORY: uniform and synchronous robustness runs",
     )
 
