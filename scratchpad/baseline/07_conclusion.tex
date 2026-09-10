@@ -1,0 +1,75 @@
+\section{Conclusion}
+\label{ch:conclusion}
+
+% =============================================================================
+% SKELETON. Written last, once Section~\ref{ch:results} exists.
+% BUDGET: 650 words of prose. Sections 7.1-7.3 wait on results; 7.4 is drafted
+% below and is already at budget.
+% =============================================================================
+
+\subsection{Summary of Findings}
+\label{sec:summary}
+
+% BUDGET: 250 words.
+% CONTENT REQUIRED:
+% - One short paragraph per research question: answer it in a sentence, qualify it in
+%   another. Do not restate Section~\ref{ch:results}.
+% - Be explicit about which findings are predictions (BNPL on, parameters held fixed)
+%   and which are calibrated agreement (the baseline).
+% - The falsified non-linearity hypothesis belongs here as prominently as the successes,
+%   and it belongs in the abstract too.
+
+\subsection{Contributions}
+\label{sec:contributions}
+
+% BUDGET: 200 words, in descending order of defensibility.
+% 1. An ABM containing a regulated, bureau-informed lender class and an unregulated,
+%    bureau-invisible one, over a survey-derived household population. This is the gap
+%    of Section~\ref{sec:lit-gap} --- state the novelty claim no more strongly than the
+%    systematic search supports.
+% 2. A survey-grounded synthetic population of South African households with complete
+%    2017-Rand balance sheets and its validation record (Section~\ref{ch:population}),
+%    reusable independently of this model.
+% 3. A quantification, internal to the model, of the cost of the BNPL bureau-reporting
+%    exemption, from the bureau-visibility contrast --- including the finding that it is
+%    close to zero, which is the opposite of what the design anticipated.
+
+\subsection{Policy Implications}
+\label{sec:policy}
+
+% BUDGET: 200 words.
+% CONTENT REQUIRED:
+% - Follow the intervention ranking of Section~\ref{sec:results-rq3}: the three
+%   instruments regulators are proposing do little here, and the one that works is
+%   proposed nowhere. That asymmetry is the policy contribution.
+% - Keep the hypothetical concurrent-facility cap clearly separated from the three
+%   instruments that exist in other jurisdictions.
+% - Honour Section~\ref{sec:lim-reading}: recommend the direction of a policy, never a
+%   threshold value.
+
+\subsection{Future Work}
+\label{sec:future-work}
+
+Three extensions follow from the limitations of Section~\ref{ch:discussion}, ordered by the ratio
+of what they would add to what they would cost.
+
+\textbf{Contagion channels.} The model produces correlated individual defaults rather than systemic
+cascades, having no mechanism by which one household's default affects another's income
+(Section~\ref{sec:lim-structural}). This is the direct cause of the central negative result, so it
+is also the most valuable thing to relax. Three candidates would do it: a traditional lender with a
+balance sheet that can be impaired and can ration credit in response; feedback from aggregate
+default to employment or income; and Cardaci's expenditure-cascade mechanism
+\cite{cardaci2018inequality}, in which peer influence acts on consumption rather than only on
+adoption. Any of the three would let a successor model ask the systemic question this one cannot.
+
+\textbf{Bounding the adoption parameters.} The most valuable improvement available without new data
+is to constrain $q_{\text{base}}$ using the \ac{CFPB} stacking shares as a calibration target and
+not only as an after-the-fact check (Section~\ref{sec:lim-transfer}). This converts a free
+parameter into a partly calibrated one at the cost of one additional calibration loop, with no
+structural change.
+
+\textbf{Behavioural evidence for the South African market.} The transfer problem cannot be solved
+from within a modelling exercise. Eliciting present bias, minimum-payment anchoring or \ac{BNPL}
+social-approval effects in a South African sample would replace the model's least defensible
+imported parameters with domestic estimates.
+

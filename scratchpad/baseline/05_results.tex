@@ -1,0 +1,150 @@
+\section{Results and Analysis}
+\label{ch:results}
+
+% =============================================================================
+% SKELETON --- restructured 2026-08-18 for the 10,000-word limit and the revised
+% research questions. Written once the final run exists (20 replicates, shortfall
+% borrowing path capped).
+%
+% BUDGET: 3,300 words of PROSE. Tables and figures do not count, so every number
+% goes in a table and prose is spent only on what the number means. A results
+% chapter that narrates its numbers runs to twice this length and reads worse.
+%
+% Section budgets, which are binding:
+%   6.1 Baseline and RQ1   700
+%   6.2 RQ2                1,100
+%   6.3 RQ3                1,000
+%   6.4 Robustness         500
+%
+% FIVE figures in the body, no more:
+%   baseline_arrears_profile / rq1_stacking / rq2_default_surface /
+%   rq3_interventions_beta1 / robustness_tornado
+% Everything else -> Appendix~\ref{app:supplementary}.
+%
+% Numbers below are from the 13 Aug working run (950 runs x 5 replicates,
+% noise floor 0.33pp). They are placeholders: refresh every one against the
+% final run before submission.
+% =============================================================================
+
+\subsection{Baseline and the Household Population}
+\label{sec:results-baseline}
+
+% BUDGET: 700 words. Answers the second half of RQ1.
+%
+% CONTENT REQUIRED:
+% - The fitted income-shock probability and payment-inattention rate, and the arrears
+%   profile they produce against Table~\ref{tab:ccmr}. State plainly that two parameters
+%   were fitted to two bands, so those two bands prove nothing.
+% - THE RESULT THAT MATTERS: the 60+ day band, 15.38% against 16.54%, never fitted.
+% - Table: the seven independent checks (60+ arrears, 2+ facilities, BNPL spend per user,
+%   average purchase, complementarity direction, DTI peak, zero savings). Six of seven
+%   pass; zero savings is 45% against 36%, same order but high, and it rests on the
+%   weakest variable in the data layer.
+% - Foreground patterns 2 and 4 (D4). Patterns 1 and 3 get one line each in the same
+%   table --- do not give them their own prose.
+% - Close RQ1 explicitly: a population built this way does reproduce behaviour it was
+%   not fitted to, on four of five independent behavioural checks, with the failure named.
+% - Figure: baseline_arrears_profile.png
+
+\subsection{RQ2: Stacking and Population Default}
+\label{sec:results-rq2}
+
+% BUDGET: 1,100 words. The largest section.
+%
+% CONTENT REQUIRED:
+% - Stacking is EMERGENT, not programmed. 15-39% of adopters hold 2+ facilities against
+%   the CFPB's 32%, as an order-of-magnitude check. Platform-count sweep 1-6; the
+%   single-platform arm gives exactly zero stacking, which isolates cross-platform
+%   accumulation from single-platform accumulation.
+% - Default: 24.2% with BNPL off, 27.2% on, 29.1% on with strong peer influence.
+%   The beta=0 row must be explicit in every table and on every figure.
+% - Access sweep runs inside the banked subpopulation (82.8% ceiling, Submodel~12).
+%   State the ceiling wherever an access rate is reported so it is not misread as a
+%   share of all households.
+%
+% - THE NEGATIVE RESULT, reported as a titled finding, not buried (D3):
+%   the increase is SMOOTH in access. No cliff edge anywhere on the surface. This
+%   falsifies the pre-registered non-linearity hypothesis.
+%   Then the pre-registered Granovetter threshold variant, run precisely because a
+%   linear rule might give a linear answer for trivial reasons: adoption roughly
+%   doubles (21% -> 42%) but default moves about half a percentage point, and the
+%   adoption line is almost perfectly straight (R^2 = 0.9999). Two structurally
+%   distinct social mechanisms, neither producing a jump.
+%   The structural reason, which is the interesting part: the model has no channel by
+%   which one household's default harms another, so default is an individual event
+%   happening to many households at once. A threshold needs feedback in the OUTCOME,
+%   and there is none by design (Section~\ref{sec:lim-structural}).
+%   One-line summary worth keeping: households catch BNPL from their neighbours; they
+%   do not catch financial distress from them.
+%
+% - THE SPLIT ANSWER, which must be reported honestly and in one place: the credit
+%   limit binds on 54% of requests but barely moves default, because a constrained
+%   household borrows less per purchase rather than defaulting less. Reported apart,
+%   these two facts read as a contradiction.
+% - Pattern 1 is tested here: enabling BNPL raises traditional servicing stress by
+%   +2.9 to +3.5pp. Attach the caveat of Section~\ref{sec:lim-validation} --- the
+%   direction is partly designed into the lender-choice rule, the magnitude is not.
+% - Figures: rq1_stacking.png, rq2_default_surface.png
+%   NOTE: figure FILENAMES keep the original RQ numbering and are deliberately frozen
+%   (they are baked into results/raw/ labels and analysis.py load keys). rq1_stacking.png
+%   belongs to THIS section --- thesis RQ2. See the numbering note at the top of
+%   simulation/experiments.py.
+% - Table: default rate by access x beta, with the beta=0 row first.
+% - beta is RQ2's experimental axis: it is the strength of peer influence on BNPL
+%   adoption, so sweeping it is what separates a social explanation from a purely
+%   financial one. It is toggled on/off again under RQ3, where the cool-off lever only
+%   has an effect where beta > 0.
+
+\subsection{RQ3: Which Interventions Curb the Increase}
+\label{sec:results-rq3}
+
+% BUDGET: 1,000 words. The most novel result in the thesis.
+%
+% CONTENT REQUIRED:
+% - Table, all four levers ranked by effect on BNPL borrowing and on default:
+%     bureau visibility            ~1%, essentially none
+%     mandatory affordability check  essentially none
+%     14-day cool-off              nothing alone; -33% where peer influence is present
+%     concurrent-facility cap      -54% to -63%; default returns almost to the no-BNPL level
+% - Label the concurrent-facility cap HYPOTHETICAL every time it appears beside the
+%   three real instruments.
+% - THE ARGUMENT, which is what makes this section worth reading: the damage is not
+%   that any single BNPL loan is unaffordable, it is that a household holds several at
+%   once. Disclosure only tells the bank something. An affordability test examines one
+%   loan in isolation. Neither touches how many facilities a household can hold. Only
+%   the cap does. The three instruments regulators are actually proposing are the three
+%   that do not work in this model.
+% - The bureau-visibility contrast deserves its own paragraph: it is the comparison the
+%   whole model was built to make, it holds every uncalibrated parameter fixed across
+%   both arms, and it survived a complete rebuild of the two parameters underneath it.
+%   The near-null result is a finding, not a failure.
+% - The defer-versus-desist test is CUMULATIVE BNPL VOLUME over the full horizon, not
+%   the timing of purchases. Unchanged volume with a shifted time distribution means
+%   agents defer; lower cumulative volume means they desist. The cool-off works only
+%   where peer influence is present because delaying purchases lowers the group's
+%   visible usage, which lowers everyone else's appetite --- it acts on the social loop,
+%   not on the individual.
+% - Figure: rq3_interventions_beta1.png (the beta=0 panel goes to the appendix, with
+%   the beta=0 column retained in the body table).
+
+\subsection{Sensitivity and Robustness}
+\label{sec:results-robustness}
+
+% BUDGET: 500 words. One figure, one table, prose only for what moves.
+%
+% CONTENT REQUIRED:
+% - Replicate count, seed scheme, noise floor (0.33pp on the working run; differences
+%   below ~0.67pp are treated as noise). Total run count and wall-clock cost.
+% - Figure: robustness_tornado.png. Each bar is how far default moves across the
+%   plausible range of one parameter; red bars are rules with no citation.
+% - The largest remaining sensitivity is the Submodel~4 borrowing-amount rule. Report
+%   it plainly: two of the three specifications agree to within the noise floor
+%   (28.91% and 28.24%) and the whole range comes from the third and most generous.
+%   State whether the capped shortfall path (added after the working run) narrows it.
+% - Confirm empirically, rather than asserting, that the peer channel is insensitive to
+%   activation order.
+% - Everything else --- Sobol indices, activation-order re-runs, population-size
+%   stability at 1,000/5,000/10,000, the minimum-payer sweep 0.20-0.40, and the full
+%   platform-count detail --- goes to Appendix~\ref{app:supplementary} as tables, with
+%   one sentence here saying so. Do not narrate them.
+

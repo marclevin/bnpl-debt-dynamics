@@ -1,0 +1,109 @@
+June 2026FINANCIAL STABILITY REVIEW
+24
+Box 4: Online gambling and buy now, pay later
+1  This amount represents gambling turnover, which is defined as the rand value of the money wagered 
+and includes amounts staked on more than one occasion.
+2 National Gambling Board, NGB Annual Report 2024/25 , July 2025.
+3 SARB, Quarterly Bulletin , March 2026.
+Recent developments in online gambling and buy now, pay later (BNPL) financing 
+may contribute to rising financial vulnerability among households, particularly in an 
+environment of elevated cost-of-living pressures and tighter financial conditions.
+The total annual value gambled by South Africans reached approximately R1.50 trillion 1  
+in 2025, representing a 31.3% year-on-year increase (Figure B4.1). 2 Gross gambling 
+revenue (GGR), defined as total stakes less winnings paid out, amounted to R74.5 billion, 
+representing a 25.6% increase over the same period. In 2024/25, online betting accounted 
+for about 85% of GGR.
+ 
+ 0
+ 10
+ 20
+ 30
+ 40
+ 50
+ 60
+Bingo
+LPM
+Casino
+Betting
+R billions
+Figure B4.1: Growth in gross gambling revenue
+2021/22
+2022/23
+2023/24
+2024/25
+Source: National Gambling Board 
+  
+ 0
+ 10
+ 20
+ 30
+ 40
+ 50
+ 60
+ 70
+ 80
+ 90
+2010 2012 2014 2016 2018 2020 2022 2024
+Percentage
+FFiigguurree  BB44..22::  CCoommppoossiittiioonn  ooff  ggrroossss  ggaammbblliinngg  rreevveennuuee
+Casino Betting Bingo LPM
+Source: National Gambling Board 
+Despite the strong growth, online gambling does not currently pose a systemic 
+vulnerability. However, it may indirectly contribute to financial distress in households 
+as some individuals turn to gambling to supplement their income. For a more detailed 
+discussion on the growth in online gambling in South Africa, refer to Box 1 in the SARB’s 
+March 2026 Quarterly Bulletin.3
+
+June 2026FINANCIAL STABILITY REVIEW
+25
+Disruption in critical financial infrastructure and/or services
+On 7 April 2026, US-based AI developer Anthropic released its Claude Mythos 
+Preview model, which demonstrated unprecedented autonomous capability in 
+identifying vulnerabilities across widely used software systems (refer to Box 1 in this 
+edition of the FSR ). Partners granted access through Anthropic’s Project Glasswing 
+initiative are actively scanning codebases, binaries and systems, with an initial 
+focus on patching identified vulnerabilities and sharing non-sensitive findings. The 
+deployment of frontier AI models has led to a significant increase in software and IT 
+system vulnerability.
+From a financial stability perspective, the key concern is near-term amplification 
+of existing risks rather than a permanent shift in residual vulnerability. The main 
+challenge is that these models intensify the speed and scale at which operational 
+disruptions can propagate through the financial system, including through liquidity 
+spillovers, synchronised failures and contagion. Longer-term effects will depend on 
+whether governance and defensive capacity can keep pace. 
+A key transmission channel is the disruption of critical financial market infrastructure, 
+particularly payment, clearing, settlement and messaging systems. System outages, 
+payment failures or infrastructure breakdowns can impair the continuous provision of 
+essential financial services. Disruptions to payment systems may constrain liquidity 
+circulation, while outages affecting digital banking or card payment platforms can 
+limit households’ and firms’ access to funds. If such incidents occur at scale or persist 
+for extended periods, they may impede economic activity and amplify broader 
+financial stress.  
+Buy now, pay later
+BNPL arrangements are associated with higher average basket values per transaction 
+compared with other payment methods. 4 This perceived affordability, together with 
+the ability to hold multiple concurrent BNPL obligations, increases the risk of over-
+indebtedness and may weaken households’ overall financial position, potentially 
+exacerbating financial distress.
+BNPL refers to short-term, point-of-sale instalment arrangements that allow consumers 
+to purchase goods and receive them immediately, while repaying the purchase price over 
+a fixed period, typically between six weeks and three months. Repayments are generally 
+interest free if made on time. Under these arrangements, merchants receive full payment 
+upfront while paying a commission to the BNPL provider, which assumes the associated 
+collection and default risk. As a result, BNPL arrangements are not fully covered by the 
+existing regulatory remit. Although these arrangements function similarly to consumer 
+credit, they typically fall outside the scope of current credit legislation as no interest is 
+charged on the transactions. 5 
+The model appeals to consumers because it reduces upfront payment constraints by 
+spreading purchases into small, interest-free instalments, supported by a seamless 
+interface embedded at checkout points. Approval is typically rapid and based on less 
+rigorous credit checks, rather than the full credit assessments that characterise traditional 
+unsecured credit agreements. 
+The SARB continues to monitor developments in both areas.
+4  C Phelane, ‘ Buy Now, Pay Later: Making Purchases More Manageable (But Proceed with Caution) ’, 
+IFWG blog, April 2025.
+5  In South Africa, the National Credit Act 34 of 2005 (NCA) applies to defined credit agreements, 
+including credit facilities where payment is deferred and charges are imposed for the deferral. Although 
+BNPL arrangements involve deferred payment and therefore resemble credit in substance, providers 
+often argue that these products fall outside the NCA because they do not charge explicit interest or 
+upfront fees.
