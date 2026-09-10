@@ -11,9 +11,19 @@ Reference paper: `Davids_duRand_Georg_Koziol_Schasfoort_2021_Covid.pdf` (SSRN 36
 pseudocode and table-note conventions are used here; its section order is `SOL_PLAN_REFORMAT.md`'s
 business.
 
-**Status: NOT STARTED.** On completion, add a dated `APPLIED` banner recording what was done and
-anything that went beyond this list, per the precedent in `literature_2_fix.md`, and add both plans
-to `OVERVIEW.md` §8 "Companion documents", which currently indexes neither.
+**APPLIED 2026-09-10.** Every content item (1–4, 6–8) is executed and committed; the project
+compiles with no undefined references or citations (three overfull boxes remain, all under 3pt
+after the last fix). Three things went beyond the list. The NIDS variable map already existed in
+`DECISIONS.md` §II.4 and its two copies disagreed: `household_agent.md` subtracted rent from
+discretionary expenditure, `p0_backbone.ipynb` does not, and `household_agent.md` was corrected
+(savings are also winsorised at the 99th percentile only, not 1st/99th; `DECISIONS.md` corrected).
+No NCR primary source for the reporting requirement could be located (ncr.org.za returned HTTP
+500; sacrra.org.za lists no BNPL material), so it is cited to the Business Day report, the FINASA
+statement and the DCASA roundtable note, with February 2027 marked press-reported and not
+gazetted; the SARB Financial Stability Review (June 2026, Box 4, pp. 24–25) was located and is
+the primary source for the over-indebtedness framing. Donor-reuse diagnostics were computed by
+replaying the seeded match (`data/processed/p2_donor_reuse.json`). Realised word counts are in
+§0.2. `OVERVIEW.md` §8 indexes both plans.
 
 ---
 
@@ -54,9 +64,21 @@ Projection **~9,400–9,700**. The headroom is thin and possibly negative if the
 Settle that question in step 1.
 
 ⚠️ **The word count cannot be checked meaningfully by this plan.** `05_results.tex` and
-`07_conclusion.tex` §§7.1–7.3 are pure comment skeletons; the +3,300 and +800 are unwritten. A count
-run at the end of this plan lands near 5,300 and proves nothing. Record the subtotal, hand the
-budget to whoever writes Results.
+`07_conclusion.tex` §§7.1–7.3 are pure comment skeletons; the +3,300 and +800 are unwritten.
+
+**Realised (2026-09-10).** Counted with `wc_prose.py` (scratchpad), which strips comments, tables,
+figures, TikZ and algorithm floats and reads ~3% higher than the counter behind the 6,206 figure
+above; the like-for-like baseline at commit `0d6fc60` is **6,414**. After this plan: **6,640,
++226**, not the −910 projected. By chapter: Ch1 +295 (the mandate paragraph and the scoping
+clause, both required); Ch2 +10 (the deletion was offset by the retensed regulatory paragraph);
+Ch3 −229; Ch4 +763 (the relocated caveats compressed by ~40% but not the ~50% assumed, plus the
+scoring limitation and the scenario recast); Ch5 +127 (the no-cascade paragraph, which counts
+against the Results budget); Ch6 −945; Ch7 +205. Projection with Results at 3,300 and the
+Conclusion at an 800-word total: ~10,150 by this counter, ~9,850 by the original. **Results must
+be written to ≤3,000, or the restructure's compression pass must find 300–600 words.** The
+inline caveats in Ch4 (§4.1, §4.5, Submodels 4, 6/8, 10) are the first place to look;
+`SOL_PLAN_REFORMAT.md`'s own Results-plus-policy allocation (3,250) already assumes the tighter
+figure.
 
 ### 0.3 Regulatory facts, verified 2026-09-08
 
@@ -516,3 +538,8 @@ implementation map. Not restated here. What this plan leaves it:
 - The `sec:lim-*` labels are **already resolved by §7**, including the `sec:lim-structural` split.
   Do not re-derive them — but do re-run `grep -rn "sec:lim-" thesis/chapters/*.tex` to confirm.
 - Its own five-figure body cap conflicts with the ~5 new Results figures (§0.2). Settle it.
+- It predates decisions 3 and 4 (2026-09-09): its §5 compares four levers including the
+  hypothetical cap, and its Results section still plans a separate limitations distribution. Both
+  are superseded — three crossed scenarios (§4), cap and cool-off in Appendix C only, and the
+  limitations are already distributed with their labels (§7, `06_discussion.tex` pointer comment).
+- Realised word counts and the Results budget consequence are in §0.2.

@@ -16,7 +16,7 @@ names where its rule is implemented.
 \begingroup
 \setlength{\tabcolsep}{3pt}
 \small
-\begin{longtable}{L{2.9cm}L{3.2cm}L{3.9cm}L{2.0cm}L{1.3cm}}
+\begin{longtable}{L{3.0cm}L{3.2cm}L{3.8cm}L{2.0cm}L{1.3cm}}
 \caption{Source field, rule and missing-data treatment for every agent field}
 \label{tab:var-map} \\
 \multicolumn{5}{p{13.3cm}}{\footnotesize Every field initialised on an agent
@@ -64,7 +64,7 @@ head demographics & roster \texttt{w5\_r\_relhead}; individual \texttt{w5\_best\
 \addlinespace
 \texttt{nca\_capacity\_monthly} & \texttt{w5\_hhincome} & $\rho(Y)$: income less the Regulation 23A necessary-expense norm (Table~\ref{tab:reg23a-norms}) & --- & P2, P5 \\
 \addlinespace
-\texttt{scheduled\_\allowbreak service\_\allowbreak tick} & \texttt{d\_trad}, \texttt{apr\_annual}, \texttt{term\_months}, \texttt{nca\_capacity\_\allowbreak monthly} & $\min\{\mathrm{PMT}(D, \iota, \tau),\ \rho(Y)\}$; $\times\,12/26$ & 0 if no debt & P2, P5 \\
+\texttt{scheduled\_\allowbreak service\_\allowbreak tick} & \texttt{d\_trad}, \texttt{apr\_annual}, \texttt{term\_months}, \texttt{nca\_capacity\_\allowbreak monthly} & $\min\{\mathrm{PMT}(D, \iota, \tau),$ $\rho(Y)\}$; $\times\,12/26$ & 0 if no debt & P2, P5 \\
 \end{longtable}
 \endgroup
 

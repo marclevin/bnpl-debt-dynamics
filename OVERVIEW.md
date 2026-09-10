@@ -247,6 +247,17 @@ non-linear threshold in RQ2 structurally possible.
 - [`scratchpad/PLAN.md`](scratchpad/PLAN.md) — **what happens next**: the sequence, the open
   decisions, the word budget and the supervisor questions.
 
+Two revision plans from the September 2026 supervisor feedback:
+
+- [`supervisor_revision_plan.md`](supervisor_revision_plan.md) — **content**: the seven
+  feedback items as writing tasks (framing around the 2026 bureau-reporting requirement,
+  variable-construction and cell-donor appendices, three crossed scenarios, pseudocode,
+  self-contained floats, limitations argued inline). **APPLIED 2026-09-10**; its §0.2 records
+  the realised word counts and the Results budget they imply.
+- [`SOL_PLAN_REFORMAT.md`](SOL_PLAN_REFORMAT.md) — **structure**: the restructure to the
+  reference paper's section order, to run after the content plan. Note its §5 predates the
+  decision to cut the cooling-off and facility-cap levers from the body.
+
 Plus two standing references:
 
 - [`THESIS_GUIDE.md`](THESIS_GUIDE.md): plain-language explanation of the entire project, written
