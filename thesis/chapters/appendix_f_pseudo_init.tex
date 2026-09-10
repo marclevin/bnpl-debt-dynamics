@@ -7,17 +7,20 @@ normative statement of the pipeline: where prose elsewhere in the thesis and an 
 differ, the algorithm governs, and each has been checked line by line against the module that
 implements it (\texttt{simulation/}). Table~\ref{tab:notation} fixes the notation used throughout.
 Sets are set in script, their cardinalities in upper case, and their elements in lower case; a
-subscript indexes an element, a superscript identifies a variant.
+subscript indexes an element, a superscript identifies a variant. Random draws are written
+$U(0,1)$; every draw comes from a single seeded stream per run, except the threshold endowments
+$\theta_i$, which come from a separate initialisation stream so that control arms reproduce the
+main stream exactly.
 
 \begingroup
 \small
 \begin{longtable}{L{2.6cm}L{7.4cm}L{3.4cm}}
 \caption{Notation}
 \label{tab:notation} \\
-\multicolumn{3}{p{13.4cm}}{\footnotesize This table defines every symbol used in the
-algorithms of Appendices~\ref{app:pseudo-init} and~\ref{app:pseudo-main}. Flows are per 14-day
-tick unless marked monthly; all money is in 2017 Rands. The right-hand column names the parameter
-in \texttt{simulation/config.py} or the agent field in \texttt{population.py} that carries the
+\multicolumn{3}{p{13.4cm}}{\footnotesize This table defines every symbol used in
+Algorithms~\ref{alg:init} to~\ref{alg:peer}. Flows are per 14-day tick unless marked monthly; all
+money is in 2017 Rands. The right-hand column names the parameter in
+\texttt{simulation/config.py} or the agent field in \texttt{population.py} that carries the
 quantity, so that a symbol can be traced to code. Symbols already used in the body
 (Equation~\ref{eq:peer}) are unchanged.} \\
 \toprule
@@ -86,10 +89,120 @@ $\mathbb{1}^{\text{bur}}$ & \ac{BNPL} obligations visible to the bureau (Scenari
 $\mathbb{1}^{\text{aff}}$ & Regulation 23A test applied to \ac{BNPL} originations (Scenario 2) & \texttt{bnpl\_affordability\_check} \\
 \addlinespace
 \multicolumn{3}{l}{\emph{Functions}} \\
-$\rho(Y)$ & Regulation 23A residual-income capacity: $Y$ less the statutory necessary-expense norm & \texttt{nca\_max\_service} \\
+$\rho(Y)$ & Regulation 23A residual-income capacity: $Y$ less the statutory necessary-expense norm (Table~\ref{tab:reg23a-norms}) & \texttt{nca\_max\_service} \\
 $\mathrm{PMT}(D, \iota, \tau)$ & level monthly instalment amortising $D$ at annual rate $\iota$ over $\tau$ months & \texttt{amortised\_instalment} \\
 $\mathrm{clip}(x, 0, 1)$ & $\min(\max(x, 0), 1)$ & --- \\
 \end{longtable}
 \endgroup
 
-% Algorithms 1--5 (initialisation) follow in step 6 of supervisor_revision_plan.md.
+\subsection*{F.1 The master algorithm}
+
+Initialisation runs once per simulation and has four stages, each a sub-algorithm. The first
+three are the data layer of Section~\ref{ch:population} and are executed once, offline, to
+produce the population file; the fourth runs at the start of every simulation and turns that file
+into agents. Algorithm~\ref{alg:init} dispatches them.
+
+\begin{algorithm}[H]
+\caption{Initialisation}
+\label{alg:init}
+\begin{algorithmic}
+\State Build the survey backbone: execute Algorithm~\ref{alg:backbone}
+\State Impute financial-inclusion flags: execute Algorithm~\ref{alg:match}
+\State Construct debt service: execute Algorithm~\ref{alg:service}
+\State Resample to $H$ agents and instantiate the model: execute Algorithm~\ref{alg:resample}
+\end{algorithmic}
+\end{algorithm}
+
+\subsection*{F.2 Build the survey backbone}
+
+Algorithm~\ref{alg:backbone} filters the \ac{NIDS} household file and derives the six core
+variables of Section~\ref{sec:backbone}; every rule is specified in Appendix~\ref{app:variables}.
+
+\begin{algorithm}[H]
+\caption{Build the survey backbone}
+\label{alg:backbone}
+\begin{algorithmic}
+\State Load the \ac{NIDS} Wave 5 household-derived file (13{,}719 records)
+\State Drop every record with missing income, missing size, or a non-positive weight \Comment{10{,}841 remain}
+\ForAll{households $i$}
+    \State Zero-fill the income components, rent paid, food, non-food, imputed rent, assets and debt \Comment{missing $=$ non-holding}
+    \State $\text{source}_i \gets \arg\max\{\text{wage},\ \text{grant},\ \text{other}\}$; OTHER if none is positive
+    \State $e^c_i \gets \text{food} + \text{rent paid}$;\quad $e^d_i \gets \max(\text{non-food}, 0)$ \Comment{imputed rent excluded from both}
+    \State $a_i(0) \gets \min(\text{financial assets},\ \text{99th percentile})$
+    \State $D_i(0) \gets \text{financial debt}$
+    \State income per member $\gets Y_i / \text{household size}$
+\EndFor
+\State Compute weighted quintile cut points of income per member; assign $q(i)$ to every household
+\State Merge head demographics from the roster and individual files \Comment{10{,}736 matched}
+\end{algorithmic}
+\end{algorithm}
+
+\subsection*{F.3 Cell-donor match}
+
+Algorithm~\ref{alg:match} is the procedure of Appendix~\ref{app:matching}. The quintile-only
+fallback exists for completeness and was never triggered.
+
+\begin{algorithm}[H]
+\caption{Cell-donor match}
+\label{alg:match}
+\begin{algorithmic}
+\State Load \ac{FinScope} 2019; drop non-positive weights \Comment{4{,}969 donors}
+\ForAll{donors $d$}
+    \State income per member $\gets$ band midpoint $/$ household size; assign $q(d)$ with the \ac{NIDS} cut points
+    \State $\text{flags}_d \gets (\texttt{F1}, \texttt{G10}, \ldots, \texttt{G14}) = \text{``Yes''}$
+\EndFor
+\State Partition donors into pools by cell $c = (q, p)$ \Comment{45 cells, $\geq 30$ donors each}
+\ForAll{households $i$}
+    \State pool $\gets$ donors in $c(i)$;\ \textbf{if} pool is empty \textbf{then} pool $\gets$ donors in $q(i)$ \Comment{never triggered}
+    \State Draw $d$ from pool with probability $w_d / \sum_{d' \in \text{pool}} w_{d'}$
+    \State $(\text{banked}_i, \text{flags}_i) \gets \text{flags}_d$ \Comment{the whole vector, one donor}
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+
+\subsection*{F.4 Construct debt service}
+
+Algorithm~\ref{alg:service} converts the debt stock to a capped monthly flow
+(Appendix~\ref{app:variables}, Part~D.9). The function $\rho$ is the same one the lender applies
+in Algorithm~\ref{alg:gate}.
+
+\begin{algorithm}[H]
+\caption{Construct debt service}
+\label{alg:service}
+\begin{algorithmic}
+\ForAll{households $i$ with $D_i(0) > 0$}
+    \State classes $\gets$ product classes flagged in $\text{flags}_i$;\ \textbf{if} none \textbf{then} classes $\gets \{\text{unsecured}\}$
+    \State $\iota_i \gets$ mean statutory rate over classes;\quad $\tau_i \gets \max(\text{mean term over classes},\ 1)$
+    \State $\text{PMT} \gets D_i(0)\, r / \bigl(1 - (1 + r)^{-\tau_i}\bigr)$ with $r = \iota_i / 12$
+    \State monthly service$_i \gets \min\{\text{PMT},\ \rho(Y_i)\}$ \Comment{Regulation 23A cap}
+\EndFor
+\State monthly service$_i \gets 0$ for every household with $D_i(0) = 0$
+\end{algorithmic}
+\end{algorithm}
+
+\subsection*{F.5 Resample and instantiate}
+
+Algorithm~\ref{alg:resample} draws the agent population and sets every state variable to its
+opening value. Eligibility and the repayment archetype are the two stochastic endowments drawn
+from the simulation stream; the threshold endowment comes from the separate initialisation
+stream.
+
+\begin{algorithm}[H]
+\caption{Resample and instantiate}
+\label{alg:resample}
+\begin{algorithmic}
+\State Draw $H = 5{,}000$ records from the 10{,}841 with replacement, with probability $\propto w_i$ \Comment{seed 20260818}
+\ForAll{drawn records, indexed $i = 1, \ldots, H$}
+    \State Join $y^w_i$ and $n_i$ from the \ac{NIDS} wage field and the employment roster
+    \State Recompute $\iota_i$, $\tau_i$ and monthly service as in Algorithm~\ref{alg:service}
+    \State Scale flows to the tick: $y_i, y^w_i, e^c_i, e^d_i, r_i \gets \chi \times$ monthly value
+    \State Keep $Y_i$, $E^d_i$, $\rho_i$ monthly; keep $a_i(0)$ and $D_i(0)$ unscaled
+    \State $g(i) \gets (q(i), p(i))$
+\EndFor
+\State $\epsilon_i \gets 1$ for a random share \texttt{bnpl\_access\_rate} of banked households, else 0 \Comment{1.0 in the baseline: 82.8\% of all}
+\State $m_i \gets 1$ for a random share 0.29 of households, else 0
+\If{threshold mechanism} $\theta_i \gets \mathrm{clip}\bigl(\mathcal{N}(\mu_\theta, \sigma_\theta), 0, 1\bigr)$ from the initialisation stream \EndIf
+\State $B_{ip}(0), A_i(0), \delta_i(0), \alpha_i(0), d_i(0), u_i(0), \bar t_i \gets 0$;\quad $s_g(0) \gets 0$ for all $g$
+\State Create the bureau with visibility $\mathbb{1}^{\text{bur}}$, the lender, and, if $\mathbb{1}^{\text{bnpl}}$, $P$ platforms with $L_{ip} = \lambda Y_i$
+\end{algorithmic}
+\end{algorithm}

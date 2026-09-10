@@ -1,7 +1,7 @@
 \section{The Household Population}
 \label{ch:population}
 
-We construct a synthetic population of 5{,}000 household agents from South African microdata
+We construct a synthetic population of 5{,}000 household agents from South African microdata.
 This section outlines the data sources, variable derivations, financial indicator imputations, and empirical validation of the static population structure.
 Dynamic household interactions and behavioural realism are evaluated separately in Section~\ref{sec:results-baseline}.
 All monetary figures are denominated in 2017 South African Rand (ZAR) matching the base survey year, with no inflation adjustments applied at the data layer.
@@ -13,24 +13,12 @@ The backbone of the synthetic population is drawn from \ac{NIDS} Wave 5 \cite{ni
 Filtering the raw sample ($N = 13,719$) for households with reported income, valid size, and
 positive sampling weights leaves 10{,}841 records. The 2{,}878 discarded records carry zero or missing weights; their removal thus entails no loss of weighted population mass. Scaled by national design weights, the final sample represents 18.67 million households or roughly 56.5 million individuals.
 
-We derive six core economic variables per household:
-\begin{itemize}
-    \item \textbf{Monthly income:} Total aggregated household income as derived by \ac{NIDS}.
-    \item \textbf{Income source:} Primary income stream, categorised into wage, government grant, or remittance/other.
-    \item \textbf{Committed expenditure:} Sum of food outlays and paid rent, establishing an incompressible consumption floor.
-    \item \textbf{Discretionary expenditure:} Non-food expenditure (recorded in \ac{NIDS} independently of rent).
-    \item \textbf{Liquid savings:} Proxied by self-reported financial assets and winsorised at the 99th percentile (ZAR 133{,}662) to limit tail-distorted variance.
-    \item \textbf{Traditional debt:} Total outstanding financial debt reported in \ac{NIDS}.
-\end{itemize}
+We derive six core economic variables per household: monthly income and its dominant source (wage, grant, or remittance and other); committed expenditure (food and rent paid, an incompressible floor); discretionary expenditure (all other non-food cash spending); liquid savings (financial assets, winsorised at the 99th percentile); and traditional debt (outstanding financial debt).
+Imputed rent, the non-cash consumption value of owner-occupied housing, is excluded from both expenditure tiers.
+Appendix~\ref{app:variables} gives the source field, formula, missing-data treatment and diagnostics for every variable, including the debt-service construction of Section~\ref{sec:servicing}.
 
-Total expenditure in \ac{NIDS} decomposes into food, non-food, rent paid, and imputed rent.
-We exclude imputed rent, the non-cash consumption value of ower-occupied housing, from expenditure tiers.
-Including it would artificially inflate compressible consumption by a median of ZAR 700 per month across the 82.6\% of households that own their homes.
-
-Four survey fields record values only when an asset or liability is present, omitting explicit zeros.
-Missing entries are treated as non-holding (zero balances): financial assets (unobserved in 48.2\% of cases), financial debt (56.6\%), total debt (54.4\%), and rent paid (80.2\%).
-We test this non-response assumption against aggregate national credit data in Section~\ref{sec:data-validation}.
-Operationally, this assumption implies that committed expenditure reduces to food costs alone for homeowning households.
+Four survey fields record values only when an asset or liability is present, so a missing entry denotes non-holding and is set to zero: financial assets (unobserved for 48.2\% of households), financial debt (56.6\%), total debt (54.4\%), and rent paid (80.2\%).
+Section~\ref{sec:data-validation} tests this assumption against aggregate national credit data; operationally it means that committed expenditure reduces to food costs alone for home-owning households.
 
 Households are stratified into per-capita income quintiles bounded at ZAR 900, ZAR 1{,}801, ZAR 3{,}400, and ZAR 7{,}712 per month.
 Demographic variables for the household head (age, gender, race, education) are merged from the \ac{NIDS} individual file, matching 10{,}736 of the 10{,}841 retained households.
@@ -43,10 +31,66 @@ Banked status determines entry into \ac{BNPL}, bounding potential market adoptio
 Five credit-product flags (store cards, revolving credit, hire purchase, short-term loans, and personal loans) determine the interest rates and repayment schedules assigned in Section~\ref{sec:servicing}.
 Unused indicator fields are omitted.
 
-We transfer attributes using cell-donor matching.
+We transfer attributes using cell-donor matching, illustrated in Figure~\ref{fig:cell-donor}.
 Stratifying both datasets by per-capita income quintile and province, each \ac{NIDS} record draws a donor from its matching cell with probability proportional to the donor's survey weight (seed: 42).
 Extracting all six indicators from a single donor preserves the joint product distribution.
-Each of the 45 sampling cells contains at least 30 donor candidates.
+Each of the 45 sampling cells contains at least 30 donor candidates, and no draw ever fell back to a coarser cell.
+
+Three properties of the match matter for what follows.
+Because one donor supplies all six flags, the imputed joint distribution of products is a real household's rather than a product of six independent marginals, which matters because stacking is a joint phenomenon.
+Because nothing within a cell is matched on, the imputation reproduces between-cell variation in inclusion and suppresses within-cell variation, so the eligible population is more homogeneous than the real one.
+And because the flags are two years younger than the population, the 82.8\% banked ceiling is plausibly slightly generous for 2017.
+Appendix~\ref{app:matching} states the assumptions under which the match is credible, the circumstances under which it is not, and which of them would move a headline result.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[font=\footnotesize, >=Stealth,
+  cell/.style={draw, minimum width=0.46cm, minimum height=0.34cm, inner sep=0pt},
+  hl/.style={fill=black!18},
+  rec/.style={draw, rounded corners=1pt, align=center, inner sep=4pt},
+  donor/.style={circle, draw, fill=black!8, inner sep=0pt},
+  lbl/.style={align=center}]
+% ---- panel (a): the same partition of both surveys --------------------------
+\node[lbl] at (-0.55,2.2) {\textbf{(a)}};
+\foreach \x in {0,...,8} \foreach \y in {0,...,4} {
+  \node[cell] at (\x*0.46, \y*0.34) {};
+  \node[cell] at (6.7+\x*0.46, \y*0.34) {};
+}
+\node[cell, hl] (rcell) at (2*0.46, 3*0.34) {};
+\node[cell, hl] (dcell) at (6.7+2*0.46, 3*0.34) {};
+\foreach \y/\l in {0/Q1,1/Q2,2/Q3,3/Q4,4/Q5} {
+  \node[left, font=\scriptsize] at (-0.28,\y*0.34) {\l};
+  \node[left, font=\scriptsize] at (6.42,\y*0.34) {\l}; }
+\node[lbl] at (1.85,-0.68) {\textbf{NIDS 2017}, 10{,}841 recipients\\[-2pt] \scriptsize nine provinces $\rightarrow$};
+\node[lbl] at (8.55,-0.68) {\textbf{FinScope 2019}, 4{,}969 donors\\[-2pt] \scriptsize nine provinces $\rightarrow$};
+\draw[->, thick] (rcell.north) to[out=75, in=105] node[midway, above, lbl]
+  {the same cell $c = (q, p)$: 45 cells, each with at least 30 donors} (dcell.north);
+% ---- panel (b): one donor, the whole vector ---------------------------------
+\node[lbl] at (-0.55,-1.7) {\textbf{(b)}};
+\node[rec] (recip) at (1.5,-2.9) {recipient $i$\\[1pt] \scriptsize income, expenditure,\\[-1pt] \scriptsize savings, debt from \ac{NIDS}};
+\node[donor, minimum size=14pt, fill=black!40] (d3) at (8.55,-2.9) {};
+\node[donor, minimum size=6pt]  (d6) at (8.9,-2.2) {};
+\node[donor, minimum size=5pt]  (d1) at (9.45,-2.4) {};
+\node[donor, minimum size=9pt]  (d2) at (10.05,-2.75) {};
+\node[donor, minimum size=7pt]  (d4) at (10.55,-3.2) {};
+\node[donor, minimum size=11pt] (d5) at (9.4,-3.4) {};
+\node[draw, dashed, fit=(d1)(d2)(d3)(d4)(d5)(d6), inner sep=5pt,
+  label={[lbl, font=\scriptsize, yshift=-2pt]below:donor pool of cell $c$;\\ circle area $\propto$ weight $w_d$}] (pool) {};
+\draw[->, thick] (d3.west) -- (recip.east)
+  node[midway, above, lbl, yshift=1pt] {one donor $d$, drawn with\\ probability $w_d / \sum_{d' \in c} w_{d'}$}
+  node[midway, below, lbl, font=\scriptsize, yshift=-1pt] {copies the whole\\ six-flag vector};
+% ---- panel (c): the rejected alternative ------------------------------------
+\node[lbl] at (-0.55,-4.75) {\textbf{(c)}};
+\node[rec] (recip2) at (1.5,-5.7) {recipient $i$\\[1pt] \scriptsize per-flag imputation\\[-1pt] \scriptsize (rejected)};
+\foreach \k/\ypos in {1/-4.95,2/-5.25,3/-5.55,4/-5.85,5/-6.15,6/-6.45} {
+  \node[donor, minimum size=6pt] (e\k) at (8.55,\ypos) {};
+  \draw[->, thin] (e\k.west) -- (recip2.east); }
+\node[lbl, right, font=\scriptsize] at (8.85,-5.7) {six draws from six\\ different donors: the same\\ marginals, but the joint\\ structure stacking depends\\ on is lost};
+\end{tikzpicture}
+\caption{The cell-donor match}
+\label{fig:cell-donor}
+\tabnote{Panel (a): both surveys are partitioned into the same 45 cells by per-capita income quintile and province; a \ac{NIDS} household draws its donor only from the \ac{FinScope} households in its own cell, and every cell holds at least 30 donors. Panel (b): within the cell, one donor is drawn with probability proportional to its survey weight (circle area), and its entire six-flag vector is copied to the recipient, so the imputed joint distribution of products is a real household's. Panel (c): the rejected alternative, one draw per flag from six different donors, reproduces the same marginals but discards the joint structure that concurrent-facility stacking depends on. Appendix~\ref{app:matching} gives the procedure formally, with its assumptions and limits.}
+\end{figure}
 
 \ac{FinScope} reports income in seven discrete bands rather than continuously; we place donors into quintiles using band midpoints divided by household size.
 Deflating 2019 income brackets to 2017 Rands shifts imputed quintile rates by at most 2.4 percentage points, so we retain the unadjusted key.
@@ -56,8 +100,9 @@ Figure~\ref{fig:inclusion-fidelity} breaks down alignment across quintiles; the 
 
 \begin{table}[H]
 \centering
-\caption{National rates for the imputed indicators: the FinScope 2019 benchmark, the weighted synthetic population carrying the flags, and the unweighted 5{,}000 agent population. The difference column reports the synthetic population less FinScope, and is computed before rounding.}
+\caption{National rates for the six imputed indicators}
 \label{tab:imputation_errors}
+\tabnote{This table compares the national rate of each imputed indicator in three populations: the \ac{FinScope} 2019 benchmark, weighted by its survey weight; the 10{,}841-household synthetic population after matching, weighted by \ac{NIDS} survey weight; and the unweighted 5{,}000-agent resample used in the simulation. The difference column is synthetic less \ac{FinScope}, in percentage points, computed before rounding; the tolerance is 3 percentage points (Table~\ref{tab:validation}). Because the match draws donors within the same quintile-by-province cell in proportion to weight, agreement here is expected by construction: it tests the implementation, not the population's external validity (Appendix~\ref{app:matching}).}
 \begin{tabular}{lrrrr}
 \toprule
 \textbf{Imputed indicator} & \textbf{FinScope 2019} & \textbf{Synthetic} & \textbf{Agents} & \textbf{Difference} \\
@@ -76,8 +121,9 @@ Personal loan    &  2.1 &  2.3 &  2.3 & 0.2 \\
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{figures/fig_inclusion_fidelity.pdf}
-\caption{Fidelity of the imputed indicators. Panel (a) compares national rates across the FinScope 2019 benchmark, the weighted synthetic population, and the unweighted agent population. Panel (b) decomposes the synthetic-to-FinScope gap by income quintile; the largest single deviation is 2.3 percentage points, against a tolerance of 5 percentage points.}
+\caption{Fidelity of the imputed indicators}
 \label{fig:inclusion-fidelity}
+\tabnote{Panel (a) compares the national rate of each of the six imputed indicators across the \ac{FinScope} 2019 benchmark, the weighted synthetic population and the unweighted 5{,}000-agent population, as in Table~\ref{tab:imputation_errors}. Panel (b) shows the synthetic-less-\ac{FinScope} gap for each indicator within each per-capita income quintile, thirty cells in all; the largest single deviation is 2.3 percentage points against a tolerance of 5. Quintiles are the weighted \ac{NIDS} bounds of Section~\ref{sec:backbone}.}
 \end{figure}
 
 The geographic and income-based cells establish the reporting categories for quintile-level analysis and define the reference networks that drive peer-influence dynamics in the simulation.
@@ -86,26 +132,15 @@ The geographic and income-based cells establish the reporting categories for qui
 \label{sec:servicing}
 
 \ac{NIDS} measures debt \emph{stocks}, but the simulation requires monthly cash \emph{flows}.
-We reconstruct monthly debt service through a three-step amortization procedure using statutory maximum rates and empirical repayment horizons.
+Monthly debt service is reconstructed in three steps, specified in full in Appendix~\ref{app:variables}: each household's balance is amortised at the \ac{NCA} statutory maximum \ac{APR} for 2017 \cite{sa_ncr_ratecaps_2016} over a product-specific repayment horizon (Table~\ref{tab:credit-terms}), and the resulting instalment is capped at the Regulation 23A residual-income ceiling \cite{sa_ncr_affordability_2015}.
+Because realised rates by product class are unobserved in the \ac{CCMR} \cite{ncr_ccmr_2017} or any collateral 2017 source, statutory ceilings serve as proxies and bias calculated debt service upward.
+Because \ac{NIDS} reports one consolidated balance, each household adopts the unweighted mean rate and horizon across the product classes its donor flags; balances with no flagged product are priced as unsecured.
 
-First, outstanding debt balances are amortized using the statutory ceiling rates mandated by the \ac{NCA} in 2016 \cite{sa_ncr_ratecaps_2016}.
-Relative to the 2017 repo rate (7.00\%), these caps sit at 21\% for credit facilities, 24\% for standard credit agreements, and 28\% for unsecured credit.
-Because realized average \acp{APR} by product class are unobserved in \ac{CCMR} reports \cite{ncr_ccmr_2017} or collateral 2017 sources, statutory caps serve as proxies.
-This sets an upper bound on interest rates, introducing a systematic upward bias to calculated debt service flows.
-
-Second, product classes are assigned specific repayment horizons (Table~\ref{tab:credit-terms}). Horizons for store cards and hire purchase equal the median ratio of total debt balance to observed monthly payment in \ac{NIDS}.
-Because the numerator aggregates overall financial debt while the denominator isolates single product payments, these derived horizons are conservative upper bounds.
-For other categories, horizons match the \ac{CCMR} stock-flow implied duration (calculated as three times the gross debtors book divided by quarterly credit granted).
-This proxy tracks official \ac{CCMR} agreement term distributions within roughly three months.
-
-Because \ac{NIDS} aggregates debt into a single household-level stock, rate and horizon parameters cannot be weighted by individual loan balances.
-Instead, households adopt the unweighted mean interest rate and horizon across the product classes flagged by their donor.
-Households whose donor holds no flagged product are priced under unsecured terms.
-
-\begin{table}[H]
+\begin{table}[tbp]
 \centering
-\caption{Repayment horizons by product class, with provenance. Interest rates are the \ac{NCA} statutory maxima at the 2017 repurchase rate throughout.}
+\caption{Interest rates and repayment horizons by product class}
 \label{tab:credit-terms}
+\tabnote{This table gives the annual rate and repayment horizon used to amortise each household's opening traditional debt, by the product class its \ac{FinScope} donor flags; a household holding several classes takes the unweighted mean of each. Rates are the \ac{NCA} statutory maxima at the 2017 repurchase rate of 7.00\% \cite{sa_ncr_ratecaps_2016}, not realised market rates, which no 2017 source publishes; they therefore bound calculated debt service from above. Horizons are either measured in \ac{NIDS} as the median ratio of balance to the observed monthly payment for that product ($n$ as shown) or derived from the \ac{CCMR} stock-flow implied life, three times the gross debtors book over quarterly credit granted. Construction detail is in Appendix~\ref{app:variables}.}
 \begin{tabular}{L{2.7cm}L{1.2cm}L{1.9cm}L{5.7cm}}
 \toprule
 \textbf{Product class} & \textbf{\ac{APR}} & \textbf{Horizon (months)} & \textbf{Provenance} \\
@@ -125,24 +160,11 @@ Unflagged balance & 28\% & 25 & Fallback for the 74.0\% of donors flagging no sp
 \end{tabular}
 \end{table}
 
-Third, generated monthly repayments are capped using the affordability calculation under \ac{NCA} Regulation 23A.
-The regulation mandates minimum living expense allowances by gross income band, treating only the remaining balance as disposable for debt service.
-Applied to household-level income, the maximum allowable debt service ceiling ranges from zero to 93.2\% of gross income.
-Applying an individual legal framework to household income relaxes borrowing constraints for large, low-income households in the bottom quintile (mean Q1 ceiling = 49.6\% of income).
-
-The affordability cap binds for 3.8\% of indebted households ($n = 178$), but eliminates 22.8\% of total calculated debt service, indicating concentrated downward adjustments on high-debt outliers.
-For 53 households, gross income falls below statutory minimum living expenses, leaving zero calculated repayment capacity.
-Their debt balances are retained, as the data cannot separate legacy debt, informal borrowing, or non-compliant credit, resulting in these highly constrained households entering the model with zero active debt service flows.
-
-Reconstructed debt servicing is evaluated against the \ac{FinScope} self-reported budget share allocation \cite{finscope2019}.
-Among households holding at least one modeled credit product, debt service accounts for 6.07\% of monthly spending on clothing accounts and hire purchase, rising to 9.78\% when including mortgages, credit cards, and auto loans.
-Standardizing the model to the same population and denominator yields a debt service share of 12.8\% of monthly outlay—exceeding the empirical benchmark, which includes broader product coverage.
-This divergence reflects using statutory ceiling \acp{APR} instead of realized market rates.
-Across indebted agents, the calculated debt-service-to-income ratio (\ac{DSTI}) exhibits a weighted mean of 10.9\% and a median of 3.3\% (the full-population mean is 4.8\%, reflecting the 56.6\% zero-debt baseline).
-
-A known limitation in the expenditure split is accounting overlap: the \ac{NIDS} non-food aggregate used for discretionary expenditure includes reported clothing, hire purchase, and vehicle payments (median = 12.6\% of non-food outlays among debt-paying households).
-Consequently, constructed servicing charges a flow already present in discretionary spending, overstating compressible outlays for indebted agents and slightly understating true relative debt service proportions.
-Servicing-sensitive simulation outputs should therefore be interpreted as comparative upper bounds.
+The affordability cap binds for 3.8\% of indebted households ($n = 178$) but removes 22.8\% of total calculated debt service, so the adjustment is concentrated on high-debt outliers; 53 households have gross income below the statutory minimum living expenses and enter the model holding debt but with zero scheduled service, since the data cannot separate legacy, informal, or non-compliant credit.
+Against the \ac{FinScope} self-reported budget shares \cite{finscope2019}, the reconstructed servicing share of monthly outlay among households holding a modelled product is 12.8\%, above the 6.1--9.8\% survey range; the excess is the direction expected from ceiling rates.
+Across indebted agents the debt-service-to-income ratio (\ac{DSTI}) has a weighted mean of 10.9\% and a median of 3.3\% (the full-population mean is 4.8\%, reflecting the 56.6\% zero-debt baseline).
+One accounting overlap is known: the \ac{NIDS} non-food aggregate already contains reported clothing-account, hire-purchase and vehicle payments (median 12.6\% of non-food outlay among households reporting one), so constructed servicing charges a flow partly present in discretionary spending, overstating compressible outlay for indebted agents and understating their relative servicing share.
+Servicing-sensitive simulation outputs are therefore read as comparative upper bounds.
 
 \subsection{Population Resampling}
 \label{sec:resample}
@@ -158,20 +180,26 @@ Resampling slightly increases concentration: the per-capita income Gini coeffici
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{figures/fig_population_fidelity.pdf}
-\caption{Distributional fidelity of the agent population. Each panel compares the unweighted 5{,}000 agents against the weighted NIDS source they are drawn from. Panels (a) and (b) cover the per-capita income distribution and its concentration; panels (c) to (f) cover the categorical attributes that gate behaviour and define the peer reference groups in the simulation.}
+\caption{Distributional fidelity of the agent population}
 \label{fig:pop-fidelity}
+\tabnote{Each panel compares the unweighted 5{,}000-agent resample, drawn with replacement in proportion to \ac{NIDS} survey weight (seed 20260818), against the weighted 10{,}841-household source it is drawn from. Panels (a) and (b) cover the per-capita income distribution and its concentration; panels (c) to (f) cover income quintile, household size, province and primary income source, the categorical attributes that gate behaviour and define the reference groups in the simulation. The Kolmogorov--Smirnov distance in (a) is 0.016, the largest categorical deviation is 1.4 percentage points, and the Gini rises from 0.651 to 0.667.}
 \end{figure}
 
 \subsection{Validation of the Synthetic Population}
 \label{sec:data-validation}
 
-We evaluate the synthetic population using eighteen diagnostic validation checks across five domains: internal consistency against \ac{NIDS} (Group A), matching fidelity to FinScope marginals (Group B), external benchmarks (Group C), debt service plausibility (Group D), and resample fidelity (Group E).
-Table~\ref{tab:validation} summarizes the scorecard results: seventeen tests satisfy target tolerances, with only the external debt service level check exceeding tolerance bounds.
+Table~\ref{tab:validation} reports eighteen checks on the constructed population in five groups, and the headline number is not eighteen.
+Fourteen are construction checks that test whether the pipeline did what it was specified to do: internal consistency with \ac{NIDS} (Group A), agreement with the \ac{FinScope} marginals that the match reproduces by construction (Group B), and fidelity of the resample to its weighted source (Group E).
+All fourteen pass, and none is evidence about the population beyond the two surveys it was built from.
+One (Group D, first row) bounds how often the affordability guard binds.
+Three are external, comparing the constructed population with a source no construction step used: the per-capita income Gini against the World Bank estimate and aggregate debt against the \ac{CCMR} gross debtor book (Group C), and the servicing share of outlay against \ac{FinScope}'s self-reported budget shares (Group D).
+Two of the three pass; the servicing level exceeds its band, for the reason given in Section~\ref{sec:servicing}.
 
 \begin{table}[H]
 \centering
-\caption{Data-layer validation scorecard for the constructed agent population. Group E compares the unweighted 5{,}000 synthetic agents against the weighted empirical source data.}
+\caption{Data-layer validation scorecard}
 \label{tab:validation}
+\tabnote{Eighteen checks on the constructed population, grouped by what they test. Groups A (consistency with \ac{NIDS}), B (agreement with the \ac{FinScope} marginals the match reproduces by construction) and E (fidelity of the unweighted 5{,}000-agent resample to the weighted source) are construction checks: they verify the pipeline, not the population. Group C compares against sources that no construction step used. Group D bounds the debt-service construction: the first row is the share of debtors for whom the Regulation 23A cap binds, the second the servicing share of monthly outlay among households holding a modelled product, against \ac{FinScope}'s self-reported range. Tolerances with a source: the household-size band is the 2016 Community Survey \cite{statssa_cs_2016}, the Gini interval is bounded below by the World Bank consumption-based estimate \cite{worldbank_gini_zaf}, and the Group D range is \ac{FinScope}'s \cite{finscope2019}; the remainder are the author's. Values are survey-weighted except in Group E, which compares the unweighted agents with the weighted source.}
 \begin{tabular}{L{4.9cm}L{3.6cm}rrc}
 \toprule
 \textbf{Check} & \textbf{Metric} & \textbf{Value} & \textbf{Tolerance} & \\
@@ -202,32 +230,24 @@ E. Resample Gini & $|$agents $-$ source$|$ & 0.015 & $\leq$0.02 & \checkmark \\
 \end{tabular}
 \end{table}
 
-Group C assesses performance against macroeconomic benchmarks.
-The per-capita income Gini of 0.651 falls within the expected target interval (0.630-0.700), bounded below by the World Bank's consumption-based Gini of 0.630 \cite{worldbank_gini_zaf} (income-based inequality measures in South Africa systematically exceed consumption-based estimates).
-Total synthetic population debt (ZAR 191.4 billion) accounts for 49\% of the corresponding \ac{CCMR} gross debtor book (ZAR 392.0 billion) \cite{ncr_ccmr_2017}.
-This ratio is consistent with standard self-reporting undercount gaps in micro-surveys relative to administrative registers.
-This result supports our non-response zero-fill choice in Section~\ref{sec:backbone}: imputing missing debt entries at holder means would generate aggregate debt equal to 111\% of the entire administrative credit book.
+The two external checks that pass are informative because nothing in the construction targeted them.
+The per-capita income Gini of 0.651 falls within the 0.630--0.700 interval bounded below by the World Bank's consumption-based estimate \cite{worldbank_gini_zaf}, income-based measures in South Africa exceeding consumption-based ones.
+Total synthetic population debt (ZAR 191.4 billion) is 49\% of the corresponding \ac{CCMR} gross debtor book (ZAR 392.0 billion) \cite{ncr_ccmr_2017}, a ratio consistent with the self-reporting undercount usual in micro-surveys relative to administrative registers; it also supports the zero-fill choice of Section~\ref{sec:backbone}, since imputing missing debt at holder means would give aggregate debt equal to 111\% of the entire administrative book.
 
-Calculated debt service exceeds self-reported survey averages by roughly 3 percentage points of monthly outlay, aligned with expected upward bias from capping interest rates at statutory maximums.
-Consequently, model results sensitive to baseline debt service levels are interpreted as conservative upper bounds.
-
-The remaining diagnostic checks verify population construction fidelity. Two baseline structural deviations remain: mean household size (3.03) passes tolerance but sits below the 3.3 estimate from the 2016 Community Survey \cite{statssa_cs_2016}.
-Because weighted population totals match national census benchmarks, this generates roughly 10\% more total household units (18.67 million vs 16.9 million aggregate units).
-Additionally, Group B checks validate internal match consistency relative to donor distributions rather than external indicator accuracy.
-
-Finally, the synthesized population exhibits baseline structural financial vulnerability prior to simulation runs.
-At initialization, 3.9\% of households cannot cover committed expenditures from income, 5.2\% cannot cover committed outlays plus scheduled debt service, and 44.3\% hold zero liquid savings.
-Under the default rules detailed in Section~\ref{sec:submodels}, these households register financial distress at $t=0$ independent of experimental shocks or \ac{BNPL} availability.
+Two structural deviations remain. Mean household size (3.03) passes tolerance but sits below the 3.3 estimate from the 2016 Community Survey \cite{statssa_cs_2016}; because weighted population totals match national benchmarks, this generates roughly 10\% more household units (18.67 million against 16.9 million).
+And the synthesised population exhibits baseline financial vulnerability before any simulation runs: at initialisation, 3.9\% of households cannot cover committed expenditure from income, 5.2\% cannot cover committed outlays plus scheduled debt service, and 44.3\% hold zero liquid savings.
+Under the default rules of Section~\ref{sec:submodels}, these households register distress at $t=0$ independent of experimental shocks or \ac{BNPL} availability.
 
 \subsection{Agent Attribute Mapping}
 \label{sec:agent-mapping}
 
-Table~\ref{tab:agent-mapping} summarizes the complete state variables initialized for each agent. Variables map directly to microdata observations, structural imputations, or derived accounting rules; unused survey fields are excluded.
+Table~\ref{tab:agent-mapping} summarises the state variables initialised for each agent. Variables map directly to microdata observations, structural imputations, or derived accounting rules; unused survey fields are excluded.
 
 \begin{table}[H]
 \centering
-\caption{Data-to-agent structural mapping. All monetary fields are denominated in 2017 ZAR. Flow variables are scaled from the monthly survey basis to the 14-day tick by $12/26$.}
+\caption{Data-to-agent mapping}
 \label{tab:agent-mapping}
+\tabnote{The state variables initialised for each agent, their meaning, and their source. Monetary fields are 2017 Rands. Fields marked \emph{tick} are monthly survey flows scaled by $12/26$ to the 14-day tick; stocks (savings, debt) are not scaled. Construction detail for every derived field is in Appendix~\ref{app:variables}; the imputed flags are described in Section~\ref{sec:match} and Appendix~\ref{app:matching}. Two dimensions are not observed in the microdata: every agent starts with a zero \ac{BNPL} balance, which is the injection design, and the repayment archetype of Section~\ref{sec:submodels} is assigned at random at initialisation.}
 \begin{tabular}{L{4.8cm}L{4.4cm}L{4.2cm}}
 \toprule
 \textbf{Agent field} & \textbf{Description} & \textbf{Source} \\
@@ -251,5 +271,3 @@ Table~\ref{tab:agent-mapping} summarizes the complete state variables initialize
 \bottomrule
 \end{tabular}
 \end{table}
-
-Two simulation dimensions are unobserved in the microdata: all agents initialize with zero \ac{BNPL} balances to establish an unconfounded baseline, and individual psychological repayment archetypes (Section~\ref{sec:submodels}) are assigned stochastically at initialization.

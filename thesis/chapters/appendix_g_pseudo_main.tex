@@ -1,4 +1,214 @@
 \section{Pseudocode: Main Simulation Loop}
 \label{app:pseudo-main}
 
-% STUB -- written under supervisor_revision_plan.md item 6; content follows in step 6.
+The main loop runs for $T$ ticks. Within a tick, households act in a random order redrawn every
+tick; the peer signal is recomputed once, after every household has acted, which is what makes
+Submodel~11 independent of activation order. Algorithm~\ref{alg:main} dispatches the tick.
+
+\begin{algorithm}[H]
+\caption{Main simulation}
+\label{alg:main}
+\begin{algorithmic}
+\State Initialise: execute Algorithm~\ref{alg:init}
+\For{$t = 1, \ldots, T$}
+    \State Draw a random permutation of $\mathcal{H}$
+    \ForAll{households $i$ in that order} execute Algorithm~\ref{alg:tick} \EndFor
+    \State Record the observables of Table~\ref{tab:design-concepts}
+    \State Update the peer signal for tick $t+1$: execute Algorithm~\ref{alg:peer}
+\EndFor
+\State Discard the first $T_0$ ticks; summarise the run
+\end{algorithmic}
+\end{algorithm}
+
+\subsection*{G.1 The household tick}
+
+Algorithm~\ref{alg:tick} is the seven-step sequence of Section~\ref{sec:entities}, with the step
+numbers of that list marked. Credit is sought at step~4 for the shortfall realised at steps~2
+and~3, before the payments it funds are made; distress is assessed after credit and before
+payment friction, so that a household which skips an affordable instalment is not counted as
+cash-flow insolvent.
+
+\begin{algorithm}[H]
+\caption{Household tick, for household $i$ at tick $t$}
+\label{alg:tick}
+\begin{algorithmic}
+\State \textbf{Step 1: income, subject to the employment shock}
+\State $y \gets y_i$
+\If{$\text{source}_i = \text{WAGE}$ and $n_i > 0$}
+    \State for each of the $u_i$ unemployed earners, first: with probability $p^{\text{exit}}$, $u_i \gets u_i - 1$
+    \State for each of the $n_i - u_i$ employed earners: with probability $p^{\text{sep}}$, $u_i \gets u_i + 1$
+    \State $y \gets y - y^w_i \cdot u_i / n_i$
+\EndIf
+\State $\text{cash} \gets a_i + \max(y, 0)$
+\State \textbf{Step 2: committed expenditure is paid first}
+\State $\text{cash} \gets \text{cash} - e^c_i$;\quad $\text{short}^c \gets \max(-\text{cash}, 0)$;\quad $\text{cash} \gets \max(\text{cash}, 0)$
+\State \textbf{Step 3: interest accrues and service falls due}
+\State $\text{interest} \gets D_i \cdot \iota_i / 26$;\quad $D_i \gets D_i + \text{interest}$
+\State $\text{due} \gets \min\{m_i \cdot \max(\text{interest},\ f^{\min} D_i \chi) + (1 - m_i)\, r_i,\ D_i\} + A_i$
+\State $b \gets \sum_{p} \text{due}_p(i)$ \Comment{\ac{BNPL} instalments and arrears, all platforms}
+\State $\text{short}^s \gets \max(\text{due} + b - \text{cash}, 0)$
+\State \textbf{Step 4: seek credit for the realised shortfall; assess distress}
+\If{$\text{short}^c + \text{short}^s > 0$ and $d_i = 0$} $\text{cash} \gets \text{cash} + \Call{SeekCredit}{i,\ \text{short}^c + \text{short}^s}$ \Comment{Algorithm~\ref{alg:gate}} \EndIf
+\State $\text{distressed} \gets \text{short}^c > 0$ or $\text{due} + b > \text{cash}$ \Comment{after credit, before friction}
+\State \textbf{Step 5: pay \ac{BNPL} first, then traditional debt}
+\ForAll{platforms $p$}
+    \State $(\text{paid}, \text{fees}) \gets \Call{Collect}{p, i, \text{cash}}$;\quad $\text{cash} \gets \text{cash} - \text{paid}$ \Comment{Algorithm~\ref{alg:collect}}
+\EndFor
+\State $\text{skip} \gets U(0,1) < \pi$ \Comment{payment friction, traditional debt only}
+\State $\text{paid}^T \gets \text{skip} \;?\; 0 : \min(\text{cash}, \text{due})$;\quad $\text{cash} \gets \text{cash} - \text{paid}^T$
+\State $A_i \gets \max(\text{due} - \text{paid}^T, 0)$;\quad $D_i \gets \max\bigl(D_i - \max(\text{paid}^T - \text{interest}, 0),\ 0\bigr)$
+\State \textbf{Step 6: discretionary consumption}
+\State $\text{spend} \gets \min\bigl\{\max(\varphi\, e^d_i,\ \min(\text{cash}, e^d_i)),\ \text{cash}\bigr\}$;\quad $\text{cash} \gets \text{cash} - \text{spend}$
+\State \textbf{Step 7: want-driven \ac{BNPL} purchase; state update}
+\If{$\mathbb{1}^{\text{bnpl}}$ and $\epsilon_i = 1$ and $d_i = 0$ and $t > \bar t_i$}
+    \State $q \gets \Call{Appetite}{i,\ s_{g(i)}(t-1)}$ \Comment{Algorithm~\ref{alg:peer}}
+    \If{$U(0,1) < q$} $\text{cash} \gets \text{cash} - \Call{Purchase}{i, \text{cash}}$ \Comment{Algorithm~\ref{alg:bnpl}} \EndIf
+\EndIf
+\State $a_i \gets \max(\text{cash}, 0)$
+\State $\delta_i \gets \text{distressed} \;?\; \delta_i + 1 : 0$;\quad $\alpha_i \gets A_i > 0 \;?\; \alpha_i + 1 : 0$
+\If{$d_i = 0$ and $\delta_i \geq k$} $d_i \gets 1$; the bureau records the default \EndIf
+\end{algorithmic}
+\end{algorithm}
+
+The arrears age $\alpha_i$ maps onto the \ac{CCMR} bands of Table~\ref{tab:ccmr} exactly at a
+14-day tick: one to two ticks is 1--30 days, three to four is 31--60, five to six is 61--90,
+seven to eight is 91--120, and nine or more is 120+.
+
+\subsection*{G.2 Credit applications and the Regulation 23A gate}
+
+Algorithm~\ref{alg:gate} is the shortfall path of Submodels~3 to~5 and~9. The household asks
+for the amount Submodel~4 specifies, takes \ac{BNPL} first where it can, and applies to the
+traditional lender for the remainder. The lender's test is the residual-income calculation on
+the liabilities the bureau shows it, and the line marked Scenario~1 is the only place the 2026
+reporting requirement enters the model: with $\mathbb{1}^{\text{bur}}$ on, the household's
+\ac{BNPL} instalments are added to the visible obligations.
+
+\begin{algorithm}[H]
+\caption{Credit application and the Regulation 23A gate}
+\label{alg:gate}
+\begin{algorithmic}
+\Function{SeekCredit}{$i$, shortfall}
+    \State $\text{amount} \gets$ shortfall, or $1.25 \times$ shortfall, or shortfall $+\, e^c_i$ \Comment{Submodel~4, swept}
+    \State $\text{raised} \gets 0$;\quad $\text{financed} \gets 0$
+    \If{$\mathbb{1}^{\text{bnpl}}$ and $\epsilon_i = 1$}
+        \State $\text{financed} \gets \Call{BnplDraw}{i, \text{amount}}$ \Comment{Algorithm~\ref{alg:bnpl}}
+        \State $\text{raised} \gets \text{financed} \cdot (1 - 1/N)$ \Comment{$1/N$ is debited at checkout}
+    \EndIf
+    \If{$\text{amount} - \text{financed} > 0$} $\text{raised} \gets \text{raised} + \Call{LenderApply}{i,\ \text{amount} - \text{financed}}$ \EndIf
+    \State \Return raised
+\EndFunction
+\Statex
+\Function{LenderApply}{$i$, amount}
+    \If{the bureau shows $i$ as defaulted} \Return 0 \EndIf
+    \State $\text{new} \gets \mathrm{PMT}(\text{amount},\ 0.28,\ 25)$ \Comment{unsecured terms}
+    \State $\text{visible} \gets r_i / \chi$ \Comment{traditional service, which the bureau shows}
+    \If{$\mathbb{1}^{\text{bur}}$} $\text{visible} \gets \text{visible} + b_i / \chi$ \Comment{\textbf{Scenario 1:} \ac{BNPL} enters the test} \EndIf
+    \If{$\text{new} > \max(\rho(Y_i) - \text{visible},\ 0)$} \Return 0 \Comment{refused at the gate} \EndIf
+    \State \Return amount \Comment{granted in full}
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+\subsection*{G.3 \ac{BNPL} origination and platform routing}
+
+Algorithm~\ref{alg:bnpl} covers the want-driven purchase of Submodels~3 and~4 and the routing
+of any \ac{BNPL} request across platforms that cannot see one another (Submodels~12 and~13).
+The platform's screen is a per-order cap and a rolling limit expressed in receivable terms;
+the line marked Scenario~2 applies the Regulation 23A test to the origination itself and is off
+in every other arm. Stacking is not written anywhere: it arises because each platform decides on
+its own exposure alone.
+
+\begin{algorithm}[H]
+\caption{\ac{BNPL} origination and platform routing}
+\label{alg:bnpl}
+\begin{algorithmic}
+\Function{Purchase}{$i$, cash} \Comment{want-driven; returns the checkout debit}
+    \If{$\text{cash} \leq 0$ or $E^d_i \leq 0$} \Return 0 \EndIf
+    \State Draw amount $\sim$ LogNormal with mean $\kappa E^d_i$ and coefficient of variation $\nu$
+    \State $\text{amount} \gets \min(\text{amount},\ N \cdot \text{cash})$ \Comment{the checkout debit must clear}
+    \State $\text{financed} \gets \Call{BnplDraw}{i, \text{amount}}$
+    \If{$\text{financed} > 0$ and $k^{\text{cool}} > 0$} $\bar t_i \gets t + k^{\text{cool}}$ \EndIf
+    \State \Return $\text{financed} / N$
+\EndFunction
+\Statex
+\Function{BnplDraw}{$i$, amount} \Comment{returns the gross amount financed}
+    \If{$\text{amount} \leq 0$, or $\bar n$ is set and $i$ already holds $\bar n$ facilities} \Return 0 \EndIf
+    \If{$\mathbb{1}^{\text{aff}}$} \Comment{\textbf{Scenario 2:} the gate at origination}
+        \State $\text{visible} \gets (r_i + b_i) / \chi$;\quad $\text{new} \gets (\text{amount} / N) / \chi$
+        \If{$\text{new} > \max(\rho(Y_i) - \text{visible},\ 0)$} \Return 0 \EndIf
+    \EndIf
+    \State $\text{financed} \gets 0$
+    \ForAll{platforms $p$ in a random order, while $\text{financed} < \text{amount}$}
+        \State $\text{financed} \gets \text{financed} + \Call{Request}{p, i,\ \text{amount} - \text{financed}}$
+    \EndFor
+    \State \Return financed
+\EndFunction
+\Statex
+\Function{Request}{$p$, $i$, amount} \Comment{the platform's light screen, blind to other platforms}
+    \If{$i$ is cut off at $p$} \Return 0 \EndIf
+    \State $\text{amount} \gets \min(\text{amount},\ \bar o)$ \Comment{per-order cap}
+    \State $\text{amount} \gets \min\bigl(\text{amount},\ (L_{ip} - B_{ip}) \cdot N / (N - 1)\bigr)$ \Comment{rolling limit, receivable terms}
+    \If{$\text{amount} \leq 0$} \Return 0 \EndIf
+    \State Open a facility at $p$: principal amount, instalment amount$/N$, $N - 1$ instalments remaining
+    \State \Return amount
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+\subsection*{G.4 \ac{BNPL} collection, late fees and cut-off}
+
+Algorithm~\ref{alg:collect} is Submodel~14. An instalment falls due whether or not it is met,
+so the pay-in-four schedule lands on tick boundaries regardless of payment; what is unpaid
+becomes arrears, accrues the late fee up to the cap, and once the cap is exhausted the household
+is cut off by that platform only.
+
+\begin{algorithm}[H]
+\caption{\ac{BNPL} collection}
+\label{alg:collect}
+\begin{algorithmic}
+\Function{Collect}{$p$, $i$, cash} \Comment{returns (paid, fees)}
+    \State $\text{paid} \gets 0$;\quad $\text{fees} \gets 0$
+    \ForAll{live facilities $\ell$ of $i$ at $p$}
+        \State $\text{owed} \gets \ell.\text{arrears} + (\ell.\text{remaining} > 0 \;?\; \ell.\text{instalment} : 0)$
+        \If{$\text{owed} = 0$} continue \EndIf
+        \If{$\ell.\text{remaining} > 0$} $\ell.\text{remaining} \gets \ell.\text{remaining} - 1$ \Comment{falls due regardless} \EndIf
+        \If{$\text{cash} \geq \text{owed}$}
+            \State $\text{cash} \gets \text{cash} - \text{owed}$;\quad $\text{paid} \gets \text{paid} + \text{owed}$;\quad $\ell.\text{arrears} \gets 0$
+        \Else
+            \State $\text{part} \gets \text{cash}$;\quad $\text{cash} \gets 0$;\quad $\text{paid} \gets \text{paid} + \text{part}$
+            \State $\text{fee} \gets \min(\phi,\ \bar\phi - \ell.\text{fees})$;\quad $\ell.\text{fees} \gets \ell.\text{fees} + \text{fee}$;\quad $\text{fees} \gets \text{fees} + \text{fee}$
+            \State $\ell.\text{arrears} \gets (\text{owed} - \text{part}) + \text{fee}$
+            \If{$\ell.\text{fees} \geq \bar\phi$} cut $i$ off at $p$ \Comment{this platform only} \EndIf
+        \EndIf
+    \EndFor
+    \State Drop settled facilities, so stacking depth counts live ones
+    \State \Return (paid, fees)
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+\subsection*{G.5 The peer signal}
+
+Algorithm~\ref{alg:peer} is Submodel~11. The group share is computed once per tick from
+end-of-tick balances and read by every household in the next tick, so no household's decision
+depends on the order in which its group acted. With \ac{BNPL} disabled the signal is identically
+zero and the channel is inert, which is why the calibration baseline is untouched by it.
+
+\begin{algorithm}[H]
+\caption{Peer-signal update and appetite}
+\label{alg:peer}
+\begin{algorithmic}
+\If{not $\mathbb{1}^{\text{bnpl}}$} $s_g \gets 0$ for all $g$; \Return \EndIf
+\ForAll{groups $g$}
+    \State $\text{holders}_g \gets |\{i \in g : \sum_p B_{ip} > 0\}|$;\quad $\text{elig}_g \gets |\{i \in g : \epsilon_i = 1\}|$
+    \State $s_g(t) \gets \text{elig}_g > 0 \;?\; \text{holders}_g / \text{elig}_g : 0$ \Comment{denominator: eligible members only}
+\EndFor
+\Statex
+\Function{Appetite}{$i$, $s$} \Comment{Equation~\ref{eq:peer} and its threshold variant}
+    \If{threshold mechanism} $q \gets q_{\text{base}} + (s \geq \theta_i \;?\; \gamma : 0)$
+    \Else\ $q \gets q_{\text{base}} + \beta s$ \Comment{$\beta = 0$: the control arm}
+    \EndIf
+    \State \Return $\mathrm{clip}(q, 0, 1)$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}

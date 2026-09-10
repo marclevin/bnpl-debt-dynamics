@@ -4,11 +4,18 @@
 \setlength{\tabcolsep}{3pt}
 \newcolumntype{R}[1]{>{\scriptsize\raggedright\arraybackslash}p{#1}}
 \begin{longtable}{R{2.5cm}R{1.1cm}R{1.75cm}R{1.1cm}R{3.8cm}R{2.9cm}}
-\caption{The full parameter register, generated from the model's parameter
-declarations. Provenance: sourced = a citation fixes the value; derived = the
-value is computed from data, not chosen; assumed = no anchor exists and
-sensitivity analysis is mandatory.}
+\caption{The full parameter register}
 \label{tab:param-register} \\
+\multicolumn{6}{p{13.4cm}}{\footnotesize Every model parameter, generated from
+the parameter declarations in \texttt{simulation/config.py} so that the table and
+the code cannot drift apart. Columns: the parameter name in the code; the decision
+rule or submodel it implements (D$n$ = Submodel $n$; P$n$ = data-layer phase);
+its baseline value; its provenance; the source fixing or motivating the value; and
+the sweep range where one applies. Provenance: sourced = a citation fixes the
+value; derived = the value is computed from data, not chosen; assumed = no anchor
+exists and sensitivity analysis is mandatory. Rand values are 2017 Rands; the
+\ac{BNPL} contract parameters are published at 2026 vintage and deflated once
+(Appendix~\ref{app:variables}, Part~D.12).} \\
 \toprule
 \textbf{Parameter} & \textbf{Rule} & \textbf{Baseline} & \textbf{Prov.} & \textbf{Source} & \textbf{Sweep} \\
 \midrule
