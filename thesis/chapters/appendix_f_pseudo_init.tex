@@ -1,0 +1,95 @@
+\section{Pseudocode: Notation and Initialisation}
+\label{app:pseudo-init}
+
+This appendix and Appendix~\ref{app:pseudo-main} give the model as pseudocode, following the
+convention of a master algorithm that dispatches to sub-algorithms. The algorithms are the
+normative statement of the pipeline: where prose elsewhere in the thesis and an algorithm here
+differ, the algorithm governs, and each has been checked line by line against the module that
+implements it (\texttt{simulation/}). Table~\ref{tab:notation} fixes the notation used throughout.
+Sets are set in script, their cardinalities in upper case, and their elements in lower case; a
+subscript indexes an element, a superscript identifies a variant.
+
+\begingroup
+\small
+\begin{longtable}{L{2.6cm}L{7.4cm}L{3.4cm}}
+\caption{Notation}
+\label{tab:notation} \\
+\multicolumn{3}{p{13.4cm}}{\footnotesize This table defines every symbol used in the
+algorithms of Appendices~\ref{app:pseudo-init} and~\ref{app:pseudo-main}. Flows are per 14-day
+tick unless marked monthly; all money is in 2017 Rands. The right-hand column names the parameter
+in \texttt{simulation/config.py} or the agent field in \texttt{population.py} that carries the
+quantity, so that a symbol can be traced to code. Symbols already used in the body
+(Equation~\ref{eq:peer}) are unchanged.} \\
+\toprule
+\textbf{Symbol} & \textbf{Meaning} & \textbf{Code} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Symbol} & \textbf{Meaning} & \textbf{Code} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\multicolumn{3}{l}{\emph{Sets and indices}} \\
+$\mathcal{H}$, $H$, $i$ & households, their number ($5{,}000$), a household & \texttt{n\_agents} \\
+$\mathcal{P}$, $P$, $p$ & \ac{BNPL} platforms, their number (4), a platform & \texttt{n\_platforms} \\
+$\mathcal{G}$, $g(i)$ & reference groups (income quintile $\times$ province, 45); the group of $i$ & \texttt{reference\_group} \\
+$c(i)$ & the matching cell of $i$ in the data layer; the same partition as $g(i)$ & --- \\
+$t$, $T$, $T_0$ & tick, horizon (52), burn-in (12) & \texttt{n\_ticks}, \texttt{burn\_in} \\
+$\chi$ & monthly-to-tick conversion, $12/26$ & \texttt{MONTHLY\_TO\_TICK} \\
+\addlinespace
+\multicolumn{3}{l}{\emph{Household constants, from the data layer}} \\
+$y_i$, $y^w_i$ & income per tick; its wage component & \texttt{income\_tick}, \texttt{income\_wage\_tick} \\
+$Y_i$, $E^d_i$ & monthly income; monthly discretionary budget & \texttt{income\_monthly}, \texttt{discretionary\_monthly} \\
+$n_i$ & employed members on the roster & \texttt{n\_earners} \\
+$e^c_i$, $e^d_i$ & committed expenditure; discretionary target, per tick & \texttt{committed\_tick}, \texttt{discretionary\_tick} \\
+$r_i$ & scheduled traditional debt service per tick & \texttt{scheduled\_service\_tick} \\
+$\iota_i$, $\tau_i$ & annual rate and term (months) pricing the opening balance & \texttt{apr\_annual}, \texttt{term\_months} \\
+$\rho_i = \rho(Y_i)$ & Regulation 23A monthly residual-income capacity & \texttt{nca\_capacity\_monthly} \\
+$\epsilon_i$, $m_i$ & indicators: \ac{BNPL}-eligible; minimum-payer archetype & \texttt{bnpl\_eligible}, \texttt{is\_min\_payer} \\
+$\theta_i$ & adoption threshold (threshold mechanism only) & \texttt{theta} \\
+$w_i$ & survey weight (data layer only) & \texttt{w5\_wgt} \\
+\addlinespace
+\multicolumn{3}{l}{\emph{Household state at tick $t$}} \\
+$a_i(t)$ & liquid savings & \texttt{savings} \\
+$u_i(t)$ & earners currently unemployed & \texttt{n\_unemployed} \\
+$D_i(t)$, $A_i(t)$ & traditional debt; traditional arrears & \texttt{d\_trad}, \texttt{arrears\_trad} \\
+$B_{ip}(t)$ & \ac{BNPL} receivable owed by $i$ to platform $p$ & \texttt{exposure} \\
+$b_i(t)$ & \ac{BNPL} instalments and arrears falling due this tick, all platforms & \texttt{bnpl\_due\_per\_tick} \\
+$\alpha_i(t)$ & ticks in traditional arrears & \texttt{arrears\_age\_ticks} \\
+$\delta_i(t)$ & consecutive distressed ticks & \texttt{distress\_streak} \\
+$d_i(t)$ & default indicator & \texttt{defaulted} \\
+$\bar t_i$ & tick until which want-driven purchases are blocked & \texttt{cool\_off\_until} \\
+$s_g(t)$ & share of the eligible members of $g$ holding a \ac{BNPL} balance at the end of $t$ & \texttt{group\_share\_lagged} \\
+\addlinespace
+\multicolumn{3}{l}{\emph{Platform constants}} \\
+$L_{ip}$ & rolling receivable limit of $p$ for $i$, $L_{ip} = \lambda Y_i$ & \texttt{rolling\_limits} \\
+$\bar o$ & per-order cap & \texttt{bnpl\_order\_cap} \\
+$N$ & instalments per order (4) & \texttt{bnpl\_instalments} \\
+$\phi$, $\bar\phi$ & late fee per missed tick; fee cap per facility & \texttt{bnpl\_late\_fee\_*} \\
+\addlinespace
+\multicolumn{3}{l}{\emph{Parameters}} \\
+$p^{\text{sep}}$, $p^{\text{exit}}$ & per-earner separation and re-employment probabilities per tick & \texttt{shock\_prob}, \texttt{shock\_exit\_prob} \\
+$\pi$ & payment friction: probability of skipping an affordable traditional instalment & \texttt{payment\_friction} \\
+$f^{\min}$ & minimum-payment fraction of balance per month & \texttt{min\_payment\_frac} \\
+$k$ & distressed ticks that trigger default (7) & \texttt{k\_default} \\
+$\varphi$ & discretionary floor as a share of target (0 in the baseline) & \texttt{discretionary\_floor} \\
+$\kappa$, $\nu$ & purchase-size ratio to $E^d_i$; its coefficient of variation & \texttt{bnpl\_purchase\_ratio}, \texttt{\_cv} \\
+$\lambda$ & rolling limit as a multiple of monthly income & \texttt{bnpl\_limit\_income\_multiple} \\
+$q_{\text{base}}$, $\beta$ & baseline propensity; peer weight (linear mechanism) & \texttt{q\_base}, \texttt{beta} \\
+$\gamma$, $\mu_\theta$, $\sigma_\theta$ & appetite step; threshold mean and dispersion (threshold mechanism) & \texttt{gamma}, \texttt{mu\_theta}, \texttt{sigma\_theta} \\
+$k^{\text{cool}}$, $\bar n$ & cooling-off ticks; concurrent-facility cap (both off in every scenario reported in the body) & \texttt{k\_cool}, \texttt{stacking\_cap} \\
+\addlinespace
+\multicolumn{3}{l}{\emph{Scenario switches}} \\
+$\mathbb{1}^{\text{bnpl}}$ & \ac{BNPL} platforms present (off in the calibration baseline) & \texttt{bnpl\_enabled} \\
+$\mathbb{1}^{\text{bur}}$ & \ac{BNPL} obligations visible to the bureau (Scenario 1) & \texttt{bnpl\_bureau\_visible} \\
+$\mathbb{1}^{\text{aff}}$ & Regulation 23A test applied to \ac{BNPL} originations (Scenario 2) & \texttt{bnpl\_affordability\_check} \\
+\addlinespace
+\multicolumn{3}{l}{\emph{Functions}} \\
+$\rho(Y)$ & Regulation 23A residual-income capacity: $Y$ less the statutory necessary-expense norm & \texttt{nca\_max\_service} \\
+$\mathrm{PMT}(D, \iota, \tau)$ & level monthly instalment amortising $D$ at annual rate $\iota$ over $\tau$ months & \texttt{amortised\_instalment} \\
+$\mathrm{clip}(x, 0, 1)$ & $\min(\max(x, 0), 1)$ & --- \\
+\end{longtable}
+\endgroup
+
+% Algorithms 1--5 (initialisation) follow in step 6 of supervisor_revision_plan.md.

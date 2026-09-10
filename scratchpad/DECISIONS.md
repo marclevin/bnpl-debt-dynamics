@@ -1062,7 +1062,7 @@ All monetary values in **2017 Rands, no CPI**. Backbone: `data/raw/NIDS_W5/hhder
 | `expenditure_total` | Total monthly **cash** expenditure | `w5_expf`, `w5_expnf`, `w5_rentexpend` | committed + discretionary; excludes imputed rentals |
 | `expenditure_committed` | Non-discretionary (food + rent paid) | `w5_expf`, `w5_rentexpend` | food + rent |
 | `expenditure_discretionary` | Flexible spending | `w5_expnf` | non-food; rent is a separate NIDS component, so it is not subtracted |
-| `liquid_savings` | Cash buffer | `w5_f_ass` | Financial assets as proxy, winsorised at 1st/99th pct. **Weakest field in the layer** |
+| `liquid_savings` | Cash buffer | `w5_f_ass` | Financial assets as proxy, winsorised at the 99th pct (upper clip only; p0_backbone cell 12). **Weakest field in the layer** |
 | `D_trad` | Consolidated traditional debt | `w5_f_deb` | Financial debts |
 | `monthly_trad_repayment` | Monthly servicing | constructed | See II.3 |
 

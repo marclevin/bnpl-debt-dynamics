@@ -1,0 +1,15 @@
+{
+  "cells": 45,
+  "pool_min": 30,
+  "pool_median": 87,
+  "pool_max": 402,
+  "fallbacks": 0,
+  "replay_ok": true,
+  "unique_donors_used": 3597,
+  "donors_available": 4969,
+  "donor_use_max": 20,
+  "donor_use_p99": 13,
+  "donor_use_median": 2,
+  "recip_pool_ratio_max": 9.71,
+  "top1pct_share": 5.1
+}

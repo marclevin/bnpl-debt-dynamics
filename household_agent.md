@@ -57,7 +57,7 @@ FinScope flags attached via the simple quintile cell-donor match.
 | `income_source`               | Where most of it comes from            | NIDS `w5_hhwage` / `w5_hhgovt` / `w5_hhremitt` / … → WAGE/GRANT/OTHER |
 | `income_wage`                 | The part at risk in a job-loss shock   | NIDS `w5_hhwage` (joined on `source_w5_hhid`)                        |
 | `expenditure_committed`       | Must-pay spending (food + rent)        | NIDS `w5_expf` + `w5_rentexpend`                                     |
-| `expenditure_discretionary`   | Flexible spending                      | NIDS `w5_expnf` − `w5_rentexpend` (≥ 0)                              |
+| `expenditure_discretionary`   | Flexible spending                      | NIDS `w5_expnf` (≥ 0); rent is a separate NIDS component and is NOT subtracted |
 | `liquid_savings`              | Cash buffer                            | NIDS `w5_f_ass` (proxy: weak field)                                |
 | `D_trad`                      | Traditional debt owed                  | NIDS `w5_f_deb`                                                      |
 | `monthly_trad_repayment`      | Monthly debt payment                   | constructed: amortize `D_trad` at NCA statutory max rates, capped by NCA Reg 23A |
