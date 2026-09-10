@@ -177,7 +177,8 @@
                  months; 36\% anticipate being unable to meet at least one bill or
                  loan payment (Pattern 4); \ac{BNPL} payment histories listed as
                  alternative data absent from the standard South African credit
-                 report. \textbf{CORRECTED 2026-08-24:} an earlier note claimed 20\%
+                 report -- the PRE-reporting position, cited as such after the 2026 NCR
+                 instruction. \textbf{CORRECTED 2026-08-24:} an earlier note claimed 20\%
                  of consumers intend to apply for \ac{BNPL}; the press release's 20\%
                  is car loans (among the 36\% planning to apply: credit cards 30\%,
                  personal loans 28\%, car loans 20\%), and \ac{BNPL} is not listed as
@@ -670,7 +671,9 @@
   year   = {2025},
   url    = {https://www.nortonrosefulbright.com/en-za/knowledge/publications/397bf640/buy-now-pay-later-regulation-around-the-world},
   annote   = {BNPL falls outside the National Credit Act 2005: no mandatory
-            affordability assessment, no NCR registration, no bureau reporting}
+            affordability assessment, no NCR registration, no bureau reporting.
+            Describes the PRE-reporting position; superseded in part by the 2026 NCR
+            instruction (businessday_bnpl_2026) and cited as such}
 }
 
 @misc{nids_w5_2018,
@@ -700,4 +703,80 @@
                   population's weighted per-capita income Gini of 0.651 falls inside the
                   0.63--0.70 band; no step in the construction targeted it, which makes
                   this the only genuinely external check in the data layer}
+}
+
+% --- The 2026 regulatory turn (added 2026-09-10) ------------------------------
+% Primary source: the SARB Financial Stability Review. The NCR reporting requirement
+% itself is sourced to press reports and an industry statement because no NCR media
+% release, Gazette notice or MoA text could be located as of 2026-09-10 (ncr.org.za
+% returned HTTP 500; sacrra.org.za lists no BNPL material). Replace
+% businessday_bnpl_2026 with the primary instrument if and when one is published.
+
+@techreport{sarb_fsr_2026_1,
+  title       = {Financial Stability Review, First Edition 2026},
+  author      = {{South African Reserve Bank}},
+  institution = {South African Reserve Bank},
+  year        = {2026},
+  month       = jun,
+  url         = {https://www.resbank.co.za/en/home/publications/publication-detail-pages/reviews/finstab-review/2026/first-edition},
+  annote      = {Published 10 June 2026. Box 4, ``Online gambling and buy now, pay later'',
+                 pp.~24--25. PRIMARY SOURCE for the over-indebtedness framing. Verbatim:
+                 ``This perceived affordability, together with the ability to hold multiple
+                 concurrent BNPL obligations, increases the risk of over-indebtedness and may
+                 weaken households' overall financial position''; approval is ``based on less
+                 rigorous credit checks, rather than the full credit assessments that
+                 characterise traditional unsecured credit agreements''; and BNPL ``typically
+                 fall[s] outside the scope of current credit legislation as no interest is
+                 charged'' (fn.~5: providers ``often argue'' the NCA does not apply). Says
+                 nothing about a reporting requirement}
+}
+
+@misc{businessday_bnpl_2026,
+  title        = {Buy-now-pay-later users face tougher credit checks},
+  author       = {{Business Day}},
+  year         = {2026},
+  month        = aug,
+  howpublished = {Business Day (Business Times), 15 August 2026},
+  url          = {https://www.businessday.co.za/business-times/business/2026-08-15-bnpl-users-face-new-credit-scrutiny/},
+  annote       = {PRESS REPORT, not a primary instrument; also syndicated at
+                 timeslive.co.za. Reports that the NCR has ordered BNPL providers to report
+                 consumer payment behaviour to credit bureaus; that the NCR signed a
+                 memorandum of agreement with SACRRA and the Credit Bureau Association and
+                 that a BNPL subcommittee is settling the submission format; and the NCR's
+                 legal position that BNPL agreements are not credit agreements at inception
+                 but may be incidental credit agreements under the NCA where default charges
+                 are levied. The February 2027 commencement is attributed to an industry
+                 CEO, not to an NCR document, and is cited in the thesis as a press date
+                 pending gazetting. PayJustNow states it has submitted data to SACRRA since
+                 April 2026}
+}
+
+@misc{finasa_bnpl_2026,
+  title        = {Statement from Fintech Association of South Africa on Buy Now, Pay Later (BNPL) Reporting and Regulation},
+  author       = {{Fintech Association of South Africa}},
+  year         = {2026},
+  month        = apr,
+  howpublished = {FINASA statement, 30 April 2026},
+  url          = {https://www.finasa.org.za/post/statement-from-fintech-association-of-south-africa-on-buy-now-pay-later-bnpl-reporting-and-regula},
+  annote       = {Industry statement. Records that the NCR issued a formal instruction
+                 disallowing live processing of BNPL data into the credit system pending
+                 assessment, after SACRRA sought to compel bureaus to accept it; and that a
+                 major bureau's preliminary analysis found BNPL data under current scoring
+                 models could reduce scores ``significantly per product'', affecting
+                 ``roughly a quarter of credit-active consumers''. Source of the
+                 scoring-channel figure and of the limitation at Submodel~10}
+}
+
+@misc{dcasa_bnpl_2026,
+  title        = {Buy Now Pay Later: SACRRA Roundtable Feedback},
+  author       = {{Debt Counsellors Association of South Africa}},
+  year         = {2026},
+  howpublished = {DCASA, reporting the SACRRA stakeholder roundtable of 14 July 2026},
+  url          = {https://www.dcasa.co.za/buy-now-pay-later-sacrra-roundtable-feedback/},
+  annote       = {Records that more than two million BNPL records were submitted to SACRRA
+                 during May 2026, that they are ``not yet being displayed on consumer credit
+                 profiles while the appropriate reporting and classification framework is
+                 finalised'', that two dedicated BNPL account types have been proposed, and
+                 that the NCR is expected to issue guidance on reporting and display. No
+                 commencement date is given}
 }

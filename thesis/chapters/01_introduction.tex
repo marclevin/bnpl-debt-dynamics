@@ -4,54 +4,75 @@
 \subsection{Background and Context}
 \label{sec:background}
 
-South Africa regulates consumer credit tightly. The \ac{NCA} \cite{sa_nca_2005} requires every
-registered credit provider to assess whether an applicant can afford a proposed agreement before
-granting it, and Regulation 23A of the National Credit Regulations
-\cite{sa_ncr_affordability_2015} prescribes a residual-income test for doing so. Registered lenders
-report their exposures to the credit bureaus, so each lender assesses an applicant against a record
-of what every other registered lender has advanced.
+South Africa entered the \ac{BNPL} era with a household sector already heavily indebted under a
+tightly regulated credit regime. The \ac{NCA} \cite{sa_nca_2005} requires every registered credit
+provider to assess whether an applicant can afford a proposed agreement, Regulation 23A of the
+National Credit Regulations \cite{sa_ncr_affordability_2015} prescribes a residual-income test for
+doing so, and registered lenders report their exposures to the credit bureaus, so each assesses an
+applicant against what every other has advanced. Even so, 14.2\% of unsecured and credit-facility
+accounts were more than 90 days in arrears in early 2017 \cite{ncr_ccmr_2017}, and in late 2025
+36\% of surveyed consumers expected to miss a bill or loan payment \cite{transunion_cps_sa_2025}.
+This thesis asks what adding a further credit channel to such a population does, and what the
+regulatory response now under way is likely to achieve.
 
-\ac{BNPL} providers sit outside that regime. Because they levy neither interest nor fees on the
-deferred amount, with late-payment penalties their only charge, they argue that they do not
-transact credit within the meaning of the \ac{NCA}, and
-so do not register with the \ac{NCR}, do not perform the Regulation 23A assessment, and do not
-report what they have lent to any credit bureau \cite{nortonrose_bnpl_sa}. TransUnion, a consumer
-credit bureau, confirms the absence of \ac{BNPL} information from South African credit reports
-\cite{transunion_cps_sa_2025}. A registered lender running a lawful and diligent affordability
-assessment therefore computes residual income from a liability record that is incomplete by
-regulatory construction. It cannot see \ac{BNPL} obligations, and neither can any \ac{BNPL} provider
-see another's, so a household can hold several concurrent facilities that no party to any of those
-agreements has assessed in aggregate.
+\ac{BNPL} providers have operated outside that regime. Levying neither interest nor fees on the
+deferred amount, they have argued that they do not transact credit within the meaning of the
+\ac{NCA}, and so have neither registered with the \ac{NCR}, nor performed the Regulation 23A
+assessment, nor reported what they lend to any bureau \cite{nortonrose_bnpl_sa}; TransUnion
+confirmed the absence of \ac{BNPL} information from South African credit reports as late as 2025
+\cite{transunion_cps_sa_2025}. A registered lender running a diligent affordability assessment
+has therefore computed residual income from a liability record incomplete by regulatory
+construction, and since no \ac{BNPL} provider could see another's, a household could hold several
+concurrent facilities that no party had assessed in aggregate. The \ac{SARB}'s June 2026
+Financial Stability Review names exactly this mechanism: the ability to hold multiple concurrent
+\ac{BNPL} obligations, approved on less rigorous checks than traditional unsecured credit,
+``increases the risk of over-indebtedness'' \cite{sarb_fsr_2026_1}.
 
-deHaan et al. \cite{dehaan2024bnpl}, tracking banking
-records for 10.6 million United States consumers, find that adopting \ac{BNPL} is followed by higher
-overdraft charges, credit-card interest and late fees, concentrated among liquidity-constrained
-consumers. The \ac{CFPB} \cite{cfpb2025bnpl} finds that across 2021 and 2022, 63\% of \ac{BNPL}
-borrowers held simultaneous loans at some point and 32\% held them across different firms. South
-Africa has no equivalent evidence base, and the reporting exemption makes one impossible to
-assemble from administrative data, since no party, the regulator included, can measure aggregate
-\ac{BNPL} exposure.
+That position is now changing. The \ac{NCR} has taken the view that a \ac{BNPL} agreement, while
+not a credit agreement at inception, may become an incidental credit agreement once default
+charges are levied, and has concluded a memorandum of agreement with \ac{SACRRA} and the Credit
+Bureau Association under which providers are to report consumer payment behaviour to the bureaus
+\cite{businessday_bnpl_2026}. Providers began submitting records in 2026, but the data are not
+yet displayed on consumer profiles while the format is finalised \cite{dcasa_bnpl_2026}; press
+reports put their appearance at February 2027, a date not yet gazetted
+\cite{businessday_bnpl_2026}. One bureau's preliminary analysis suggests the new data could lower
+the scores of roughly a quarter of credit-active consumers under current scoring models
+\cite{finasa_bnpl_2026}. The requirement arrives before any evidence of what it will do.
 
-This thesis builds an \ac{ABM} of the South African
-household credit market: 5{,}000 synthetic households, constructed from national survey microdata
-and subject to the statutory rules above, earn, spend, borrow, repay and default over a simulated
-two-year horizon. \ac{BNPL} platforms with the observed South African contract structure are then injected
-into an otherwise unchanged 2017 environment, so that any difference between the two runs is
-attributable to the new lender class. The thesis contributes
-three things: a survey-grounded agent-based model of South African household credit, a quantified
-account of what the reporting exemption does to household distress, and a test of the
-intervention repertoire regulators abroad have already adopted.
+Such evidence exists abroad. deHaan et al. \cite{dehaan2024bnpl}, tracking banking records for
+10.6 million United States consumers, find that adopting \ac{BNPL} is followed by higher overdraft
+charges, credit-card interest and late fees, concentrated among the liquidity-constrained; the
+\ac{CFPB} \cite{cfpb2025bnpl} finds that 63\% of \ac{BNPL} borrowers held simultaneous loans at
+some point and 32\% held them across different firms. South Africa has no equivalent evidence
+base, and years of non-reporting mean none can be assembled from administrative data for the
+period in which the exposure built up.
+
+This thesis builds an \ac{ABM} of the South African household credit market: 5{,}000 synthetic
+households, constructed from national survey microdata and subject to the statutory rules above,
+earn, spend, borrow, repay and default over a simulated two-year horizon. \ac{BNPL} platforms with
+the observed South African contract structure are injected into an otherwise unchanged 2017
+environment, so that any difference between the two runs is attributable to the new lender class.
+Platforms invisible to the bureau and to one another are the model's status quo; the reporting
+requirement is a switch. The thesis contributes a survey-grounded model of South African household
+credit, a quantified account of what non-reporting did to household distress, and an ex-ante
+evaluation of the reporting requirement against the affordability screening adopted abroad,
+including whether either answer depends on how adoption spreads.
 
 \subsection{Research Questions}
 \label{sec:rqs}
 
 \begin{quote}
-    How does the exemption of \ac{BNPL} from South Africa's credit-reporting and affordability
-    regime affect household credit distress, and which interventions in the \ac{BNPL} lending
-    environment reduce it?
+    In a household population already carrying substantial credit distress, what does the
+    addition of a \ac{BNPL} lending channel outside the affordability and reporting regime do to
+    that distress, and what is the mandated extension of credit-bureau reporting to \ac{BNPL}
+    likely to achieve?
 \end{quote}
 
-Three subsidiary questions decompose it.
+The model represents the reporting requirement as the visibility of \ac{BNPL} obligations to a
+lender's affordability assessment. It carries no credit score, so the second channel through which
+the requirement may act, a change in consumers' scores, is outside its scope
+(Section~\ref{sec:asymmetry}); the second half of the question is answered for the affordability
+channel only. Three subsidiary questions decompose it.
 
 \begin{enumerate}
     \item Can a synthetic household population built from South African survey microdata reproduce
@@ -59,17 +80,18 @@ Three subsidiary questions decompose it.
     \item Does the mutual invisibility of \ac{BNPL} platforms produce concurrent-facility
     stacking, and does population default rise with the number of platforms a household can stack
     across?
-    \item Which interventions in the \ac{BNPL} lending environment reduce the resulting distress
-    and default?
+    \item How do three scenarios for the \ac{BNPL} lending environment, bureau visibility,
+    mandatory affordability screening, and socially transmitted adoption, change the resulting
+    distress and default?
 \end{enumerate}
 
-Where the distress concentrates in the income distribution is treated as a finding rather than a
-scope restriction: the empirical record places \ac{BNPL} harm among lower-income,
-liquidity-constrained consumers \cite{hayashi2025constraints, wang2026buynow}, and results are
-reported by income quintile throughout.
+Where distress concentrates in the income distribution is treated as a finding rather than a scope
+restriction: the empirical record places \ac{BNPL} harm among lower-income, liquidity-constrained
+consumers \cite{hayashi2025constraints, wang2026buynow}, and results are reported by income
+quintile throughout.
 
 The first question is a precondition for the other two: a model whose households do not behave
 like South African households cannot support a claim about what happens when a new lender class is
-introduced to them. It is answered in two parts, by the population construction of
-Section~\ref{ch:population} and by the baseline results of Section~\ref{ch:results}. The second
-and third are answered in Section~\ref{ch:results}.
+introduced to them. It is answered by the population construction of Section~\ref{ch:population}
+and the baseline results of Section~\ref{ch:results}; the second and third are answered in
+Section~\ref{ch:results}.
