@@ -514,12 +514,15 @@ def fig_sobol() -> None:
         label="interaction (ST - S1)",
     )
     ax.set_xlabel("Share of variance in the population default rate")
-    ax.set_title(
+    # The warning is for exploratory runs only. It used to be unconditional, so the final
+    # N=256 figure told its reader to re-run at N>=256.
+    title = (
         f"Sobol decomposition (N={data['n_base_samples']}, "
-        f"{data['n_design_points']} design points)\n"
-        "wide CIs at this sample size - re-run at N>=256 before quoting",
-        fontsize=10,
+        f"{data['n_design_points']} design points)"
     )
+    if data["n_base_samples"] < 256:
+        title += "\nwide CIs at this sample size - re-run at N>=256 before quoting"
+    ax.set_title(title, fontsize=10)
     ax.legend()
     ax.grid(alpha=0.3, axis="x")
     fig.tight_layout()

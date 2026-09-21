@@ -8,8 +8,10 @@ first, then propagate to the companion docs. Last updated: **2026-09-21**.
 >
 > The supervisor's September feedback is fully applied (`supervisor_revision_plan.md`, 2026-09-10).
 > The live plan is [`SOL_PLAN_REFORMAT.md`](SOL_PLAN_REFORMAT.md): restructure to the reference
-> paper's six sections. **The binding gap is the final simulation run** -- everything in `results/`
-> predates the population rebuild of 2026-08-18 (DEFECTS B32).
+> paper's six sections. **The final simulation run is done (2026-09-21, step 4). The binding gap is
+> now the writing, step 6**, from `results/raw/` and `results/summary/` only. Anything under
+> `results/superseded_2026-08-13/` or in `archive/` predates the population rebuild and the B34
+> fix, and must not be quoted.
 >
 > | # | Step | Status |
 > | --- | --- | --- |
@@ -18,7 +20,7 @@ first, then propagate to the companion docs. Last updated: **2026-09-21**.
 > | 3 | Decide the comparison population for the mean-purchase check (B32, R992 anchor) | **decided** 2026-09-21: all adopters, within 35%, pre-registered in `DECISIONS.md` D4 before the run. It sits 34--36% low beforehand, so the run decides pass or named miss |
 > | 3a | Code cleanup ([`CODE_CLEANUP_PLAN.md`](CODE_CLEANUP_PLAN.md)): duplicate activation arm removed, every parameter and all six arrears bands echoed in the run output, dead code deleted | **done** 2026-09-21; outputs bitwise unchanged on a four-arm golden run |
 > | 3b | DEFECTS B34: granted traditional loans were never booked as debt (R9.96m, 20.7% of the opening book, in one baseline run) | **fixed** 2026-09-21: booked onto the consolidated balance at the rate table's sourced unsecured terms; step 2 re-fitted; Appendix G and the notation table updated |
-> | 4 | Final run overnight: `./env/python.exe -m simulation.experiments --which all --reps 20`, then `./env/python.exe -m simulation.sensitivity --samples 256`, then `./env/python.exe -m simulation.analysis`. All three, in order, stopping on failure: `./env/python.exe scratchpad/final_run.py` | **started 2026-09-21 20:57 from commit `be45867`**; log at `results/final_run.log`, which ends `FINAL RUN COMPLETE` or `FINAL RUN FAILED at ...`. The August raw results were moved to `results/superseded_2026-08-13/` first, so `results/raw/` holds only this run. Check the log's last line before quoting anything |
+> | 4 | Final run overnight: `./env/python.exe -m simulation.experiments --which all --reps 20`, then `./env/python.exe -m simulation.sensitivity --samples 256`, then `./env/python.exe -m simulation.analysis`. All three, in order, stopping on failure: `./env/python.exe scratchpad/final_run.py` | **done**: started 2026-09-21 20:57 from commit `be45867`, `FINAL RUN COMPLETE` at 23:22, all three steps exit 0 (`results/final_run.log`). 3,840 experiment runs + 4,096 Sobol runs (N=256; second-order off, so N x (D+2) x 2 replicates). Every arm has 20 replicates, unique seeds, no nulls. The August raw results are in `results/superseded_2026-08-13/`; `results/raw/` and `results/summary/` hold only this run. Headline numbers: changelog, section 9 |
 > | 5 | Six-section shell; Model and Calibration sections rewritten | **done** 2026-09-21 (needs no results) |
 > | 6 | Results, Scenarios, Conclusion, Introduction, Abstract -- from the final outputs only | after step 4 |
 > | 7 | Compression pass to 9,500 words; terminology and duplication audits | last |
@@ -300,6 +302,49 @@ citation-verification evidence for Chapter 2).
 ---
 
 ## 9. Changelog (living)
+
+- **2026-09-21 (THE FINAL RUN: 3,840 runs at 20 replicates + Sobol at N=256, commit `be45867`).**
+  These are the only results that may be quoted; everything earlier is superseded. Differences are
+  means over 20 replicates with one unpaired standard error; the replicate sd of the population
+  default rate is about 0.35pp.
+  - **Baseline, BNPL off.** Default 13.40%. Credit-active arrears: 90+ 13.68% against the CCMR's
+    14.21% (fitted), 60+ 14.61% against 16.54%, current 76.25% against 71.63%.
+  - **The injection raises population default**: +1.22pp ± 0.11 with no peer channel, +2.07pp ±
+    0.10 at `beta = 1`.
+  - **RQ2, stacking emerges but default does not follow it.** With four platforms 7.6% of all
+    households hold two or more facilities (45% of BNPL holders); at `beta = 1`, 54.4% (83% of
+    holders); zero with one platform, by construction. Default at six platforms less default at
+    one: −0.04pp ± 0.09 (`beta = 0`), +0.18pp ± 0.10 (`beta = 1`).
+  - **RQ2, access: no tipping point under either mechanism.** Default rises near-linearly with
+    access in every arm, the `beta = 0` control included (linear R² ≥ 0.98); peers amplify the rise
+    1.7x (+1.41pp to +2.36pp). Under Granovetter thresholds adoption rises by up to 49.8pp across
+    the access range while default rises 1.3–1.7pp, both near-linear.
+  - **RQ3, neither real scenario lowers default.** Bureau visibility: +0.26pp ± 0.11 at `beta = 0`
+    (2.4 s.e., and the sign is *up*: the gate refuses 1,160 applications against 1,033), +0.04pp ±
+    0.12 at `beta = 1`. Affordability check on BNPL: +0.02pp ± 0.10 and −0.05pp ± 0.10. The
+    hypothetical one-facility cap: −1.21pp and −1.83pp, which returns default to about the no-BNPL
+    baseline. Appendix material only.
+  - **Robustness.** Largest mover is still the uncited D4 amount rule (13.30% to 15.54% across the
+    six arms), then the default horizon (k=4 16.79% against k=7 15.45%), `kappa` (15.00% to
+    16.22%) and the purchase base (income 16.11%). Activation order 15.42% against 15.47%.
+    Population size 15.05% / 15.42% / 15.49% at 1,000 / 5,000 / 10,000. The single-tick shock rule
+    gives 5.66%, which is why it cannot carry the calibration.
+  - **Sobol, default rate.** The fitted shock probability carries essentially all the variance
+    over its 0.3x–1.6x range (S1 1.02 ± 0.15); no BNPL-side parameter has a total-order index
+    above 0.02. Read it as: uncertainty in the BNPL parameters barely moves the *level* of default
+    next to uncertainty in the shock rate. It says nothing about the BNPL *effect*, which is a
+    difference between arms.
+  - **Patterns.** P1 is mixed and must be written that way: enabling BNPL raises the traditional
+    arrears rate (+0.64pp, +1.14pp) but *lowers* traditional interest paid (−2.1%, −1.7%), because
+    BNPL-first diverts borrowing away from the lender (new lending R6.57m to R3.48m). The printed
+    "complementarity" verdict keys on arrears alone. P3: aggregate debt-to-income peaks in Q4
+    (1.49) with Q1 second (1.32); the mean of ratios peaks in Q1. P4: zero-savings share 25.9%
+    against TransUnion's 36%.
+  - **Mean-purchase check: a pass by R0.74** (R645.60 against R992.1, 34.93% low against the
+    pre-registered 35%; 8 of 20 replicates inside; the `beta = 1` arm is outside). DEFECTS B32.
+  - After the run, two presentation fixes that do not touch the model: the Sobol figure no longer
+    carries a hardcoded "re-run at N>=256" subtitle, and `sensitivity.py`'s help text states the
+    right run count. The Sobol figure was regenerated; every summary CSV is byte-identical.
 
 - **2026-09-21 (code cleanup; one blocker found).** Executed
   [`CODE_CLEANUP_PLAN.md`](CODE_CLEANUP_PLAN.md); its execution log lists every step and what was
