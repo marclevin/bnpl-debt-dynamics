@@ -8,6 +8,7 @@ Palette: categorical slots 1/2/3 of the validated default (blue, orange, aqua),
 checked with the dataviz validator on the light surface (all-pairs PASS).
 """
 import json
+import sys
 from pathlib import Path
 
 import matplotlib
@@ -19,9 +20,12 @@ from matplotlib.colors import LinearSegmentedColormap, TwoSlopeNorm
 from matplotlib.patches import Patch
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
 PROC = ROOT / "data/processed"
 FIGS = ROOT / "thesis/figures"
 FIGS.mkdir(parents=True, exist_ok=True)
+
+from notebooks.scripts.survey_common import load_finscope, wgini  # noqa: E402
 
 # ---------------------------------------------------------------- style
 SRC = "#2a78d6"     # slot 1 - weighted survey source
@@ -70,15 +74,6 @@ def grouped(ax, cats, series, colors, width=0.38, gap=0.02):
     ax.set_xticks(x)
     ax.set_xticklabels(cats)
     return x
-
-
-def wgini(x, w):
-    x = np.asarray(x, float)
-    w = np.asarray(w, float)
-    o = np.argsort(x)
-    x, w = x[o], w[o]
-    cw, cxw = np.cumsum(w), np.cumsum(x * w)
-    return 1 - np.sum((cxw[1:] + cxw[:-1]) * np.diff(cw)) / (cxw[-1] * cw[-1])
 
 
 # ---------------------------------------------------------------- data
@@ -215,19 +210,10 @@ fig.savefig(FIGS / "fig_population_fidelity.png", dpi=300)
 plt.close(fig)
 
 # =================================================================== figure 2
-fs = pd.read_csv(ROOT / "data/raw/FINMARK_2019/Finscope South Africa 2019.csv",
-                 usecols=["HH_WEIGHT16", "Number_in_HH", "M13_MHI_Imputed",
-                          "F1", "G5", "K7", "G10", "G11", "G12", "G13", "G14"])
-fs = fs[fs.HH_WEIGHT16 > 0].copy()
-MID = {"No Income": 0, "R1 - R999": 500, "R1 000 - R2 999": 2000, "R3 000 - R7 999": 5500,
-       "R8 000 - R11 999": 10000, "R12 000 - R29 999": 21000, "R30 000 or more": 40000}
-fs["pc"] = fs.M13_MHI_Imputed.map(MID) / pd.to_numeric(fs.Number_in_HH, errors="coerce").replace(0, np.nan)
-fs = fs.dropna(subset=["pc"])
-BOUNDS = [900.0, 1801.42, 3400.0, 7712.14]
-fs["income_quintile"] = pd.cut(fs.pc, [-np.inf] + BOUNDS + [np.inf], labels=QORDER, include_lowest=True)
-fs["banked"] = (fs.F1 == "Yes").astype(int)
-for _c in ["G10", "G11", "G12", "G13", "G14"]:
-    fs[_c] = (fs[_c] == "Yes").astype(int)
+# Cut at the backbone's own quintile bounds, so the benchmark and the population it is
+# compared against are split at exactly the same per-capita income.
+bounds = json.loads((PROC / "nids_backbone_summary.json").read_text())["pc_income_quintile_bounds"]
+fs = load_finscope(ROOT, bounds)
 FW = fs.HH_WEIGHT16.values
 
 fig2, (ax_g, ax_h) = plt.subplots(1, 2, figsize=(TW, 3.15),
