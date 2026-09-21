@@ -15,7 +15,9 @@ import warnings
 
 import pytest
 
+from simulation.affordability import nca_max_service
 from simulation.config import MONTHLY_TO_TICK, ParamSet
+from simulation.lender import NEW_LOAN_APR, new_loan_instalment
 from simulation.model import BNPLModel
 from simulation.population import build_records, load_population_frame
 
@@ -153,6 +155,68 @@ def test_defaulted_households_are_cut_off_from_traditional_credit():
     for a in defaulted:
         assert m.bureau.is_defaulted(a.agent_id)
         assert m.lender.apply(a, 100.0) == 0.0
+
+
+# ---------------------------------------------------------------------------
+# B34: a granted traditional loan must be booked as debt
+# ---------------------------------------------------------------------------
+
+
+def _headroom(agent) -> float:
+    """Monthly Reg 23A headroom the lender sees for this household, BNPL off."""
+    return nca_max_service(agent.income_monthly) - agent.scheduled_service_tick / MONTHLY_TO_TICK
+
+
+def _roomiest_debtor(model):
+    """The debtor with the most headroom: certain to be granted a small loan."""
+    return max((a for a in model.agents if a.d_trad > 0), key=_headroom)
+
+
+def test_a_granted_traditional_loan_is_booked_as_debt():
+    """Until B34 a grant added cash and nothing else: credit that never had to be repaid.
+
+    The balance must rise by the amount, scheduled service by the new loan's instalment,
+    and the rate must move to the balance-weighted mix of old and new.
+    """
+    m = BNPLModel(ParamSet(seed=2, n_agents=400, n_ticks=1, bnpl_enabled=False))
+    a = _roomiest_debtor(m)
+    debt, service, apr = a.d_trad, a.scheduled_service_tick, a.apr_annual
+
+    assert a._seek_credit(100.0) == 100.0, "the roomiest debtor must pass the gate"
+
+    assert a.d_trad == pytest.approx(debt + 100.0)
+    assert a.scheduled_service_tick == pytest.approx(
+        service + new_loan_instalment(100.0) * MONTHLY_TO_TICK
+    )
+    assert a.apr_annual == pytest.approx((debt * apr + 100.0 * NEW_LOAN_APR) / (debt + 100.0))
+    assert m.lender.value_granted == 100.0
+
+
+def test_a_refused_application_books_nothing():
+    m = BNPLModel(ParamSet(seed=2, n_agents=400, n_ticks=1, bnpl_enabled=False))
+    a = _roomiest_debtor(m)
+    before = (a.d_trad, a.scheduled_service_tick, a.apr_annual)
+
+    assert a._seek_credit(1e12) == 0.0, "no household can service a trillion-rand loan"
+
+    assert (a.d_trad, a.scheduled_service_tick, a.apr_annual) == before
+    assert m.lender.value_granted == 0.0
+
+
+def test_repeated_borrowing_uses_up_the_affordability_headroom():
+    """Each grant raises the service the bureau shows, so the gate eventually shuts.
+
+    Before B34 the same household passed the same test every tick, without limit. Here
+    each loan's instalment is 40% of the opening headroom: two fit, the third cannot.
+    """
+    m = BNPLModel(ParamSet(seed=2, n_agents=400, n_ticks=1, bnpl_enabled=False))
+    a = _roomiest_debtor(m)
+    amount = 0.4 * _headroom(a) / new_loan_instalment(1.0)
+
+    raised = [a._seek_credit(amount) for _ in range(3)]
+
+    assert raised == [pytest.approx(amount), pytest.approx(amount), 0.0]
+    assert m.lender.n_refused_gate == 1
 
 
 def test_zero_capacity_debtors_are_tracked_not_silently_dropped():

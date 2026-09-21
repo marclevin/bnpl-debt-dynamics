@@ -46,8 +46,7 @@ $y_i$, $y^w_i$ & income per tick; its wage component & \texttt{income\_tick}, \t
 $Y_i$, $E^d_i$ & monthly income; monthly discretionary budget & \texttt{income\_monthly}, \texttt{discretionary\_monthly} \\
 $n_i$ & employed members on the roster & \texttt{n\_earners} \\
 $e^c_i$, $e^d_i$ & committed expenditure; discretionary target, per tick & \texttt{committed\_tick}, \texttt{discretionary\_tick} \\
-$r_i$ & scheduled traditional debt service per tick & \texttt{scheduled\_service\_tick} \\
-$\iota_i$, $\tau_i$ & annual rate and term (months) pricing the opening balance & \texttt{apr\_annual}, \texttt{term\_months} \\
+$\tau_i$ & term (months) pricing the opening balance & \texttt{term\_months} \\
 $\rho_i = \rho(Y_i)$ & Regulation 23A monthly residual-income capacity & \texttt{nca\_capacity\_monthly} \\
 $\epsilon_i$, $m_i$ & indicators: \ac{BNPL}-eligible; minimum-payer archetype & \texttt{bnpl\_eligible}, \texttt{is\_min\_payer} \\
 $\theta_i$ & adoption threshold (threshold mechanism only) & \texttt{theta} \\
@@ -57,6 +56,7 @@ $w_i$ & survey weight (data layer only) & \texttt{w5\_wgt} \\
 $a_i(t)$ & liquid savings & \texttt{savings} \\
 $u_i(t)$ & earners currently unemployed & \texttt{n\_unemployed} \\
 $D_i(t)$, $A_i(t)$ & traditional debt; traditional arrears & \texttt{d\_trad}, \texttt{arrears\_trad} \\
+$r_i(t)$, $\iota_i(t)$ & scheduled traditional debt service per tick; annual rate on the consolidated balance. Both open at the data-layer values and move only when a traditional loan is booked (Algorithm~\ref{alg:gate}) & \texttt{scheduled\_service\_tick}, \texttt{apr\_annual} \\
 $B_{ip}(t)$ & \ac{BNPL} receivable owed by $i$ to platform $p$ & \texttt{exposure} \\
 $b_i(t)$ & \ac{BNPL} instalments and arrears falling due this tick, all platforms & \texttt{bnpl\_due\_per\_tick} \\
 $\alpha_i(t)$ & ticks in traditional arrears & \texttt{arrears\_age\_ticks} \\

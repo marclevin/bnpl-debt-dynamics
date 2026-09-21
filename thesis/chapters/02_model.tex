@@ -190,7 +190,7 @@ Table~\ref{tab:submodels} details the seventeen operational submodels; the mecha
 \addlinespace
 8. Heterogeneity & Behavioural parameters vary by income quintile, demographics, and the financial-inclusion markers of the data layer. & \cite{Keys2019} & No continuous present-bias parameter: no local calibration data. \\
 \addlinespace
-9. Credit-granting gate & The Regulation 23A residual-income test, applied at household level; all-or-nothing. New credit is priced as unsecured (repo $+21\%$, 25-month term), matching Section~\ref{sec:servicing}. & \cite{sa_ncr_affordability_2015} & No free parameter; the statutory expense table is hard-coded and asserted against the regulation's published worked examples. \\
+9. Credit-granting gate & The Regulation 23A residual-income test, applied at household level; all-or-nothing. New credit is priced as unsecured (repo $+21\%$, 25-month term), matching Section~\ref{sec:servicing}. A granted loan is booked onto the household's consolidated balance, raising the balance, its balance-weighted rate and scheduled service, so each grant reduces the headroom left for the next. & \cite{sa_ncr_affordability_2015} & No free parameter; the statutory expense table is hard-coded and asserted against the regulation's published worked examples. \\
 \addlinespace
 10. Information asymmetry & The bureau records traditional debt and defaults only. Lenders cannot observe \ac{BNPL} or informal debt. & \cite{nortonrose_bnpl_sa, transunion_cps_sa_2025} & \texttt{bnpl\_bureau\_visible} boolean (default off, the pre-2026 position); Scenario 1 in Submodel 15. \\
 \addlinespace

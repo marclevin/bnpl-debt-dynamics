@@ -82,7 +82,11 @@ its monthly discretionary budget $E^d_i$ (the cap $\mathbb{1}^{\text{cap}}$, on 
 the robustness one), and applies to the traditional lender for the remainder. The lender's test is the residual-income calculation on
 the liabilities the bureau shows it, and the line marked Scenario~1 is the only place the 2026
 reporting requirement enters the model: with $\mathbb{1}^{\text{bur}}$ on, the household's
-\ac{BNPL} instalments are added to the visible obligations.
+\ac{BNPL} instalments are added to the visible obligations. A granted loan is booked: it joins the
+household's one consolidated traditional balance at the unsecured terms of
+Table~\ref{tab:credit-terms}, raising the balance, the balance-weighted rate and the scheduled
+service. Because the bureau shows scheduled service, each grant uses up residual-income headroom
+and repeated borrowing limits itself.
 
 \begin{algorithm}[H]
 \caption{Credit application and the Regulation 23A gate}
@@ -96,7 +100,11 @@ reporting requirement enters the model: with $\mathbb{1}^{\text{bur}}$ on, the h
         \State $\text{financed} \gets \Call{BnplDraw}{i, \text{ask}}$ \Comment{Algorithm~\ref{alg:bnpl}}
         \State $\text{raised} \gets \text{financed} \cdot (1 - 1/N)$ \Comment{$1/N$ is debited at checkout}
     \EndIf
-    \If{$\text{amount} - \text{financed} > 0$} $\text{raised} \gets \text{raised} + \Call{LenderApply}{i,\ \text{amount} - \text{financed}}$ \EndIf
+    \If{$\text{amount} - \text{financed} > 0$}
+        \State $\text{granted} \gets \Call{LenderApply}{i,\ \text{amount} - \text{financed}}$
+        \If{$\text{granted} > 0$} \Call{BookLoan}{$i$, granted} \EndIf
+        \State $\text{raised} \gets \text{raised} + \text{granted}$
+    \EndIf
     \State \Return raised
 \EndFunction
 \Statex
@@ -107,6 +115,12 @@ reporting requirement enters the model: with $\mathbb{1}^{\text{bur}}$ on, the h
     \If{$\mathbb{1}^{\text{bur}}$} $\text{visible} \gets \text{visible} + b_i / \chi$ \Comment{\textbf{Scenario 1:} \ac{BNPL} enters the test} \EndIf
     \If{$\text{new} > \max(\rho(Y_i) - \text{visible},\ 0)$} \Return 0 \Comment{refused at the gate} \EndIf
     \State \Return amount \Comment{granted in full}
+\EndFunction
+\Statex
+\Function{BookLoan}{$i$, amount} \Comment{the loan joins the one consolidated balance}
+    \State $\iota_i \gets (D_i\, \iota_i + 0.28 \cdot \text{amount}) / (D_i + \text{amount})$ \Comment{balance-weighted rate}
+    \State $D_i \gets D_i + \text{amount}$
+    \State $r_i \gets r_i + \chi \cdot \mathrm{PMT}(\text{amount},\ 0.28,\ 25)$ \Comment{due from the next tick; shown by the bureau}
 \EndFunction
 \end{algorithmic}
 \end{algorithm}

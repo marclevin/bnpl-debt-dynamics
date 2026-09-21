@@ -18,6 +18,7 @@ from mesa import Agent
 
 from .affordability import nca_gate, tick_interest_rate
 from .config import MONTHLY_TO_TICK
+from .lender import NEW_LOAN_APR, new_loan_instalment
 from .population import HouseholdRecord
 
 
@@ -33,6 +34,9 @@ class HouseholdAgent(Agent):
         self.d_trad = record.d_trad
         self.savings = record.liquid_savings
         self.scheduled_service_tick = record.scheduled_service_tick
+        #: Rate on the consolidated traditional balance. Opens at the product-mix rate
+        #: and moves only when a new loan is booked (`_book_trad_loan`).
+        self.apr_annual = record.apr_annual
         self.arrears_trad = 0.0
 
         # -- static attributes ---------------------------------------------------
@@ -98,7 +102,7 @@ class HouseholdAgent(Agent):
         out negative amortisation by construction; the fraction is the assumed part.
         """
         p = self.model.params
-        interest = self.d_trad * tick_interest_rate(self.rec.apr_annual)
+        interest = self.d_trad * tick_interest_rate(self.apr_annual)
         pct = self.d_trad * p.min_payment_frac * MONTHLY_TO_TICK
         return min(max(interest, pct), self.d_trad + interest)
 
@@ -153,7 +157,7 @@ class HouseholdAgent(Agent):
 
         # --- 3. scheduled debt service is attempted ----------------------------
         # Interest accrues on the traditional balance before servicing.
-        interest = self.d_trad * tick_interest_rate(self.rec.apr_annual)
+        interest = self.d_trad * tick_interest_rate(self.apr_annual)
         self.d_trad += interest
         self.interest_charged_tick = interest
 
@@ -315,10 +319,39 @@ class HouseholdAgent(Agent):
 
         remaining = amount - covered
         if remaining > 0:
-            # A traditional loan is drawn down in full as cash.
-            net_cash += self.model.lender.apply(self, remaining)
+            # A traditional loan is drawn down in full as cash, and booked as debt.
+            granted = self.model.lender.apply(self, remaining)
+            if granted > 0:
+                self._book_trad_loan(granted)
+            net_cash += granted
 
         return net_cash
+
+    def _book_trad_loan(self, amount: float) -> None:
+        """Put a granted traditional loan on the household's balance sheet (D9/D10).
+
+        The loan joins the ONE consolidated traditional balance, which is how NIDS
+        records debt and how the model carries it from initialisation. Three things move:
+
+          * the balance, by the amount drawn;
+          * the rate, to the balance-weighted mean of the rate already carried and the
+            new loan's, so interest accrues on the mix actually held;
+          * scheduled service, by the new loan's level instalment. The bureau shows
+            scheduled service to the lender (D10), so every grant uses up Reg 23A
+            headroom and repeated borrowing is self-limiting.
+
+        The first instalment falls due NEXT tick: this tick's service was struck, and its
+        interest accrued, before the loan was drawn. As with opening debt, service then
+        runs at the summed instalment until the consolidated balance clears.
+
+        Until DEFECTS.md B34 none of this happened. A grant added cash and nothing else,
+        so traditional credit was a transfer that never had to be repaid and never
+        touched the gate, while every BNPL loan was booked and collected.
+        """
+        total = self.d_trad + amount
+        self.apr_annual = (self.d_trad * self.apr_annual + amount * NEW_LOAN_APR) / total
+        self.d_trad = total
+        self.scheduled_service_tick += new_loan_instalment(amount) * MONTHLY_TO_TICK
 
     def _purchase_scale(self) -> float:
         """The household's own monthly budget that a BNPL purchase is sized against (D4).

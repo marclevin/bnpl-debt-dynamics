@@ -268,6 +268,7 @@ def summarise_run(model) -> dict:
         # --- lender ----------------------------------------------------------------
         "trad_applications": model.lender.n_applications,
         "trad_granted": model.lender.n_granted,
+        "trad_granted_value": model.lender.value_granted,
         "trad_refused_gate": model.lender.n_refused_gate,
     }
     quintiles = sorted(set(quintile_of.values()))
