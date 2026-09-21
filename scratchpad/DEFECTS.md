@@ -1168,6 +1168,16 @@ Q4–Q5 means. It deliberately does not assert pass or fail against the toleranc
 full population the all-adopter mean sits 34–36% low, on the edge of the band. **This entry closes
 when the final run reports which side it fell.**
 
+**Outcome, from the final run's `rq0` suite (2026-09-21, commit `be45867`): a pass at the very edge
+of the band.** The pre-registered statistic, the `bnpl_on_beta0` mean over 20 replicates, is
+**R645.60 against R992.1, 34.93% low against a 35% tolerance: inside the band by R0.74.** The
+replicate standard deviation is R18.56 (range R614–R685), and only **8 of 20** replicates fall
+inside individually. The `bnpl_on_beta1` arm, reported beside it as registered, is R613.87, 38.12%
+low and **outside** the band (0 of 20 inside). The bracket holds: Q3–Q5 R909, Q4–Q5 R1,211.
+**Write it as a pass by the narrowest margin with the gap explained by who buys, never as
+agreement.** A reader is entitled to call it a miss within noise, and the thesis should say the
+margin so they can. `kappa` was not touched.
+
 ---
 
 ### B33 · The DSTI validation compared unlike quantities — `MAJOR` · `AGENT` · `CLOSED`
