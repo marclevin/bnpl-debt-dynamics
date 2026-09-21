@@ -20,7 +20,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import statistics as st
 
 import pandas as pd
 
@@ -87,19 +86,10 @@ def summarise(df: pd.DataFrame, target: float, by: list[str] | None = None) -> p
     return g.sort_values(by or ["shock_prob"]).reset_index(drop=True)
 
 
-def refine(coarse: pd.DataFrame, width_frac: float = 0.6, n: int = 7) -> list[float]:
-    """A finer grid bracketing the best coarse point."""
-    best = float(coarse.loc[coarse["abs_error"].idxmin(), "shock_prob"])
-    lo, hi = best * (1 - width_frac), best * (1 + width_frac)
-    step = (hi - lo) / (n - 1)
-    return [round(lo + i * step, 5) for i in range(n)]
-
-
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--reps", type=int, default=20, help="replicates per grid point")
     ap.add_argument("--jobs", type=int, default=-2, help="joblib n_jobs")
-    ap.add_argument("--quick", action="store_true", help="coarse grid only")
     args = ap.parse_args()
 
     ccmr = load_ccmr_target()
@@ -154,8 +144,7 @@ def main() -> None:
     )
 
     all_runs = pd.concat([df, df2, df3], ignore_index=True)
-    best_table = final_tbl
-    best_row = best_table.loc[best_table["abs_error"].idxmin()]
+    best_row = final_tbl.loc[final_tbl["abs_error"].idxmin()]
     p_hat = float(best_row["shock_prob"])
 
     # --- the QLFS plausibility check ------------------------------------------
@@ -195,7 +184,7 @@ def main() -> None:
 
     RESULTS_SUMMARY.mkdir(parents=True, exist_ok=True)
     all_runs.to_parquet(RESULTS_SUMMARY / "calibration_runs.parquet", index=False)
-    best_table.to_csv(RESULTS_SUMMARY / "calibration_grid.csv", index=False)
+    final_tbl.to_csv(RESULTS_SUMMARY / "calibration_grid.csv", index=False)
     payload = {
         "fitted_shock_prob": p_hat,
         "fitted_payment_friction": f_hat,

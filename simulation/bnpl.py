@@ -67,8 +67,6 @@ class BNPLPlatform:
     n_requests: int = 0
     n_blocked_order_cap: int = 0
     n_blocked_rolling_limit: int = 0
-    n_blocked_cut_off: int = 0
-    n_originated: int = 0
     #: Per-household request and block counts. A limit that scales with income binds
     #: hardest at the bottom, so an aggregate binding rate can read as inert while the
     #: constraint is biting hard on Q1. Reported by quintile in metrics.py.
@@ -110,7 +108,6 @@ class BNPLPlatform:
         self.requests_by_agent[agent_id] = self.requests_by_agent.get(agent_id, 0) + 1
 
         if agent_id in self.cut_off:
-            self.n_blocked_cut_off += 1
             return 0.0
         if amount > self.order_cap:
             self.n_blocked_order_cap += 1
@@ -125,16 +122,14 @@ class BNPLPlatform:
         if amount <= 0:
             return 0.0
 
-        instalment = amount / self.n_instalments
         self.loans.setdefault(agent_id, []).append(
             BNPLLoan(
                 principal=amount,
-                instalment=instalment,
+                instalment=amount / self.n_instalments,
                 # 25% is paid at checkout, so three instalments remain.
                 remaining=self.n_instalments - 1,
             )
         )
-        self.n_originated += 1
         return amount
 
     def due(self, agent_id: int) -> float:

@@ -41,7 +41,6 @@ class HouseholdRecord:
     province: str
     income_quintile: str
     income_source: str
-    household_size: float
     # -- flows, PER TICK (monthly survey values scaled by 12/26) -----------------
     income_tick: float
     income_wage_tick: float
@@ -61,17 +60,10 @@ class HouseholdRecord:
     liquid_savings: float
     # -- debt pricing -------------------------------------------------------------
     apr_annual: float
-    term_months: float
     # -- FinScope flag: gates BNPL eligibility -------------------------------------
     banked: bool
     # -- D17 --------------------------------------------------------------------
     reference_group: tuple[str, str]
-
-    @property
-    def wage_share(self) -> float:
-        if self.income_tick <= 0:
-            return 0.0
-        return self.income_wage_tick / self.income_tick
 
 
 @lru_cache(maxsize=1)
@@ -192,7 +184,6 @@ def build_records(
                 province=province,
                 income_quintile=quintile,
                 income_source=str(row.income_source),
-                household_size=float(row.w5_hhsizer),
                 income_tick=income_monthly * MONTHLY_TO_TICK,
                 income_wage_tick=float(row.w5_hhwage) * MONTHLY_TO_TICK,
                 n_earners=int(row.n_earners),
@@ -205,7 +196,6 @@ def build_records(
                 d_trad=float(row.D_trad),
                 liquid_savings=float(row.liquid_savings),
                 apr_annual=float(row.apr_annual),
-                term_months=float(row.term_months),
                 banked=bool(row.banked),
                 reference_group=group,
             )

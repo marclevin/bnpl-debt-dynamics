@@ -581,9 +581,6 @@ class ParamSet:
 
         return _replace(self, **kwargs)
 
-    def to_dict(self) -> dict[str, Any]:
-        return {f.name: getattr(self, f.name) for f in fields(self)}
-
 
 def parameter_register() -> list[dict[str, str]]:
     """The register as rows, for the thesis parameter table.

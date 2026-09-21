@@ -16,7 +16,7 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
-from .config import MONTHLY_TO_TICK, RATE_TABLE
+from .config import RATE_TABLE, TICKS_PER_YEAR
 
 # ---------------------------------------------------------------------------
 # NCA Regulation 23A(9) minimum expense norms.
@@ -138,11 +138,4 @@ def tick_interest_rate(apr_annual: float) -> float:
     Simple division by ticks-per-year, matching the P2 amortisation convention (which
     divides the APR by 12 for a monthly rate) rather than compounding it.
     """
-    from .config import TICKS_PER_YEAR
-
     return apr_annual / TICKS_PER_YEAR
-
-
-def monthly_to_tick(monthly_amount: float) -> float:
-    """Convert a monthly survey flow to a per-tick flow (12/26)."""
-    return monthly_amount * MONTHLY_TO_TICK

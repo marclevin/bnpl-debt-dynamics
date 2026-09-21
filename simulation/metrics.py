@@ -71,7 +71,6 @@ def collect_tick(model) -> dict:
         "pct_90_plus": sum(bands.get(label, 0) for label in ("d91_120", "d120_plus")) / n,
         # --- same bands on the credit-active denominator (the CCMR analogue) --------
         "n_credit_active": n_active,
-        "active_current": (bands_active.get("current", 0) / n_active) if n_active else 0.0,
         **{
             f"active_{label}": (bands_active.get(label, 0) / n_active) if n_active else 0.0
             for label, _, _ in CCMR_BANDS

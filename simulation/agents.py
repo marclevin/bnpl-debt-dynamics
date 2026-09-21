@@ -18,7 +18,6 @@ from mesa import Agent
 
 from .affordability import nca_max_service, tick_interest_rate
 from .config import MONTHLY_TO_TICK
-from .lender import NEW_LOAN_APR, NEW_LOAN_TERM_MONTHS
 from .population import HouseholdRecord
 
 

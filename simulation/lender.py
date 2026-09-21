@@ -67,14 +67,13 @@ class TraditionalLender:
     (OVERVIEW section 6); the BNPL side does have multiple platforms.
     """
 
-    __slots__ = ("bureau", "n_applications", "n_granted", "n_refused_gate", "n_refused_default")
+    __slots__ = ("bureau", "n_applications", "n_granted", "n_refused_gate")
 
     def __init__(self, bureau: CreditBureau) -> None:
         self.bureau = bureau
         self.n_applications = 0
         self.n_granted = 0
         self.n_refused_gate = 0
-        self.n_refused_default = 0
 
     def apply(self, agent, amount: float) -> float:
         """Assess an application. Returns the amount granted (0.0 if refused).
@@ -89,7 +88,6 @@ class TraditionalLender:
 
         # A defaulted household is cut off: the bureau shows the default (D7/D10).
         if self.bureau.is_defaulted(agent.agent_id):
-            self.n_refused_default += 1
             return 0.0
 
         new_instalment = amortised_instalment(amount, NEW_LOAN_APR, NEW_LOAN_TERM_MONTHS)

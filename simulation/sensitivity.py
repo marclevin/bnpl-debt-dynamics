@@ -76,7 +76,6 @@ def build_param_sets(sample: np.ndarray, reps: int, base: ParamSet) -> list[Para
     sets: list[ParamSet] = []
     for i, row in enumerate(sample):
         kwargs = dict(zip(PROBLEM["names"], (float(v) for v in row)))
-        kwargs["min_payment_frac"] = float(kwargs["min_payment_frac"])
         for r in range(reps):
             sets.append(base.replace(seed=100_000 + i * reps + r, label=f"sobol_{i}", **kwargs))
     return sets
