@@ -15,8 +15,9 @@ decision, close it *here* and propagate to [`DECISIONS.md`](DECISIONS.md) and
 > evaporated too), **B24** (the sensitivity ranking is superseded and must be regenerated), and
 > **B31** (a wiring detail that would corrupt the Granovetter run if not decided first).
 >
-> **Added 2026-09-21, and ahead of all four: B34.** Granted traditional loans are never booked as
-> debt (R9.96m, 20.7% of the opening book, over one baseline run). Decide it before the final run.
+> **Added 2026-09-21: B34, found and closed the same day.** Granted traditional loans were never
+> booked as debt (R9.96m, 20.7% of the opening book, over one baseline run). Fixed and re-fitted;
+> the side effect is that **B20's overshoot fell from 3.4x to 1.4x** the QLFS upper bound.
 
 **Line references** are against `thesis/main.tex` as at commit `47e57d0`. They will drift once
 the restructure (D1) lands; re-anchor at that point.
@@ -508,6 +509,15 @@ the denominator caveat attached. A failed independent test is a result, and this
 genuinely unfitted test in the thesis.
 
 ### B20 · The fitted shock rate is ~4x observed labour-market flows — `MAJOR` · `BOTH` · `OPEN`
+
+> **⚠ UPDATE 2026-09-21: the overshoot is now 1.4x, not 4x, and a large part of it was a bug.**
+> Fitted `p` has moved twice since this entry was written: 0.048 → 0.040 on the rebuilt population
+> (B32), then **0.040 → 0.016** once granted traditional loans were booked as debt (B34). Against
+> the sourced band of 0.0054–0.0117 that is **1.37x the upper bound**. The explanation below still
+> holds in kind — one channel is doing the work of several — but most of the "missing channels"
+> reading was wrong: the shock rate had been inflated to generate CCMR arrears *in spite of* free
+> traditional credit. The entry stays OPEN because `p` is still outside the band, and the thesis
+> says so (the Calibration section and Appendix C, both updated to "about 1.4 times").
 
 The QLFS cross-check added on 2026-08-12 did its job on the first run. Fitted
 `p = 0.048` per tick against a sourced band of **0.0054-0.0117**, so **4.1x the upper bound** — and
@@ -1146,10 +1156,17 @@ spread almost evenly over quintiles (16–24% each) while purchase size scales w
 Restricted means: Q3–Q5 **R875** (−12% on the R992 anchor), Q4–Q5 **R1,195** (+20%). **No source
 in the repo gives the income profile of a South African provider's customers** (Weaver IAR, the
 TransUnion pulse and the anchors file were checked), so any restricted comparison population
-would be chosen by looking at the answer. **Decision still open and Marc's** — see the options in
-the 2026-09-21 session summary; the recommendation is to keep all adopters as the comparison,
-report the check as a **named miss** with the bracket above as its explanation, and replace the
-`xfail(strict)` with a test that pins the reported numbers.
+would be chosen by looking at the answer. ~~Decision still open and Marc's~~
+
+**Decided by Marc, 2026-09-21: all adopters.** The comparison, statistic, target and tolerance
+(within 35% of R992, the tolerance the test had carried since 2026-08-12) are pre-registered in
+`DECISIONS.md` D4, written before the final run. `kappa` is not re-tuned whatever the outcome. The
+run now reports purchases by quintile, so the bracket above is reproduced from the final output
+and not from a side calculation. The `xfail(strict)` test is replaced by one that pins the
+*explanation*: all adopters average below the anchor, and the anchor lies between the Q3–Q5 and
+Q4–Q5 means. It deliberately does not assert pass or fail against the tolerance, because on the
+full population the all-adopter mean sits 34–36% low, on the edge of the band. **This entry closes
+when the final run reports which side it fell.**
 
 ---
 
@@ -1174,7 +1191,36 @@ The known double-count (`data/config/README.md`) pushes it further up, not down.
 Found while reviewing `simulation/` for over-engineering and then executing
 [`CODE_CLEANUP_PLAN.md`](../CODE_CLEANUP_PLAN.md).
 
-### B34 · Granted traditional loans are never booked as debt — `BLOCKER` · `BOTH` · `OPEN`
+### B34 · Granted traditional loans were never booked as debt — `BLOCKER` · `BOTH` · `CLOSED`
+
+**Closed 2026-09-21, the day it was found. Marc chose option (a), using only figures the repo
+already sources.**
+
+- **What is booked.** A granted loan joins the household's one consolidated traditional balance,
+  which is how NIDS records debt and how the model already carries it. The balance rises by the
+  amount; the rate moves to the balance-weighted mean of the rate carried and the new loan's;
+  scheduled service rises by the new loan's level instalment, due from the next tick. The bureau
+  shows scheduled service, so each grant uses up Reg 23A headroom and repeated borrowing limits
+  itself. `HouseholdAgent._book_trad_loan`; Appendix G gained a `BookLoan` function; the notation
+  table moves `r_i` and `iota_i` from constants to state.
+- **Terms are read, not retyped.** 28% (repo + 21%) over 25 months (CCMR 2017-Q1 unsecured
+  stock-flow life), from the `other_default` row of `credit_rate_table.csv`.
+- **Effect at the old fitted parameters** (seed 11, BNPL off): the book now *grows* from R48.2m to
+  R52.5m where it used to fall to R39.8m, and 90+ arrears stand at 20.3% against the 14.21%
+  target. Hence the refit.
+- **Refit** (`simulation.calibrate --reps 20`, grid extended one step down to 0.008 so the optimum
+  is interior): **shock probability 0.040 → 0.016; friction 0.09, unchanged.** 90+ 13.96% against
+  14.21%; 1–30 8.22% against 8.24%. Unfitted: 31–60 0.94%, 61–90 0.96%, current 75.93%, 60+
+  14.91%; zero-savings share 26.0% (was 32.1%); final default rate 13.6%. Pattern 3 still peaks
+  mid-distribution (aggregate DTI highest in Q4).
+- **The side effect that matters most: B20.** The shock rate had been inflated to produce CCMR
+  arrears *in spite of* free credit. It is now **1.4x** the QLFS upper bound, down from 3.4x.
+- **Tests:** a grant is booked (balance, service, blended rate); a refusal books nothing; three
+  loans each worth 40% of headroom give granted, granted, refused. 95 passed.
+- **Still true and now recorded under DECISIONS D7:** cash raised against a committed-expenditure
+  shortfall is not spent on it. That is a separate question from this defect and was not changed.
+
+*The entry as first written follows.*
 
 `TraditionalLender.apply` returns the granted amount and `_seek_credit` adds it to cash. Nothing
 increases `d_trad` or `scheduled_service_tick`, so a new traditional loan is a **non-repayable

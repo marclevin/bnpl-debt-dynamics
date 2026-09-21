@@ -14,10 +14,10 @@ first, then propagate to the companion docs. Last updated: **2026-09-21**.
 > | # | Step | Status |
 > | --- | --- | --- |
 > | 1 | Cap the shortfall borrowing path (three discrete amount rules kept) | **done** 2026-09-21 |
-> | 2 | Re-fit the two calibrated parameters on the rebuilt population | **done** 2026-09-21: shock 0.048 -> 0.040, friction 0.09 unchanged |
-> | 3 | Decide the comparison population for the mean-purchase check (B32, R629 vs R992) | **open -- Marc's decision.** The run now reports purchases by quintile, so any choice is computable afterwards; write the comparator and tolerance into `DECISIONS.md` before starting it |
+> | 2 | Re-fit the two calibrated parameters | **done twice** 2026-09-21: on the rebuilt population (shock 0.048 -> 0.040), then again after DEFECTS B34 (**0.040 -> 0.016**, now 1.4x the QLFS upper bound, was 3.4x). Friction 0.09 both times |
+> | 3 | Decide the comparison population for the mean-purchase check (B32, R992 anchor) | **decided** 2026-09-21: all adopters, within 35%, pre-registered in `DECISIONS.md` D4 before the run. It sits 34--36% low beforehand, so the run decides pass or named miss |
 > | 3a | Code cleanup ([`CODE_CLEANUP_PLAN.md`](CODE_CLEANUP_PLAN.md)): duplicate activation arm removed, every parameter and all six arrears bands echoed in the run output, dead code deleted | **done** 2026-09-21; outputs bitwise unchanged on a four-arm golden run |
-> | 3b | **Decide DEFECTS B34: granted traditional loans are never booked as debt** (R9.96m, 20.7% of the opening book, in one baseline run). Fixing it means re-fitting step 2 | **open -- Marc's decision. Blocks step 4** |
+> | 3b | DEFECTS B34: granted traditional loans were never booked as debt (R9.96m, 20.7% of the opening book, in one baseline run) | **fixed** 2026-09-21: booked onto the consolidated balance at the rate table's sourced unsecured terms; step 2 re-fitted; Appendix G and the notation table updated |
 > | 4 | Final run overnight: `./env/python.exe -m simulation.experiments --which all --reps 20`, then `./env/python.exe -m simulation.sensitivity --samples 256`, then `./env/python.exe -m simulation.analysis` | to do |
 > | 5 | Six-section shell; Model and Calibration sections rewritten | **done** 2026-09-21 (needs no results) |
 > | 6 | Results, Scenarios, Conclusion, Introduction, Abstract -- from the final outputs only | after step 4 |
@@ -305,9 +305,15 @@ citation-verification evidence for Chapter 2).
   [`CODE_CLEANUP_PLAN.md`](CODE_CLEANUP_PLAN.md); its execution log lists every step and what was
   skipped. No output of the model moved: a four-arm golden run on the full population was
   identical after every step, and the analysis CSVs and printed report were byte-identical.
-  - **Found, not fixed: DEFECTS B34.** Granted traditional loans are never booked as debt. One
-    baseline run grants R9.96m, 20.7% of the opening book, that is never repaid. Marc's decision;
-    it blocks the final run.
+  - **Found and fixed: DEFECTS B34.** Granted traditional loans were never booked as debt. One
+    baseline run granted R9.96m, 20.7% of the opening book, that was never repaid. A grant now
+    joins the household's consolidated balance (balance, balance-weighted rate and scheduled
+    service all rise), at the rate table's sourced unsecured terms. **Re-fitted: shock 0.040 ->
+    0.016, friction 0.09 unchanged**, so the fitted shock rate is now 1.4x the QLFS upper bound
+    (was 3.4x). 90+ 13.96% against 14.21%, 1--30 8.22% against 8.24%.
+  - **Decided: the mean-purchase comparison (B32).** All adopters, within 35% of R992,
+    pre-registered in `DECISIONS.md` D4. The `xfail` test is replaced by one that pins the
+    explanation of the gap.
   - **Fixed: DEFECTS B35.** The "synchronous" activation arm was the "uniform" arm, bitwise. One
     fixed-order arm remains, and the thesis claims one.
   - The run output now echoes every parameter, reports all six arrears bands, and splits

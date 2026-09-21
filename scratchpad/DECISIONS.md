@@ -275,6 +275,38 @@ ordered sequence; **the order itself is a modelling decision.**
     2–4% of median monthly household income in their own jurisdictions.
   - **Sensitivity (mandatory):** `kappa` over 0.07–0.28, and both bases.
 
+  **PRE-REGISTRATION OF THE MEAN-PURCHASE CHECK — written 2026-09-21, BEFORE the final run
+  (DEFECTS B32; decided by Marc the same day).** The sentence above ("the model's drawn mean of
+  R1,029") predates the population rebuild of 2026-08-18 and is superseded by what follows.
+
+  - **Comparison population: all adopters.** Every want-driven BNPL purchase made by every
+    household in the run, in every income quintile. *Why not a richer subgroup:* R992 is an average
+    over one provider's own customers, and **no source gives their income profile**, so any
+    restricted population would be chosen by looking at which one matches.
+  - **Statistic:** `bnpl_purchase_mean_realised` in the `bnpl_on_beta0` arm of the `rq0` suite
+    (calibrated baseline, BNPL on, peer channel off), averaged over its 20 replicates. The
+    `bnpl_on_beta1` arm is reported beside it, not instead of it.
+  - **Target:** R992 in 2017 Rands (`bnpl_anchors_2017.json`, `model_target`).
+  - **Tolerance: within 35% of the target, R645 to R1,339.** This is the tolerance the unit test
+    has carried since the rule was introduced on 2026-08-12, before any miss was known. It is
+    deliberately **not widened now**: the pre-rebuild value is known (R629, 36.6% low), so any wider
+    band set today would be set by looking at the answer.
+  - **Expected outcome, stated in advance:** a miss on the low side. **It will be reported as a
+    named miss, and `kappa` will not be re-tuned to close it.** If the final run lands inside the
+    band instead, it is reported as an unfitted check that passed, with this note left standing.
+    *Added later the same day, after the B34 fix and still before the final run:* on the full
+    population at default parameters the all-adopter mean is R638–R653 across four seeds, 34–36%
+    low, so the result may fall on either side of the lower edge. **The tolerance stays as written
+    above**; a result of 34% low passes and one of 36% low is a named miss, and the thesis says
+    which, with the margin.
+  - **The explanation that accompanies a miss, also fixed in advance:** the gap is *who buys*, not
+    how much each household buys. Adoption propensity is uniform across eligible households while
+    purchase size scales with the household's budget, so the all-adopter mean sits below a
+    provider's customer mean. The run reports purchases by quintile
+    (`bnpl_want_purchases_{Q}`, `bnpl_purchase_mean_realised_{Q}`); the Q3–Q5 and Q4–Q5 means are
+    reported as a **bracket around the anchor that explains the gap**, never as alternative
+    comparison populations that rescue the check.
+
   **The rule for the shortfall path is unchanged and remains uncited.** D4's status as the model's
   first uncited rule stands; what changed is that its BNPL *level* is now derived and externally
   checked rather than asserted.
@@ -415,9 +447,10 @@ ordered sequence; **the order itself is a modelling decision.**
   **after** credit. Needing to borrow for food is therefore distress in itself, and credit cannot
   clear it. The cash raised against a committed shortfall is also not spent on it; it goes to debt
   service, discretionary spending and savings. The thesis describes the implemented rule. Whether
-  to move to the after-credit rule written above is **Marc's decision**, and it cannot be tested
-  meaningfully until DEFECTS **B34** is settled, because traditional credit currently costs
-  nothing. Changing it requires re-running the calibration.
+  to move to the after-credit rule written above is **Marc's decision**. It could not be tested
+  meaningfully while traditional credit cost nothing; DEFECTS **B34** was fixed later the same
+  day, so it now can be, as a default-off robustness arm. Not built. Changing the baseline rule
+  would require re-running the calibration.
 - *Why not DSTI > 50%:* a DSTI threshold is arbitrary, and the D9 work established that the NCA
   itself does not use a DSTI ratio. Madeira's minimum-consumption test is cited, is consistent with
   the Reg 23A affordability rule already implemented in P2, and is validated against real default
@@ -474,6 +507,19 @@ ordered sequence; **the order itself is a modelling decision.**
   Implied ceiling is income-varying: **10.4% of income at R900/month, 83.2% at R7,712/month.**
   *Why this over a DSTI cap:* a flat cap is unsourced and, at the bottom of the distribution,
   wildly over-permissive, since it would let a R900/month household service R585/month.
+- **DECISION (what a grant does), added 2026-09-21 (DEFECTS B34).** This entry said when credit is
+  granted and never what a grant *does*, and the code did nothing: a grant was cash with no
+  balance, interest or instalment. **A granted loan is booked onto the household's one
+  consolidated traditional balance.** The balance rises by the amount. The rate becomes the
+  balance-weighted mean of the rate already carried and the new loan's. Scheduled service rises
+  by the new loan's level instalment, first due the following tick. Because the bureau shows
+  scheduled service (D10), every grant uses up residual-income headroom, so repeated borrowing
+  limits itself. *Why one consolidated balance and not a separate loan ledger:* NIDS records one
+  balance per household and the model has carried debt that way since initialisation; a second
+  representation for new loans would need a payment-allocation rule with no source behind it.
+  **Terms are sourced, not chosen:** 28% (NCA maximum, repo + 21% at the 2017 repo rate) over 25
+  months (CCMR 2017-Q1 unsecured stock-flow life), read from the `other_default` row of
+  `credit_rate_table.csv`. The loan amount is whatever D4 says the household asks for.
 - **Still open:** what counts as *visible* existing obligations (→ D10), and whether the lender
   applies the statutory minimum or a stricter internal policy.
 

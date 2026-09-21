@@ -360,8 +360,10 @@ The writing order will differ from the reading order:
 1. **Freeze the baseline.** Done 2026-09-21: word counts as above; the project compiles clean; the
    RQs are the approved umbrella question and its three subsidiaries. **Final simulation outputs do
    not exist.** Everything in `results/` predates the population rebuild of 2026-08-18 (DEFECTS
-   B32). The two fitted parameters were re-fitted on 2026-09-21 (shock probability 0.048 to 0.040,
-   friction unchanged at 0.09) and the shortfall path is capped; the 20-replicate sweeps and the
+   B32). The two fitted parameters were re-fitted twice on 2026-09-21: on the rebuilt population
+   (shock probability 0.048 to 0.040) and again once granted traditional loans were booked as debt
+   (DEFECTS B34; **0.040 to 0.016**). Friction stayed at 0.09 both times. The shortfall path is
+   capped; the 20-replicate sweeps and the
    Sobol decomposition are still to run, and steps 5-10 wait on them.
 2. **Build the six-section shell.** Agree the file map, move headings and labels, and compile before
    rewriting prose. Do not leave duplicate Literature or Discussion sections in the shell.

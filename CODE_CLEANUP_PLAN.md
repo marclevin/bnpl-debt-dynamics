@@ -2,15 +2,20 @@
 
 Drafted 2026-09-21 from the over-engineering review of the same date, plus the two implementation
 qualifications in [THESIS_REVIEW_2026-09-21.md](THESIS_REVIEW_2026-09-21.md). Status: **executed
-2026-09-21, except the final-run gate (1.7), which is blocked by a defect found on the way.**
+2026-09-21.** A blocking defect found on the way (B34) was fixed the same day, so the final-run
+gate (1.7) is clear.
 
 ## Execution log
 
-**Blocker found: DEFECTS B34.** Granted traditional loans add cash but are never added to
-`d_trad` or to scheduled service. One calibrated baseline run grants R9.96m (20.7% of the opening
-debt book) that is never repaid; 1,084 households are granted five or more times. It is recorded,
-measured and **not fixed**, because booking the loan is a model change that needs a refit. **Do not
-start the final run before deciding it.** See `scratchpad/DEFECTS.md` B34 for the options.
+**Blocker found: DEFECTS B34.** Granted traditional loans added cash but were never added to
+`d_trad` or to scheduled service. One calibrated baseline run granted R9.96m (20.7% of the opening
+debt book) that was never repaid; 1,084 households were granted five or more times.
+
+**Update, later on 2026-09-21: fixed, on Marc's decision, and re-fitted** (shock 0.040 → 0.016,
+friction 0.09 unchanged). Decision C was made the same day (all adopters, within 35%) and is
+pre-registered in `DECISIONS.md` D4. **Step 1.7's gate is therefore clear: nothing now blocks the
+final run.** See `scratchpad/DEFECTS.md` B34 for what was booked and what it changed. The golden
+file was deleted with the fix, since the fix moves outputs on purpose.
 
 | Step | Outcome |
 | --- | --- |
@@ -21,7 +26,7 @@ start the final run before deciding it.** See `scratchpad/DEFECTS.md` B34 for th
 | 1.4 Purchases by quintile | Done. Counts and means reconcile with the overall figures. |
 | 1.5 Echo all parameters | Done. 37 parameters echoed; both test modules derive the echo set from `ParamSet`. |
 | 1.6 All six band means | Done. Direct 91–120 band equals the old reconstruction to 7e-18. `fig_arrears_profile` now needs a post-cleanup `rq0.parquet`; the stale one lacks the column. |
-| 1.7 Gate and run | **Not done. Blocked by B34, and decision C is still open.** |
+| 1.7 Gate and run | Gate clear after the B34 fix and decision C. **The run itself has not been started**; it is Marc's to launch. |
 | 2.1 Dead code | Done, with two deliberate keeps: `BNPLLoan.principal` (Appendix G opens a facility with it) and the `PURCHASE_RATIO` alias (inlining a 37-character name twice reads worse). |
 | 2.2 One gate | Done. `nca_gate` floors headroom at zero, as Appendix G does, so it equals both former call sites in every case. |
 | 2.3 Sourced targets | Done, via a new `load_ccmr_bands()` that `analysis.py` also uses. |
@@ -38,9 +43,8 @@ summary CSVs and the printed report byte-identical against the existing `results
 parquet SHA-256 hashes unchanged.
 
 Two things to know for later. In-place notebook execution on this machine needs `PYTHONUTF8=1`, or
-non-ASCII characters are double-encoded (it happened once to P4 and was repaired).
-`scratchpad/golden.py` and `golden.json` are untracked scaffolding; delete them once B34 is decided,
-since a fix moves the outputs on purpose and needs a fresh golden file.
+non-ASCII characters are double-encoded (it happened once to P4 and was repaired). The golden-run
+scaffolding (`scratchpad/golden.py`, `golden.json`) was never committed and has been deleted.
 
 ---
 
