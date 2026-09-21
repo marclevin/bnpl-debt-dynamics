@@ -2,21 +2,44 @@
 
 **Project:** Modelling BNPL impact on the South African consumer credit market (Agent-Based Model).
 **This file is the canonical strategy + execution plan.** When a decision changes, change it here
-first, then propagate to the companion docs. Last updated: **2026-08-12**.
+first, then propagate to the companion docs. Last updated: **2026-09-21**.
 
-> **⚠ The word limit is 10,000, not 16,000** — appendices, bibliography, tables and figures
-> excluded; only body prose counts.
+> ## Where we are and what happens next (2026-09-21)
 >
-> **Research questions, settled 2026-08-18.** The thesis introduction is authoritative:
-> **RQ1** — does a synthetic population built from SA survey microdata reproduce credit-market
-> behaviour it was not fitted to? **RQ2** — do households accumulate concurrent BNPL facilities
-> that no lender observes in aggregate, and does that raise population default? **RQ3** — which
-> platform-level interventions curb the increase?
+> The supervisor's September feedback is fully applied (`supervisor_revision_plan.md`, 2026-09-10).
+> The live plan is [`SOL_PLAN_REFORMAT.md`](SOL_PLAN_REFORMAT.md): restructure to the reference
+> paper's six sections. **The binding gap is the final simulation run** -- everything in `results/`
+> predates the population rebuild of 2026-08-18 (DEFECTS B32).
 >
-> Old numbering maps forward as: old RQ0 → RQ1, old RQ1 **and** old RQ2 → RQ2, old RQ3 → RQ3.
-> Prose below uses the new numbering. **Dated changelog entries in §9 are left as written**, since
+> | # | Step | Status |
+> | --- | --- | --- |
+> | 1 | Cap the shortfall borrowing path (three discrete amount rules kept) | **done** 2026-09-21 |
+> | 2 | Re-fit the two calibrated parameters on the rebuilt population | **done** 2026-09-21: shock 0.048 -> 0.040, friction 0.09 unchanged |
+> | 3 | Decide the comparison population for the mean-purchase check (B32, R629 vs R992) | **open -- Marc's decision** |
+> | 4 | Final run overnight: `./env/python.exe -m simulation.experiments --which all --reps 20`, then `./env/python.exe -m simulation.sensitivity --samples 256`, then `./env/python.exe -m simulation.analysis` | to do |
+> | 5 | Six-section shell; Model and Calibration sections rewritten | **done** 2026-09-21 (needs no results) |
+> | 6 | Results, Scenarios, Conclusion, Introduction, Abstract -- from the final outputs only | after step 4 |
+> | 7 | Compression pass to 9,500 words; terminology and duplication audits | last |
+>
+> **The word limit is 10,000, working ceiling 9,500** -- appendices, bibliography, tables and
+> figures excluded; only body prose counts. Count with `./env/python.exe scratchpad/wc_prose.py`.
+>
+> **Research questions, approved by the supervisor 2026-09-09.** The thesis introduction is
+> authoritative. Umbrella: *in a household population already carrying substantial credit distress,
+> what does the addition of a BNPL lending channel outside the affordability and reporting regime
+> do to that distress, and what is the mandated extension of credit-bureau reporting to BNPL likely
+> to achieve?* The model answers the second half for the **affordability channel only**; it has no
+> credit score. **RQ1** -- can a synthetic population built from SA survey microdata reproduce
+> credit-market behaviour it was not fitted to? **RQ2** -- does the mutual invisibility of BNPL
+> platforms produce concurrent-facility stacking, and does population default rise with the number
+> of platforms a household can stack across? **RQ3** -- how do three scenarios (bureau visibility,
+> mandatory affordability screening, socially transmitted adoption) change the resulting distress
+> and default? The cooling-off window and the facility cap are appendix material only.
+>
+> Old numbering maps forward as: old RQ0 -> RQ1, old RQ1 **and** old RQ2 -> RQ2, old RQ3 -> RQ3.
+> Prose below uses the new numbering. **Dated changelog entries in section 9 are left as written**, since
 > they record what was found on a date; read any `RQ1` there as the stacking half of today's RQ2.
-> Experiment grid keys and figure filenames also keep the original scheme deliberately — see the
+> Experiment grid keys and figure filenames also keep the original scheme deliberately -- see the
 > numbering note at the top of `simulation/experiments.py`.
 >
 > `beta` is the **RQ2** experimental axis: it is what makes peer effects in BNPL adoption visible.
@@ -237,39 +260,40 @@ non-linear threshold in RQ2 structurally possible.
 
 ## 8. Companion documents
 
-**Three working documents, consolidated 2026-08-13 from nine overlapping files:**
+**Two working documents:**
 
 - [`scratchpad/DECISIONS.md`](scratchpad/DECISIONS.md) — **what was chosen and why.** Part I is the
   eighteen model decision rules (D0–D17); Part II is the data layer: the design commitments, the
   cell-donor matching method, and the column-level variable map (NIDS + FinScope).
 - [`scratchpad/DEFECTS.md`](scratchpad/DEFECTS.md) — **what is wrong, or was wrong**, with evidence,
-  severity and owner. Check it before starting work.
-- [`scratchpad/PLAN.md`](scratchpad/PLAN.md) — **what happens next**: the sequence, the open
-  decisions, the word budget and the supervisor questions.
+  severity and owner. Its entry headings overstate what is open; B32 is the live one.
+
+**What happens next** lives at the top of this file, not in a separate plan.
 
 Two revision plans from the September 2026 supervisor feedback:
 
 - [`supervisor_revision_plan.md`](supervisor_revision_plan.md) — **content**: the seven
-  feedback items as writing tasks (framing around the 2026 bureau-reporting requirement,
-  variable-construction and cell-donor appendices, three crossed scenarios, pseudocode,
-  self-contained floats, limitations argued inline). **APPLIED 2026-09-10**; its §0.2 records
-  the realised word counts and the Results budget they imply.
+  feedback items as writing tasks. **APPLIED 2026-09-10.** Kept at the root because its float-note
+  rules (section 6) and regulatory source table (section 0.3) still govern the Results write-up.
 - [`SOL_PLAN_REFORMAT.md`](SOL_PLAN_REFORMAT.md) — **structure**: the restructure to the
-  reference paper's section order, to run after the content plan. Note its §5 predates the
-  decision to cut the cooling-off and facility-cap levers from the body.
+  reference paper's section order. **LIVE**; revised 2026-09-21 to the three-scenario decision.
 
-Plus two standing references:
+One standing reference:
 
-- [`THESIS_GUIDE.md`](THESIS_GUIDE.md): plain-language explanation of the entire project, written
-  for someone with no prior knowledge of it. **Start here if you have lost the thread.**
 - [`household_agent.md`](household_agent.md): data → agent mapping, presentation-ready.
+
+**Archived 2026-09-21** in [`archive/`](archive/), superseded but kept for their evidence:
+`STATUS.md` and `THESIS_GUIDE.md` (every number predates B32 -- do not quote them), `PLAN.md`
+(16,000-word budget, old chapter numbering, and a TransUnion 20% band that was a misattribution),
+`SCOPE_REDUCTION.md` (executed 2026-08-18) and `literature_2_fix.md` (applied 2026-08-24; holds the
+citation-verification evidence for Chapter 2).
 
 ---
 
 ## 9. Changelog (living)
 
 - **2026-08-13 (supervisor-update run: 950 runs, 5 replicates).** Results summarised for the
-  supervisor in [`STATUS.md`](STATUS.md). ⚠ 5 reps gives a 0.33pp sd, so anything under ~0.67pp is
+  supervisor in [`STATUS.md`](archive/STATUS.md). ⚠ 5 reps gives a 0.33pp sd, so anything under ~0.67pp is
   noise. Headlines:
   - **B24 is closed and the answer was "artefact".** The two rebuilt parameters fell from ranks 1
     and 2 to rank 4 and last: purchase size 19.6pp → **2.06pp**, the per-provider limit 16.9pp →

@@ -1,7 +1,7 @@
 # DEFECTS — everything wrong, or once wrong, with evidence
 
 **One of three working documents.** [`DECISIONS.md`](DECISIONS.md) is *what was chosen and why*.
-[`DEFECTS.md`](DEFECTS.md) is *what is wrong or was wrong*. [`PLAN.md`](PLAN.md) is *what happens
+[`DEFECTS.md`](DEFECTS.md) is *what is wrong or was wrong*. [`PLAN.md`](../archive/PLAN.md) is *what happens
 next*. Consolidated 2026-08-13 from nine overlapping files.
 
 Raised in the full-document review of **2026-08-05** and extended continuously since. This file is
@@ -739,7 +739,7 @@ result than the one currently in the output.
 volume does not *increase*, which a no-op satisfies trivially. Fix requires a regression test that
 `k_cool = 1` **strictly reduces** want-driven purchase count against `k_cool = 0`.
 
-Plan: [`PLAN.md`](PLAN.md) **P0**. Nothing else in RQ3 is affected — the affordability,
+Plan: [`PLAN.md`](../archive/PLAN.md) **P0**. Nothing else in RQ3 is affected — the affordability,
 bureau and stacking-cap arms are unaffected by this bug.
 
 ---
@@ -747,7 +747,7 @@ bureau and stacking-cap arms are unaffected by this bug.
 ## The 2026-08-12 QA pass
 
 Four defects found and closed in one pass, plus one raised for the Granovetter work. Plan and
-evidence: [`PLAN.md`](PLAN.md). All 79 tests pass (65 existing, 14 new).
+evidence: [`PLAN.md`](../archive/PLAN.md). All 79 tests pass (65 existing, 14 new).
 
 **The baseline is untouched.** `shock_prob` and `payment_friction` are fitted with `bnpl_enabled =
 False`, and the peer channel is inert in that arm, so **no re-calibration is needed** and the CCMR
@@ -1113,6 +1113,40 @@ Two consequences, both of which were previously masked:
 - **Every arrears/default result shifts**, since discretionary spending is the buffer compressed
   before an instalment is missed. A smaller buffer means less absorption, so the fitted shock
   probability should re-fit **lower** — this bears directly on **B20**.
+
+**Update 2026-09-21 — re-calibrated; the prediction held.** `python -m simulation.calibrate
+--reps 20` on the rebuilt population: shock probability **0.048 → 0.040**, payment friction
+unchanged at **0.09**. Fitted bands 13.96% (90+, target 14.21%) and 8.32% (1–30, target 8.24%);
+**unfitted 60+ 15.01% against 16.54%**; the 31–60 and 61–90 bands stay underpopulated at ~1.1%
+each (B21 stands). The ratio to the QLFS upper bound falls from 4.1x to **3.4x** (B20 eases, does
+not close). Zero-savings rate falls from 45.6% to **32.1%**, against TransUnion's 36% (Pattern 4).
+`FITTED_SHOCK_PROB` in `experiments.py` is updated; **nothing in `results/raw` has been re-run
+yet** — every sweep there still predates this fix and must not be quoted. `sensitivity.py` was
+also found to decompose variance about an *uncalibrated* baseline (payment friction at its 0.0
+default); it now starts from `calibrated()`.
+
+**The mean-purchase gap, diagnosed (2026-09-21).** Same configuration as the xfail test, recorded
+per want-driven purchase. The rolling limit is **not** the cause: requested and financed means are
+identical at λ = 0.10, 0.25 and 10, because a purchase routes across four platforms. The gap is
+entirely **who buys**. Adoption propensity is uniform across eligible households, so transactions
+spread almost evenly over quintiles (16–24% each) while purchase size scales with budget:
+
+| Quintile | Share of transactions | Mean order | Share of GMV |
+| --- | ---: | ---: | ---: |
+| Q1 | 16% | R113 | 3% |
+| Q2 | 18% | R158 | 4% |
+| Q3 | 23% | R258 | 9% |
+| Q4 | 21% | R390 | 13% |
+| Q5 | 23% | R1,932 | 70% |
+| **All adopters** | | **R629** | |
+
+Restricted means: Q3–Q5 **R875** (−12% on the R992 anchor), Q4–Q5 **R1,195** (+20%). **No source
+in the repo gives the income profile of a South African provider's customers** (Weaver IAR, the
+TransUnion pulse and the anchors file were checked), so any restricted comparison population
+would be chosen by looking at the answer. **Decision still open and Marc's** — see the options in
+the 2026-09-21 session summary; the recommendation is to keep all adopters as the comparison,
+report the check as a **named miss** with the bracket above as its explanation, and replace the
+`xfail(strict)` with a test that pins the reported numbers.
 
 ---
 

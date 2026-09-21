@@ -1,11 +1,11 @@
 # DECISIONS — every choice made, and why
 
 **One of three working documents.** [`DECISIONS.md`](DECISIONS.md) is *what was chosen and why*.
-[`DEFECTS.md`](DEFECTS.md) is *what is wrong or was wrong*. [`PLAN.md`](PLAN.md) is *what happens
+[`DEFECTS.md`](DEFECTS.md) is *what is wrong or was wrong*. [`PLAN.md`](../archive/PLAN.md) is *what happens
 next*. Consolidated 2026-08-13 from nine overlapping files.
 
 Canonical strategy: [`../OVERVIEW.md`](../OVERVIEW.md).
-Plain-language explanation of the whole project: [`../THESIS_GUIDE.md`](../THESIS_GUIDE.md).
+Plain-language explanation of the whole project: [`../THESIS_GUIDE.md`](../archive/THESIS_GUIDE.md).
 Data → agent mapping: [`../household_agent.md`](../household_agent.md).
 
 ---
@@ -330,6 +330,18 @@ ordered sequence; **the order itself is a modelling decision.**
   the model is permissive about how much distress BNPL can relieve, which biases its estimated
   effect on default **upward**, and that is the conservative direction for a thesis arguing BNPL
   raises distress. Revisit as future work.
+
+  **REVERSED 2026-09-21: the shortfall draw is now capped.** The 950-run working sweep then ranked
+  the D4 amount rule, which acts only through this path, as the model's largest sensitivity, and
+  the 2026-08-18 scope decision (D5 in the archived `SCOPE_REDUCTION.md`) was to cap it before the
+  final run. `shortfall_bnpl_capped = True` (`config.py`) limits the BNPL share of a shortfall
+  request to `kappa x` the household's monthly budget, the same quantity that sizes a want-driven
+  purchase; whatever the cap excludes falls through to the traditional lender and the D9 gate
+  (`agents.py::_seek_credit`). The three discrete D4 amount rules are **kept** — the continuous
+  buffer sweep proposed in the archived `PLAN.md` was dropped as unnecessary — and the robustness
+  suite runs all three **capped and uncapped on the same seeds**, so the thesis can say by how much
+  the cap narrows the sensitivity. With BNPL off the cap is inert (asserted in
+  `test_degenerate.py`), so the calibration does not depend on it. Provenance: `ASSUMPTION`.
 
 ### D6. Repayment rule and arrears
 - **Governs:** how debt is retired versus how it snowballs. Drives the default observable.

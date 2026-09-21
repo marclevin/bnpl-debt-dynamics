@@ -1,5 +1,13 @@
 # Reformat and Rewrite Plan
 
+> **Revised 2026-09-21** to match the supervisor decisions of 2026-09-09, which postdate the first
+> draft of this plan, and the content plan applied on 2026-09-10 (`supervisor_revision_plan.md`).
+> Four things changed: the policy section compares **three crossed scenarios**, not four levers;
+> the word baseline is restated from the files as they now stand; the limitations are **already
+> distributed**; and the cap on body figures is dropped. The introduction's framing is the approved
+> umbrella question about the 2026 bureau-reporting requirement. Progress: steps 1-4 of the rewrite
+> sequence are under way; steps 5-10 wait on the final simulation run.
+
 ## Purpose
 
 This document specifies how I will rewrite the thesis so that its argument follows the structure of
@@ -13,7 +21,8 @@ idiosyncrasies will not be copied.
 
 ## Starting point and binding constraint
 
-As inspected on 8 September 2026, the manuscript has seven body sections:
+As inspected on 21 September 2026, after the content plan was applied, the manuscript has seven
+body sections, the sixth of which is an emptied pointer file:
 
 1. Introduction
 2. Existing Literature on Household Credit and Buy Now, Pay Later
@@ -23,19 +32,21 @@ As inspected on 8 September 2026, the manuscript has seven body sections:
 6. Discussion and Limitations
 7. Conclusion
 
-The current body files contain approximately 7,790 words of prose before the Results and Conclusion
-are completed. The existing Results skeleton budgets 3,300 words and the Conclusion skeleton 650.
-If those targets were followed without another structural pass, the body would reach approximately
-11,485 words. The 9,605-word projection in `scratchpad/SCOPE_REDUCTION.md` therefore no longer
-describes the expanded Data and Model drafts.
+The body files contain **6,508 words of prose** by `scratchpad/wc_prose.py`, which strips comments,
+tables, figures, TikZ, algorithm floats and display maths (the counter used on 10 September read
+6,640 on the same files; treat any count as good to about 3%). By file: Introduction 884,
+Literature 1,261, Household Population 1,522, Model Design 2,254, Results 148 (one written
+paragraph in a skeleton), Conclusion 439 (the reading paragraph and Future Work). The Results
+skeleton still budgets 3,300 words and the Conclusion 800; followed without a structural pass the
+body would reach roughly 10,150. The allocations below replace both.
 
 The rewrite will target **9,500 words at most, counting the abstract conservatively**, even though
 the confirmed exclusions are figures, tables, appendices, and the cover page. This leaves at least
 500 words below the rough 10,000-word limit for counting differences, late corrections, and captions
 if the department counts them.
 
-Before any rewrite begins, Opus's supervisor-driven edits must be complete. I will then establish a
-fresh baseline from the resulting files rather than treating the present snapshot as authoritative.
+The supervisor-driven edits are complete (`supervisor_revision_plan.md`, applied 2026-09-10), and
+the baseline above is taken from the resulting files.
 
 ## What the reference paper's structure actually does
 
@@ -76,7 +87,8 @@ The useful writing habits are equally important:
 
 Write this last. It will contain six moves in this order: the South African regulatory gap; the
 counterfactual injection design; the population and calibration basis; the stacking/default result;
-the negative peer-threshold result; and the intervention ranking. It must distinguish calibrated
+the negative peer-threshold result; and the scenario comparison, stated for the affordability
+channel of the reporting requirement only. It must distinguish calibrated
 agreement from counterfactual prediction and must not contain a number that is absent from the final
 results tables.
 
@@ -87,10 +99,13 @@ introduction should read as one continuous, escalating argument, as in the refer
 
 The paragraph sequence will be:
 
-1. Establish the regulated-credit benchmark: Regulation 23A, bureau reporting, and aggregate
-   visibility among registered lenders.
-2. Introduce the exception: BNPL falls outside that perimeter and creates mutually invisible
-   obligations. End with the concrete household-level problem of concurrent facilities.
+1. Establish the regulated-credit benchmark and the over-indebtedness it already carries:
+   Regulation 23A, bureau reporting, aggregate visibility among registered lenders, and the 2017
+   arrears record. Over-indebtedness motivates; the mandate is the question.
+2. Introduce the exception: BNPL has operated outside that perimeter and created mutually
+   invisible obligations. End with the concrete household-level problem of concurrent facilities,
+   then the 2026 reporting requirement that now addresses it, hedged as the content plan's 0.3
+   requires (February 2027 is press-reported, not gazetted).
 3. Explain why the question cannot be answered from South African administrative data and why a
    controlled counterfactual model is useful.
 4. Describe the model in one paragraph: survey-grounded households, traditional lender, bureau,
@@ -99,10 +114,12 @@ The paragraph sequence will be:
    independent checks.
 6. Preview the main findings in descending order of importance. Include the smooth rather than
    threshold response as a finding, not an apology.
-7. Preview the policy experiment and its mechanism: instruments aimed at individual transactions do
-   little where the harm comes from cross-platform accumulation; only the hypothetical facility cap
-   directly targets that margin.
-8. State the primary question and three subsidiary questions compactly. Preserve explicit research
+7. Preview the scenario experiment and its mechanism: both instruments act on the individual
+   agreement, and the harm comes from the number of agreements a household holds. Ground this on
+   the stacking evidence that stays in the body, not on the facility cap, which is now appendix
+   material only.
+8. State the approved umbrella question, its scoping clause (the affordability channel only), and
+   the three subsidiary questions compactly. Preserve explicit research
    questions because they improve examinability, even though the reference paper does not list them.
 9. Integrate the literature by contribution rather than by bibliography: household-credit ABMs;
    empirical BNPL harm and stacking; behavioural adoption and repayment; regulatory interventions.
@@ -235,24 +252,37 @@ Limitations will be attached to the claim they qualify rather than repeated in a
 Discussion section. The two load-bearing limits - calibrated baseline and inability to generate a
 systemic cascade - must remain visible in the main prose.
 
-### 5. Effectiveness of Policy Interventions: 1,150 words
+### 5. Three Scenarios for the Lending Environment: 1,150 words
 
 Promote RQ3 to its own main section, directly paralleling the reference paper's separate vaccination
-application. Begin with why the calibrated model is useful for comparing interventions and define
-the common counterfactual protocol.
+application. Begin with why the calibrated model is useful for comparing regulatory scenarios and
+define the common counterfactual protocol. The scenario definitions, the incidental-credit remark
+and the defer-versus-desist criterion are already written (formerly Submodel 15) and open this
+section; they do not wait on the final run.
 
-Compare four levers in one ranked table and one principal figure:
+Supervisor decision, 2026-09-09: **three scenarios, crossed, not four levers.** The run grid is
+already factorial, so the section presents it as it is:
 
-1. bureau visibility;
-2. mandatory affordability screening;
-3. a 14-day cooling-off period; and
-4. a **hypothetical** cap on concurrent facilities.
+| | Benchmark | Bureau visibility | Mandatory affordability screening |
+|---|---|---|---|
+| **beta = 0** | pre-2026 status quo | the reporting requirement | FCA PS26/1 analogue |
+| **beta > 0** | + peer effects | crossed | crossed |
 
-For each lever, report its effect on cumulative BNPL volume and default, then interpret the operative
-margin. Distinguish deferral from desistance. Explain the cooling-off result through the peer signal.
-Explain the near-null bureau result as a valid finding. Label the facility cap hypothetical every
-time it is compared with enacted or proposed instruments. Conclude with a direct answer to RQ3 and
-recommend policy direction, not a numerical statutory threshold.
+Each cell gets the **same outcome panel** as the benchmark (default, arrears, adoption, cumulative
+BNPL volume, by quintile), not a delta column against it. The first sentence states that Scenario 1
+is the 2026 reporting requirement represented through its affordability channel only; the scoring
+channel is outside the model. Explain the near-null bureau result as a valid finding and state its
+scope in the same sentence as the number. Distinguish deferral from desistance on cumulative volume.
+
+**The argument is grounded on the stacking evidence of Section 4**, not on the facility cap: the
+emergent 2+ facility share against the CFPB's 32%, zero stacking with one platform, and default
+rising with platform count. Both instruments act on the individual agreement and neither on the
+number of them, so their null results corroborate the mechanism; they do not establish it.
+
+The cooling-off window and the concurrent-facility cap are **cut from the body**. Their runs go to
+the supplementary appendix as tables with no body prose, including the one row that preserves the
+cooling-off-by-peer-effect interaction. Conclude with a direct answer to RQ3 and recommend policy
+direction, not a numerical statutory threshold.
 
 ### 6. Conclusion: 650 words
 
@@ -262,12 +292,15 @@ Remove all conclusion subsections. Use four short paragraphs:
 2. state the empirical and modelling contributions in descending order of defensibility;
 3. state the policy implication and its bounds, including that the exercise is a counterfactual and
    not a forecast of post-2017 South Africa;
-4. name only the three most valuable extensions: a contagion channel, better identification of
-   adoption parameters, and South African behavioural evidence.
+4. name the extensions in order of value: a scoring channel (the one the reporting requirement
+   most directly motivates, and owed by the scoping clause), a contagion channel, better
+   identification of adoption parameters, and South African behavioural evidence. The four are
+   already drafted at about 330 words and must compress to roughly half that to fit 650.
 
-The current standalone Discussion and Limitations section will disappear. Its claim-specific
-limitations will move into Sections 3-5; a compact concluding qualification will remain here; and
-secondary caveats will sit in an appendix table.
+The standalone Discussion and Limitations section is **already dissolved** (2026-09-10). Its
+claim-specific limitations sit inline with their labels, a compact concluding qualification is
+written, and `tab:further-caveats` indexes all of them. The restructure moves those passages with
+their host text and must not re-derive or duplicate them.
 
 ## Word budget
 
@@ -289,17 +322,16 @@ limit for ordinary prose will therefore be lower than the formal maximum wheneve
 
 ## Evidence placement
 
-The body should contain no more than six principal figures:
-
-1. population or inclusion fidelity, only if needed for RQ1;
-2. baseline arrears profile;
-3. stacking depth or platform-count result;
-4. default against access and peer influence;
-5. intervention comparison; and
-6. sensitivity tornado.
+There is no cap on body figures. Figures and tables are outside the word count, the supervisor
+asked for the cell-donor figure by name, and the body already carries four before Results adds its
+own: the information structure, the cell-donor match, inclusion fidelity and population fidelity.
+The rule is editorial instead: a figure stays in the body only if the prose interprets it, and
+everything else goes to the supplementary appendix. Results is expected to add five: the baseline
+arrears profile, stacking by platform count, default against access and peer influence, the
+scenario comparison, and the sensitivity tornado.
 
 The body tables should carry the parameter-source taxonomy, validation scorecard, central outcome
-values, and intervention ranking. Full parameter registers, ODD detail, alternative designs,
+values, and the two-by-three scenario panel. Full parameter registers, ODD detail, alternative designs,
 pseudocode, complete sweep grids, secondary robustness results, and additional caveats belong in the
 appendices.
 
@@ -325,8 +357,12 @@ repetitive roadmaps, awkward passive constructions, or claims stronger than the 
 
 The writing order will differ from the reading order:
 
-1. **Freeze the post-Opus baseline.** Record the changed files, compile status, exact section word
-   counts, unresolved comments, final RQs, and whether final simulation outputs exist.
+1. **Freeze the baseline.** Done 2026-09-21: word counts as above; the project compiles clean; the
+   RQs are the approved umbrella question and its three subsidiaries. **Final simulation outputs do
+   not exist.** Everything in `results/` predates the population rebuild of 2026-08-18 (DEFECTS
+   B32). The two fitted parameters were re-fitted on 2026-09-21 (shock probability 0.048 to 0.040,
+   friction unchanged at 0.09) and the shortfall path is capped; the 20-replicate sweeps and the
+   Sobol decomposition are still to run, and steps 5-10 wait on them.
 2. **Build the six-section shell.** Agree the file map, move headings and labels, and compile before
    rewriting prose. Do not leave duplicate Literature or Discussion sections in the shell.
 3. **Rewrite the Model.** This is least dependent on final numerical outputs and establishes the
@@ -337,8 +373,10 @@ The writing order will differ from the reading order:
    that interprets them. Do not copy provisional values from `STATUS.md` into the thesis.
 6. **Write the policy section.** Use the same baseline, seeds, denominators, and uncertainty rules as
    the central results.
-7. **Distribute limitations.** Attach each limitation to its affected claim, then place only
-   secondary caveats in the appendix.
+7. **Verify the limitations survived the move.** They were distributed on 2026-09-10; after the
+   restructure, confirm each `sec:lim-*` label, `sec:amount`, `sec:asymmetry` and `sec:no-cascade`
+   still sits beside the claim it qualifies, that each caveat is argued in exactly one place, and
+   that `tab:further-caveats` points at the new section numbers.
 8. **Rewrite the Conclusion.** Answer the RQs, state contributions, bound the claims, and name three
    extensions.
 9. **Rewrite the Introduction.** Once the paper's actual results and contribution are fixed, write
@@ -357,12 +395,11 @@ The eventual implementation should use filenames that match the new argument:
 | `02_model.tex` | Current Model Design and Implementation, stripped of calibration detail |
 | `03_calibration.tex` | Current Household Population plus parameterisation, estimation, and validation |
 | `04_results.tex` | Final baseline, stacking, default, distribution, and robustness results |
-| `05_policy.tex` | Intervention experiment currently planned inside Results |
+| `05_policy.tex` | The three-scenario experiment, opened by the scenario definitions formerly at Submodel 15 |
 | `06_conclusion.tex` | Current Conclusion plus only the necessary synthesis from Discussion |
 
-The existing appendix files should be retained and reorganised rather than discarded. File renaming
-must occur only after Opus has finished, because concurrent structural edits would create avoidable
-merge conflicts. Labels should be semantic (`sec:model`, `sec:calibration`, `sec:policy`) rather than
+The existing appendix files should be retained and reorganised rather than discarded. The content plan is
+finished, so the renames can proceed. Labels should be semantic (`sec:model`, `sec:calibration`, `sec:policy`) rather than
 preserving obsolete chapter numbers.
 
 ## Claim-control checklist
@@ -380,7 +417,10 @@ Before sign-off, the rewrite must satisfy all of the following:
   Conclusion.
 - Claims about systemic cascades are excluded because the model has no contagion channel.
 - The bureau-visibility near-null result is reported without being reframed as model failure.
-- The concurrent-facility cap is always identified as hypothetical.
+- The concurrent-facility cap and the cooling-off window appear only in the supplementary
+  appendix, and the cap is identified as hypothetical wherever it appears.
+- Every statement about the reporting requirement carries its scope: the affordability channel
+  only, with the scoring channel outside the model.
 - Policy language concerns direction and mechanism, not an estimated optimal legal threshold.
 - Provisional results are replaced with final-run values everywhere, including captions and
   appendices.
