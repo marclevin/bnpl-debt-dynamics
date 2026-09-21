@@ -174,7 +174,7 @@ def test_cool_off_cannot_increase_bnpl_volume():
     assert on["bnpl_volume_cumulative"] <= off["bnpl_volume_cumulative"]
 
 
-@pytest.mark.parametrize("activation", ["random", "uniform", "synchronous"])
+@pytest.mark.parametrize("activation", ["random", "uniform"])
 def test_all_activation_regimes_run(activation):
     r = run(bnpl_enabled=True, q_base=0.2, activation=activation)
     assert 0.0 <= r["default_rate_final"] <= 1.0

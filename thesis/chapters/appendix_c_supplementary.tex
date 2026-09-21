@@ -32,14 +32,14 @@ across the population the applied ceiling spans zero to 93.2\% of gross income, 
 Households act in random asynchronous order, reseeded every tick. The peer channel of Submodel~11
 is activation-order independent by construction, since it reads the reference-group adoption share
 lagged one tick, so every household within a tick sees the same settled share regardless of when it
-acts. The model is nonetheless re-run under uniform and under fully synchronous activation, and any
+acts. The model is nonetheless re-run under a fixed activation order, the same every tick, and any
 material movement is reported as activation-order sensitivity, since Comer and Loerch
 \cite{comer2013activation} and Alizadeh and Cioffi-Revilla \cite{alizadeh2015activation} both find
 emergent population behaviour to be sensitive to the activation regime.
 
 The lender has no shared funding constraint, and platform limits apply per household.
-Activation order therefore does not allocate a common credit pool. The alternative schedules
-check whether implementation details or the assignment of random draws affect the outcomes.
+Activation order therefore does not allocate a common credit pool. The alternative schedule
+checks whether implementation details or the assignment of random draws affect the outcomes.
 
 \subsection{Index of Limitations}
 \label{app:caveats}
@@ -160,7 +160,7 @@ scenarios are.
 % CONTENT REQUIRED, all as tables, generated from results/summary/:
 % - Sobol first-order and total-order indices for the default rate (sobol_indices.json,
 %   sobol_default_rate.png).
-% - Activation-order re-runs: random asynchronous vs uniform vs fully synchronous.
+% - Activation-order re-run: random asynchronous vs fixed order (rob_act_uniform).
 % - Population-size stability at 1,000 / 5,000 / 10,000 agents.
 % - Minimum-payer share swept 0.20-0.40, bracketing the transferred US estimate of 0.29.
 % - Income-shock magnitude sweep.

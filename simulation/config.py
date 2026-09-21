@@ -73,7 +73,7 @@ IES_BNPL_SHARE = DATA_CONFIG / "ies_2022_bnpl_share.json"
 Provenance = Literal["SOURCED", "DERIVED", "ASSUMPTION"]
 
 AmountRule = Literal["shortfall", "shortfall_125", "shortfall_plus_committed"]
-Activation = Literal["random", "uniform", "synchronous"]
+Activation = Literal["random", "uniform"]
 PurchaseBase = Literal["discretionary", "income"]
 PeerMechanism = Literal["linear", "threshold"]
 
@@ -569,7 +569,7 @@ class ParamSet:
         rule="D16",
         provenance="SOURCED",
         source="Random asynchronous order, re-drawn every tick (Comer & Loerch; Alizadeh).",
-        sweep="MANDATORY: uniform and synchronous robustness runs",
+        sweep="MANDATORY: fixed-order (uniform) robustness run",
     )
 
     # -- bookkeeping -------------------------------------------------------------

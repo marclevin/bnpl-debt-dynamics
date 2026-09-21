@@ -279,7 +279,7 @@ def robustness(reps: int) -> list[ParamSet]:
 
     # D16 activation order -- MANDATORY. The peer channel should be insensitive by
     # construction (it reads a lagged share); confirm it empirically.
-    for act in ("random", "uniform", "synchronous"):
+    for act in ("random", "uniform"):
         out += replicate(
             calibrated(**base, activation=act, label=f"rob_act_{act}"), reps, seed0=53_000
         )

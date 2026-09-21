@@ -135,13 +135,11 @@ class BNPLModel(Model):
             self.agents.shuffle_do("step")
         elif p.activation == "uniform":
             # Fixed order every tick — the artefact D16 warns about, kept as the
-            # mandated robustness arm.
+            # mandated robustness arm. A separate "synchronous" arm was removed: agents
+            # are created in `agent_id` order, so an unshuffled sweep was this same
+            # schedule and the two arms were bitwise identical.
             for agent in sorted(self.agents, key=lambda a: a.agent_id):
                 agent.step()
-        elif p.activation == "synchronous":
-            # Order still has to be serialised in a single-threaded model; what makes
-            # this arm distinct is that it is deterministic and unshuffled.
-            self.agents.do("step")
         else:  # pragma: no cover
             raise ValueError(f"unknown activation regime: {p.activation}")
 
