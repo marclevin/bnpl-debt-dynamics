@@ -1,6 +1,6 @@
 """The household agent: the seven-step tick.
 
-Ordering is specified in 04_design.tex and D0, and the order itself is a modelling
+Ordering is specified in 02_model.tex and D0, and the order itself is a modelling
 decision. Two features carry the mechanism:
 
   * Committed expenditure is paid BEFORE debt service. Madeira's default condition is
@@ -296,7 +296,14 @@ class HouseholdAgent(Agent):
         net_cash = 0.0  # cash actually freed up
 
         if p.bnpl_enabled and self.bnpl_eligible:
-            financed = self._bnpl_draw(amount)
+            # BNPL finances retail goods, not cash, so a shortfall can be shifted onto it
+            # only up to what the household spends in the categories it finances: the
+            # same kappa x budget that sizes a want-driven purchase. The remainder falls
+            # through to the traditional lender below, and to the D9 gate.
+            ask = amount
+            if p.shortfall_bnpl_capped:
+                ask = min(amount, p.bnpl_purchase_ratio * self._purchase_scale())
+            financed = self._bnpl_draw(ask)
             covered += financed
             # BNPL defers 75% of the cost: 25% is debited at checkout (D13), so the net
             # cash relief this tick is three quarters of the amount financed.

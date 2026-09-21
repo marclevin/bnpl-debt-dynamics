@@ -240,6 +240,23 @@ def test_realised_mean_purchase_lands_near_the_sa_provider_anchor():
     )
 
 
+def test_shortfall_path_puts_no_more_on_bnpl_than_the_financeable_budget():
+    """D5: BNPL finances retail goods, so it relieves a shortfall only up to kappa x budget.
+
+    The uncapped arm is the working-run behaviour and must still exceed the cap, or the
+    robustness comparison in experiments.py compares a rule with itself.
+    """
+    drawn = {}
+    for capped in (True, False):
+        m = build(bnpl_enabled=True, shortfall_bnpl_capped=capped)
+        a = next(x for x in m.agents if x.bnpl_eligible and x._purchase_scale() > 0)
+        cap = m.params.bnpl_purchase_ratio * a._purchase_scale()
+        a._seek_credit(cap * 50)
+        drawn[capped] = a.bnpl_volume_tick
+    assert 0 < drawn[True] <= cap + 1e-9
+    assert drawn[False] > cap
+
+
 def test_rolling_limit_is_per_household_and_proportional_to_income():
     m = build(bnpl_enabled=True, bnpl_limit_income_multiple=0.25)
     platform = m.platforms[0]

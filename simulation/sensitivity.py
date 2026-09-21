@@ -27,6 +27,7 @@ from SALib.sample import sobol as sobol_sample
 
 from .batch import run_batch
 from .config import RESULTS_SUMMARY, ParamSet
+from .experiments import calibrated
 
 #: The uncalibrated and fitted parameters, with the ranges each is defensible over.
 #: `beta` and `q_base` are the two admitted uncalibratable parameters (DEFECTS.md B8);
@@ -57,7 +58,7 @@ PROBLEM = {
         [0.025, 0.10],     # contractual minimum payment (mandatory sweep)
         [0.07, 0.28],      # kappa: half to double the IES-derived budget share
         [0.10, 1.00],      # lambda: months of income per provider; band is 0.10-0.26
-        [0.012, 0.064],    # shock probability, bracketing the fitted 0.048
+        [0.012, 0.064],    # shock probability, bracketing the fitted 0.040
     ],
 }
 
@@ -100,7 +101,10 @@ def main() -> None:
     print(f"replicates          : {args.reps}")
     print(f"total runs          : {n_design * args.reps}")
 
-    base = ParamSet(bnpl_enabled=True, n_ticks=args.ticks)
+    # The calibrated baseline, not bare defaults: `shock_prob` is swept and so overridden,
+    # but the default payment friction is 0.0, and decomposing variance about an
+    # uncalibrated baseline describes a different model from the one the sweeps report.
+    base = calibrated(bnpl_enabled=True, n_ticks=args.ticks)
     param_sets = build_param_sets(sample, args.reps, base)
     df = run_batch(param_sets, n_jobs=args.jobs)
 

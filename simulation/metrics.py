@@ -232,6 +232,7 @@ def summarise_run(model) -> dict:
                 "k_cool",
                 "stacking_cap",
                 "amount_rule",
+                "shortfall_bnpl_capped",
                 "min_payer_share",
                 "min_payment_frac",
                 "payment_friction",

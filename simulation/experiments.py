@@ -38,11 +38,14 @@ from .config import BNPL_PURCHASE_SHARE_OF_DISCRETIONARY, ParamSet
 #   payment_friction -> the CCMR 1-30 band
 # Held fixed across every BNPL run, so nothing downstream is re-tuned.
 #
-# NOTE: neither is disturbed by the BNPL parameter work of 2026-08-12. Both are fitted
-# with `bnpl_enabled=False`, and the peer channel is inert in that arm, so the CCMR
-# comparison, pattern 3 and pattern 4 all stand unchanged.
+# NOTE: neither is disturbed by BNPL-side parameter work. Both are fitted with
+# `bnpl_enabled=False`, and the peer channel is inert in that arm. They DO depend on the
+# population: re-fitted 2026-09-21 (results/summary/calibration.json, 20 replicates) after
+# P0 stopped counting imputed rent as discretionary spending (DEFECTS.md B32). A smaller
+# compressible buffer absorbs less, so the shock rate fell from 0.048 to 0.040; friction
+# did not move.
 # ---------------------------------------------------------------------------
-FITTED_SHOCK_PROB = 0.048
+FITTED_SHOCK_PROB = 0.040
 FITTED_PAYMENT_FRICTION = 0.09
 
 #: kappa as derived from IES 2022/23. Held here so the robustness grid centres on the
@@ -247,6 +250,19 @@ def robustness(reps: int) -> list[ParamSet]:
     for rule in ("shortfall", "shortfall_125", "shortfall_plus_committed"):
         out += replicate(
             calibrated(**base, amount_rule=rule, label=f"rob_amount_{rule}"), reps, seed0=50_000
+        )
+        # The same three rules with the shortfall path UNCAPPED, as it was in the working
+        # run, so the thesis can say whether the cap narrows this sensitivity. Same seeds
+        # as the capped arms above: a paired comparison.
+        out += replicate(
+            calibrated(
+                **base,
+                amount_rule=rule,
+                shortfall_bnpl_capped=False,
+                label=f"rob_amount_{rule}_uncapped",
+            ),
+            reps,
+            seed0=50_000,
         )
 
     # D6 minimum-payer share -- brackets the transferred US point estimate of 0.29.

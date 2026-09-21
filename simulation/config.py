@@ -175,13 +175,13 @@ class ParamSet:
         52,
         rule="ODD",
         provenance="SOURCED",
-        source="24-month horizon at a 14-day tick (04_design.tex)",
+        source="24-month horizon at a 14-day tick (03_calibration.tex)",
     )
     burn_in: int = _p(
         12,
         rule="ODD",
         provenance="SOURCED",
-        source="First 12 ticks discarded (04_design.tex)",
+        source="First 12 ticks discarded (03_calibration.tex)",
     )
     n_agents: int | None = _p(
         None,
@@ -326,6 +326,21 @@ class ParamSet:
         provenance="ASSUMPTION",
         source="No anchor found in the literature sweep. The model's first uncited rule.",
         sweep="MANDATORY: shortfall / +25% / plus one tick of committed expenditure",
+    )
+    shortfall_bnpl_capped: bool = _p(
+        True,
+        rule="D5",
+        provenance="ASSUMPTION",
+        source=(
+            "Caps the BNPL share of a SHORTFALL request at kappa x the household's own "
+            "monthly budget -- the same quantity that sizes a want-driven purchase. BNPL "
+            "finances retail goods in particular categories, so the most it can relieve "
+            "is what the household spends in them; the uncapped path let it stand in for "
+            "general-purpose cash. Whatever the cap excludes goes to the traditional "
+            "lender and faces the D9 gate. Added 2026-09-21 after the working run ranked "
+            "the D4 amount rule, which acts through this path, as the largest sensitivity."
+        ),
+        sweep="Robustness: uncapped, crossed with the three D4 amount rules",
     )
     bnpl_purchase_base: PurchaseBase = _p(
         "discretionary",
