@@ -51,6 +51,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_CSV = Path("data/raw/IES_2022/ies_22_23.csv")
 DEFAULT_OUT = Path("data/config/ies_2022_bnpl_share.json")
 
@@ -69,14 +70,6 @@ IMPUTED_RENT_GROUP = 42           # 04.2 imputed rentals, removed from both side
 #: Stats SA's published headline for IES 2022/23, used as the drift check.
 PUBLISHED_CLOTHING_FOOTWEAR_PCT = 5.0
 CLOTHING_TOLERANCE_PCT = 0.5
-
-
-def find_root(start: Path | None = None) -> Path:
-    start = start or Path.cwd()
-    for d in [start, *start.parents]:
-        if (d / "data" / "config").is_dir():
-            return d
-    raise FileNotFoundError("could not locate repo root (data/config missing)")
 
 
 def load_consumption(csv: Path) -> pd.DataFrame:
@@ -107,9 +100,8 @@ def load_consumption(csv: Path) -> pd.DataFrame:
 
 
 def main() -> None:
-    root = find_root(Path(__file__).resolve().parent)
-    csv = root / (sys.argv[1] if len(sys.argv) > 1 else DEFAULT_CSV)
-    out_path = root / (sys.argv[2] if len(sys.argv) > 2 else DEFAULT_OUT)
+    csv = ROOT / (sys.argv[1] if len(sys.argv) > 1 else DEFAULT_CSV)
+    out_path = ROOT / (sys.argv[2] if len(sys.argv) > 2 else DEFAULT_OUT)
 
     df = load_consumption(csv)
     weight = df.groupby("UQNO")["weight"].median()

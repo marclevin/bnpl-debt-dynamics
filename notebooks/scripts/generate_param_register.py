@@ -63,10 +63,6 @@ def shorten(source: str) -> str:
     return " ".join(kept)
 
 
-def fmt_baseline(value: str) -> str:
-    return escape(value)
-
-
 PROVENANCE_LABELS = {"SOURCED": "sourced", "DERIVED": "derived", "ASSUMPTION": "assumed"}
 
 RULE_LABELS = {"OVERVIEW 1a": "O.1a"}
@@ -113,7 +109,7 @@ def main() -> None:
         cells = [
             r"\texttt{" + escape_param(row["parameter"]) + "}",
             fmt_rule(row["rule"]),
-            fmt_baseline(row["baseline"]),
+            escape(row["baseline"]),
             PROVENANCE_LABELS.get(row["provenance"], escape(row["provenance"])),
             escape(shorten(row["source"])),
             escape(row["sweep"]) if row["sweep"] else "--",

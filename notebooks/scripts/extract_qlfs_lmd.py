@@ -26,6 +26,7 @@ import json
 import sys
 from pathlib import Path
 
+ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_PDF = Path("data/raw/QLFS_LMD_2022/Labour Market Dynamics SA 2022.pdf")
 DEFAULT_OUT = Path("data/config/qlfs_2017_labour_flows.json")
 
@@ -33,14 +34,6 @@ DEFAULT_OUT = Path("data/config/qlfs_2017_labour_flows.json")
 TICK_DAYS = 14.0
 QUARTER_DAYS = 365.25 / 4.0
 TICKS_PER_QUARTER = QUARTER_DAYS / TICK_DAYS
-
-
-def find_root(start: Path | None = None) -> Path:
-    start = start or Path.cwd()
-    for d in [start, *start.parents]:
-        if (d / "data" / "config").is_dir():
-            return d
-    raise FileNotFoundError("could not locate repo root (data/config missing)")
 
 
 def page_text(pdf: Path, printed_page: int) -> str:
@@ -199,9 +192,8 @@ def extract(pdf: Path) -> dict:
 
 
 def main() -> None:
-    root = find_root()
-    pdf = Path(sys.argv[1]) if len(sys.argv) > 1 else root / DEFAULT_PDF
-    out = Path(sys.argv[2]) if len(sys.argv) > 2 else root / DEFAULT_OUT
+    pdf = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / DEFAULT_PDF
+    out = Path(sys.argv[2]) if len(sys.argv) > 2 else ROOT / DEFAULT_OUT
 
     if not pdf.is_file():
         sys.exit(f"Error: source PDF not found: {pdf}")

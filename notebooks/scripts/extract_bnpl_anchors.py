@@ -40,6 +40,7 @@ import json
 import sys
 from pathlib import Path
 
+ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_OUT = Path("data/config/bnpl_anchors_2017.json")
 DEFLATOR = Path("data/config/cpi_deflator_2017.json")
 
@@ -87,18 +88,9 @@ INTERNATIONAL_LEVELS = {
 }
 
 
-def find_root(start: Path | None = None) -> Path:
-    start = start or Path.cwd()
-    for d in [start, *start.parents]:
-        if (d / "data" / "config").is_dir():
-            return d
-    raise FileNotFoundError("could not locate repo root (data/config missing)")
-
-
 def main() -> None:
-    root = find_root(Path(__file__).resolve().parent)
-    out_path = root / (sys.argv[1] if len(sys.argv) > 1 else DEFAULT_OUT)
-    deflator = json.loads((root / DEFLATOR).read_text(encoding="utf-8"))
+    out_path = ROOT / (sys.argv[1] if len(sys.argv) > 1 else DEFAULT_OUT)
+    deflator = json.loads((ROOT / DEFLATOR).read_text(encoding="utf-8"))
     factor = {int(k): v for k, v in deflator["factor_from_2017"].items()}
 
     # --- check 1: the FY2024 annual series against the FY2025 cumulative chart ---------

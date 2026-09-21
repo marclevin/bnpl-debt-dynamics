@@ -56,6 +56,7 @@ import json
 import sys
 from pathlib import Path
 
+ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_OUT = Path("data/config/cpi_deflator_2017.json")
 
 #: The model's base year. Everything monetary is expressed in Rands of this year.
@@ -102,14 +103,6 @@ REBASE_MONTHS = ["Dec 2016 = 100", "Dec 2021 = 100", "Dec 2024 = 100"]
 SOURCE_URL = "https://www.statssa.gov.za/publications/P0141/P0141June2026.pdf"
 
 
-def find_root(start: Path | None = None) -> Path:
-    start = start or Path.cwd()
-    for d in [start, *start.parents]:
-        if (d / "data" / "config").is_dir():
-            return d
-    raise FileNotFoundError("could not locate repo root (data/config missing)")
-
-
 def factors() -> dict[int, float]:
     """Cumulative price factor from the base year to each later year's ANNUAL AVERAGE.
 
@@ -144,8 +137,7 @@ def implied_june_2026_index() -> float:
 
 
 def main() -> None:
-    root = find_root(Path(__file__).resolve().parent)
-    out_path = root / (sys.argv[1] if len(sys.argv) > 1 else DEFAULT_OUT)
+    out_path = ROOT / (sys.argv[1] if len(sys.argv) > 1 else DEFAULT_OUT)
 
     # Drift check against the source's own published statement. Stats SA reports the
     # 2024 annual average as 4,4%; the series carries 4.36% from the same release, so
