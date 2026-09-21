@@ -116,7 +116,10 @@ def main() -> None:
     d30_target = bands["d30"] / 100.0
 
     # --- stage 1: fit p to the 90+ tail with friction off ---------------------
-    coarse_grid = [0.016, 0.024, 0.032, 0.040, 0.048, 0.056, 0.064]
+    # Extended one step down to 0.008 once granted loans were booked as debt (DEFECTS.md
+    # B34): the fit then fell to 0.016, the old lower edge, and a fitted value has to be
+    # interior to its grid to be read as an optimum.
+    coarse_grid = [0.008, 0.016, 0.024, 0.032, 0.040, 0.048, 0.056, 0.064]
     print(f"--- stage 1, p grid (friction off): {coarse_grid}")
     df = evaluate(coarse_grid, args.reps, args.jobs)
     coarse = summarise(df, target)

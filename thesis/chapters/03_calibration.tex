@@ -221,7 +221,7 @@ The model omits a continuous present-bias parameter because no South African dis
 
 Two parameters are estimated, against two bands of one target: the 2017-Q1 \ac{CCMR} arrears profile (Table~\ref{tab:ccmr}), Pattern~2 of Table~\ref{tab:patterns}.
 With \ac{BNPL} disabled, the wage-shock onset probability is fitted to the 90+ day share and the payment-friction rate to the 1--30 day share; the two are near-orthogonal, since shocks drive the tail and friction the first band.
-The fit gives a shock probability of 4.0\% per tick and a friction rate of 9\% per tick, and both are then held fixed in every run, so nothing is re-tuned once \ac{BNPL} is injected.
+The fit gives a shock probability of 1.6\% per tick and a friction rate of 9\% per tick, and both are then held fixed in every run, so nothing is re-tuned once \ac{BNPL} is injected.
 
 \begin{table}[H]
 \centering
@@ -247,7 +247,7 @@ Current                  & 71.63 \\
 
 Agreement on the two fitted bands measures calibration fit, not independent validation.
 The remaining bands provide checks within the same arrears distribution; \ac{BNPL}-on outputs are counterfactual predictions and require external evidence before they can count as validation.
-The fitted shock probability is more than three times the upper bound of the observed separation-rate range (0.54--1.17\% per tick).
+The fitted shock probability is about 1.4 times the upper bound of the observed separation-rate range (0.54--1.17\% per tick).
 It likely absorbs omitted causes of distress, such as illness, unexpected bills and family changes, so it should not be interpreted as an estimate of job loss.
 
 Every other parameter is held at its observed, constructed or imported value, and those with no anchor are swept.
@@ -290,25 +290,25 @@ All three are reported as plausibility checks, not tests.
 
 The unfitted intermediate arrears bands expose a weakness in the baseline (Table~\ref{tab:arrears-fit}).
 Both are about 1\%, against \ac{CCMR} shares of 3.6\% and 2.3\%.
-The cumulative 60+ day share is closer, at 15.0\% against 16.5\%, but includes the fitted 90+ band and is therefore not an independent check.
+The cumulative 60+ day share is closer, at 14.9\% against 16.5\%, but includes the fitted 90+ band and is therefore not an independent check.
 The concentration in early and late arrears is consistent with the long unemployment spells implied by the re-employment hazard.
 
 \begin{table}[H]
 \centering
 \caption{Baseline arrears profile against the \ac{CCMR}}
 \label{tab:arrears-fit}
-\tabnote{Baseline calibration results, with \ac{BNPL} disabled, from the completed refit preceding the final experiment run. Shares are over credit-active households and are compared with the account-level \ac{CCMR} target, in per cent. Means cover twenty replicates (seeds 1000--1019) at shock probability 0.040 and payment friction 0.09; the 90+ share has a replicate standard deviation of 0.39 percentage points. ``Fitted'' identifies the two target bands. Unfitted bands belong to the same distribution and are not independent observations. The cumulative 60+ row includes the fitted 90+ band.}
+\tabnote{Baseline calibration results, with \ac{BNPL} disabled, from the completed refit preceding the final experiment run. Shares are over credit-active households and are compared with the account-level \ac{CCMR} target, in per cent. Means cover twenty replicates (seeds 1000--1019) at shock probability 0.016 and payment friction 0.09; the 90+ share has a replicate standard deviation of 0.37 percentage points. ``Fitted'' identifies the two target bands. Unfitted bands belong to the same distribution and are not independent observations. The cumulative 60+ row includes the fitted 90+ band.}
 \begin{tabular}{lrrl}
 \toprule
 \textbf{Age band} & \textbf{\ac{CCMR}} & \textbf{Model} & \textbf{Status} \\
 \midrule
-Current       & 71.63 & 75.61 & unfitted \\
-1--30 days    &  8.24 &  8.32 & fitted \\
-31--60 days   &  3.59 &  1.06 & unfitted \\
-61--90 days   &  2.32 &  1.05 & unfitted \\
+Current       & 71.63 & 75.93 & unfitted \\
+1--30 days    &  8.24 &  8.22 & fitted \\
+31--60 days   &  3.59 &  0.94 & unfitted \\
+61--90 days   &  2.32 &  0.96 & unfitted \\
 90+ days      & 14.21 & 13.96 & fitted \\
 \midrule
-\emph{60+ days} & \emph{16.54} & \emph{15.01} & \emph{partly fitted} \\
+\emph{60+ days} & \emph{16.54} & \emph{14.91} & \emph{partly fitted} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -317,11 +317,14 @@ Current       & 71.63 & 75.61 & unfitted \\
 % The BNPL-on independent checks, none of them fitted, as ONE table with one paragraph:
 %   - share of adopters holding 2+ facilities against the CFPB's 32% (order of magnitude)
 %   - BNPL volume per eligible / per adopting household against the R1,333--R4,261 band
-%   - realised mean purchase against the R992 issuer-disclosed order value. NOTE: this
-%     check currently MISSES (R629, -37%; DEFECTS.md B32) and the comparison population
-%     is an open decision. Report whatever is decided as decided; do not tune a tolerance.
-%   - Pattern 1 direction; Pattern 3 DTI peak; Pattern 4 zero savings (32.1% at the
-%     re-fitted baseline against TransUnion's 36%)
+%   - realised mean purchase against the R992 issuer-disclosed order value. DECIDED
+%     2026-09-21 and pre-registered in DECISIONS.md D4: comparison population is ALL
+%     ADOPTERS, statistic is bnpl_purchase_mean_realised in rq0's bnpl_on_beta0 arm,
+%     tolerance is within 35% (R645--R1,339). Before the final run it sat 34--36% low, so
+%     report which side it fell and by how much; a miss is a NAMED miss, explained by the
+%     by-quintile split (Q3--Q5 and Q4--Q5 means bracket the anchor). Do not re-tune kappa.
+%   - Pattern 1 direction; Pattern 3 DTI peak; Pattern 4 zero savings (26.0% at the
+%     baseline re-fitted after DEFECTS B34, against TransUnion's 36%)
 % Then CLOSE RQ1 EXPLICITLY, in one sentence, with every failure named.
 % Foreground Patterns 2 and 4; Patterns 1 and 3 get one line each in the table only.
 

@@ -44,8 +44,14 @@ from .config import BNPL_PURCHASE_SHARE_OF_DISCRETIONARY, ParamSet
 # P0 stopped counting imputed rent as discretionary spending (DEFECTS.md B32). A smaller
 # compressible buffer absorbs less, so the shock rate fell from 0.048 to 0.040; friction
 # did not move.
+#
+# They also depend on the traditional side of the MODEL. Re-fitted again later the same
+# day, once granted traditional loans were booked as debt (DEFECTS.md B34). Until then a
+# grant was cash that never had to be repaid, and the shock rate had been inflated to
+# produce CCMR arrears in spite of that free credit: it fell from 0.040 to 0.016, from
+# 3.4x the QLFS upper bound to 1.4x. Friction again did not move.
 # ---------------------------------------------------------------------------
-FITTED_SHOCK_PROB = 0.040
+FITTED_SHOCK_PROB = 0.016
 FITTED_PAYMENT_FRICTION = 0.09
 
 #: kappa as derived from IES 2022/23. Held here so the robustness grid centres on the
