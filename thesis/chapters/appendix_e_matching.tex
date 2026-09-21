@@ -1,10 +1,9 @@
 \section{Cell-Donor Matching: Procedure, Assumptions and Limits}
 \label{app:matching}
 
-Section~\ref{sec:match} states the cell-donor match in four sentences and Figure~\ref{fig:cell-donor}
-draws it. This appendix gives the procedure formally, states the assumptions under which it is
-credible, the circumstances under which it is not, and which of those would move a headline
-result. Notation follows Table~\ref{tab:notation}; the procedure itself is Algorithm~\ref{alg:match}.
+This appendix gives the matching procedure, its assumptions and its limitations.
+Figure~\ref{fig:cell-donor} illustrates the procedure, Algorithm~\ref{alg:match} specifies the
+steps, and Table~\ref{tab:notation} defines the notation.
 
 \subsection*{A. The procedure}
 
@@ -18,8 +17,7 @@ the quintile of a \ac{FinScope} donor is assigned from the midpoint of its seven
 question divided by household size, against the weighted \ac{NIDS} quintile bounds. The
 procedure is specified to fall back to the quintile-only pool if a cell is empty; no draw ever did.
 
-Three facts about the realised match are worth stating because they are not visible in the
-body. The smallest cell holds 30 donors and the median 87; only three cells (all in the top
+The smallest cell holds 30 donors and the median 87; only three cells (all in the top
 quintile: Limpopo, North West, Northern Cape) hold fewer than 50. Of 4{,}969 available donors,
 3{,}597 were used at least once; the median donor was used twice, the 99th percentile 13 times,
 and the most-used donor 20 times. Donor reuse is concentrated where \ac{NIDS} is dense and
@@ -32,7 +30,7 @@ The heaviest one per cent of donors nonetheless supply only 5.1\% of recipients.
 \begin{description}
 \item[A1. Cell sufficiency.] Conditional on income quintile and province, the six flags are
 independent of everything else in \ac{NIDS} that affects a household's behaviour in the model.
-This is the load-bearing assumption and it is untestable from the two surveys, since the flags
+This assumption cannot be tested from the two surveys alone, since the flags
 are observed in one and the balance sheet in the other. Its defence is that quintile and
 province are the two strongest correlates of financial inclusion available in \emph{both}
 instruments, and that the \ac{FinScope} flags show large between-cell variation along both
@@ -44,8 +42,8 @@ the products the same way. Both are national household surveys; the \ac{FinScope
 questions name the same instruments the \ac{CCMR} categorises, which is what lets each flag be
 priced from the statutory rate table.
 \item[A4. Joint-structure preservation.] Because one donor supplies all six flags, the imputed
-joint distribution of products within a cell is the donor population's, not a product of six
-independent marginals. This is why single-donor transfer was chosen over per-flag imputation
+joint distribution of products within a cell follows the weighted donor distribution in
+expectation. Finite draws need not reproduce it exactly. This is why single-donor transfer was chosen over per-flag imputation
 (Figure~\ref{fig:cell-donor}c), and it matters because concurrent-facility stacking is a
 statement about the joint distribution of holdings.
 \item[A5. Weight-proportional draw.] Drawing in proportion to \ac{FinScope} weight reproduces
@@ -58,50 +56,44 @@ test of A5 and passes at 1.8 percentage points or better.
 \begin{description}
 \item[P1. Within-cell heterogeneity.] Anything that predicts inclusion within a cell, urban or
 rural location above all, and also education and the formality of employment, is not matched
-on. The imputation therefore reproduces between-cell variation in inclusion and suppresses
-within-cell variation: it is attenuated. The \ac{BNPL}-eligible population is more homogeneous
-than the real one, and since the omitted predictors also predict liquidity constraint, the
-most likely direction is that exposure is less concentrated in the model than in the population.
+on. Donor flags still vary within each cell, but their associations with these recipient
+characteristics are lost. If those associations concentrate borrowing among liquidity-constrained
+households, the model may understate exposure concentration. The direction and size of that
+effect are not established by the marginal checks.
 \item[P2. Small-cell donor reuse.] Recipients are drawn with replacement from pools that in
 three cells are near the 30-donor floor, and in the densest cells outnumber donors nearly ten
 to one. A heavily reused donor's flag vector is stamped onto many recipients, which reduces the
 effective sample of flag vectors below the nominal 10{,}841. The concentration figures in
-Part~A bound the effect: the top one per cent of donors supply 5.1\% of recipients, so no
-single donor's idiosyncrasy dominates a cell.
+Part~A describe national concentration: the top one per cent of donors supply 5.1\% of
+recipients. This does not by itself bound concentration within individual cells.
 \item[P3. Matching-key measurement error.] \ac{FinScope} income is banded, so a donor's
 quintile rests on a band midpoint divided by household size. Misassignment across a quintile
-boundary places a donor in the wrong cell and attenuates the match further. The effect is
-bounded, not eliminated, by the deflation test of Section~\ref{sec:match}: moving every band
-boundary by two years of inflation shifts imputed quintile rates by at most 2.4 percentage
-points.
+boundary places a donor in the wrong cell. A sensitivity check that moves the band boundaries
+by two years of inflation shifts imputed quintile rates by at most 2.4 percentage points.
+This checks one source of measurement error, not all errors from banded income.
 \item[P4. Vintage.] The flags are 2019 observations imposed on a 2017 population. Banked status
 was rising over that interval, so the 82.8\% \ac{BNPL}-eligibility ceiling is plausibly
-slightly too generous for 2017; the direction is known, the magnitude is not, and the
-categorical flags cannot be deflated. This is the one limitation here that acts directly on a
-model input rather than on its dispersion.
+too generous for 2017. The magnitude is unknown, and the categorical flags cannot be deflated.
 \item[P5. Group B validation is a construction check.] Because the draw is weight-proportional
 within the cell, agreement with the \ac{FinScope} cell marginals is expected by construction.
 The seven Group B checks in Table~\ref{tab:validation} therefore verify the implementation and
 say nothing about the population's external validity; Section~\ref{sec:data-validation} counts
 them accordingly.
 \item[P6. The joint distribution is never externally validated.] Only marginals are checked. No
-South African source publishes the joint distribution of credit-product holding, so A4 buys
-structural plausibility, not verified accuracy: the model's joint distribution of products is as
-good as \ac{FinScope}'s, and no better.
+independent South African benchmark was located for the joint distribution of credit-product
+holding. Copying observed combinations supports plausibility but does not verify the resulting
+joint distribution in the recipient population.
 \end{description}
 
 \subsection*{D. Which of these would move a result}
 
-Not all of P1--P6 matter equally. P4 acts on a level: it moves the eligibility ceiling and
-therefore the adoption rate in every \ac{BNPL}-on arm, though by an amount the access sweep of
-Section~\ref{sec:results-rq2} brackets, since that sweep varies eligibility over the whole
-banked subpopulation. P1 acts on a distribution: it flattens the concentration of exposure
-across households within a quintile, which bears on the by-quintile results but not on the
-population aggregates. P2 and P3 are second order, being bounded by the concentration and
-deflation figures above. P5 and P6 bound what the validation record can claim rather than what
-the model does: they are the reason the external checks of Section~\ref{sec:data-validation}
-are reported separately from the construction checks, and they are why the match is described
-throughout as reproducing marginals rather than as recovering the population.
+The vintage gap (P4) can change the eligibility ceiling and adoption levels.
+The access sweep tests sensitivity to eligibility levels, but does not reconstruct who was banked
+in 2017. Lost within-cell associations (P1) can affect both the distribution of exposure and
+aggregate default, since household responses are nonlinear.
+Donor reuse and income-band error (P2--P3) require sensitivity checks before their effects can
+be ranked. P5--P6 limit the validation claim: agreement on construction targets cannot establish
+that the imputed population reproduces unobserved relationships.
 
 The alternative not taken, a model-based or hot-deck fusion recovering finer joint structure
 from both instruments, is recorded in Appendix~\ref{app:rationale}. It would relax A1 at the

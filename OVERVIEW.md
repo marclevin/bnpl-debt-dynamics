@@ -24,6 +24,13 @@ first, then propagate to the companion docs. Last updated: **2026-09-21**.
 > **The word limit is 10,000, working ceiling 9,500** -- appendices, bibliography, tables and
 > figures excluded; only body prose counts. Count with `./env/python.exe scratchpad/wc_prose.py`.
 >
+> **Writing review, 2026-09-21:** [THESIS_REVIEW_2026-09-21.md](THESIS_REVIEW_2026-09-21.md)
+> maps the recorded supervisor feedback to the current thesis. Written body prose is now
+> **5,025 words** (previously 6,815), with final results still pending. Earlier BNPL outcomes
+> are no longer asserted as final. The review also records two implementation qualifications:
+> committed-expenditure distress persists after later borrowing, and the affordability gate
+> omits separate statutory deductions. Neither code nor simulation settings changed in this pass.
+>
 > **Research questions, approved by the supervisor 2026-09-09.** The thesis introduction is
 > authoritative. Umbrella: *in a household population already carrying substantial credit distress,
 > what does the addition of a BNPL lending channel outside the affordability and reporting regime

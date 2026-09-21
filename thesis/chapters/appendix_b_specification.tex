@@ -13,7 +13,7 @@ Table~\ref{tab:design-concepts} outlines the eleven structural \ac{ODD} design c
 \begin{longtable}{L{2.9cm}L{7.3cm}L{3.2cm}}
 \caption{\ac{ODD} design concepts and design exclusions}
 \label{tab:design-concepts} \\
-\multicolumn{3}{p{13.4cm}}{\footnotesize The eleven design concepts of the \ac{ODD} protocol \cite{grimm2020odd}, each with the model's treatment and the literature that grounds it; ``None'' in the source column marks a modelling choice with no external anchor. The final row lists the six mechanisms excluded by design and the reason for each. The second exclusion, the absence of any channel by which one household's default affects another, is the structural explanation of the central negative result of Section~\ref{sec:results-rq2}.} \\
+\multicolumn{3}{p{13.4cm}}{\footnotesize The eleven design concepts of the \ac{ODD} protocol \cite{grimm2020odd}, each with the model's treatment and the literature that grounds it; ``None'' in the source column marks a modelling choice with no external anchor. The final row lists the six mechanisms excluded by design and the reason for each. The absence of default-to-income and lender-loss feedback limits the contagion mechanisms tested in Section~\ref{sec:results-rq2}.} \\
 \toprule
 \textbf{Concept} & \textbf{Treatment} & \textbf{Source} \\
 \midrule
@@ -26,7 +26,7 @@ Table~\ref{tab:design-concepts} outlines the eleven structural \ac{ODD} design c
 \endfoot
 Basic principles & Balance sheets form the accounting core. Heuristic decision rules replace intertemporal optimisation. Statutory regulations act as explicit computational gates. & \cite{cardaci2018inequality, dorazio2017micro, meier2010present, Keys2019, yun2020housing} \\
 \addlinespace
-Emergence & Default rates, stacking depths and adoption paths are not imposed. They emerge from two separable feedback loops: a \emph{financial} loop, in which borrowing to service existing debt inflates future obligations, and a \emph{social} loop, in which lagged group adoption raises individual propensities. $\beta=0$ disables the social loop only, so the two are separately attributable. & None \\
+Emergence & Default rates, stacking depths and adoption paths follow from household decisions. Borrowing to service existing debt raises future obligations, while lagged peer adoption raises borrowing propensities. Setting $\beta=0$ removes the peer-adoption effect. & None \\
 \addlinespace
 Adaptation & Households compress consumption and select borrowing and repayment actions from immediate liquidity alone. The traditional lender is non-adaptive. & \cite{dorazio2017micro} \\
 \addlinespace
@@ -46,15 +46,15 @@ Collectives & Reference groups (income quintile $\times$ province) aggregate ind
 \addlinespace
 Observation & Tracked per tick: population default rate, \ac{CCMR} arrears distribution, aggregate traditional and \ac{BNPL} debt volumes, mean and quintile \ac{DSTI}, consumption compression, and application and rejection counts. & None \\
 \addlinespace
-Exclusions & Six mechanisms are excluded by design. \emph{No macroeconomic dynamics}: any time-variation would confound the injection effect with a macro effect. \emph{No contagion}: one aggregate lender with no balance sheet that can fail, and no feedback from household default to income, so defaults are correlated individual events and cannot cascade. \emph{No competition among traditional lenders}, which suppresses the lender-conduct mechanism of Hamill et al. \emph{No learning and no scarring}. \emph{No peer effects on consumption}: peer influence acts only on \ac{BNPL} adoption. \emph{Static household composition}. & \cite{hamill2023creditcard, cardaci2018inequality} \\
+Exclusions & Six mechanisms are excluded by design. \emph{No macroeconomic dynamics}: holding the environment fixed isolates the injection effect under baseline conditions. \emph{No contagion}: one aggregate lender with no balance sheet that can fail, and no feedback from household default to income, so default cannot spread through these channels. \emph{No competition among traditional lenders}, which suppresses the lender-conduct mechanism of Hamill et al. \emph{No learning and no scarring}. \emph{No peer effects on consumption}: peer influence acts only on \ac{BNPL} adoption. \emph{Static household composition}. & \cite{hamill2023creditcard, cardaci2018inequality} \\
 \end{longtable}
 
 \subsection*{B.2 Parameter register}
 
 The register holds every parameter, its baseline value, its provenance, and its sweep
 range where one applies. The table is generated from the model's parameter declarations in
-\texttt{simulation/config.py} by \texttt{notebooks/scripts/generate\_param\_register.py}, so the
-register and the code cannot drift apart. All Rand values are 2017 Rands; the \ac{BNPL} money
+\texttt{simulation/config.py} by \texttt{notebooks/scripts/generate\_param\_register.py}
+and must be regenerated after parameter changes. All Rand values are 2017 Rands; the \ac{BNPL} money
 parameters are published at current vintage and deflated once by a sourced \ac{CPI} factor, and
 the source column keeps the published nominal figure so a reader checking against a provider's
 website is not misled.

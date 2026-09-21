@@ -7,10 +7,10 @@
 % This section says where every number comes from, and keeps what is IMPOSED from data
 % or literature strictly apart from what is ESTIMATED.
 
-Section~\ref{sec:model} stated the rules; this section states where their numbers come from.
-Every input belongs to one of five classes, set out in Table~\ref{tab:param-taxonomy}: observed in South African data, constructed from it, imported from foreign literature, fitted, or swept because nothing anchors it.
-Only two parameters are fitted.
-The subsections follow that order, from the simulation protocol and the household population to estimation and the validation record; Appendix~\ref{app:specification} lists every parameter with its value, provenance and sweep range.
+This section describes the data, parameter choices, calibration and validation checks.
+Table~\ref{tab:param-taxonomy} separates observed, constructed, imported, fitted and assumed inputs.
+Only two parameters are fitted; assumptions without empirical estimates are varied in sensitivity analysis.
+Appendix~\ref{app:specification} gives the full parameter register.
 
 \begin{table}[H]
 \centering
@@ -37,7 +37,7 @@ Swept & Peer coefficients $q_{\text{base}}$, $\beta$ and the threshold parameter
 \subsection{Simulation Parameters}
 \label{sec:sim-params}
 
-Each run simulates 5{,}000 households for 52 ticks (24 calendar months) and discards the first 12 ticks as initialisation burn-in.
+Each run simulates 5{,}000 households for 52 ticks (approximately two years), with the first 12 ticks treated as initialisation burn-in for post-burn-in summaries.
 Every configuration is replicated twenty times with seeds $s_0 + i$, where $s_0$ is fixed per experiment suite, so any single run can be reproduced from its reported seed, and dispersion across replicates is reported with every result.
 Threshold endowments are drawn from a separate random stream, so control arms reproduce exactly and a sweep over threshold dispersion is a paired comparison.
 
@@ -69,11 +69,11 @@ We transfer attributes using cell-donor matching, illustrated in Figure~\ref{fig
 Stratifying both datasets by per-capita income quintile and province, each \ac{NIDS} record draws a donor from its matching cell with probability proportional to the donor's survey weight (seed: 42).
 Each of the 45 sampling cells contains at least 30 donor candidates, and no draw ever fell back to a coarser cell.
 
-Three properties of the match matter for what follows.
-Because one donor supplies all six flags, the imputed joint distribution of products is a real household's rather than a product of six independent marginals, which matters because stacking is a joint phenomenon.
-Because nothing within a cell is matched on, the imputation reproduces between-cell variation in inclusion and suppresses within-cell variation, so the eligible population is more homogeneous than the real one.
-And because the flags are two years younger than the population, the 82.8\% banked ceiling is plausibly slightly generous for 2017.
-Appendix~\ref{app:matching} states the assumptions under which the match is credible, the circumstances under which it is not, and which of them would move a headline result.
+Copying all six flags from one donor preserves observed combinations of product holdings and their weighted cell distribution in expectation.
+The match retains variation within cells, but does not preserve associations between the flags and unmatched recipient characteristics, such as urban or rural location.
+This may change where exposure concentrates.
+The two-year vintage gap may also overstate banking access in the 2017 population.
+Appendix~\ref{app:matching} details these assumptions and reports donor reuse.
 
 \begin{figure}[H]
 \centering
@@ -122,7 +122,7 @@ Appendix~\ref{app:matching} states the assumptions under which the match is cred
 \end{tikzpicture}
 \caption{The cell-donor match}
 \label{fig:cell-donor}
-\tabnote{Panel (a): both surveys are partitioned into the same 45 cells by per-capita income quintile and province; a \ac{NIDS} household draws its donor only from the \ac{FinScope} households in its own cell, and every cell holds at least 30 donors. Panel (b): within the cell, one donor is drawn with probability proportional to its survey weight (circle area), and its entire six-flag vector is copied to the recipient, so the imputed joint distribution of products is a real household's. Panel (c): the rejected alternative, one draw per flag from six different donors, reproduces the same marginals but discards the joint structure that concurrent-facility stacking depends on. Appendix~\ref{app:matching} gives the procedure formally, with its assumptions and limits.}
+\tabnote{Panel (a): both surveys are partitioned into the same 45 cells by per-capita income quintile and province; a \ac{NIDS} household draws its donor only from the \ac{FinScope} households in its own cell, and every cell holds at least 30 donors. Panel (b): within the cell, one donor is drawn with probability proportional to its survey weight (circle area), and its entire six-flag vector is copied to the recipient, so each recipient receives a combination observed in the donor survey. Panel (c): the rejected alternative, one draw per flag from six different donors, reproduces the same marginals but discards the joint structure that concurrent-facility stacking depends on. Appendix~\ref{app:matching} gives the procedure formally, with its assumptions and limits.}
 \end{figure}
 
 The imputed rates match their national targets to within 1.8 percentage points (Table~\ref{tab:imputation_errors}) and to within 2.3 across all thirty quintile-by-indicator cells (Figure~\ref{fig:inclusion-fidelity}).
@@ -203,16 +203,18 @@ Unflagged balance & 28\% & 25 & Fallback for the 74.0\% of donors flagging no sp
 
 The affordability cap binds for 3.8\% of indebted households but removes 22.8\% of total calculated debt service, so the adjustment is concentrated on high-debt outliers (Appendix~\ref{app:var-servicing}).
 One accounting overlap is known: the \ac{NIDS} non-food aggregate already contains reported clothing-account, hire-purchase and vehicle payments (median 12.6\% of non-food outlay among households reporting one), so constructed servicing charges a flow partly present in discretionary spending, overstating compressible outlay for indebted agents and understating their relative servicing share.
-Servicing-sensitive simulation outputs are therefore read as comparative upper bounds.
+These assumptions affect the level of simulated distress, but their combined effect does not establish an upper bound on default or on scenario differences.
 
 The \ac{BNPL} product is parameterised from what providers publish: contract structure, the per-order cap and late fees come from provider terms \cite{payflex_terms, payjustnow_terms}, deflated once to 2017 Rands so that every money quantity shares a vintage.
-Purchase size is set by no provider: $\kappa = 0.139$ is the share of discretionary spending going to the categories \ac{BNPL} finances, derived from IES 2022/23 microdata \cite{statssa_ies_2023}, and because only a ratio is imported the later vintage cannot contaminate a 2017-Rand model.
+The purchase-size ratio $\kappa = 0.139$ is derived from the share of discretionary spending on \ac{BNPL}-eligible categories in IES 2022/23 microdata \cite{statssa_ies_2023}.
+Using a ratio avoids a currency conversion, but assumes that spending shares transfer to the 2017 population.
 No South African provider publishes a rolling limit, so $\lambda$ is an assumption, anchored to the stacked exposure Woolard observed \cite{woolard2021} and swept (Submodel~12).
 
 \label{sec:lim-transfer}
 The behavioural micro-foundations of Section~\ref{sec:lit-behavioural} are United States evidence applied to South African borrowers: the minimum-payer share of 0.29, the present-bias results behind payment friction, and the experiment motivating the want-driven path.
 No developing-market evidence of comparable quality was located for any of them.
-The share that matters most is swept from 0.20 to 0.40, and the mechanisms are claims about decision-making under credit contracts rather than about United States institutions, but neither argument establishes that the parameters are right for South Africa; for the same reason Submodel~8 carries no continuous present-bias parameter, since no South African distribution exists to calibrate one.
+We vary the minimum-payer share from 0.20 to 0.40 to assess this uncertainty.
+The model omits a continuous present-bias parameter because no South African distribution was available for calibration.
 
 \subsection{Estimation and Experimental Protocol}
 \label{sec:lim-calibration}
@@ -243,13 +245,15 @@ Current                  & 71.63 \\
 \end{tabular}
 \end{table}
 
-The baseline is therefore calibrated, not validated, and this is the most important limitation in the thesis.
-The shock probability cannot be estimated from a single \ac{NIDS} wave, so it is fitted until baseline arrears reproduce Pattern~2, and agreement on the fitted bands is not evidence that the model is right; only the bands left free, and the results obtained after \ac{BNPL} is injected with that parameter held fixed, are out-of-sample tests.
-The fitted value is also implausibly high, more than three times the upper bound of the separation rate the labour force survey records (0.54--1.17\% per tick), because the model has exactly one thing that can go wrong where real households also fall behind through illness, unexpected bills, rate rises and family change: one channel does the work of several.
-This is disclosed rather than corrected, since correcting it means adding shock channels the data cannot parameterise.
+Agreement on the two fitted bands measures calibration fit, not independent validation.
+The remaining bands provide checks within the same arrears distribution; \ac{BNPL}-on outputs are counterfactual predictions and require external evidence before they can count as validation.
+The fitted shock probability is more than three times the upper bound of the observed separation-rate range (0.54--1.17\% per tick).
+It likely absorbs omitted causes of distress, such as illness, unexpected bills and family changes, so it should not be interpreted as an estimate of job loss.
 
 Every other parameter is held at its observed, constructed or imported value, and those with no anchor are swept.
-The peer coefficients are the most consequential: neither $q_{\text{base}}$ nor $\beta$ is fixed by any source, and the $\beta = 0$ control arm removes the circularity this would create but not the plausibility problem, since it does not say which region of the $(q_{\text{base}}, \beta)$ surface is the actual market, and the available anchors, the 82.8\% banked ceiling, TransUnion's 57\% holding rate \cite{transunion_cps_sa_2025} and the \ac{CFPB} stacking shares, are indirect.
+Neither $q_{\text{base}}$ nor $\beta$ has a direct empirical estimate.
+The $\beta = 0$ control isolates peer influence but does not identify plausible market values.
+The banked ceiling, TransUnion's reported holding rate \cite{transunion_cps_sa_2025} and the \ac{CFPB} stacking shares provide only indirect checks.
 The second research question is answered by sweeping the number of platforms from one to six and \ac{BNPL} access within the banked population, each against $\beta$; the third by the two scenario switches crossed with $\beta$ (Section~\ref{sec:scenarios}).
 
 \subsection{Validation}
@@ -284,15 +288,16 @@ All three are reported as plausibility checks, not tests.
 \end{tabular}
 \end{table}
 
-The strongest single check is the part of the arrears profile that was left free (Table~\ref{tab:arrears-fit}).
-The 60+ day share, fitted by nothing, is 15.0\% against the \ac{CCMR}'s 16.5\%.
-The two intermediate bands fall short, at about 1\% each against 3.6\% and 2.3\%: arrears in the model are bimodal, because an unemployment spell at the sourced re-employment hazard lasts about as long as the simulation horizon, so a household either cures within a month or slides through to the tail.
+The unfitted intermediate arrears bands expose a weakness in the baseline (Table~\ref{tab:arrears-fit}).
+Both are about 1\%, against \ac{CCMR} shares of 3.6\% and 2.3\%.
+The cumulative 60+ day share is closer, at 15.0\% against 16.5\%, but includes the fitted 90+ band and is therefore not an independent check.
+The concentration in early and late arrears is consistent with the long unemployment spells implied by the re-employment hazard.
 
 \begin{table}[H]
 \centering
 \caption{Baseline arrears profile against the \ac{CCMR}}
 \label{tab:arrears-fit}
-\tabnote{The model's baseline arrears distribution over credit-active households, \ac{BNPL} disabled, against the \ac{CCMR} shares of Table~\ref{tab:ccmr}, in per cent. Means over twenty replicates (seeds 1000--1019) at the fitted shock probability of 0.040 and friction rate of 0.09; the replicate standard deviation of the 90+ day share is 0.39 percentage points. ``Fitted'' marks the two bands the two parameters were estimated on, where agreement is not evidence; every other row is out of sample. The 60+ row is cumulative.}
+\tabnote{Baseline calibration results, with \ac{BNPL} disabled, from the completed refit preceding the final experiment run. Shares are over credit-active households and are compared with the account-level \ac{CCMR} target, in per cent. Means cover twenty replicates (seeds 1000--1019) at shock probability 0.040 and payment friction 0.09; the 90+ share has a replicate standard deviation of 0.39 percentage points. ``Fitted'' identifies the two target bands. Unfitted bands belong to the same distribution and are not independent observations. The cumulative 60+ row includes the fitted 90+ band.}
 \begin{tabular}{lrrl}
 \toprule
 \textbf{Age band} & \textbf{\ac{CCMR}} & \textbf{Model} & \textbf{Status} \\
@@ -303,7 +308,7 @@ Current       & 71.63 & 75.61 & unfitted \\
 61--90 days   &  2.32 &  1.05 & unfitted \\
 90+ days      & 14.21 & 13.96 & fitted \\
 \midrule
-\emph{60+ days} & \emph{16.54} & \emph{15.01} & \emph{unfitted} \\
+\emph{60+ days} & \emph{16.54} & \emph{15.01} & \emph{partly fitted} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -320,17 +325,16 @@ Current       & 71.63 & 75.61 & unfitted \\
 % Then CLOSE RQ1 EXPLICITLY, in one sentence, with every failure named.
 % Foreground Patterns 2 and 4; Patterns 1 and 3 get one line each in the table only.
 
-Table~\ref{tab:validation} reports eighteen checks on the constructed population in five groups, and the headline number is not eighteen.
-Fourteen are construction checks that test whether the pipeline did what it was specified to do: internal consistency with \ac{NIDS} (Group A), agreement with the \ac{FinScope} marginals that the match reproduces by construction (Group B), and fidelity of the resample to its weighted source (Group E).
-All fourteen pass, and none is evidence about the population beyond the two surveys it was built from; a fifteenth bounds how often the affordability guard binds.
-Three are external, comparing the constructed population with a source no construction step used: the per-capita income Gini against the World Bank estimate and aggregate debt against the \ac{CCMR} gross debtor book (Group C), and the servicing share of outlay against \ac{FinScope}'s self-reported budget shares (Group D).
-Two of the three pass; the servicing share of monthly outlay among households holding a modelled product is 12.8\%, above the 6.1--9.8\% survey range, the excess being in the direction expected from ceiling rates.
+Three of four external benchmark checks pass (Table~\ref{tab:validation}): household size against the Community Survey, the income Gini against the World Bank-based interval, and aggregate debt against the \ac{CCMR} book.
+Constructed servicing fails its comparison with \ac{FinScope} budget shares: 12.8\% of monthly outlay against a 6.1--9.8\% range.
+This is a separate survey measure, though it comes from a survey also used in construction.
+The remaining fourteen checks comprise thirteen construction checks, all passing, and one diagnostic on how often the affordability cap binds.
 
 \begin{table}[H]
 \centering
 \caption{Data-layer validation scorecard}
 \label{tab:validation}
-\tabnote{Eighteen checks on the constructed population, grouped by what they test. Groups A (consistency with \ac{NIDS}), B (agreement with the \ac{FinScope} marginals the match reproduces by construction) and E (fidelity of the unweighted 5{,}000-agent resample to the weighted source) are construction checks: they verify the pipeline, not the population. Group C compares against sources that no construction step used. Group D bounds the debt-service construction: the first row is the share of debtors for whom the Regulation 23A cap binds, the second the servicing share of monthly outlay among households holding a modelled product, against \ac{FinScope}'s self-reported range. Tolerances with a source: the household-size band is the 2016 Community Survey \cite{statssa_cs_2016}, the Gini interval is bounded below by the World Bank consumption-based estimate \cite{worldbank_gini_zaf}, and the Group D range is \ac{FinScope}'s \cite{finscope2019}; the remainder are the author's. Values are survey-weighted except in Group E, which compares the unweighted agents with the weighted source.}
+\tabnote{Eighteen checks on the constructed population, grouped by what they test. Groups A, B and E contain thirteen construction checks on consistency, imputed marginals and resampling. The household-size row in Group A is an external comparison with the Community Survey. Group C compares against sources that no construction step used. Group D bounds the debt-service construction: the first row is the share of debtors for whom the Regulation 23A cap binds, the second the servicing share of monthly outlay among households holding a modelled product, against \ac{FinScope}'s self-reported range. Tolerances with a source: the household-size band is the 2016 Community Survey \cite{statssa_cs_2016}, the Gini interval is bounded below by the World Bank consumption-based estimate \cite{worldbank_gini_zaf}, and the Group D range is \ac{FinScope}'s \cite{finscope2019}; the remainder are the author's. Values are survey-weighted except in Group E, which compares the unweighted agents with the weighted source.}
 \begin{tabular}{L{4.9cm}L{3.6cm}rrc}
 \toprule
 \textbf{Check} & \textbf{Metric} & \textbf{Value} & \textbf{Tolerance} & \\
@@ -361,10 +365,11 @@ E. Resample Gini & $|$agents $-$ source$|$ & 0.015 & $\leq$0.02 & \checkmark \\
 \end{tabular}
 \end{table}
 
-The two external checks that pass are informative because nothing in the construction targeted them.
+The external comparisons have broad tolerances and measurement differences.
 The per-capita income Gini of 0.651 falls within the 0.630--0.700 interval bounded below by the World Bank's consumption-based estimate \cite{worldbank_gini_zaf}, income-based measures in South Africa exceeding consumption-based ones.
 Total synthetic population debt (ZAR 191.4 billion) is 49\% of the corresponding \ac{CCMR} gross debtor book (ZAR 392.0 billion) \cite{ncr_ccmr_2017}, a ratio consistent with the self-reporting undercount usual in micro-surveys relative to administrative registers; it also supports the zero-fill choice of Section~\ref{sec:backbone}, since imputing missing debt at holder means would give aggregate debt equal to 111\% of the entire administrative book.
 
 Two structural deviations remain. Mean household size (3.03) passes tolerance but sits below the 3.3 estimate from the 2016 Community Survey \cite{statssa_cs_2016}; because weighted population totals match national benchmarks, this generates roughly 10\% more household units (18.67 million against 16.9 million).
-And the synthesised population exhibits baseline financial vulnerability before any simulation runs: at initialisation, 3.9\% of households cannot cover committed expenditure from income, 5.2\% cannot cover committed outlays plus scheduled debt service, and 44.3\% hold zero liquid savings.
-Under the default rules of Section~\ref{sec:submodels}, these households register distress at $t=0$ independent of experimental shocks or \ac{BNPL} availability.
+The population also enters the model with financial vulnerability: 3.9\% of households cannot cover committed expenditure from income, 5.2\% cannot cover committed expenditure plus scheduled debt service, and 44.3\% hold zero liquid savings.
+These overlapping groups are not initial default counts.
+Savings and credit can cover some shortfalls, and zero savings alone does not trigger distress; the simulation assesses distress during each tick (Section~\ref{sec:sequence}).

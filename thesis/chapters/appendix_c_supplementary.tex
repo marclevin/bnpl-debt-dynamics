@@ -9,10 +9,11 @@ that Section~\ref{sec:results-robustness} reports only in summary.
 \subsection{Submodel 9: The Credit-Granting Gate}
 \label{app:gate}
 
-The lender applies a residual-income test and not a debt-service-to-income cap, because Regulation
-23A \cite{sa_ncr_affordability_2015} prescribes no such ratio. Credit is granted only where gross
-income, less statutory deductions, less the Regulation 23A necessary expenses for the applicant's
-income band, less visible existing obligations, covers the new instalment. The resulting ceiling
+The lender uses a simplified residual-income test based on the Regulation 23A expense norms
+\cite{sa_ncr_affordability_2015}. It grants credit when gross household income, less the expense
+norm and visible existing obligations, covers the new instalment.
+The implementation does not separately deduct tax or other statutory deductions, so it does not
+reproduce every part of a full affordability assessment. The resulting ceiling
 varies with income, from 10.4\% of income at R900 per month to 83.2\% at R7{,}712 per month, and
 both worked examples published with the regulation are asserted in the verification suite
 (Table~\ref{tab:reg23a-norms}).
@@ -36,9 +37,9 @@ material movement is reported as activation-order sensitivity, since Comer and L
 \cite{comer2013activation} and Alizadeh and Cioffi-Revilla \cite{alizadeh2015activation} both find
 emergent population behaviour to be sensitive to the activation regime.
 
-Credit in this model is scarce, rationed by the affordability gate and by per-platform limits, so a
-fixed order would hand the same households first claim on that scarce resource every tick, which is
-why random reseeded activation is the baseline rather than a fixed sweep.
+The lender has no shared funding constraint, and platform limits apply per household.
+Activation order therefore does not allocate a common credit pool. The alternative schedules
+check whether implementation details or the assignment of random draws affect the outcomes.
 
 \subsection{Index of Limitations}
 \label{app:caveats}
@@ -76,9 +77,9 @@ The validation targets are uneven & Only Pattern~2 is South African and vintage-
 \addlinespace
 Behavioural parameters are imported & The minimum-payer share, the friction motivation and the want-driven path are United States evidence; the peer coefficients have no source at all & Section~\ref{sec:lim-transfer}; bounds every behavioural magnitude \\
 \addlinespace
-One rule has no anchor & The shortfall borrowing amount is uncited and is the largest remaining sensitivity & Section~\ref{sec:amount}; bounds the default level \\
+Borrowing rules lack direct estimates & The shortfall amount and its BNPL cap lack direct empirical estimates; their effects require sensitivity analysis & Section~\ref{sec:amount}; bounds the default level \\
 \addlinespace
-The model cannot produce a cascade & No channel carries one household's default to another's income, so defaults are correlated individual events & Table~\ref{tab:design-concepts}; Section~\ref{sec:no-cascade}; bounds the negative result of RQ2 \\
+Default contagion is excluded & No channel carries household default to other households' income or lenders' credit supply & Table~\ref{tab:design-concepts}; Section~\ref{sec:no-cascade}; limits the contagion mechanisms tested in RQ2 \\
 \addlinespace
 The scoring channel is not modelled & The reporting requirement acts through bureau scores as well as affordability arithmetic; the model has no score & Section~\ref{sec:asymmetry}; bounds the RQ3 answer to the affordability channel \\
 \addlinespace
@@ -94,7 +95,7 @@ pattern~4 measures the share reaching zero savings, so the model is judged partl
 input \\
 \addlinespace
 Servicing derived & Statutory maxima are ceilings and the \ac{CCMR} publishes no realised rates,
-so opening servicing is an upper bound. Repayment horizons are sourced, two measured in
+so rates tend to overstate servicing for a given balance and horizon. Repayment horizons are sourced, two measured in
 \ac{NIDS} and three from \ac{CCMR} stock-flow implied life, except revolving credit, which has no
 contractual term and is tied to the swept minimum-payment fraction. The product mix implied by
 assigning sub-sector rates to a consolidated balance remains an assumption

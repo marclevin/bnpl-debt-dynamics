@@ -55,7 +55,7 @@ an income-varying ceiling, which across the population spans zero to 93.2\% of i
 \textbf{Making the \ac{BNPL} eligibility screen a real affordability test (Submodel~12).} The
 asymmetry between the Regulation 23A test that binds registered lenders and the light screen
 \ac{BNPL} providers apply is the mechanism under study. Imposing a genuine affordability test on
-\ac{BNPL} is an intervention, and appears as the second lever of Submodel~15.
+\ac{BNPL} is an intervention, and appears as the second scenario of Submodel~15.
 
 \textbf{A purely multiplicative peer-influence rule (Submodel~11).} Every household opens with no
 \ac{BNPL} balance, so the reference-group adoption share is identically zero at initialisation and
@@ -64,15 +64,12 @@ $\beta$ the roles that $p$ and $q$ play in Bass diffusion.
 
 \subsection{Environment and Scheduling}
 
-\textbf{Macroeconomic dynamics (Submodel~16).} Both Cardaci \cite{cardaci2018inequality} and
-Madeira \cite{madeira2018chile} carry macro dynamics because both ask macro questions. Any
-time-variation here would confound the effect of injecting \ac{BNPL} with a macro effect, making it
-impossible to attribute a change in default to the injection.
+\textbf{Macroeconomic dynamics (Submodel~16).} The environment is held fixed to isolate the
+effect of introducing \ac{BNPL} under baseline conditions. A common macroeconomic shock could
+be added to both arms, but would require a broader experimental design.
 
-\textbf{Uniform activation order (Submodel~17).} Credit in this model is scarce, rationed by the
-affordability gate and by per-platform limits, so a fixed order would hand the same households
-first claim on that scarce resource every tick. Comer and Loerch \cite{comer2013activation} find
-significant differences in emergent behaviour across activation regimes, and Alizadeh and
-Cioffi-Revilla \cite{alizadeh2015activation} find that no scheme dominates, so the choice is
-reported and tested instead of assumed away.
-
+\textbf{Uniform activation order (Submodel~17).} Random activation avoids a fixed household
+sequence. There is no shared credit pool for early households to exhaust, and all households
+read the same lagged peer signal. Alternative schedules test for remaining implementation
+sensitivity, motivated by the findings of Comer and Loerch \cite{comer2013activation} and
+Alizadeh and Cioffi-Revilla \cite{alizadeh2015activation}.
