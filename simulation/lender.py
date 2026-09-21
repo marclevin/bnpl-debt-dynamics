@@ -13,10 +13,7 @@ The lender does not adapt (ODD: Adaptation). It is a non-adaptive stub by design
 
 from __future__ import annotations
 
-from .affordability import (
-    amortised_instalment,
-    nca_max_service,
-)
+from .affordability import amortised_instalment, nca_gate
 from .config import MONTHLY_TO_TICK
 
 #: New traditional credit is priced as an unsecured credit transaction: the NCA statutory
@@ -91,10 +88,9 @@ class TraditionalLender:
             return 0.0
 
         new_instalment = amortised_instalment(amount, NEW_LOAN_APR, NEW_LOAN_TERM_MONTHS)
-        capacity = nca_max_service(agent.income_monthly)
         visible = self.bureau.visible_monthly_service(agent)
 
-        if new_instalment > max(capacity - visible, 0.0):
+        if not nca_gate(agent.income_monthly, visible, new_instalment):
             self.n_refused_gate += 1
             return 0.0
 

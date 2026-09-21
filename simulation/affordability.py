@@ -84,10 +84,11 @@ def nca_gate(
     `existing_visible_service` is what the lender can SEE (D10) — traditional debt via
     the bureau, never BNPL unless `bnpl_bureau_visible` is on. Passing a liability set
     the lender cannot observe is the whole mechanism, so callers decide what goes in
-    here; this function does not.
+    here; this function does not. The one gate for both callers: the traditional lender
+    (D9) and the BNPL affordability lever (D14). Headroom is floored at zero.
     """
-    capacity = nca_max_service(gross_income) - existing_visible_service
-    return new_instalment <= capacity
+    headroom = max(nca_max_service(gross_income) - existing_visible_service, 0.0)
+    return new_instalment <= headroom
 
 
 # --- self-check at import, mirroring the P2 notebook -------------------------

@@ -16,7 +16,7 @@ import math
 
 from mesa import Agent
 
-from .affordability import nca_max_service, tick_interest_rate
+from .affordability import nca_gate, tick_interest_rate
 from .config import MONTHLY_TO_TICK
 from .population import HouseholdRecord
 
@@ -401,10 +401,9 @@ class HouseholdAgent(Agent):
         # Lever 2: apply the D9 residual-income test to BNPL as well. Off by default —
         # its absence is precisely what BNPL routes around.
         if p.bnpl_affordability_check:
-            capacity = nca_max_service(self.income_monthly)
             visible = (self.scheduled_service_tick + self.bnpl_due_per_tick()) / MONTHLY_TO_TICK
             new_instalment = (amount / p.bnpl_instalments) / MONTHLY_TO_TICK
-            if new_instalment > max(capacity - visible, 0.0):
+            if not nca_gate(self.income_monthly, visible, new_instalment):
                 return 0.0
 
         order = list(self.model.platforms)
