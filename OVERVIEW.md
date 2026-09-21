@@ -301,6 +301,23 @@ citation-verification evidence for Chapter 2).
 
 ## 9. Changelog (living)
 
+- **2026-09-21 (code cleanup; one blocker found).** Executed
+  [`CODE_CLEANUP_PLAN.md`](CODE_CLEANUP_PLAN.md); its execution log lists every step and what was
+  skipped. No output of the model moved: a four-arm golden run on the full population was
+  identical after every step, and the analysis CSVs and printed report were byte-identical.
+  - **Found, not fixed: DEFECTS B34.** Granted traditional loans are never booked as debt. One
+    baseline run grants R9.96m, 20.7% of the opening book, that is never repaid. Marc's decision;
+    it blocks the final run.
+  - **Fixed: DEFECTS B35.** The "synchronous" activation arm was the "uniform" arm, bitwise. One
+    fixed-order arm remains, and the thesis claims one.
+  - The run output now echoes every parameter, reports all six arrears bands, and splits
+    want-driven purchases by quintile (for B32). `SALib` is pinned.
+  - `notebooks/00_showcase.ipynb` and `notebooks/p1p2_visualizer.ipynb` were deleted: they read
+    columns no parquet has carried since the flag set was cut. Entries below that mention them are
+    history. `data/processed/quintile_archetypes.csv` is now an orphan with no reader or writer.
+  - P2 imports the Reg 23A gate from `simulation/affordability.py` instead of retyping it; the
+    stored servicing columns reproduce bitwise. Population parquets untouched (hashes checked).
+
 - **2026-08-13 (supervisor-update run: 950 runs, 5 replicates).** Results summarised for the
   supervisor in [`STATUS.md`](archive/STATUS.md). ⚠ 5 reps gives a 0.33pp sd, so anything under ~0.67pp is
   noise. Headlines:

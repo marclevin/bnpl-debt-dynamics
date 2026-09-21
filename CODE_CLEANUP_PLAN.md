@@ -1,8 +1,50 @@
 # Code cleanup plan — simulation, notebooks, scripts
 
 Drafted 2026-09-21 from the over-engineering review of the same date, plus the two implementation
-qualifications in [THESIS_REVIEW_2026-09-21.md](THESIS_REVIEW_2026-09-21.md). Status: **draft, nothing
-executed**. No code, data or results have been changed.
+qualifications in [THESIS_REVIEW_2026-09-21.md](THESIS_REVIEW_2026-09-21.md). Status: **executed
+2026-09-21, except the final-run gate (1.7), which is blocked by a defect found on the way.**
+
+## Execution log
+
+**Blocker found: DEFECTS B34.** Granted traditional loans add cash but are never added to
+`d_trad` or to scheduled service. One calibrated baseline run grants R9.96m (20.7% of the opening
+debt book) that is never repaid; 1,084 households are granted five or more times. It is recorded,
+measured and **not fixed**, because booking the loan is a model change that needs a refit. **Do not
+start the final run before deciding it.** See `scratchpad/DEFECTS.md` B34 for the options.
+
+| Step | Outcome |
+| --- | --- |
+| 0.1, 0.2 | Done. Golden run: 4 arms, full population, 372 values, 23 s, deterministic. |
+| 1.1 SALib pin | Done. `scipy` pin **kept**: SALib requires it. |
+| 1.2 Decision A | **A1 applied.** `synchronous` arm removed; thesis, Appendix B and tests updated; thesis builds clean. |
+| 1.3 Decision B | **B1 only.** The D7 comment now states the implemented rule, and `DECISIONS.md` D7 records the gap. **B2 was not built**: assessing distress after credit is meaningless while that credit is free (B34). |
+| 1.4 Purchases by quintile | Done. Counts and means reconcile with the overall figures. |
+| 1.5 Echo all parameters | Done. 37 parameters echoed; both test modules derive the echo set from `ParamSet`. |
+| 1.6 All six band means | Done. Direct 91–120 band equals the old reconstruction to 7e-18. `fig_arrears_profile` now needs a post-cleanup `rq0.parquet`; the stale one lacks the column. |
+| 1.7 Gate and run | **Not done. Blocked by B34, and decision C is still open.** |
+| 2.1 Dead code | Done, with two deliberate keeps: `BNPLLoan.principal` (Appendix G opens a facility with it) and the `PURCHASE_RATIO` alias (inlining a 37-character name twice reads worse). |
+| 2.2 One gate | Done. `nca_gate` floors headroom at zero, as Appendix G does, so it equals both former call sites in every case. |
+| 2.3 Sourced targets | Done, via a new `load_ccmr_bands()` that `analysis.py` also uses. |
+| 2.4 Shrinks | Done, except `environment.yml → -r requirements.txt`: it cannot be tested without building an environment, and the reproducibility record is the wrong place for an untested change. |
+| 2.5 `rolling_limit` fallback | Skipped, as the plan allowed. Churn in twelve test lines for eight lines saved. |
+| 3.1–3.6 | Done by an Opus sub-agent and reviewed diff by diff. `quick.py`, `filter_vars.py`, `to_md.py` left alone. P2's per-row `floored` count became an assert plus zero (no product term is below the floor). |
+| 4 | Done: OVERVIEW status table and changelog, DEFECTS B34/B35/D6, DECISIONS D7/D16. |
+
+Verification after every step: tests green and golden run identical. The suite ends at 91 passed /
+1 xfailed, the same count as the baseline: one parametrised activation case was removed and one
+test was added (the by-quintile purchases must partition the overall figures). Analysis refactors: all eight
+summary CSVs and the printed report byte-identical against the existing `results/raw/`. Phase 3:
+`p4_validation_summary.json`, `data_figure_numbers.json` and `data/config/` unchanged; population
+parquet SHA-256 hashes unchanged.
+
+Two things to know for later. In-place notebook execution on this machine needs `PYTHONUTF8=1`, or
+non-ASCII characters are double-encoded (it happened once to P4 and was repaired).
+`scratchpad/golden.py` and `golden.json` are untracked scaffolding; delete them once B34 is decided,
+since a fix moves the outputs on purpose and needs a fresh golden file.
+
+---
+
+The original plan follows, unedited.
 
 The plan is built around one constraint: **the final run (OVERVIEW step 4) has not happened yet.**
 Anything that changes what the run does, how large it is, or what columns it writes must land before

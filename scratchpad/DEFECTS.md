@@ -1308,6 +1308,11 @@ the education-by-quintile gradient, balance-sheet views, the P4 scorecard) sitti
 `notebooks/p1p2_visualizer.ipynb` and `notebooks/00_showcase.ipynb`. This is also a
 condensation lever: see F3.
 
+*Note, 2026-09-21:* both notebooks were deleted in the code cleanup. They read three FinScope
+columns no parquet has carried since the flag set was cut to `banked` plus `G10`–`G14`, so neither
+ran. The data-layer figures now come from `notebooks/scripts/build_data_figures.py`, and both
+notebooks remain in git history.
+
 ---
 
 ## E. Writing register — humanisation
