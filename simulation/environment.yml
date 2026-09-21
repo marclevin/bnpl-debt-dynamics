@@ -26,5 +26,6 @@ dependencies:
       - mesa==3.5.1
       - networkx==3.6.1   # mesa.discrete_space imports it but mesa 3.5.1 does not declare it
       - tqdm==4.70.0
+      - SALib==1.5.2      # simulation/sensitivity.py; it is what needs scipy above
       - pypdf==6.15.0
       - pytest==9.1.1

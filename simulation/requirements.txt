@@ -10,10 +10,11 @@ tqdm==4.70.0        # pulled in by mesa
 
 pandas==3.0.2
 numpy==2.4.4
-scipy==1.17.1
+scipy==1.17.1       # required by SALib; nothing in the repo imports it directly
 pyarrow==24.0.0     # parquet IO for the population and run output
 joblib==1.5.3       # parallel batch runner
 matplotlib==3.10.9  # figures
+SALib==1.5.2        # Sobol design and analysis (simulation/sensitivity.py)
 
 pypdf==6.15.0       # notebooks/scripts/extract_qlfs_lmd.py
 pytest==9.1.1       # verification suite
