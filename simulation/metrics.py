@@ -306,12 +306,20 @@ def summarise_run(model) -> dict:
         "trad_granted": model.lender.n_granted,
         "trad_refused_gate": model.lender.n_refused_gate,
     }
+    quintiles = sorted(set(quintile_of.values()))
     summary.update(
         {
             f"bnpl_rolling_bind_{q}": (blk_q.get(q, 0) / req_q[q]) if req_q.get(q) else 0.0
-            for q in sorted(set(quintile_of.values()))
+            for q in quintiles
         }
     )
+    # D4 purchase check by quintile: who buys, and at what size (DEFECTS.md B32).
+    for q in quintiles:
+        n_q = model.want_purchase_count_q[q]
+        summary[f"bnpl_want_purchases_{q}"] = n_q
+        summary[f"bnpl_purchase_mean_realised_{q}"] = (
+            model.want_purchase_value_q[q] / n_q if n_q else 0.0
+        )
     # `dti_` is the PRIMARY (aggregate) statistic; the others are the secondary readings.
     summary.update({f"dti_{q}": v for q, v in dti_aggregate.items()})
     summary.update({f"dti_mean_{q}": v for q, v in dti_mean.items()})

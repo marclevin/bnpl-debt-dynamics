@@ -13,6 +13,7 @@ every household sees the same already-settled share regardless of when it acts.
 from __future__ import annotations
 
 import random
+from collections import Counter
 
 from mesa import Model
 
@@ -118,13 +119,21 @@ class BNPLModel(Model):
         # not block -- asserting on volume is what let DEFECTS.md B27 through the suite.
         self.want_purchase_count = 0
         self.want_purchase_value = 0.0
+        # The same two quantities by income quintile. The provider anchor is a mean over
+        # that provider's own customers, whose income profile no source gives, so the run
+        # reports the split and any comparison population can be read off it afterwards
+        # without a re-run (DEFECTS.md B32).
+        self.want_purchase_count_q: Counter[str] = Counter()
+        self.want_purchase_value_q: Counter[str] = Counter()
 
         self.history: list[dict] = []
 
-    def record_want_purchase(self, financed: float) -> None:
+    def record_want_purchase(self, financed: float, quintile: str) -> None:
         """Record one want-driven BNPL origination (D3)."""
         self.want_purchase_count += 1
         self.want_purchase_value += financed
+        self.want_purchase_count_q[quintile] += 1
+        self.want_purchase_value_q[quintile] += financed
 
     # ------------------------------------------------------------------ scheduling
     def _activate(self) -> None:

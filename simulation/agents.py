@@ -174,11 +174,16 @@ class HouseholdAgent(Agent):
         if shortfall > 0 and not self.defaulted:
             cash += self._seek_credit(shortfall)
 
-        # --- D7 distress is assessed HERE, after credit ------------------------
-        # "Income plus available credit cannot cover committed expenditure plus
-        # scheduled debt service." Assessed before payment friction below, so a household
-        # that skips a payment through present bias is NOT counted as cash-flow insolvent.
-        # Friction must move arrears without moving default.
+        # --- D7 distress is assessed HERE, before payment friction -------------
+        # Either condition suffices. (1) Income plus savings could not cover committed
+        # expenditure: assessed BEFORE credit, so needing to borrow for food is itself
+        # distress, and credit cannot clear it. (2) Debt service is still unmet AFTER
+        # credit. Cash raised against a committed shortfall is not spent on it -- step 2
+        # has already floored cash at zero -- so it goes to service, then discretionary
+        # spending, then savings.
+        # Assessed before payment friction below, so a household that skips a payment
+        # through present bias is NOT counted as cash-flow insolvent. Friction must move
+        # arrears without moving default.
         unmet_after_credit = max(due_trad + bnpl_due - cash, 0.0)
         distressed = committed_shortfall > 0 or unmet_after_credit > 0
 
@@ -369,7 +374,7 @@ class HouseholdAgent(Agent):
         if financed <= 0:
             return 0.0
 
-        self.model.record_want_purchase(financed)
+        self.model.record_want_purchase(financed, self.rec.income_quintile)
         if p.k_cool > 0:
             self.cool_off_until = self.model.tick + p.k_cool
         return financed / p.bnpl_instalments
