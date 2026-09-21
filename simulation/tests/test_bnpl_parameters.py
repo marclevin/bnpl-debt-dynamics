@@ -240,6 +240,20 @@ def test_realised_mean_purchase_lands_near_the_sa_provider_anchor():
     )
 
 
+def test_purchases_by_quintile_reconcile_with_the_overall_figures():
+    """The by-quintile split exists so the check above can be read against any comparison
+    population (DEFECTS.md B32). It is only usable if it partitions the overall figures.
+    """
+    s = run(bnpl_enabled=True, q_base=0.3)
+    quintiles = ["Q1", "Q2", "Q3", "Q4", "Q5"]
+    counts = [s[f"bnpl_want_purchases_{q}"] for q in quintiles]
+    value = sum(n * s[f"bnpl_purchase_mean_realised_{q}"] for n, q in zip(counts, quintiles))
+
+    assert s["bnpl_want_purchases"] > 0, "the arm under test must actually buy something"
+    assert sum(counts) == s["bnpl_want_purchases"]
+    assert value / sum(counts) == pytest.approx(s["bnpl_purchase_mean_realised"])
+
+
 def test_shortfall_path_puts_no_more_on_bnpl_than_the_financeable_budget():
     """D5: BNPL finances retail goods, so it relieves a shortfall only up to kappa x budget.
 
