@@ -409,6 +409,15 @@ ordered sequence; **the order itself is a modelling decision.**
 - **DECISION.** Design-space option (ii), **cash-flow insolvency**. A household is *distressed* in a
   tick when income plus available credit cannot cover committed expenditure plus scheduled debt
   service. It is in **default** after `k` consecutive distressed ticks.
+- **⚠ Implementation differs from the sentence above (recorded 2026-09-21, not yet decided).** The
+  code tests the two halves at different moments: a household is distressed if income plus savings
+  could not cover committed expenditure **before** credit, *or* if debt service is still unmet
+  **after** credit. Needing to borrow for food is therefore distress in itself, and credit cannot
+  clear it. The cash raised against a committed shortfall is also not spent on it; it goes to debt
+  service, discretionary spending and savings. The thesis describes the implemented rule. Whether
+  to move to the after-credit rule written above is **Marc's decision**, and it cannot be tested
+  meaningfully until DEFECTS **B34** is settled, because traditional credit currently costs
+  nothing. Changing it requires re-running the calibration.
 - *Why not DSTI > 50%:* a DSTI threshold is arbitrary, and the D9 work established that the NCA
   itself does not use a DSTI ratio. Madeira's minimum-consumption test is cited, is consistent with
   the Reg 23A affordability rule already implemented in P2, and is validated against real default
@@ -736,6 +745,12 @@ Four levers, three of which correspond to instruments that actually exist:
   under uniform and under fully synchronous activation. Any material movement in results is reported
   as activation-order sensitivity. Given that the literature says this matters and the model has a
   positive feedback loop, asserting robustness without testing it would not be defensible.
+  - **Revised 2026-09-21 (DEFECTS B35): one fixed-order arm, not two.** As implemented, the
+    "synchronous" arm was the "uniform" arm: agents are created in id order, so both swept the same
+    schedule and their results were bitwise identical. The duplicate was removed. The check that
+    exists is random order against one fixed order, and that is what the thesis now claims.
+    Genuinely simultaneous updating (all households decide on start-of-tick state, then commit)
+    would be a redesign of the tick, since lender and platform decisions are made inline.
 - **Validation hook:** none directly. This is a robustness dimension rather than a fitted quantity.
 
 ---

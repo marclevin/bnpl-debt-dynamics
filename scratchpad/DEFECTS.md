@@ -14,6 +14,9 @@ decision, close it *here* and propagate to [`DECISIONS.md`](DECISIONS.md) and
 > weakness), **B22** (RQ2's registered hypothesis is unsupported, and the fallback finding may have
 > evaporated too), **B24** (the sensitivity ranking is superseded and must be regenerated), and
 > **B31** (a wiring detail that would corrupt the Granovetter run if not decided first).
+>
+> **Added 2026-09-21, and ahead of all four: B34.** Granted traditional loans are never booked as
+> debt (R9.96m, 20.7% of the opening book, over one baseline run). Decide it before the final run.
 
 **Line references** are against `thesis/main.tex` as at commit `47e57d0`. They will drift once
 the restructure (D1) lands; re-anchor at that point.
@@ -1165,6 +1168,53 @@ between them. The NIDS 5.36% figure is also **not independent**: it is built fro
 Now check `D. Debt service vs FinScope C8` in P4, and **the one check of eighteen that fails**. It
 is reported as a failure in Section 3.5, with traditional debt service stated as an upper bound.
 The known double-count (`data/config/README.md`) pushes it further up, not down.
+
+## The 2026-09-21 code review
+
+Found while reviewing `simulation/` for over-engineering and then executing
+[`CODE_CLEANUP_PLAN.md`](../CODE_CLEANUP_PLAN.md).
+
+### B34 · Granted traditional loans are never booked as debt — `BLOCKER` · `BOTH` · `OPEN`
+
+`TraditionalLender.apply` returns the granted amount and `_seek_credit` adds it to cash. Nothing
+increases `d_trad` or `scheduled_service_tick`, so a new traditional loan is a **non-repayable
+transfer**: no balance, no interest, no instalment. Because the Reg 23A gate reads visible service
+from `scheduled_service_tick`, a grant also leaves the household's headroom untouched, so the same
+household passes the same test again next tick. Appendix G's `LenderApply` has the same omission,
+so the pseudocode agrees with the code and both disagree with D10 ("the lender observes its own
+outstanding loans to that household").
+
+Measured on the calibrated baseline, seed 11, full population, 52 ticks:
+
+| Arm | Loans granted | Households | Cash granted, never booked | Share of opening debt book | Share of all income |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| BNPL off | 10,562 | 1,214 | R9.96m | 20.7% | 0.68% |
+| BNPL on, beta 1 | 7,555 | 1,186 | R6.24m | 13.0% | 0.42% |
+
+1,084 of the 1,214 households are granted five or more times; one is granted in all 52 ticks. The
+closing traditional book *falls* from R48.2m to R39.8m while R10m of new lending vanishes.
+
+**Why it matters.** (1) BNPL loans *are* booked and repaid, so the comparison the thesis exists to
+make is asymmetric by construction: one credit class costs something and the other does not.
+(2) `shock_prob` and `payment_friction` were fitted with free credit in the baseline. (3) It makes
+any "distress assessed after credit" rule meaningless, which is why the `distress_after_credit`
+robustness arm proposed in the cleanup plan (decision B2) was **not** implemented.
+
+**Options, Marc's decision.** (a) Book the loan: add the amount to `d_trad`, add the 28% / 25-month
+instalment to scheduled service, and settle how interest accrues on a balance that now mixes the
+household's product-mix APR with the new-loan APR; then re-run `simulation.calibrate`, update
+`FITTED_*`, Appendix G and the tests. A full-population run takes about 3 seconds, so the refit is
+minutes, not a night. (b) Run as is and disclose new traditional credit as a transfer. **Do not
+start the final run before choosing.**
+
+### B35 · The "synchronous" activation arm was the "uniform" arm — `MAJOR` · `AGENT` · `CLOSED`
+
+Agents are created in `agent_id` order, so the unshuffled sweep (`"synchronous"`) and the
+sort-by-id sweep (`"uniform"`) were one schedule. `rob_act_uniform` and `rob_act_synchronous` were
+bitwise identical on every seed in `results/raw/robustness.parquet`, while the thesis reported two
+distinct activation checks. **Closed 2026-09-21** by removing the duplicate arm (saves 20 runs) and
+rewording Submodel 17, Appendix B (regenerated) and Appendix C to the one fixed-order check that
+exists. Genuinely simultaneous updating is not implemented and is not claimed.
 
 ---
 
