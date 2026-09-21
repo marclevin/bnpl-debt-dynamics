@@ -376,14 +376,7 @@ def fig_arrears_profile() -> None:
     off = df[df.label == "baseline_no_bnpl"]
     bands = ["current", "d30", "d31_60", "d61_90", "d91_120", "d120_plus"]
     labels = ["current", "1-30 d", "31-60 d", "61-90 d", "91-120 d", "120+ d"]
-    model = [
-        off["active_current_mean"].mean() * 100,
-        off["active_d30_mean"].mean() * 100,
-        off["active_d31_60_mean"].mean() * 100,
-        off["active_d61_90_mean"].mean() * 100,
-        off["active_90_plus_mean"].mean() * 100 - off["active_d120_plus_mean"].mean() * 100,
-        off["active_d120_plus_mean"].mean() * 100,
-    ]
+    model = [off[f"active_{b}_mean"].mean() * 100 for b in bands]
     target = [pct[b] for b in bands]
 
     x = range(len(bands))

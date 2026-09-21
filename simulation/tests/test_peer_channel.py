@@ -16,6 +16,7 @@ transmission is contaminated.
 from __future__ import annotations
 
 import warnings
+from dataclasses import fields
 
 import pytest
 
@@ -35,13 +36,8 @@ def run(**kw):
     return build(**kw).run()
 
 
-_PARAM_ECHO = {
-    "seed", "label", "shock_prob", "q_base", "beta", "bnpl_enabled", "bnpl_access_rate",
-    "n_platforms", "bnpl_bureau_visible", "bnpl_affordability_check", "k_cool",
-    "stacking_cap", "amount_rule", "min_payer_share", "min_payment_frac", "k_default",
-    "activation", "bnpl_purchase_base", "bnpl_purchase_ratio",
-    "bnpl_limit_income_multiple", "peer_mechanism", "mu_theta", "sigma_theta", "gamma",
-}
+#: The run summary echoes every parameter; only what follows them is an outcome.
+_PARAM_ECHO = {f.name for f in fields(ParamSet)}
 
 
 #: Observations ABOUT the mechanism, not outcomes OF it. `threshold_triggered` counts the

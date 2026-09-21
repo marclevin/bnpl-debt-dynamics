@@ -8,6 +8,7 @@ available that the implementation is the specification.
 from __future__ import annotations
 
 import warnings
+from dataclasses import fields
 
 import pytest
 
@@ -24,15 +25,9 @@ def run(**kw):
     return BNPLModel(ParamSet(seed=7, **{**SMALL, **kw})).run()
 
 
-#: The run summary echoes its own parameters for provenance, so comparing two arms means
+#: The run summary echoes every parameter for provenance, so comparing two arms means
 #: comparing OUTCOMES only. Anything that is an input, not a result, is excluded here.
-_PARAM_ECHO = {
-    "seed", "label", "shock_prob", "q_base", "beta", "bnpl_enabled", "bnpl_access_rate",
-    "n_platforms", "bnpl_bureau_visible", "bnpl_affordability_check", "k_cool",
-    "stacking_cap", "amount_rule", "shortfall_bnpl_capped", "min_payer_share",
-    "min_payment_frac", "k_default", "activation", "bnpl_purchase_base", "bnpl_purchase_ratio",
-    "bnpl_limit_income_multiple", "peer_mechanism", "mu_theta", "sigma_theta", "gamma",
-}
+_PARAM_ECHO = {f.name for f in fields(ParamSet)}
 
 
 def outcomes(summary: dict) -> dict:

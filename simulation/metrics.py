@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import statistics
 from collections import Counter
+from dataclasses import asdict
 
 from .config import CCMR_BANDS
 
@@ -217,36 +218,10 @@ def summarise_run(model) -> dict:
     )
 
     summary = {
-        **{f: getattr(p, f) for f in ("seed", "label")},
-        **{
-            k: getattr(p, k)
-            for k in (
-                "shock_prob",
-                "q_base",
-                "beta",
-                "bnpl_enabled",
-                "bnpl_access_rate",
-                "n_platforms",
-                "bnpl_bureau_visible",
-                "bnpl_affordability_check",
-                "k_cool",
-                "stacking_cap",
-                "amount_rule",
-                "shortfall_bnpl_capped",
-                "min_payer_share",
-                "min_payment_frac",
-                "payment_friction",
-                "k_default",
-                "activation",
-                "bnpl_purchase_base",
-                "bnpl_purchase_ratio",
-                "bnpl_limit_income_multiple",
-                "peer_mechanism",
-                "mu_theta",
-                "sigma_theta",
-                "gamma",
-            )
-        },
+        # Every parameter is echoed, so a run is identifiable from its own row and not
+        # only from its label. `n_agents` is echoed as requested (None = full population)
+        # and then overwritten below by the realised count, which is the one to report.
+        **asdict(p),
         # --- headline -----------------------------------------------------------
         "default_rate_final": final["default_rate"],
         "default_rate_mean": mean("default_rate"),
@@ -262,11 +237,7 @@ def summarise_run(model) -> dict:
         "active_60_plus_final": final["active_60_plus"],
         "active_60_plus_mean": mean("active_60_plus"),
         "active_current_final": final["active_current"],
-        "active_current_mean": mean("active_current"),
-        "active_d30_mean": mean("active_d30"),
-        "active_d31_60_mean": mean("active_d31_60"),
-        "active_d61_90_mean": mean("active_d61_90"),
-        "active_d120_plus_mean": mean("active_d120_plus"),
+        **{f"active_{label}_mean": mean(f"active_{label}") for label, _, _ in CCMR_BANDS},
         "n_credit_active_final": final["n_credit_active"],
         # --- pattern 1: traditional stress --------------------------------------
         "trad_arrears_rate_mean": mean("trad_arrears_rate"),
