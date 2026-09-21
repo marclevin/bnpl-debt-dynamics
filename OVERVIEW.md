@@ -15,7 +15,9 @@ first, then propagate to the companion docs. Last updated: **2026-09-21**.
 > | --- | --- | --- |
 > | 1 | Cap the shortfall borrowing path (three discrete amount rules kept) | **done** 2026-09-21 |
 > | 2 | Re-fit the two calibrated parameters on the rebuilt population | **done** 2026-09-21: shock 0.048 -> 0.040, friction 0.09 unchanged |
-> | 3 | Decide the comparison population for the mean-purchase check (B32, R629 vs R992) | **open -- Marc's decision** |
+> | 3 | Decide the comparison population for the mean-purchase check (B32, R629 vs R992) | **open -- Marc's decision.** The run now reports purchases by quintile, so any choice is computable afterwards; write the comparator and tolerance into `DECISIONS.md` before starting it |
+> | 3a | Code cleanup ([`CODE_CLEANUP_PLAN.md`](CODE_CLEANUP_PLAN.md)): duplicate activation arm removed, every parameter and all six arrears bands echoed in the run output, dead code deleted | **done** 2026-09-21; outputs bitwise unchanged on a four-arm golden run |
+> | 3b | **Decide DEFECTS B34: granted traditional loans are never booked as debt** (R9.96m, 20.7% of the opening book, in one baseline run). Fixing it means re-fitting step 2 | **open -- Marc's decision. Blocks step 4** |
 > | 4 | Final run overnight: `./env/python.exe -m simulation.experiments --which all --reps 20`, then `./env/python.exe -m simulation.sensitivity --samples 256`, then `./env/python.exe -m simulation.analysis` | to do |
 > | 5 | Six-section shell; Model and Calibration sections rewritten | **done** 2026-09-21 (needs no results) |
 > | 6 | Results, Scenarios, Conclusion, Introduction, Abstract -- from the final outputs only | after step 4 |
