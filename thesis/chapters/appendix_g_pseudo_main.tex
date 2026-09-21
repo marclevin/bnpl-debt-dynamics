@@ -22,7 +22,7 @@ Submodel~11 independent of activation order. Algorithm~\ref{alg:main} dispatches
 
 \subsection*{G.1 The household tick}
 
-Algorithm~\ref{alg:tick} is the seven-step sequence of Section~\ref{sec:entities}, with the step
+Algorithm~\ref{alg:tick} is the seven-step sequence of Section~\ref{sec:sequence}, with the step
 numbers of that list marked. Credit is sought at step~4 for the shortfall realised at steps~2
 and~3, before the payments it funds are made; distress is assessed after credit and before
 payment friction, so that a household which skips an affordable instalment is not counted as
@@ -77,8 +77,9 @@ seven to eight is 91--120, and nine or more is 120+.
 \subsection*{G.2 Credit applications and the Regulation 23A gate}
 
 Algorithm~\ref{alg:gate} is the shortfall path of Submodels~3 to~5 and~9. The household asks
-for the amount Submodel~4 specifies, takes \ac{BNPL} first where it can, and applies to the
-traditional lender for the remainder. The lender's test is the residual-income calculation on
+for the amount Submodel~4 specifies, takes \ac{BNPL} first where it can, up to $\kappa$ times
+its monthly discretionary budget $E^d_i$ (the cap $\mathbb{1}^{\text{cap}}$, on in every arm but
+the robustness one), and applies to the traditional lender for the remainder. The lender's test is the residual-income calculation on
 the liabilities the bureau shows it, and the line marked Scenario~1 is the only place the 2026
 reporting requirement enters the model: with $\mathbb{1}^{\text{bur}}$ on, the household's
 \ac{BNPL} instalments are added to the visible obligations.
@@ -91,7 +92,8 @@ reporting requirement enters the model: with $\mathbb{1}^{\text{bur}}$ on, the h
     \State $\text{amount} \gets$ shortfall, or $1.25 \times$ shortfall, or shortfall $+\, e^c_i$ \Comment{Submodel~4, swept}
     \State $\text{raised} \gets 0$;\quad $\text{financed} \gets 0$
     \If{$\mathbb{1}^{\text{bnpl}}$ and $\epsilon_i = 1$}
-        \State $\text{financed} \gets \Call{BnplDraw}{i, \text{amount}}$ \Comment{Algorithm~\ref{alg:bnpl}}
+        \State $\text{ask} \gets \mathbb{1}^{\text{cap}} \;?\; \min(\text{amount},\ \kappa\, E^d_i) : \text{amount}$ \Comment{Submodel~5: what \ac{BNPL} can finance}
+        \State $\text{financed} \gets \Call{BnplDraw}{i, \text{ask}}$ \Comment{Algorithm~\ref{alg:bnpl}}
         \State $\text{raised} \gets \text{financed} \cdot (1 - 1/N)$ \Comment{$1/N$ is debited at checkout}
     \EndIf
     \If{$\text{amount} - \text{financed} > 0$} $\text{raised} \gets \text{raised} + \Call{LenderApply}{i,\ \text{amount} - \text{financed}}$ \EndIf

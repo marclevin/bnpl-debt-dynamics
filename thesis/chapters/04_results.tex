@@ -1,0 +1,128 @@
+\section{Results}
+\label{sec:results}
+
+% =============================================================================
+% SKELETON --- restructured 2026-09-21 to the six-section layout of
+% SOL_PLAN_REFORMAT.md. Written ONLY from the final run (20 replicates, shortfall path
+% capped, shock probability re-fitted to 0.040 on the rebuilt population). Nothing in
+% results/ dated before that run may be quoted: it predates DEFECTS.md B32.
+%
+% What moved out of this section:
+%   - the baseline and RQ1          -> Section~\ref{sec:data-validation} (Calibration)
+%   - the three scenarios and RQ3   -> Section~\ref{sec:scenarios}
+%
+% BUDGET: 2,100 words of PROSE. Tables and figures do not count, so every number
+% goes in a table and prose is spent only on what the number means.
+%
+% Section budgets, which are binding:
+%   opening                          100
+%   4.1 Invisible credit and stacking 550
+%   4.2 Access, peer influence, default 750   (includes the written no-cascade paragraph)
+%   4.3 Distribution and mechanism    350
+%   4.4 Sensitivity and robustness    350
+%
+% OPENING (100 words): start from the calibrated benchmark of Section~\ref{sec:lim-calibration};
+% state the comparison protocol once --- twenty replicates, the seed scheme, the noise
+% floor (report the final-run replicate sd; differences under two sd are noise), and
+% that access rates are shares of the BANKED subpopulation (82.8% ceiling) --- then a
+% one-sentence roadmap. State it here so no subsection has to repeat it.
+%
+% EVERY table and figure carries a short \caption and a \tabnote that states: the
+% replicate count and seed scheme; the noise floor; which scenario each column is;
+% that access rates are shares of the BANKED subpopulation, not of all households; and
+% that beta = 0 is the control arm. This is a caption requirement, not a prose habit.
+%
+% Report a result, contrast it with its control, explain the mechanism. In that order.
+% =============================================================================
+
+\subsection{Invisible Credit and Stacking}
+\label{sec:results-stacking}
+
+% BUDGET: 550 words. The stacking half of RQ2.
+%
+% CONTENT REQUIRED:
+% - Report the no-BNPL baseline BEFORE any BNPL-on outcome.
+% - Stacking is EMERGENT, not programmed. Share of adopters holding 2+ facilities
+%   against the CFPB's 32%, as an order-of-magnitude check only.
+% - Platform-count sweep 1-6: the single-platform arm gives exactly zero cross-platform
+%   stacking, which isolates cross-platform accumulation from single-platform
+%   accumulation; then how concurrent facilities and default change as the count rises.
+% - This subsection is the EVIDENCE BASE for the argument of Section~\ref{sec:scenarios}:
+%   the harm is the number of agreements a household holds. Make the three facts easy
+%   to cite from there (2+ share, zero with one platform, default rising with count).
+% - Figure: rq1_stacking.png
+%   NOTE: figure FILENAMES keep the original RQ numbering and are deliberately frozen
+%   (they are baked into results/raw/ labels and analysis.py load keys). rq1_stacking.png
+%   belongs to thesis RQ2. See the numbering note at the top of simulation/experiments.py.
+
+\subsection{BNPL Access, Peer Influence and Default}
+\label{sec:results-rq2}
+
+% BUDGET: 750 words, of which the paragraph below (about 130) is written.
+%
+% CONTENT REQUIRED:
+% - Default with BNPL off, on, and on with strong peer influence. The beta=0 row must
+%   be explicit in every table and on every figure. Separate the FINANCIAL channel
+%   from the SOCIAL channel: beta is the strength of peer influence on adoption, so
+%   sweeping it is what separates a social explanation from a purely financial one.
+% - Access sweep runs inside the banked subpopulation (82.8% ceiling, Submodel~12).
+%
+% - THE NEGATIVE RESULT, with its own bold lead sentence, not buried:
+%   the increase is SMOOTH in access. No cliff edge anywhere on the surface. This
+%   falsifies the pre-registered non-linearity hypothesis.
+%   Present the linear and the pre-registered Granovetter threshold specifications
+%   TOGETHER: the threshold variant was run precisely because a linear rule might give
+%   a linear answer for trivial reasons. Report what adoption does and what default
+%   does under each. Two structurally distinct social mechanisms.
+%   The structural reason is the paragraph below, which is already written and must
+%   sit directly after the negative result.
+%
+% - Pattern 1 is tested here: what enabling BNPL does to traditional servicing stress.
+%   Attach the caveat of Section~\ref{sec:lim-validation} --- the direction is partly
+%   designed into the lender-choice rule, the magnitude is not.
+% - Figure: rq2_default_surface.png
+% - Table: default rate by access x beta, with the beta=0 row first.
+
+% --- Written prose: the structural explanation of the negative result. Keep directly
+% after the result it explains. ---
+\label{sec:no-cascade}
+The absence of a cliff edge is a property of a model built this way rather than a general finding.
+Six mechanisms are excluded by design (Table~\ref{tab:design-concepts}), and the second of them, the absence of any channel by which one household's default affects another household's income, is the explanation of the negative result.
+With no such channel, what the model produces is many correlated individual defaults rather than a cascade, and a threshold in the population default rate requires feedback in the outcome itself: households catch \ac{BNPL} from their neighbours, but they do not catch financial distress from them.
+A successor design with an impairable lender or a default-to-income channel could plausibly produce a cliff edge, so the negative result is bounded rather than general.
+
+\subsection{Distribution and Mechanism}
+\label{sec:results-distribution}
+
+% BUDGET: 350 words.
+%
+% CONTENT REQUIRED:
+% - Where debt service and default concentrate, by income quintile. The empirical
+%   record places BNPL harm among the liquidity-constrained; say whether the model does.
+% - THE SPLIT ANSWER, reported honestly and in ONE place: how often the rolling limit
+%   binds, and what that does to default. In the working run the limit bound on about
+%   half of requests yet barely moved default, because a constrained household borrows
+%   less per purchase rather than defaulting less. Reported apart, those two facts read
+%   as a contradiction. Re-check both against the final run before writing a word.
+% - State which direction is partly induced by the lender-choice rule and which
+%   magnitude is genuinely produced by the model.
+
+\subsection{Sensitivity and Robustness}
+\label{sec:results-robustness}
+
+% BUDGET: 350 words. One figure, one table, prose only for what moves the answer.
+%
+% CONTENT REQUIRED:
+% - Figure: robustness_tornado.png. Each bar is how far default moves across the
+%   plausible range of one parameter; red bars are rules with no citation.
+% - The Submodel~4 borrowing-amount rule (Section~\ref{sec:amount}) was the largest
+%   sensitivity in the working run, with the whole range coming from the most generous
+%   of the three specifications. The shortfall path is now CAPPED (Submodel~5), and the
+%   robustness suite runs all three rules capped and uncapped on the same seeds: state
+%   plainly whether the cap narrows the sensitivity, and by how much.
+% - Confirm empirically, rather than asserting, that the peer channel is insensitive to
+%   activation order.
+% - Everything else --- Sobol indices, activation-order re-runs, population-size
+%   stability at 1,000/5,000/10,000, the minimum-payer sweep 0.20-0.40, and the full
+%   platform-count detail --- goes to Appendix~\ref{app:supplementary} as tables, with
+%   one sentence here saying so. Do not narrate them.

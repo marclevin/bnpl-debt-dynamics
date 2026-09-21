@@ -26,9 +26,9 @@ exists and sensitivity analysis is mandatory. Rand values are 2017 Rands; the
 \endhead
 \bottomrule
 \endfoot
-\texttt{n\_\allowbreak{}ticks} & ODD & 52 & sourced & 24-month horizon at a 14-day tick (04\_design.tex) & -- \\
+\texttt{n\_\allowbreak{}ticks} & ODD & 52 & sourced & 24-month horizon at a 14-day tick (03\_calibration.tex) & -- \\
 \addlinespace
-\texttt{burn\_\allowbreak{}in} & ODD & 12 & sourced & First 12 ticks discarded (04\_design.tex) & -- \\
+\texttt{burn\_\allowbreak{}in} & ODD & 12 & sourced & First 12 ticks discarded (03\_calibration.tex) & -- \\
 \addlinespace
 \texttt{n\_\allowbreak{}agents} & P3 & None & derived & None = use the full 5,000-agent resample & 1000 / 5000 / 10000 population-stability check \\
 \addlinespace
@@ -53,6 +53,8 @@ exists and sensitivity analysis is mandatory. Rand values are 2017 Rands; the
 \texttt{gamma} & D17 & 0.0 & assumed & Appetite increment once a household's threshold is crossed. NOT SOURCED. & RQ2 threshold arm; the gamma=0 row is always reported \\
 \addlinespace
 \texttt{amount\_\allowbreak{}rule} & D4 & shortfall & assumed & No anchor found in the literature sweep. The model's first uncited rule. & MANDATORY: shortfall / +25\% / plus one tick of committed expenditure \\
+\addlinespace
+\texttt{shortfall\_\allowbreak{}bnpl\_\allowbreak{}capped} & D5 & True & assumed & Caps the BNPL share of a SHORTFALL request at kappa x the household's own monthly budget -- the same quantity that sizes a want-driven purchase. & Robustness: uncapped, crossed with the three D4 amount rules \\
 \addlinespace
 \texttt{bnpl\_\allowbreak{}purchase\_\allowbreak{}base} & D4/\allowbreak{}D11 & discretionary & sourced & What a BNPL purchase is sized AGAINST. BNPL finances discretionary consumption, so the household's own discretionary budget is the observed scale at which it makes discretionary purchases. & MANDATORY: discretionary / income \\
 \addlinespace

@@ -75,7 +75,7 @@ The Wave 5 household-derived file holds 13{,}719 records. A record is retained i
 positive, leaving 10{,}841. All 2{,}878 dropped records carry a zero or missing weight, so their
 removal changes no weighted total; the retained sample represents 18.67 million households.
 \texttt{w5\_wgt} is the post-stratified household weight and is used for every weighted statistic
-in Section~\ref{ch:population} and as the resampling probability in
+in Section~\ref{sec:population} and as the resampling probability in
 Part~D.10; it is not carried onto the agent.
 
 \subsection*{D.2 Monthly income and its source}
@@ -195,7 +195,9 @@ for 3.8\% of indebted households ($n = 178$) and removes 22.8\% of aggregate cal
 Fifty-three households have income at or below the first band boundary, where the norm equals
 income and capacity is zero; they enter the model holding debt with no scheduled service, since
 the data cannot say whether the debt is legacy, informal or non-compliant. The same function is
-the credit-granting gate of Submodel~9, so the data layer and the model apply one test.
+the credit-granting gate of Submodel~9, so the data layer and the model apply one test. Across indebted
+agents the resulting debt-service-to-income ratio has a weighted mean of 10.9\% and a median of
+3.3\%; the full-population mean is 4.8\%, reflecting the 56.6\% of households with no debt.
 
 \begin{table}[H]
 \centering

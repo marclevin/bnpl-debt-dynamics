@@ -78,6 +78,7 @@ $f^{\min}$ & minimum-payment fraction of balance per month & \texttt{min\_paymen
 $k$ & distressed ticks that trigger default (7) & \texttt{k\_default} \\
 $\varphi$ & discretionary floor as a share of target (0 in the baseline) & \texttt{discretionary\_floor} \\
 $\kappa$, $\nu$ & purchase-size ratio to $E^d_i$; its coefficient of variation & \texttt{bnpl\_purchase\_ratio}, \texttt{\_cv} \\
+$\mathbb{1}^{\text{cap}}$ & cap on the \ac{BNPL} share of a shortfall request at $\kappa E^d_i$ (on, except in one robustness arm) & \texttt{shortfall\_bnpl\_capped} \\
 $\lambda$ & rolling limit as a multiple of monthly income & \texttt{bnpl\_limit\_income\_multiple} \\
 $q_{\text{base}}$, $\beta$ & baseline propensity; peer weight (linear mechanism) & \texttt{q\_base}, \texttt{beta} \\
 $\gamma$, $\mu_\theta$, $\sigma_\theta$ & appetite step; threshold mean and dispersion (threshold mechanism) & \texttt{gamma}, \texttt{mu\_theta}, \texttt{sigma\_theta} \\
@@ -98,7 +99,7 @@ $\mathrm{clip}(x, 0, 1)$ & $\min(\max(x, 0), 1)$ & --- \\
 \subsection*{F.1 The master algorithm}
 
 Initialisation runs once per simulation and has four stages, each a sub-algorithm. The first
-three are the data layer of Section~\ref{ch:population} and are executed once, offline, to
+three are the data layer of Section~\ref{sec:population} and are executed once, offline, to
 produce the population file; the fourth runs at the start of every simulation and turns that file
 into agents. Algorithm~\ref{alg:init} dispatches them.
 

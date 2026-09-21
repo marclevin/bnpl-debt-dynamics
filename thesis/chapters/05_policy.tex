@@ -1,0 +1,71 @@
+\section{Three Scenarios for the Lending Environment}
+\label{sec:scenarios}
+
+% =============================================================================
+% BUDGET: 1,150 words of prose, of which the scenario definitions below (about 300)
+% are written. The rest is written ONLY from the final run.
+%
+% Supervisor decision 2026-09-09: three scenarios, crossed, not four levers. The run
+% grid in experiments.py is already factorial (for b in (0.0, 1.0) crossed with every
+% switch), so present it as it is, 2 x 3:
+%
+%                    | benchmark        | bureau visibility | mandatory screening
+%   beta = 0         | pre-2026 status  | Scenario 1        | Scenario 2
+%   beta > 0         | Scenario 3       | 1 x 3             | 2 x 3
+% =============================================================================
+
+% OPENING (about 80 words, to write): why a calibrated counterfactual is the right
+% instrument for comparing regulatory scenarios --- every scenario shares the baseline,
+% the seeds, the denominators and the uncertainty rules of Section~\ref{sec:results},
+% and differs from the benchmark in exactly one switch.
+
+\label{sec:levers}
+The third research question is answered by running the calibrated model under three scenarios, crossed so that each regulatory switch is observed with and without the behavioural one:
+\begin{enumerate}
+\item \textbf{Bureau visibility} ($\mathbb{1}^{\text{bur}}$): \ac{BNPL} obligations reach the bureau and enter the Regulation 23A test, closing the asymmetry of Section~\ref{sec:asymmetry}; the model's representation of the 2026 reporting requirement \cite{businessday_bnpl_2026}, subject to the limit stated there.
+\item \textbf{Mandatory affordability screening} ($\mathbb{1}^{\text{aff}}$): the Regulation 23A test is applied to \ac{BNPL} originations themselves, the South African analogue of the \ac{FCA}'s proportionate affordability check \cite{fca_ps26_1, woolard2021}.
+\item \textbf{Peer effects} ($\beta > 0$): adoption is socially transmitted through Equation~\ref{eq:peer}. A behavioural mechanism rather than an instrument, it is a scenario because it asks whether the answers to the other two depend on how adoption spreads; its $\beta = 0$ arm is the control of every comparison.
+\end{enumerate}
+Two remarks bear on the second scenario.
+The \ac{NCR}'s view that a \ac{BNPL} agreement may become an incidental credit agreement once default charges are levied (Section~\ref{sec:background}) implies that the late fees of Submodel~14 could already bring a facility within the \ac{NCA}; the origination screen of Submodel~12 nonetheless stays light, because no provider applies the Regulation 23A test at origination whatever the eventual classification, so the scenario is best read as a clarification of law that may already apply rather than as new regulation.
+A scenario's effect is judged on cumulative \ac{BNPL} volume as well as default, so borrowing merely deferred is distinguished from borrowing forgone.
+A cooling-off window and a concurrent-facility cap are implemented and swept; their results are reported only in Appendix~\ref{app:supplementary}.
+
+% -----------------------------------------------------------------------------
+% TO WRITE AFTER THE FINAL RUN (about 770 words):
+%
+% - Each cell of the 2 x 3 gets the SAME outcome panel as the benchmark (default,
+%   arrears bands, adoption, cumulative BNPL volume, by quintile), NOT a delta column
+%   against it. One table, one principal figure.
+% - First sentence of the results: Scenario 1 IS the 2026 NCR reporting requirement,
+%   represented as its affordability channel only; the scoring channel is out of scope
+%   (Section~\ref{sec:asymmetry}).
+% - Scenario 3 asks whether the answers to 1 and 2 depend on whether adoption is
+%   socially transmitted. Its beta = 0 row is the control of every comparison.
+% - The bureau-visibility contrast deserves its own paragraph: it is the comparison the
+%   whole model was built to make, it holds every uncalibrated parameter fixed across
+%   both arms, and in the working run it survived a complete rebuild of the two
+%   parameters underneath it. If it is near-null again, that is a finding, not a
+%   failure --- and it is an ex-ante statement about a regulation with a commencement
+%   date, so state its scope (affordability channel) in the same sentence as the number.
+% - The defer-versus-desist test is CUMULATIVE BNPL VOLUME over the full horizon, not
+%   the timing of purchases. Unchanged volume with a shifted time distribution means
+%   agents defer; lower cumulative volume means they desist.
+% - THE ARGUMENT must be grounded on the stacking evidence of
+%   Section~\ref{sec:results-stacking}, not on the removed facility cap: the mechanism
+%   of harm is a household holding several facilities at once, established by the
+%   emergent 2+ facility share against the CFPB 32%, the single-platform arm producing
+%   exactly zero stacking, and default rising with platform count. Both retained
+%   instruments act on the individual agreement (telling the lender what is owed;
+%   testing one loan in isolation) and neither acts on the number of them, so their
+%   null results CORROBORATE the mechanism rather than establish it.
+% - Cooling-off window and concurrent-facility cap are CUT from the body. Their runs
+%   (rq3.parquet: rq3_kcool*, rq3_cap*) go to Appendix~\ref{app:supplementary} as
+%   tables with no body prose, including the row that preserves the
+%   cooling-off-by-peer-effect interaction.
+% - Figure: rq3_interventions_beta1.png regenerated with the two cut levers removed
+%   (the beta=0 panel goes to the appendix, with the beta=0 row retained in the body
+%   table).
+% - CLOSE with a direct answer to RQ3, and recommend the direction of a policy, never
+%   a numerical statutory threshold.
+% -----------------------------------------------------------------------------

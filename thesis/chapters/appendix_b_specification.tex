@@ -1,8 +1,57 @@
-\section{Full Parameter Register}
+\section{Model Specification: Design Concepts and Parameter Register}
 \label{app:specification}
 
-Table~\ref{tab:submodels} gives the rule and source for each submodel. This appendix holds the
-complete numerical register: every parameter, its baseline value, its provenance, and its sweep
+Section~\ref{sec:model} states the mechanism and Table~\ref{tab:submodels} the rule and source for
+each submodel. This appendix completes the \ac{ODD} specification with the two registers the body
+points to: the protocol's design concepts, closing with the mechanisms the model excludes by
+design, and the full numerical parameter register.
+
+\subsection*{B.1 Design concepts and exclusions}
+
+Table~\ref{tab:design-concepts} outlines the eleven structural \ac{ODD} design concepts, and closes with the six mechanisms the model excludes by design.
+
+\begin{longtable}{L{2.9cm}L{7.3cm}L{3.2cm}}
+\caption{\ac{ODD} design concepts and design exclusions}
+\label{tab:design-concepts} \\
+\multicolumn{3}{p{13.4cm}}{\footnotesize The eleven design concepts of the \ac{ODD} protocol \cite{grimm2020odd}, each with the model's treatment and the literature that grounds it; ``None'' in the source column marks a modelling choice with no external anchor. The final row lists the six mechanisms excluded by design and the reason for each. The second exclusion, the absence of any channel by which one household's default affects another, is the structural explanation of the central negative result of Section~\ref{sec:results-rq2}.} \\
+\toprule
+\textbf{Concept} & \textbf{Treatment} & \textbf{Source} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Concept} & \textbf{Treatment} & \textbf{Source} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Basic principles & Balance sheets form the accounting core. Heuristic decision rules replace intertemporal optimisation. Statutory regulations act as explicit computational gates. & \cite{cardaci2018inequality, dorazio2017micro, meier2010present, Keys2019, yun2020housing} \\
+\addlinespace
+Emergence & Default rates, stacking depths and adoption paths are not imposed. They emerge from two separable feedback loops: a \emph{financial} loop, in which borrowing to service existing debt inflates future obligations, and a \emph{social} loop, in which lagged group adoption raises individual propensities. $\beta=0$ disables the social loop only, so the two are separately attributable. & None \\
+\addlinespace
+Adaptation & Households compress consumption and select borrowing and repayment actions from immediate liquidity alone. The traditional lender is non-adaptive. & \cite{dorazio2017micro} \\
+\addlinespace
+Objectives & No forward-looking utility. Households satisfy obligations in a fixed priority order, compressing discretionary spending under stress. & \cite{meier2010present} \\
+\addlinespace
+Learning & Excluded. Behavioural rules are static over the horizon. & None \\
+\addlinespace
+Prediction & Excluded. Agents treat current income as persistent. & None \\
+\addlinespace
+Sensing & Agents know their own balance sheets and observe the lagged adoption share among their reference group's \ac{BNPL}-eligible members. The traditional lender is blind to \ac{BNPL} and informal debt. & \cite{nortonrose_bnpl_sa} \\
+\addlinespace
+Interaction & Households interact with lenders through credit applications, and with each other indirectly through reference-group adoption shares. & \cite{ackert2025bnpl} \\
+\pagebreak
+Stochasticity & Income shocks, archetype and eligibility assignment, purchase-size draws, platform routing order, payment friction, and threshold endowments (drawn from a separate initialisation stream so control arms reproduce exactly). Runs are seeded and replicated, with dispersion reported. & None \\
+\addlinespace
+Collectives & Reference groups (income quintile $\times$ province) aggregate individual adoption into the peer signal. & \cite{cardaci2018inequality} \\
+\addlinespace
+Observation & Tracked per tick: population default rate, \ac{CCMR} arrears distribution, aggregate traditional and \ac{BNPL} debt volumes, mean and quintile \ac{DSTI}, consumption compression, and application and rejection counts. & None \\
+\addlinespace
+Exclusions & Six mechanisms are excluded by design. \emph{No macroeconomic dynamics}: any time-variation would confound the injection effect with a macro effect. \emph{No contagion}: one aggregate lender with no balance sheet that can fail, and no feedback from household default to income, so defaults are correlated individual events and cannot cascade. \emph{No competition among traditional lenders}, which suppresses the lender-conduct mechanism of Hamill et al. \emph{No learning and no scarring}. \emph{No peer effects on consumption}: peer influence acts only on \ac{BNPL} adoption. \emph{Static household composition}. & \cite{hamill2023creditcard, cardaci2018inequality} \\
+\end{longtable}
+
+\subsection*{B.2 Parameter register}
+
+The register holds every parameter, its baseline value, its provenance, and its sweep
 range where one applies. The table is generated from the model's parameter declarations in
 \texttt{simulation/config.py} by \texttt{notebooks/scripts/generate\_param\_register.py}, so the
 register and the code cannot drift apart. All Rand values are 2017 Rands; the \ac{BNPL} money
@@ -16,8 +65,9 @@ Four groups of entries carry standing flags:
     payment-friction rate (Submodel~6) are fitted to the \ac{CCMR} 90+ and 1--30 day bands, which
     is what makes the baseline calibrated rather than validated
     (Section~\ref{sec:lim-calibration}).
-    \item \textbf{The two uncited rules.} The shortfall borrowing amount (Submodel~4) and the
-    minimum-payment fraction (Submodel~6) have no literature anchor. Both carry mandatory sweeps.
+    \item \textbf{The uncited rules.} The shortfall borrowing amount (Submodel~4), the cap on
+    its \ac{BNPL} share (Submodel~5) and the minimum-payment fraction (Submodel~6) have no
+    literature anchor. All carry mandatory sweeps.
     \item \textbf{The uncalibrated peer coefficients.} $q_{\text{base}}$, $\beta$ and the
     threshold parameters of Submodel~11 cannot be calibrated from any South African source. The
     $\beta = 0$ and $\gamma = 0$ control arms are reported in every result.
