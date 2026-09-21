@@ -23,9 +23,10 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 
-from .config import RESULTS_RAW, RESULTS_SUMMARY, load_ccmr_target
+from .config import RESULTS_RAW, RESULTS_SUMMARY, load_ccmr_bands, load_ccmr_target
 
 FIGDIR = RESULTS_SUMMARY / "figures"
 
@@ -108,8 +109,6 @@ def linear_departure(x, y) -> dict:
     by the linear and threshold arms so the two are judged on identical terms, which is
     the whole point of running both.
     """
-    import numpy as np
-
     x = np.asarray(x, dtype=float)
     y = np.asarray(y, dtype=float)
     rise = float(y[-1] - y[0])
@@ -170,7 +169,6 @@ def rq2_threshold_figure() -> None:
         fontsize=11,
     )
     fig.tight_layout()
-    FIGDIR.mkdir(parents=True, exist_ok=True)
     fig.savefig(FIGDIR / "rq2_threshold_adoption_vs_default.png", dpi=200)
     plt.close(fig)
 
@@ -232,7 +230,6 @@ def rq2_surface_figure() -> None:
     ax.legend(fontsize=8)
     ax.grid(alpha=0.3)
     fig.tight_layout()
-    FIGDIR.mkdir(parents=True, exist_ok=True)
     fig.savefig(FIGDIR / "rq2_default_surface.png", dpi=200)
     plt.close(fig)
 
@@ -242,27 +239,15 @@ def rq2_surface_figure() -> None:
     print("  share of the total rise. A sharp threshold would show low R^2 and a large")
     print("  max residual. AMPLIFICATION (how far default moves) is a separate question")
     print("  from NON-LINEARITY (whether it moves smoothly), and they must not be conflated.")
-    import numpy as np
-
     rows = []
     for b, sub in g.groupby("beta"):
         sub = sub.sort_values("bnpl_access_rate")
-        x = sub.bnpl_access_rate.to_numpy(dtype=float)
-        y = sub.default_rate_final_mean.to_numpy(dtype=float)
-        rise = y[-1] - y[0]
-        slope, intercept = np.polyfit(x, y, 1)
-        resid = y - (slope * x + intercept)
-        ss_res = float((resid**2).sum())
-        ss_tot = float(((y - y.mean()) ** 2).sum())
-        r2 = 1.0 - ss_res / ss_tot if ss_tot > 0 else 1.0
-        max_dev = float(np.abs(resid).max() / abs(rise)) if abs(rise) > 1e-12 else 0.0
-        rows.append(
-            {"beta": b, "rise": rise, "linear_r2": r2, "max_dev_frac": max_dev}
-        )
+        d = linear_departure(sub.bnpl_access_rate, sub.default_rate_final_mean)
+        rows.append({"beta": b, **d})
         tag = "   <- CONTROL ARM" if b == 0.0 else ""
         print(
-            f"  beta={b:<4g} rise {rise:+.2%}  linear R^2 {r2:.4f}  "
-            f"max deviation {max_dev:.1%} of rise{tag}"
+            f"  beta={b:<4g} rise {d['rise']:+.2%}  linear R^2 {d['linear_r2']:.4f}  "
+            f"max deviation {d['max_dev_frac']:.1%} of rise{tag}"
         )
     pd.DataFrame(rows).to_csv(RESULTS_SUMMARY / "rq2_nonlinearity.csv", index=False)
 
@@ -366,12 +351,7 @@ def fig_arrears_profile() -> None:
     df = load("rq0")
     if df is None:
         return
-    import json
-
-    from .config import CCMR_BASELINE
-
-    ccmr = json.loads(CCMR_BASELINE.read_text(encoding="utf-8"))
-    pct = ccmr["combined_unsecured_and_facilities"]["pct"]
+    pct = load_ccmr_bands()
 
     off = df[df.label == "baseline_no_bnpl"]
     bands = ["current", "d30", "d31_60", "d61_90", "d91_120", "d120_plus"]

@@ -17,6 +17,7 @@ import numpy as np
 import pandas as pd
 
 from .affordability import (
+    PRODUCT_MAP,
     amortised_instalment,
     load_rate_table,
     nca_max_service,
@@ -28,9 +29,6 @@ from .config import (
     NIDS_INDDERIVED,
     POPULATION_PARQUET,
 )
-
-PRODUCT_COLS = ["G10", "G11", "G12", "G13", "G14"]
-
 
 @dataclass(slots=True)
 class HouseholdRecord:
@@ -133,13 +131,10 @@ def load_population_frame() -> pd.DataFrame:
     # The parquet stores repay_uncapped but not the rate behind it, and per-tick
     # interest accrual needs it.
     rate_table = load_rate_table()
-    aprs, terms = [], []
-    for _, row in merged[PRODUCT_COLS].iterrows():
-        apr, term = weighted_apr_and_term(row, rate_table)
-        aprs.append(apr)
-        terms.append(term)
-    merged["apr_annual"] = aprs
-    merged["term_months"] = terms
+    merged[["apr_annual", "term_months"]] = [
+        weighted_apr_and_term(flags, rate_table)
+        for flags in merged[list(PRODUCT_MAP)].to_dict("records")
+    ]
 
     return merged
 

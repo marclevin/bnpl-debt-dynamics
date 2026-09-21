@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass, field, fields
+from dataclasses import replace as _replace
 from pathlib import Path
 from typing import Any, Literal
 
@@ -45,15 +46,7 @@ CCMR_BANDS: tuple[tuple[str, int, int | None], ...] = (
 )
 
 
-def _root(start: Path | None = None) -> Path:
-    start = start or Path(__file__).resolve().parent
-    for d in [start, *start.parents]:
-        if (d / "data" / "config").is_dir() and (d / "data" / "processed").is_dir():
-            return d
-    raise FileNotFoundError("could not locate repo root")
-
-
-ROOT = _root()
+ROOT = Path(__file__).resolve().parents[1]
 DATA_CONFIG = ROOT / "data" / "config"
 DATA_PROCESSED = ROOT / "data" / "processed"
 DATA_RAW = ROOT / "data" / "raw"
@@ -577,8 +570,6 @@ class ParamSet:
 
     def replace(self, **kwargs: Any) -> "ParamSet":
         """Return a copy with fields overridden."""
-        from dataclasses import replace as _replace
-
         return _replace(self, **kwargs)
 
 
@@ -609,6 +600,12 @@ def parameter_register() -> list[dict[str, str]]:
 def load_ccmr_target() -> dict[str, float]:
     """The 2017-Q1 CCMR baseline arrears target (account basis)."""
     return json.loads(CCMR_BASELINE.read_text(encoding="utf-8"))["model_target"]
+
+
+def load_ccmr_bands() -> dict[str, float]:
+    """The same 2017-Q1 age analysis band by band, in percent, keyed as CCMR_BANDS."""
+    payload = json.loads(CCMR_BASELINE.read_text(encoding="utf-8"))
+    return payload["combined_unsecured_and_facilities"]["pct"]
 
 
 def load_qlfs_band() -> dict[str, float]:

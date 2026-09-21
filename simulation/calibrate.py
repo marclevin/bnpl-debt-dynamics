@@ -27,6 +27,7 @@ from .batch import replicate, run_batch
 from .config import (
     RESULTS_SUMMARY,
     ParamSet,
+    load_ccmr_bands,
     load_ccmr_target,
     load_qlfs_band,
 )
@@ -34,6 +35,9 @@ from .config import (
 #: The band the fit targets. Credit-active denominator: the CCMR counts accounts held by
 #: credit-active consumers, and 56% of this population holds no traditional debt at all.
 OBJECTIVE_COLUMN = "active_90_plus_mean"
+
+#: Columns printed for the two shock-probability stages.
+P_COLS = ["shock_prob", "objective_mean", "active_d30", "active_current", "abs_error"]
 
 
 def baseline(**overrides) -> ParamSet:
@@ -86,6 +90,10 @@ def summarise(df: pd.DataFrame, target: float, by: list[str] | None = None) -> p
     return g.sort_values(by or ["shock_prob"]).reset_index(drop=True)
 
 
+def show(table: pd.DataFrame, cols: list[str]) -> None:
+    print(table[cols].to_string(index=False, float_format=lambda v: f"{v:.4f}"))
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--reps", type=int, default=20, help="replicates per grid point")
@@ -104,18 +112,15 @@ def main() -> None:
     print(f"replicates    : {args.reps} per grid point")
     print()
 
-    d30_target = ccmr["pct_d30"] / 100.0 if "pct_d30" in ccmr else 0.0824
+    bands = load_ccmr_bands()
+    d30_target = bands["d30"] / 100.0
 
     # --- stage 1: fit p to the 90+ tail with friction off ---------------------
     coarse_grid = [0.016, 0.024, 0.032, 0.040, 0.048, 0.056, 0.064]
     print(f"--- stage 1, p grid (friction off): {coarse_grid}")
     df = evaluate(coarse_grid, args.reps, args.jobs)
     coarse = summarise(df, target)
-    print(
-        coarse[
-            ["shock_prob", "objective_mean", "active_d30", "active_current", "abs_error"]
-        ].to_string(index=False, float_format=lambda v: f"{v:.4f}")
-    )
+    show(coarse, P_COLS)
     p_hat = float(coarse.loc[coarse["abs_error"].idxmin(), "shock_prob"])
     print(f"    -> p = {p_hat:.4f}")
 
@@ -125,11 +130,7 @@ def main() -> None:
     df2 = evaluate([p_hat], args.reps, args.jobs, friction_grid=friction_grid)
     fr = summarise(df2, target, by=["payment_friction"])
     fr["d30_error"] = (fr["active_d30"] - d30_target).abs()
-    print(
-        fr[
-            ["payment_friction", "active_d30", "objective_mean", "active_current", "d30_error"]
-        ].to_string(index=False, float_format=lambda v: f"{v:.4f}")
-    )
+    show(fr, ["payment_friction", "active_d30", "objective_mean", "active_current", "d30_error"])
     f_hat = float(fr.loc[fr["d30_error"].idxmin(), "payment_friction"])
     print(f"    -> friction = {f_hat:.4f}  (1-30 target {d30_target:.2%})")
 
@@ -137,11 +138,7 @@ def main() -> None:
     print(f"\n--- stage 3, re-fit p at friction={f_hat:.4f}")
     df3 = evaluate(coarse_grid, args.reps, args.jobs, friction_grid=[f_hat])
     final_tbl = summarise(df3, target)
-    print(
-        final_tbl[
-            ["shock_prob", "objective_mean", "active_d30", "active_current", "abs_error"]
-        ].to_string(index=False, float_format=lambda v: f"{v:.4f}")
-    )
+    show(final_tbl, P_COLS)
 
     all_runs = pd.concat([df, df2, df3], ignore_index=True)
     best_row = final_tbl.loc[final_tbl["abs_error"].idxmin()]
@@ -163,9 +160,9 @@ def main() -> None:
     print(f"  1-30 (credit-active)       : {best_row['active_d30']:.2%}  "
           f"target {d30_target:.2%}   [FITTED]")
     print(f"  31-60 (credit-active)      : {best_row['active_d31_60']:.2%}  "
-          f"CCMR 3.59%   [UNFITTED]")
+          f"CCMR {bands['d31_60']:.2f}%   [UNFITTED]")
     print(f"  61-90 (credit-active)      : {best_row['active_d61_90']:.2%}  "
-          f"CCMR 2.32%   [UNFITTED]")
+          f"CCMR {bands['d61_90']:.2f}%   [UNFITTED]")
     print(f"  current (credit-active)    : {best_row['active_current']:.2%}  "
           f"CCMR {ccmr['pct_current']:.2f}%   [UNFITTED]")
     print(f"  60+  (credit-active)       : {best_row['active_60_plus']:.2%}  "

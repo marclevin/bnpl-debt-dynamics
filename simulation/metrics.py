@@ -26,6 +26,16 @@ def ccmr_band(arrears_age_ticks: int) -> str:
     return "current"  # pragma: no cover
 
 
+#: The two cumulative CCMR delinquency measures, as the bands each one sums.
+BANDS_60_PLUS = ("d61_90", "d91_120", "d120_plus")
+BANDS_90_PLUS = ("d91_120", "d120_plus")
+
+
+def band_share(bands: Counter, labels: tuple[str, ...], denom: int) -> float:
+    """Share of `denom` households sitting in `labels`; zero when `denom` is empty."""
+    return sum(bands[label] for label in labels) / denom if denom else 0.0
+
+
 def collect_tick(model) -> dict:
     """One row of per-tick observation."""
     agents = list(model.agents)
@@ -63,29 +73,17 @@ def collect_tick(model) -> dict:
         "default_rate": n_defaulted / n,
         "n_defaulted": n_defaulted,
         # --- CCMR bands (D6) ------------------------------------------------------
-        **{f"band_{label}": bands.get(label, 0) / n for label, _, _ in CCMR_BANDS},
-        "pct_60_plus": sum(
-            bands.get(label, 0) for label in ("d61_90", "d91_120", "d120_plus")
-        )
-        / n,
-        "pct_90_plus": sum(bands.get(label, 0) for label in ("d91_120", "d120_plus")) / n,
+        **{f"band_{label}": band_share(bands, (label,), n) for label, _, _ in CCMR_BANDS},
+        "pct_60_plus": band_share(bands, BANDS_60_PLUS, n),
+        "pct_90_plus": band_share(bands, BANDS_90_PLUS, n),
         # --- same bands on the credit-active denominator (the CCMR analogue) --------
         "n_credit_active": n_active,
         **{
-            f"active_{label}": (bands_active.get(label, 0) / n_active) if n_active else 0.0
+            f"active_{label}": band_share(bands_active, (label,), n_active)
             for label, _, _ in CCMR_BANDS
         },
-        "active_60_plus": (
-            sum(bands_active.get(label, 0) for label in ("d61_90", "d91_120", "d120_plus"))
-            / n_active
-            if n_active
-            else 0.0
-        ),
-        "active_90_plus": (
-            sum(bands_active.get(label, 0) for label in ("d91_120", "d120_plus")) / n_active
-            if n_active
-            else 0.0
-        ),
+        "active_60_plus": band_share(bands_active, BANDS_60_PLUS, n_active),
+        "active_90_plus": band_share(bands_active, BANDS_90_PLUS, n_active),
         # --- traditional stress: the pattern-1 falsification test (D5) ------------
         "trad_debt_total": sum(a.d_trad for a in agents),
         "trad_arrears_total": sum(a.arrears_trad for a in agents),
@@ -195,17 +193,13 @@ def summarise_run(model) -> dict:
     # bottom. An aggregate binding rate can read as inert while the constraint is biting
     # hard on Q1, which is exactly the failure the flat constant hid.
     quintile_of = {a.agent_id: a.rec.income_quintile for a in agents}
-    req_q: dict[str, int] = {}
-    blk_q: dict[str, int] = {}
+    req_q: Counter[str] = Counter()
+    blk_q: Counter[str] = Counter()
     for pl in model.platforms:
         for agent_id, count in pl.requests_by_agent.items():
-            q = quintile_of.get(agent_id)
-            if q:
-                req_q[q] = req_q.get(q, 0) + count
+            req_q[quintile_of[agent_id]] += count
         for agent_id, count in pl.blocked_rolling_by_agent.items():
-            q = quintile_of.get(agent_id)
-            if q:
-                blk_q[q] = blk_q.get(q, 0) + count
+            blk_q[quintile_of[agent_id]] += count
 
     # --- D4 purchase-size validation ------------------------------------------------
     # Checked against the SA provider disclosure (bnpl_anchors_2017.json), never fitted
@@ -279,7 +273,7 @@ def summarise_run(model) -> dict:
     quintiles = sorted(set(quintile_of.values()))
     summary.update(
         {
-            f"bnpl_rolling_bind_{q}": (blk_q.get(q, 0) / req_q[q]) if req_q.get(q) else 0.0
+            f"bnpl_rolling_bind_{q}": blk_q[q] / req_q[q] if req_q[q] else 0.0
             for q in quintiles
         }
     )
