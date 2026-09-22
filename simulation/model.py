@@ -125,6 +125,12 @@ class BNPLModel(Model):
         # without a re-run (DEFECTS.md B32).
         self.want_purchase_count_q: Counter[str] = Counter()
         self.want_purchase_value_q: Counter[str] = Counter()
+        # The collector's memory across ticks: who has EVER held a BNPL balance, and
+        # who has EVER held two or more facilities at once. Needed because the CFPB's
+        # stacking figure is over a period (borrowers with loans at more than one firm
+        # in a year), not a point in time. Filled by metrics.collect_tick.
+        self.ever_holders: set[int] = set()
+        self.ever_stacked: set[int] = set()
 
         self.history: list[dict] = []
 

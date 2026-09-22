@@ -254,6 +254,24 @@ def test_purchases_by_quintile_reconcile_with_the_overall_figures():
     assert value / sum(counts) == pytest.approx(s["bnpl_purchase_mean_realised"])
 
 
+def test_outcomes_by_quintile_reconcile_with_the_overall_figures():
+    """Default, adoption and arrears by quintile exist so the distribution section can
+    say where harm concentrates. They are only usable if they partition the overall
+    figures, and the horizon measures must dominate their point-in-time versions.
+    """
+    s = run(bnpl_enabled=True, q_base=0.3)
+    quintiles = ["Q1", "Q2", "Q3", "Q4", "Q5"]
+    n_q = [s[f"n_agents_{q}"] for q in quintiles]
+
+    assert sum(n_q) == s["n_agents"]
+    assert s["bnpl_adoption_final"] > 0, "the arm under test must actually adopt"
+    for key in ("default_rate_final", "bnpl_adoption_final"):
+        weighted = sum(n * s[f"{key}_{q}"] for n, q in zip(n_q, quintiles)) / s["n_agents"]
+        assert weighted == pytest.approx(s[key]), key
+    assert s["ever_adopted"] >= s["bnpl_adoption_final"]
+    assert s["ever_stacked_2plus"] >= s["stacking_2plus_final"]
+
+
 def test_shortfall_path_puts_no_more_on_bnpl_than_the_financeable_budget():
     """D5: BNPL finances retail goods, so it relieves a shortfall only up to kappa x budget.
 

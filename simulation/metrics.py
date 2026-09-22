@@ -65,6 +65,9 @@ def collect_tick(model) -> dict:
             stacking[depth] += 1
             if outstanding > 0:
                 bnpl_holders += 1
+                model.ever_holders.add(a.agent_id)
+            if depth >= 2:
+                model.ever_stacked.add(a.agent_id)
 
     row = {
         "tick": model.tick,
@@ -289,4 +292,26 @@ def summarise_run(model) -> dict:
     summary.update({f"dti_{q}": v for q, v in dti_aggregate.items()})
     summary.update({f"dti_mean_{q}": v for q, v in dti_mean.items()})
     summary.update({f"dti_median_{q}": v for q, v in dti_median.items()})
+    # --- by quintile, and over the horizon ------------------------------------------
+    # The introduction promises default by income quintile; the CFPB stacking figure is
+    # over a period, so the point-in-time 2+ share needs a horizon analogue.
+    n = len(agents)
+    for q in quintiles:
+        members = [a for a in agents if a.rec.income_quintile == q]
+        n_q = len(members)
+        summary[f"n_agents_{q}"] = n_q
+        summary[f"default_rate_final_{q}"] = (
+            sum(1 for a in members if a.defaulted) / n_q if n_q else 0.0
+        )
+        summary[f"bnpl_adoption_final_{q}"] = (
+            sum(1 for a in members if a.bnpl_outstanding() > 0) / n_q if n_q else 0.0
+        )
+        summary[f"trad_arrears_final_{q}"] = (
+            sum(1 for a in members if a.arrears_trad > 0) / n_q if n_q else 0.0
+        )
+    summary["ever_adopted"] = len(model.ever_holders) / n
+    summary["ever_stacked_2plus"] = len(model.ever_stacked) / n
+    summary["ever_stacked_2plus_of_adopters"] = (
+        len(model.ever_stacked) / len(model.ever_holders) if model.ever_holders else 0.0
+    )
     return summary
