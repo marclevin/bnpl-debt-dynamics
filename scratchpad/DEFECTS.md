@@ -1104,7 +1104,13 @@ Worth recording as positives alongside the problems above:
 
 ---
 
-### B32 · Two calibration checks moved when P0 stopped counting imputed rent — `MAJOR` · `BOTH` · `OPEN`
+### B32 · Two calibration checks moved when P0 stopped counting imputed rent — `MAJOR` · `BOTH` · `CLOSED`
+
+**Closed 2026-09-22 with the final number.** The thesis reports the pre-registered statistic as
+written: R645.60 against R992, 34.93% low against a 35% tolerance, inside by R0.74, 8 of 20
+replicates inside (`tab:bnpl-on-checks`, generated from `results/raw/rq0.parquet`; the
+2026-09-22 re-run reproduced the be45867 value bitwise). The `beta = 1` arm, R613.87, is reported
+beside it as outside. `kappa` untouched.
 
 `w5_expenditure` decomposes exactly into `w5_expf + w5_expnf + w5_hhimprent + w5_rentexpend`. P0
 built `expenditure_discretionary` as total less food less rent, which leaves **`w5_expnf` plus

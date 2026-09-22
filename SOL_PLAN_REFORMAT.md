@@ -276,8 +276,9 @@ scope in the same sentence as the number. Distinguish deferral from desistance o
 
 **The argument is grounded on the stacking evidence of Section 4**, not on the facility cap: the
 emergent 2+ facility share against the CFPB's 32%, zero stacking with one platform, and default
-rising with platform count. Both instruments act on the individual agreement and neither on the
-number of them, so their null results corroborate the mechanism; they do not establish it.
+that does **not** rise with platform count (final run: the harm is the obligation, not its spread
+across firms). Both instruments act on the individual agreement and neither on the number of
+them, so their null results corroborate the mechanism; they do not establish it.
 
 The cooling-off window and the concurrent-facility cap are **cut from the body**. Their runs go to
 the supplementary appendix as tables with no body prose, including the one row that preserves the
@@ -358,13 +359,13 @@ repetitive roadmaps, awkward passive constructions, or claims stronger than the 
 The writing order will differ from the reading order:
 
 1. **Freeze the baseline.** Done 2026-09-21: word counts as above; the project compiles clean; the
-   RQs are the approved umbrella question and its three subsidiaries. **Final simulation outputs do
-   not exist.** Everything in `results/` predates the population rebuild of 2026-08-18 (DEFECTS
-   B32). The two fitted parameters were re-fitted twice on 2026-09-21: on the rebuilt population
-   (shock probability 0.048 to 0.040) and again once granted traditional loans were booked as debt
-   (DEFECTS B34; **0.040 to 0.016**). Friction stayed at 0.09 both times. The shortfall path is
-   capped; the 20-replicate sweeps and the
-   Sobol decomposition are still to run, and steps 5-10 wait on them.
+   RQs are the approved umbrella question and its three subsidiaries. The two fitted parameters
+   were re-fitted twice on 2026-09-21: on the rebuilt population (shock probability 0.048 to
+   0.040) and again once granted traditional loans were booked as debt (DEFECTS B34; **0.040 to
+   0.016**). Friction stayed at 0.09 both times. **Final simulation outputs exist**: the 20-replicate
+   sweeps and the Sobol decomposition ran on 2026-09-21 (commit `be45867`), and the sweeps were
+   re-run bitwise-identically on 2026-09-22 (`e214245`) for the by-quintile columns; `results/raw/`
+   and `results/summary/` hold only that run.
 2. **Build the six-section shell.** Agree the file map, move headings and labels, and compile before
    rewriting prose. Do not leave duplicate Literature or Discussion sections in the shell.
 3. **Rewrite the Model.** This is least dependent on final numerical outputs and establishes the

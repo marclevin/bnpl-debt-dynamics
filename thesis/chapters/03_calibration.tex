@@ -313,21 +313,6 @@ Current       & 71.63 & 75.93 & unfitted \\
 \end{tabular}
 \end{table}
 
-% --- TO WRITE AFTER THE FINAL RUN (about 250 words; SOL_PLAN_REFORMAT.md section 3.5) ---
-% The BNPL-on independent checks, none of them fitted, as ONE table with one paragraph:
-%   - share of adopters holding 2+ facilities against the CFPB's 32% (order of magnitude)
-%   - BNPL volume per eligible / per adopting household against the R1,333--R4,261 band
-%   - realised mean purchase against the R992 issuer-disclosed order value. DECIDED
-%     2026-09-21 and pre-registered in DECISIONS.md D4: comparison population is ALL
-%     ADOPTERS, statistic is bnpl_purchase_mean_realised in rq0's bnpl_on_beta0 arm,
-%     tolerance is within 35% (R645--R1,339). Before the final run it sat 34--36% low, so
-%     report which side it fell and by how much; a miss is a NAMED miss, explained by the
-%     by-quintile split (Q3--Q5 and Q4--Q5 means bracket the anchor). Do not re-tune kappa.
-%   - Pattern 1 direction; Pattern 3 DTI peak; Pattern 4 zero savings (26.0% at the
-%     baseline re-fitted after DEFECTS B34, against TransUnion's 36%)
-% Then CLOSE RQ1 EXPLICITLY, in one sentence, with every failure named.
-% Foreground Patterns 2 and 4; Patterns 1 and 3 get one line each in the table only.
-
 Three of four external benchmark checks pass (Table~\ref{tab:validation}): household size against the Community Survey, the income Gini against the World Bank-based interval, and aggregate debt against the \ac{CCMR} book.
 Constructed servicing fails its comparison with \ac{FinScope} budget shares: 12.8\% of monthly outlay against a 6.1--9.8\% range.
 This is a separate survey measure, though it comes from a survey also used in construction.
@@ -376,3 +361,12 @@ Two structural deviations remain. Mean household size (3.03) passes tolerance bu
 The population also enters the model with financial vulnerability: 3.9\% of households cannot cover committed expenditure from income, 5.2\% cannot cover committed expenditure plus scheduled debt service, and 44.3\% hold zero liquid savings.
 These overlapping groups are not initial default counts.
 Savings and credit can cover some shortfalls, and zero savings alone does not trigger distress; the simulation assesses distress during each tick (Section~\ref{sec:sequence}).
+
+Table~\ref{tab:bnpl-on-checks} collects the checks on the \ac{BNPL}-on model, none of them fitted.
+At the end of the horizon 45.0\% of \ac{BNPL} holders hold two or more facilities; the over-the-horizon share, 37.0\% of ever-adopters, is the closer analogue of the \ac{CFPB}'s 32\%.
+The registered mean-purchase check passes at the edge of its band: R645.60 against R992, 34.93\% low against a 35\% tolerance, inside by R0.74, with eight of twenty replicates inside.
+Annual \ac{BNPL} volume per eligible household, R861, and per adopting household, R1{,}020, both fall below the provider band's R1{,}333 lower bound.
+Pattern~1 is mixed, Pattern~3 holds on the registered statistic, and Pattern~4 is of the right order (25.9\% against 36\%).
+RQ1 is answered in part: the population reproduces the fitted bands, three of four external data-layer checks and the stacking and purchase-size orders of magnitude, and fails the intermediate arrears bands, the servicing-share check, the volume band and the interest half of Pattern~1.
+
+\input{chapters/generated/tab_bnpl_on_checks}

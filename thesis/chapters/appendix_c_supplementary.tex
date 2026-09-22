@@ -141,33 +141,39 @@ an order, the analogue of the fourteen-day right of withdrawal in the United Kin
 \cite{fca_ps26_1}; and a cap on the number of concurrent facilities a household may hold, which
 no jurisdiction imposes and which is therefore hypothetical. Both are run at $\beta = 0$ and
 $\beta > 0$, and both are judged on cumulative \ac{BNPL} volume as well as default, as the body
-scenarios are.
+scenarios are (Tables~\ref{tab:cooloff} and~\ref{tab:cap}; Figure~\ref{fig:scenarios-appendix}
+places them beside the body scenarios). The cap is a count of open agreements on any platform,
+not of platforms: a cap of one is a one-agreement-at-a-time rule, and it is stricter than the
+single-platform arm of Table~\ref{tab:stacking}, on which a household may hold several
+agreements at once.
 
-% CONTENT REQUIRED, as tables generated from results/summary/rq3_interventions.csv
-% (arms rq3_kcool{1..4}_b{0,1} and rq3_cap{1..4}_b{0,1}), with the same outcome panel
-% and the same \tabnote requirements as the body scenario table:
-% - Table: cooling-off window, k_cool = 0..4 ticks, at beta = 0 and beta = 1. Working
-%   run: no effect alone; -33% cumulative volume where peer influence is present,
-%   because delaying purchases lowers the group's visible usage. The one lever x peer
-%   interaction in the model; state it in the note.
-% - Table: concurrent-facility cap, 1..4 platforms, at beta = 0 and beta = 1. Working
-%   run: -54% to -63% cumulative volume, default returning almost to the no-BNPL level.
-%   Label HYPOTHETICAL in the caption.
+\input{chapters/generated/tab_cooloff}
+
+\input{chapters/generated/tab_cap}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_scenarios_appendix.pdf}
+\caption{Every lever against the benchmark, with and without peer influence}
+\label{fig:scenarios-appendix}
+\tabnote{The population default rate at the final tick under every implemented lever, at $\beta = 0$ (left) and $\beta = 1$ (right): the two body scenarios of Section~\ref{sec:scenarios}, the cooling-off window of one to four ticks and the concurrent-facility cap of one to three agreements. Points are means over 20 replicates with the replicate standard deviation; the dashed line is the benchmark mean at the same $\beta$. The cap is hypothetical: no jurisdiction imposes one. Values and differences with standard errors are in Tables~\ref{tab:scenarios}, \ref{tab:cooloff} and~\ref{tab:cap}.}
+\end{figure}
 
 \subsection{Supplementary Sensitivity Results}
 \label{app:sensitivity}
 
-% CONTENT REQUIRED, all as tables, generated from results/summary/:
-% - Sobol first-order and total-order indices for the default rate (sobol_indices.json,
-%   sobol_default_rate.png).
-% - Activation-order re-run: random asynchronous vs fixed order (rob_act_uniform).
-% - Population-size stability at 1,000 / 5,000 / 10,000 agents.
-% - Minimum-payer share swept 0.20-0.40, bracketing the transferred US estimate of 0.29.
-% - Income-shock magnitude sweep.
-% - Full platform-count detail, 1 through 6 (the body reports endpoints only).
-% - The beta=0 scenario panel (rq3_interventions_beta0.png).
-% - Validation patterns 3 and 4 in full: pattern3_dti_by_quintile.png and the
-%   zero-savings comparison, both demoted from the body per decision D4.
+Table~\ref{tab:sobol} gives the Sobol decomposition that Section~\ref{sec:results-robustness}
+summarises in one sentence; Table~\ref{tab:robustness-appendix} the sensitivity arms whose range
+does not exceed replicate noise, including the activation-order and population-size checks; and
+Table~\ref{tab:stacking-full} the platform-count grid at every value of $\beta$. The by-quintile
+debt-to-income and zero-savings comparisons (Patterns~3 and~4) are in Tables~\ref{tab:distribution}
+and~\ref{tab:bnpl-on-checks}.
+
+\input{chapters/generated/tab_sobol}
+
+\input{chapters/generated/tab_robustness_appendix}
+
+\input{chapters/generated/tab_stacking_full}
 
 \subsection{Further Extensions}
 \label{app:extensions}

@@ -306,6 +306,11 @@ ordered sequence; **the order itself is a modelling decision.**
     (`bnpl_want_purchases_{Q}`, `bnpl_purchase_mean_realised_{Q}`); the Q3–Q5 and Q4–Q5 means are
     reported as a **bracket around the anchor that explains the gap**, never as alternative
     comparison populations that rescue the check.
+  - **Outcome (final run 2026-09-21, `be45867`; re-run 2026-09-22, `e214245`, bitwise identical):
+    a pass at the edge of the band.** R645.60 against R992.1, 34.93% low, inside by R0.74; 8 of
+    20 replicates inside; the `beta = 1` arm R613.87 (38.12% low) is outside, 0 of 20 inside;
+    bracket Q3–Q5 R909, Q4–Q5 R1,211. Written up in `tab:bnpl-on-checks` and the RQ1 close of
+    Section 3.5 as a pass by the narrowest margin. `kappa` was not touched.
 
   **The rule for the shortfall path is unchanged and remains uncited.** D4's status as the model's
   first uncited rule stands; what changed is that its BNPL *level* is now derived and externally
