@@ -1,9 +1,13 @@
 # Results integration plan
 
 Drafted 2026-09-22 after the final run of 2026-09-21 (commit `be45867`, `results/final_run.log`
-ends `FINAL RUN COMPLETE`). Status: **draft, nothing executed.** It carries out OVERVIEW steps 6
-and 7, and follows steps 5 to 11 of the rewrite sequence in
-[SOL_PLAN_REFORMAT.md](SOL_PLAN_REFORMAT.md).
+ends `FINAL RUN COMPLETE`). Status: **approved by Marc 2026-09-22, all four decisions made,
+nothing executed yet.** It carries out OVERVIEW steps 6 and 7, and follows steps 5 to 11 of the
+rewrite sequence in [SOL_PLAN_REFORMAT.md](SOL_PLAN_REFORMAT.md).
+
+> **Executing session: start at "Execution brief" at the end of this file.** It is written to be
+> run end to end in one sitting without this plan's author present. Read the alignment verdict and
+> the decisions first (five minutes), then follow the brief in order.
 
 ## Does the experiment align with the documents?
 
@@ -50,32 +54,34 @@ note; the scenario figure must show body scenarios only; the Appendix C notes qu
 magnitudes; the CFPB 32% and the model's 45% use different denominators; and the projected total is
 about 9,570 words against the 9,500 ceiling.
 
-## Decisions needed from Marc
+## Decisions (made by Marc, 2026-09-22)
 
-**A. Re-run scope for the missing columns.** Adding columns to `summarise_run` cannot change any
-existing column, and re-running a suite with the same seeds reproduces it bitwise (proved by the
-golden checks during the cleanup). Recommended: **re-run all six experiment suites** (67 minutes)
-so every reported number comes from one commit, and keep the Sobol output, which decomposes five
-outputs that are unchanged. The alternative, re-running only `rq0`, `rq1` and `rq3` (about 20
-minutes), leaves the results split across two commits for no saving that matters.
+**A. Re-run scope: all six experiment suites.** Adding columns to `summarise_run` cannot change
+any existing column, and re-running a suite with the same seeds reproduces it bitwise (proved by
+the golden checks during the cleanup). So every reported number comes from one commit. The Sobol
+output is kept: it decomposes five outputs that are unchanged.
 
-**B. How the policy argument is grounded now.** SOL said: stacking evidence, including default
-rising with platform count, corroborates the null policy results. Recommended rewording: the
-mechanism produces stacking; stacking does not translate into more default per platform; the two
-real instruments act on the individual agreement and do not move default either; what moves
-default is the injection itself, and the only lever that reverses it is the hypothetical cap,
-which works by blocking any new draw while a balance is open (see the note in Phase 2). This is a
-weaker policy story than planned and an honest one.
+**B. The policy argument is reworded**, succinctly, along these lines (adapt, do not pad):
 
-**C. Conclusion budget: 650 or 800 words.** Recommended 650, the SOL figure, because the projected
-total is already about 70 words over the ceiling.
+> Platforms that cannot see one another produce stacking: with four platforms, 45% of BNPL holders
+> carry two or more facilities, and none can with one. Yet default is the same with one platform as
+> with six. The harm comes from the additional obligations BNPL creates, not from their being spread
+> across firms. Both instruments act on a single agreement, one by making it visible to the
+> traditional lender and the other by screening it, and neither changes how much a household takes
+> on (cumulative volume moves by under 2%), so neither moves default. The only lever that does is a
+> one-agreement-at-a-time rule, which no jurisdiction imposes.
 
-**D. Ever-stacked measure.** Recommended yes, added in Phase 0 since the re-run happens anyway:
-the share of households that held two or more facilities at any tick, and the same share among
-households that ever adopted. It is the closest the model can get to the CFPB's "borrowers with
-loans at multiple firms" over a period.
+**C. Conclusion budget: 650 words**, the SOL figure. The `06_conclusion.tex` note's 800 is
+superseded; fix the note when writing.
+
+**D. Ever-stacked measure: yes**, added in Phase 0: the share of households that held two or more
+facilities at any tick, and the same share among households that ever held a BNPL balance. It is
+the closest the model can get to the CFPB's "borrowers with loans at multiple firms" over a period.
 
 ## Phase 0: close the output gap and re-run (about 1.5 hours, mostly compute)
+
+*Summary only; the step-by-step version with column names, the driver flag, the launch command
+and the equality check is in the execution brief at the end. Where the two differ, the brief wins.*
 
 1. In `simulation/metrics.py` `summarise_run`, add per quintile: `default_rate_final_{Q}`,
    `bnpl_adoption_final_{Q}` and `trad_arrears_final_{Q}` (share of the quintile's households
@@ -222,3 +228,121 @@ It does not write the results for the cooling-off window or the cap into the bod
 Phase 0: 20 minutes of code, 67 minutes of compute, 10 minutes of verification. Phase 1: half a
 day; the scripts are the work, the figures are then free. Phase 2: two days of writing at the
 budgets above. Phase 3: half a day.
+
+---
+
+## Execution brief (for a fresh session, end to end)
+
+Everything below is self-contained. It assumes nothing from the conversation that produced this
+plan. Where a step names a file, line or function, re-read it before editing: this is a OneDrive
+folder and edits have silently reverted between sessions before.
+
+### Standing facts
+
+- Repo root: `C:\Users\marcl\OneDrive\Desktop\University\Masters\Thesis`, branch
+  `six-section-restructure`. Interpreter: `./env/python.exe` (a conda prefix env at the repo
+  root; there is no `env/Scripts/python.exe`). Tests: `./env/python.exe -m pytest simulation/tests
+  -q` (95 pass at the time of writing). Word count: `./env/python.exe scratchpad/wc_prose.py`.
+  Thesis build: `latexmk -pdf main.tex` from `thesis/`.
+- Set `PYTHONUTF8=1` for anything that rewrites a notebook or reads the run log. Bash heredocs
+  mangle backslashes on this machine: LaTeX and regex edits go through the Write tool or a script.
+- `results/raw/*.parquet` and `results/summary/*.csv` are gitignored; the nine PNGs under
+  `results/summary/figures/` and `results/summary/sobol_indices.json` are tracked. `*.log` is
+  ignored. Population parquets under `data/processed/` must never be regenerated.
+- Commit messages end with `Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>`. Do not
+  push unless Marc says so.
+- One full-population run takes about 3 s; the six suites (3,840 runs) took 67 minutes with one
+  core left free. The machine must stay awake.
+- The final-run record and every headline number with its standard error are in the OVERVIEW.md
+  changelog entry dated 2026-09-21 ("THE FINAL RUN"). Quote nothing from
+  `results/superseded_2026-08-13/` or `archive/`.
+
+### Phase 0, step by step
+
+**0.1 Add the columns** (`simulation/model.py`, `simulation/metrics.py`).
+
+In `BNPLModel.__init__`, next to `self.want_purchase_count_q` (about line 126), add two sets of
+agent ids: `self.ever_holders` (has held a BNPL balance at any tick) and `self.ever_stacked` (has
+held two or more facilities at any tick), with a comment that they are the collector's memory
+across ticks, needed because the CFPB's stacking figure is over a period, not a point in time.
+
+In `collect_tick` (metrics.py), inside the `if model.params.bnpl_enabled:` loop (about line 60),
+after `depth = a.stacking_depth()`: add the agent to `ever_holders` when `outstanding > 0` and to
+`ever_stacked` when `depth >= 2`.
+
+In `summarise_run`, using the `quintiles` list that already exists (built from `quintile_of`):
+for each quintile `q`, with `members = [a for a in agents if a.rec.income_quintile == q]`, emit
+`n_agents_{q}`, `default_rate_final_{q}` (share of members defaulted), `bnpl_adoption_final_{q}`
+(share with `bnpl_outstanding() > 0`), `trad_arrears_final_{q}` (share with `arrears_trad > 0`).
+Then emit `ever_adopted` (`len(model.ever_holders) / n`), `ever_stacked_2plus`
+(`len(model.ever_stacked) / n`) and `ever_stacked_2plus_of_adopters` (`len(ever_stacked) /
+len(ever_holders)`, 0.0 if no holders). Put them under a `# --- by quintile, and over the horizon`
+comment beside the existing by-quintile block. About 20 lines in total. Do not touch anything else
+in `summarise_run`: the existing 115 columns must come out identical.
+
+**0.2 One test**, in `simulation/tests/test_bnpl_parameters.py` next to
+`test_purchases_by_quintile_reconcile_with_the_overall_figures`: run one small BNPL-on model and
+assert (a) `sum(default_rate_final_q * n_agents_q) / n_agents == default_rate_final` to
+`pytest.approx`, (b) the same for adoption, (c) `ever_stacked_2plus >= stacking_2plus_final` and
+`ever_adopted >= bnpl_adoption_final`, (d) `sum(n_agents_q) == n_agents`. Run the suite: 96 pass.
+
+**0.3 Keep the be45867 outputs for the equality check.** `mkdir results/raw_be45867` and copy the
+six parquets there (gitignored). Rename the log: `results/final_run.log` to
+`results/final_run_2026-09-21_be45867.log`.
+
+**0.4 Extend the driver.** `scratchpad/final_run.py` runs three steps from a `STEPS` list and
+writes `results/final_run.log` in `"w"` mode. Add a `--skip-sobol` flag (argparse, three lines)
+that drops the `simulation.sensitivity` step. Commit 0.1 to 0.4 as one commit ("Report default,
+adoption and arrears by quintile, and stacking over the horizon") **before launching**, so the log
+records the commit that produced the re-run.
+
+**0.5 Launch detached** (PowerShell, so it survives the session):
+
+    $root = "C:\Users\marcl\OneDrive\Desktop\University\Masters\Thesis"
+    Start-Process -FilePath "$root\env\python.exe" -ArgumentList '"scratchpad\final_run.py" --skip-sobol' -WorkingDirectory $root -WindowStyle Hidden -PassThru
+
+Note the PID. Confirm `results/final_run.log` starts with `FINAL RUN started` and the new commit.
+Wait for the last line to read `FINAL RUN COMPLETE` (about 70 minutes: `experiments` then
+`analysis`). A Bash `until grep -q "FINAL RUN COMPLETE\|FINAL RUN FAILED" results/final_run.log;
+do sleep 60; done` in the background is enough to be told. If it reads `FAILED`, stop and report.
+
+**0.6 Prove nothing moved.** Run this (Write it to a scratch file, then run it):
+
+    import pandas as pd
+    for s in ("rq0", "rq1", "rq2", "rq2t", "rq3", "robustness"):
+        old = pd.read_parquet(f"results/raw_be45867/{s}.parquet").sort_values(["label", "seed"]).reset_index(drop=True)
+        new = pd.read_parquet(f"results/raw/{s}.parquet").sort_values(["label", "seed"]).reset_index(drop=True)
+        assert list(old.columns) == [c for c in new.columns if c in old.columns], s
+        assert old.equals(new[old.columns]), f"{s}: an existing column changed"
+        added = [c for c in new.columns if c not in old.columns]
+        print(f"{s}: {len(old)} rows, {len(old.columns)} columns identical, {len(added)} added")
+
+Every suite must print "identical". Then delete `results/raw_be45867/`. Also confirm `git status`
+shows the nine PNGs either unchanged or changed only by re-rendering (the numbers behind them did
+not move), and that `results/summary/sobol_indices.json` is unchanged.
+
+**0.7 Sanity-read the new columns** from `rq0`: by-quintile default in `baseline_no_bnpl` and
+`bnpl_on_beta0`; `ever_stacked_2plus_of_adopters` in `bnpl_on_beta0` and `bnpl_on_beta1` against
+the point-in-time 45% and 83%. Add the numbers to the OVERVIEW changelog entry of 2026-09-21 as a
+dated sub-bullet ("re-run 2026-09-22 for the by-quintile columns, commit X; existing columns
+bitwise identical").
+
+**0.8 Commit** the regenerated figures and the OVERVIEW note. Update OVERVIEW step 4's status
+cell to name the re-run commit.
+
+### Phases 1 to 3
+
+Follow the plan above as written; nothing in it changes with the decisions except that the
+scenario prose uses the decision-B wording and the Conclusion is 650 words. Two reminders that are
+easy to lose:
+
+- Phase 1 comes entirely before Phase 2. No number is typed into prose or a caption; every one is
+  read from a generated table or figure, and the three-numbers-per-table re-derivation check is
+  run before writing starts.
+- The `06_conclusion.tex` drafting note says 800 words; change it to 650 when the section is
+  written. The `03_calibration.tex` RQ1 close is 150 words unless 90 are trimmed elsewhere in
+  that section.
+
+When Phase 3 is complete: OVERVIEW step 6 done and step 7 next; DEFECTS B32 closed with the final
+number; DECISIONS D4 gets its outcome line; the memory file `final-run-2026-09-21` updated with
+the re-run commit and the by-quintile headline.
