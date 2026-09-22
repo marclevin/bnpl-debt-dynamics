@@ -20,7 +20,7 @@ first, then propagate to the companion docs. Last updated: **2026-09-21**.
 > | 3 | Decide the comparison population for the mean-purchase check (B32, R992 anchor) | **decided** 2026-09-21: all adopters, within 35%, pre-registered in `DECISIONS.md` D4 before the run. It sits 34--36% low beforehand, so the run decides pass or named miss |
 > | 3a | Code cleanup ([`CODE_CLEANUP_PLAN.md`](CODE_CLEANUP_PLAN.md)): duplicate activation arm removed, every parameter and all six arrears bands echoed in the run output, dead code deleted | **done** 2026-09-21; outputs bitwise unchanged on a four-arm golden run |
 > | 3b | DEFECTS B34: granted traditional loans were never booked as debt (R9.96m, 20.7% of the opening book, in one baseline run) | **fixed** 2026-09-21: booked onto the consolidated balance at the rate table's sourced unsecured terms; step 2 re-fitted; Appendix G and the notation table updated |
-> | 4 | Final run overnight: `./env/python.exe -m simulation.experiments --which all --reps 20`, then `./env/python.exe -m simulation.sensitivity --samples 256`, then `./env/python.exe -m simulation.analysis`. All three, in order, stopping on failure: `./env/python.exe scratchpad/final_run.py` | **done**: started 2026-09-21 20:57 from commit `be45867`, `FINAL RUN COMPLETE` at 23:22, all three steps exit 0 (`results/final_run.log`). 3,840 experiment runs + 4,096 Sobol runs (N=256; second-order off, so N x (D+2) x 2 replicates). Every arm has 20 replicates, unique seeds, no nulls. The August raw results are in `results/superseded_2026-08-13/`; `results/raw/` and `results/summary/` hold only this run. Headline numbers: changelog, section 9 |
+> | 4 | Final run overnight: `./env/python.exe -m simulation.experiments --which all --reps 20`, then `./env/python.exe -m simulation.sensitivity --samples 256`, then `./env/python.exe -m simulation.analysis`. All three, in order, stopping on failure: `./env/python.exe scratchpad/final_run.py` | **done**: started 2026-09-21 20:57 from commit `be45867`, `FINAL RUN COMPLETE` at 23:22, all three steps exit 0 (`results/final_run.log`). 3,840 experiment runs + 4,096 Sobol runs (N=256; second-order off, so N x (D+2) x 2 replicates). Every arm has 20 replicates, unique seeds, no nulls. The August raw results are in `results/superseded_2026-08-13/`; `results/raw/` and `results/summary/` hold only this run. Headline numbers: changelog, section 9. **Re-run 2026-09-22 from commit `e214245`** for the by-quintile and ever-stacked columns (`scratchpad/final_run.py --skip-sobol`, 11:34 to 12:43): all 115 existing columns bitwise identical in every suite, 23 columns added; the Sobol output and the nine summary PNGs unchanged. The 2026-09-21 log is kept as `results/final_run_2026-09-21_be45867.log` |
 > | 5 | Six-section shell; Model and Calibration sections rewritten | **done** 2026-09-21 (needs no results) |
 > | 5a | Integration plan: [`RESULTS_INTEGRATION_PLAN.md`](RESULTS_INTEGRATION_PLAN.md). Alignment verdict, four decisions (all made by Marc 2026-09-22), and an execution brief a fresh session runs end to end | **approved 2026-09-22; execute from its Phase 0** |
 > | 6 | Results, Scenarios, Conclusion, Introduction, Abstract -- from the final outputs only. First a re-run of the six experiment suites for the by-quintile and ever-stacked columns (existing columns must come out bitwise identical), then generated tables and figures, then prose in SOL order | **next**, per the plan's execution brief |
@@ -346,6 +346,19 @@ citation-verification evidence for Chapter 2).
   - After the run, two presentation fixes that do not touch the model: the Sobol figure no longer
     carries a hardcoded "re-run at N>=256" subtitle, and `sensitivity.py`'s help text states the
     right run count. The Sobol figure was regenerated; every summary CSV is byte-identical.
+  - **Re-run 2026-09-22 for the by-quintile columns, commit `e214245`; existing columns bitwise
+    identical** (all six suites, 115 columns, asserted row for row against the be45867 parquets;
+    Sobol not re-run). 23 columns added: `n_agents`, `default_rate_final`, `bnpl_adoption_final`
+    and `trad_arrears_final` by quintile, plus `ever_adopted`, `ever_stacked_2plus` and
+    `ever_stacked_2plus_of_adopters`. Baseline default by quintile: Q1 17.9%, Q2 10.9%, Q3 12.2%,
+    Q4 15.9%, Q5 10.2%; the injection at `beta = 0` raises it by +1.10 ± 0.20 (Q1), +0.87 ± 0.22,
+    +1.79 ± 0.29 (Q3, the largest), +1.05 ± 0.28 and +1.25 ± 0.27pp. Over the horizon 69.9% of
+    households hold a BNPL balance at some tick (`beta = 0`; 16.8% at the final tick), and the
+    ever-stacked share of ever-adopters is **37.0%** at `beta = 0` and 98.6% at `beta = 1`, against
+    the point-in-time 45% and 83% of end holders; 37% is the closer analogue to the CFPB's 32%.
+    One new named miss: annualised BNPL volume is R861 per eligible household and R1,020 per
+    ever-adopting household, both below the R1,333 lower bound of the provider band (the plan's
+    "R1,321" was the 1.53-year horizon total, not an annual figure).
 
 - **2026-09-21 (code cleanup; one blocker found).** Executed
   [`CODE_CLEANUP_PLAN.md`](CODE_CLEANUP_PLAN.md); its execution log lists every step and what was
