@@ -69,7 +69,7 @@ $s_g(t)$ & share of the eligible members of $g$ holding a \ac{BNPL} balance at t
 $L_{ip}$ & rolling receivable limit of $p$ for $i$, $L_{ip} = \lambda Y_i$ & \texttt{rolling\_limits} \\
 $\bar o$ & per-order cap & \texttt{bnpl\_order\_cap} \\
 $N$ & instalments per order (4) & \texttt{bnpl\_instalments} \\
-$\phi$, $\bar\phi$ & late fee per missed tick; fee cap per facility & \texttt{bnpl\_late\_fee\_*} \\
+$\phi$, $\bar\phi$ & late fee per missed tick; fee cap per agreement & \texttt{bnpl\_late\_fee\_*} \\
 \addlinespace
 \multicolumn{3}{l}{\emph{Parameters}} \\
 $p^{\text{sep}}$, $p^{\text{exit}}$ & per-earner separation and re-employment probabilities per tick & \texttt{shock\_prob}, \texttt{shock\_exit\_prob} \\
@@ -82,7 +82,7 @@ $\mathbb{1}^{\text{cap}}$ & cap on the \ac{BNPL} share of a shortfall request at
 $\lambda$ & rolling limit as a multiple of monthly income & \texttt{bnpl\_limit\_income\_multiple} \\
 $q_{\text{base}}$, $\beta$ & baseline propensity; peer weight (linear mechanism) & \texttt{q\_base}, \texttt{beta} \\
 $\gamma$, $\mu_\theta$, $\sigma_\theta$ & appetite step; threshold mean and dispersion (threshold mechanism) & \texttt{gamma}, \texttt{mu\_theta}, \texttt{sigma\_theta} \\
-$k^{\text{cool}}$, $\bar n$ & cooling-off ticks; concurrent-facility cap (both off in every scenario reported in the body) & \texttt{k\_cool}, \texttt{stacking\_cap} \\
+$k^{\text{cool}}$, $\bar n$ & cooling-off ticks; concurrent-agreement cap (both off in every scenario reported in the body) & \texttt{k\_cool}, \texttt{stacking\_cap} \\
 \addlinespace
 \multicolumn{3}{l}{\emph{Scenario switches}} \\
 $\mathbb{1}^{\text{bnpl}}$ & \ac{BNPL} platforms present (off in the calibration baseline) & \texttt{bnpl\_enabled} \\

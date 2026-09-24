@@ -227,7 +227,6 @@ class ParamSet:
         rule="D2",
         provenance="SOURCED",
         source="Discretionary spend fully compressible in the baseline (D2)",
-        sweep="0.25 / 0.50 habit-persistence floors",
     )
 
     # -- D3 borrowing trigger / D17 peer influence -------------------------------
@@ -499,7 +498,6 @@ class ParamSet:
         rule="D13",
         provenance="SOURCED",
         source="Payflex Pay in 4: 25% at checkout then 25% at each of the next three ticks.",
-        sweep="Pay in 3 monthly (PayJustNow) as the structural alternative",
     )
     bnpl_late_fee_per_tick: float = _p(
         BNPL_LATE_FEE_PER_TICK_2017,
@@ -550,7 +548,7 @@ class ParamSet:
         rule="D14",
         provenance="ASSUMPTION",
         source=(
-            "Lever 4. Max concurrent facilities. HYPOTHETICAL: no jurisdiction imposes "
+            "Lever 4. Max concurrent agreements. HYPOTHETICAL: no jurisdiction imposes "
             "one. Must be labelled as such wherever it is reported."
         ),
         sweep="RQ3 lever 4, 1-4 or None",

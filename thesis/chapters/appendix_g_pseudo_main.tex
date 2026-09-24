@@ -148,7 +148,7 @@ its own exposure alone.
 \EndFunction
 \Statex
 \Function{BnplDraw}{$i$, amount} \Comment{returns the gross amount financed}
-    \If{$\text{amount} \leq 0$, or $\bar n$ is set and $i$ already holds $\bar n$ facilities} \Return 0 \EndIf
+    \If{$\text{amount} \leq 0$, or $\bar n$ is set and $i$ already holds $\bar n$ agreements} \Return 0 \EndIf
     \If{$\mathbb{1}^{\text{aff}}$} \Comment{\textbf{Scenario 2:} the gate at origination}
         \State $\text{visible} \gets (r_i + b_i) / \chi$;\quad $\text{new} \gets (\text{amount} / N) / \chi$
         \If{$\text{new} > \max(\rho(Y_i) - \text{visible},\ 0)$} \Return 0 \EndIf
@@ -165,7 +165,7 @@ its own exposure alone.
     \State $\text{amount} \gets \min(\text{amount},\ \bar o)$ \Comment{per-order cap}
     \State $\text{amount} \gets \min\bigl(\text{amount},\ (L_{ip} - B_{ip}) \cdot N / (N - 1)\bigr)$ \Comment{rolling limit, receivable terms}
     \If{$\text{amount} \leq 0$} \Return 0 \EndIf
-    \State Open a facility at $p$: principal amount, instalment amount$/N$, $N - 1$ instalments remaining
+    \State Open an agreement at $p$: principal amount, instalment amount$/N$, $N - 1$ instalments remaining
     \State \Return amount
 \EndFunction
 \end{algorithmic}
@@ -184,7 +184,7 @@ is cut off by that platform only.
 \begin{algorithmic}
 \Function{Collect}{$p$, $i$, cash} \Comment{returns (paid, fees)}
     \State $\text{paid} \gets 0$;\quad $\text{fees} \gets 0$
-    \ForAll{live facilities $\ell$ of $i$ at $p$}
+    \ForAll{live agreements $\ell$ of $i$ at $p$}
         \State $\text{owed} \gets \ell.\text{arrears} + (\ell.\text{remaining} > 0 \;?\; \ell.\text{instalment} : 0)$
         \If{$\text{owed} = 0$} continue \EndIf
         \If{$\ell.\text{remaining} > 0$} $\ell.\text{remaining} \gets \ell.\text{remaining} - 1$ \Comment{falls due regardless} \EndIf
@@ -197,7 +197,7 @@ is cut off by that platform only.
             \If{$\ell.\text{fees} \geq \bar\phi$} cut $i$ off at $p$ \Comment{this platform only} \EndIf
         \EndIf
     \EndFor
-    \State Drop settled facilities, so stacking depth counts live ones
+    \State Drop settled agreements, so stacking depth counts live ones
     \State \Return (paid, fees)
 \EndFunction
 \end{algorithmic}

@@ -32,7 +32,7 @@ are levied. Providers reportedly began submitting records in 2026 while the repo
 format was being finalised \cite{dcasa_bnpl_2026}. February 2027 has been reported as the
 expected date for records to appear on consumer profiles \cite{businessday_bnpl_2026};
 we treat this as a reported timetable, not a confirmed statutory commencement date.
-FINASA also reports preliminary analysis by one bureau suggesting potential score
+\ac{FINASA} also reports preliminary analysis by one bureau suggesting potential score
 reductions for roughly a quarter of credit-active consumers \cite{finasa_bnpl_2026}.
 These developments raise the question of how far making \ac{BNPL} credit visible to
 lenders changes household distress.
@@ -105,8 +105,7 @@ inequality and consumption emulation, leading to debt-financed spending and even
 a banking crisis. That model concerns collateralised debt, so its mechanism differs
 from unsecured pay-in-four lending. D'Orazio and Giulioni \cite{dorazio2017micro}
 show how unsustainable debt can arise from local borrowing rules. These
-studies support examining aggregate outcomes through explicit household decisions,
-rather than assuming that the consequences of additional credit are uniform.
+studies support examining aggregate outcomes through explicit household decisions.
 
 Madeira \cite{madeira2018chile} models Chilean households exposed to labour-income
 shocks, with default arising when they cannot finance minimum consumption. We adopt
@@ -119,8 +118,9 @@ a household credit model against evidence from a middle-income economy.
 Hamill et al.\ \cite{hamill2023creditcard} find that promotional strategies increase
 indebtedness in a model of the United Kingdom credit-card market. Their model also
 produces a non-monotonic debt-to-income profile, with the highest burden among
-middle-income households. We use this result only as a cross-model plausibility check. Following Windrum, Fagiolo and
-Moneta \cite{windrum2007validation} and the pattern-oriented approach discussed in
+middle-income households. We use this result only as a cross-model plausibility check.
+
+Following Windrum, Fagiolo and Moneta \cite{windrum2007validation} and the pattern-oriented approach discussed in
 the \ac{ODD} literature \cite{grimm2020odd,grimm2006odd}, we distinguish patterns
 used to fit the model from those used to assess it afterwards.
 
@@ -156,9 +156,9 @@ examine whether the default response depends on how adoption spreads.
 Borrowing and repayment need not follow a fully forward-looking plan. Present bias
 predicts credit-card borrowing \cite{meier2010present}, and present-biased borrowers
 may fail to make their planned repayments \cite{Kuchler2021}. This evidence motivates
-allowing departures from scheduled repayment. The borrowing-amount rule and the
-payment-friction probability are set separately, in Sections~\ref{sec:amount}
-and~\ref{sec:lim-calibration}.
+allowing departures from scheduled repayment. Neither study sets a parameter: the
+borrowing-amount rule is an assumption (Section~\ref{sec:amount}) and payment
+friction is fitted (Section~\ref{sec:lim-calibration}).
 
 Keys and Wang \cite{Keys2019} find that 29\% of United States credit-card accounts
 pay at or near the contractual minimum. Responses to changes in payment formulas
@@ -190,8 +190,7 @@ peer influence.
 \subsubsection*{Synthesis and Gap}
 \label{sec:lit-gap}
 
-The literature establishes reasons for concern about additional borrowing,
-uneven household vulnerability and incomplete lender information. The empirical
+The empirical
 \ac{BNPL} and behavioural evidence comes mainly from the United States, the United
 Kingdom and Australia and supplies no South African parameter values; where the
 model draws on it, the transfer is treated as an assumption
@@ -224,8 +223,8 @@ Behavioural \newline
 \cite{meier2010present,Keys2019,Kuchler2021,ackert2025bnpl,granovetter1978threshold}
 & Evidence on present bias, payment anchoring and expected peer approval, alongside
 a theory of collective adoption through individual thresholds.
-& How do repayment rules and alternative peer-adoption mechanisms affect simulated
-borrowing and default? \\
+& Does default depend on how adoption spreads, under a linear or a threshold
+peer rule? \\
 \addlinespace
 Household credit \ac{ABM} \newline
 \cite{cardaci2018inequality,dorazio2017micro,madeira2018chile,hamill2023creditcard,windrum2007validation}

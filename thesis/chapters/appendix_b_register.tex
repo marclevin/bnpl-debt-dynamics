@@ -38,7 +38,7 @@ exists and sensitivity analysis is mandatory. Rand values are 2017 Rands; the
 \addlinespace
 \texttt{shock\_\allowbreak{}exit\_\allowbreak{}prob} & D1 & 0.018724 & sourced & Per-tick re-employment hazard. QLFS 2017 Q3$\to$Q4: 11.6\% of the unemployed moved into employment per quarter $\to$ 1.87\% per 14-day tick. & with the QLFS band \\
 \addlinespace
-\texttt{discretionary\_\allowbreak{}floor} & D2 & 0.0 & sourced & Discretionary spend fully compressible in the baseline (D2) & 0.25 / 0.50 habit-persistence floors \\
+\texttt{discretionary\_\allowbreak{}floor} & D2 & 0.0 & sourced & Discretionary spend fully compressible in the baseline (D2) & -- \\
 \addlinespace
 \texttt{q\_\allowbreak{}base} & D3/\allowbreak{}D17 & 0.05 & assumed & Spontaneous want-driven BNPL propensity. NOT SOURCED; swept. & RQ2 adoption sweep; sets the level that beta then amplifies \\
 \addlinespace
@@ -82,7 +82,7 @@ exists and sensitivity analysis is mandatory. Rand values are 2017 Rands; the
 \addlinespace
 \texttt{bnpl\_\allowbreak{}limit\_\allowbreak{}income\_\allowbreak{}multiple} & D11 & 0.1 & assumed & lambda. Rolling available balance per platform, as a multiple of the household's MONTHLY income, applied independently at each of n\_platforms. & MANDATORY: 0.1-1.0, with the binding rate reported BY QUINTILE \\
 \addlinespace
-\texttt{bnpl\_\allowbreak{}instalments} & D13 & 4 & sourced & Payflex Pay in 4: 25\% at checkout then 25\% at each of the next three ticks. & Pay in 3 monthly (PayJustNow) as the structural alternative \\
+\texttt{bnpl\_\allowbreak{}instalments} & D13 & 4 & sourced & Payflex Pay in 4: 25\% at checkout then 25\% at each of the next three ticks. & -- \\
 \addlinespace
 \texttt{bnpl\_\allowbreak{}late\_\allowbreak{}fee\_\allowbreak{}per\_\allowbreak{}tick} & D13 & 125.74 & sourced & Payflex late fee R95 per week = R190 per 14-day tick as published (2026 vintage), DEFLATED to 2017 Rands (DEFECTS.md B29). & -- \\
 \addlinespace
@@ -92,7 +92,7 @@ exists and sensitivity analysis is mandatory. Rand values are 2017 Rands; the
 \addlinespace
 \texttt{k\_\allowbreak{}cool} & D14 & 0 & sourced & Lever 3. Baseline 0 = lever OFF. k\_cool=1 tick = 14 days = the UK CCA s.66A statutory right of withdrawal, which lands exactly on a tick boundary. & RQ3 lever 3, 0-4 ticks \\
 \addlinespace
-\texttt{stacking\_\allowbreak{}cap} & D14 & None & assumed & Lever 4. Max concurrent facilities. HYPOTHETICAL: no jurisdiction imposes one. & RQ3 lever 4, 1-4 or None \\
+\texttt{stacking\_\allowbreak{}cap} & D14 & None & assumed & Lever 4. Max concurrent agreements. HYPOTHETICAL: no jurisdiction imposes one. & RQ3 lever 4, 1-4 or None \\
 \addlinespace
 \texttt{activation} & D16 & random & sourced & Random asynchronous order, re-drawn every tick (Comer \& Loerch; Alizadeh). & MANDATORY: fixed-order (uniform) robustness run \\
 \end{longtable}

@@ -55,9 +55,9 @@ def tab_baseline_arms(rq0: pd.DataFrame) -> None:
         ("Zero liquid savings (\\% of households)", "zero_savings_rate_mean", 100, 1),
         ("\\ac{BNPL} adoption, end of horizon (\\%)", "bnpl_adoption_final", 100, 2),
         ("Ever held a \\ac{BNPL} balance (\\%)", "ever_adopted", 100, 2),
-        ("Two or more facilities, end of horizon (\\% of households)", "stacking_2plus_final", 100, 2),
-        ("Ever held two or more facilities (\\% of households)", "ever_stacked_2plus", 100, 2),
-        ("Ever held two or more facilities (\\% of ever-adopters)", "ever_stacked_2plus_of_adopters", 100, 1),
+        ("Balances on two or more platforms, end of horizon (\\% of households)", "stacking_2plus_final", 100, 2),
+        ("Ever held balances on two or more platforms (\\% of households)", "ever_stacked_2plus", 100, 2),
+        ("Ever held balances on two or more platforms (\\% of ever-adopters)", "ever_stacked_2plus_of_adopters", 100, 1),
         ("Cumulative \\ac{BNPL} volume (R m)", "bnpl_volume_cumulative", 1e-6, 2),
     ]
     rows = []
@@ -66,7 +66,7 @@ def tab_baseline_arms(rq0: pd.DataFrame) -> None:
     # holders share, computed per replicate
     rows.insert(
         10,
-        "Two or more facilities, end of horizon (\\% of holders) & -- & "
+        "Balances on two or more platforms, end of horizon (\\% of holders) & -- & "
         + cell(holders_share(b0), 1) + " & " + cell(holders_share(b1), 1) + r" \\",
     )
     d0, se0 = diff(b0.default_rate_final, off.default_rate_final)
@@ -148,7 +148,7 @@ def tab_stacking(rq1: pd.DataFrame) -> None:
              default_n1_beta0=ms(n1[0.0].default_rate_final)[0])
     table(
         "tab_stacking",
-        "Concurrent facilities and default by platform count",
+        "Cross-platform stacking and default by platform count",
         f"The platform-count sweep of the stacking experiment, at $\\beta = 0$ (no peer influence, "
         f"the control) and $\\beta = 1$; the baseline is four platforms. ``2+'' is the share holding "
         f"a balance on two or more platforms at the final tick, as a share of all households and of "
@@ -190,15 +190,15 @@ def tab_stacking(rq1: pd.DataFrame) -> None:
     table(
         "tab_stacking_full",
         "Platform count by peer-influence strength: the full grid",
-        f"Every cell of the stacking experiment: the share of all households holding two or more "
-        f"facilities at the final tick and the population default rate, both replicate means over "
+        f"Every cell of the stacking experiment: the share of all households holding balances on two or "
+        f"more platforms at the final tick and the population default rate, both replicate means over "
         f"20 replicates in per cent (standard deviations at most {sd_max * 100:.1f} points for the "
         f"shares and {sd_def * 100:.2f} for default), for $N$ = one to six platforms and every value "
         f"of $\\beta$ swept. {SHOCK_CAP}. Table~\\ref{{tab:stacking}} in the body reports the "
         f"$\\beta = 0$ and $\\beta = 1$ columns with dispersion, the holder and over-the-horizon "
         f"denominators, and cumulative volume.",
         "c " + "r" * k + " " + "r" * k,
-        f"& \\multicolumn{{{k}}}{{c}}{{2+ facilities (\\% of households)}} & \\multicolumn{{{k}}}{{c}}{{Default rate (\\%)}} \\\\ "
+        f"& \\multicolumn{{{k}}}{{c}}{{2+ platforms (\\% of households)}} & \\multicolumn{{{k}}}{{c}}{{Default rate (\\%)}} \\\\ "
         f"\\cmidrule(lr){{2-{k + 1}}}\\cmidrule(lr){{{k + 2}-{2 * k + 1}}}\n\\textbf{{$N$}} & "
         + " & ".join(f"$\\beta={b:g}$" for b in betas) + " & "
         + " & ".join(f"$\\beta={b:g}$" for b in betas),
@@ -269,16 +269,16 @@ def tab_bnpl_on_checks(rq0: pd.DataFrame) -> None:
     vol_adopt_verdict = "inside" if lo_vol <= N["vol_per_adopter_year"] <= hi_vol else ("below" if N["vol_per_adopter_year"] < lo_vol else "above")
     rows = [
         group_row("Stacking (Submodel 13)", 4),
-        f"Holders with two or more facilities, final tick & {pct(sh0, 1)}\\% & 32\\% of borrowers, across firms, over a year & order of magnitude; ever-stacked share of ever-adopters {pct(ev0, 1)}\\% \\\\",
+        f"Holders with balances on two or more platforms, final tick & {pct(sh0, 1)}\\% & 32\\% of borrowers, across firms, over a year & order of magnitude; ever-stacked share of ever-adopters {pct(ev0, 1)}\\% \\\\",
         group_row("Volume (Submodel 4)", 4),
         f"Annual \\ac{{BNPL}} volume per eligible household & {rand(N['vol_per_eligible_year'])} & {rand(lo_vol)}--{rand(hi_vol)} (per signed-up and per active customer) & {vol_elig_verdict} the band; eligible households compare with the lower bound \\\\",
         f"Annual \\ac{{BNPL}} volume per adopting household & {rand(N['vol_per_adopter_year'])} & as above & {vol_adopt_verdict} the band; adopters compare with the upper bound \\\\",
         f"Mean want-driven purchase, $\\beta = 0$ & {rand(mp0, 2)} & {rand(target, 0)} $\\pm$ 35\\% ({rand(lo_band)}--{rand(hi_band)}) & {-gap0 * 100:.2f}\\% low: inside the band by {rand(margin, 2)}; {inside0} of 20 replicates inside; Q3--Q5 mean {rand(br35)}, Q4--Q5 {rand(br45)} \\\\",
         f"Mean want-driven purchase, $\\beta = 1$ & {rand(mp1, 2)} & as above & {(1 - mp1 / target) * 100:.2f}\\% low: outside; {inside1} of 20 inside \\\\",
-        group_row("Registered patterns (Table~\\ref{tab:patterns})", 4),
+        group_row("Patterns (Table~\\ref{tab:patterns})", 4),
         f"Pattern 1: traditional arrears rate, on less off & {pm(d_arr0, se_arr0)}pp; {pm(d_arr1, se_arr1)}pp & rise & rises \\\\",
-        f"Pattern 1: traditional interest charged, on over off & ${r_int0 * 100:+.1f}\\%$; ${r_int1 * 100:+.1f}\\%$ & rise & falls: mixed \\\\",
-        f"Pattern 3: aggregate debt-to-income peak, no \\ac{{BNPL}} & {peak} ({dti[peak]:.2f}); {second} second ({dti[second]:.2f}) & middle-income peak & reproduced on the registered statistic; the mean of ratios peaks in {peak_mean} \\\\",
+        f"Pattern 1: traditional interest charged, on over off & ${r_int0 * 100:+.1f}\\%$; ${r_int1 * 100:+.1f}\\%$ & rise & falls: fails on this measure \\\\",
+        f"Pattern 3: aggregate debt-to-income peak, no \\ac{{BNPL}} & {peak} ({dti[peak]:.2f}); {second} second ({dti[second]:.2f}) & middle-income peak & reproduced on the specified statistic; the mean of ratios peaks in {peak_mean} \\\\",
         f"Pattern 4: zero liquid savings & {pct(zs_off, 1)}\\% (no \\ac{{BNPL}}); {pct(zs_b0, 1)}\\% ($\\beta = 0$) & 36\\% expected to miss a payment & same order \\\\",
     ]
     table(
@@ -293,7 +293,7 @@ def tab_bnpl_on_checks(rq0: pd.DataFrame) -> None:
         f"or of households that ever held a balance, annualised over the {yrs:.2f}-year post-burn-in "
         f"horizon; the band is the 2017-Rand provider disclosure whose customer denominator is not "
         f"stated \\cite{{weaver2025iar}}. The mean-purchase comparison population (all adopters), "
-        f"statistic, target and tolerance were registered before the run; the Q3--Q5 and Q4--Q5 "
+        f"statistic, target and tolerance were specified before the run; the Q3--Q5 and Q4--Q5 "
         f"means explain the gap and are not alternative comparison populations. Pattern 1 differences "
         f"carry one unpaired standard error.",
         "L{3.6cm}L{2.9cm}L{3.2cm}L{4.1cm}",
@@ -706,11 +706,11 @@ def tab_levers(rq3: pd.DataFrame) -> None:
         "lever-by-peer interaction in the model.",
     )
     lever_table(
-        rq3, "tab_cap", "The concurrent-facility cap (hypothetical)",
-        [("kcool0", "none (benchmark)")] + [(f"cap{c}", f"{c} facilit{'y' if c == 1 else 'ies'}") for c in (1, 2, 3)],
-        "No jurisdiction imposes a cap on concurrent \\ac{BNPL} facilities; the arm is hypothetical. "
+        rq3, "tab_cap", "The concurrent-agreement cap (hypothetical)",
+        [("kcool0", "none (benchmark)")] + [(f"cap{c}", f"{c} agreement{'' if c == 1 else 's'}") for c in (1, 2, 3)],
+        "No jurisdiction imposes a cap on concurrent \\ac{BNPL} agreements; the arm is hypothetical. "
         "The cap refuses any new draw while the household already holds the stated number of open "
-        "facilities, on any platform, so a cap of one is a one-agreement-at-a-time rule and is "
+        "agreements, on any platform, so a cap of one is a one-agreement-at-a-time rule and is "
         "stricter than a single platform, on which a household may hold several agreements. Seeds "
         "43{,}000--43{,}019 for the cap arms and 40{,}000--40{,}019 for the benchmark.",
     )
