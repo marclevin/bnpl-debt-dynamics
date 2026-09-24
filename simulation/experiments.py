@@ -343,6 +343,56 @@ def robustness(reps: int) -> list[ParamSet]:
     return out
 
 
+#: Settings for the effect-robustness suite: (name, overrides, touches_no_bnpl_world).
+#: The third field says whether the setting changes the BNPL-free model; when it does not,
+#: the reference no-BNPL arm serves as the setting's own and is not run again.
+EFFECT_SETTINGS: list[tuple[str, dict, bool]] = [
+    ("ref", {}, True),
+    ("amount125", dict(amount_rule="shortfall_125"), True),
+    ("amountcommitted", dict(amount_rule="shortfall_plus_committed"), True),
+    ("uncapped", dict(shortfall_bnpl_capped=False), False),
+    ("amount125_uncapped", dict(amount_rule="shortfall_125", shortfall_bnpl_capped=False), False),
+    ("amountcommitted_uncapped",
+     dict(amount_rule="shortfall_plus_committed", shortfall_bnpl_capped=False), False),
+    ("k4", dict(k_default=4), True),
+    ("minpay0.025", dict(min_payment_frac=0.025), True),
+    ("minpay0.1", dict(min_payment_frac=0.10), True),
+    ("m0.2", dict(min_payer_share=0.20), True),
+    ("m0.4", dict(min_payer_share=0.40), True),
+    ("kappa0.07", dict(bnpl_purchase_ratio=0.07), False),
+    ("kappa0.28", dict(bnpl_purchase_ratio=0.28), False),
+    ("base_income", dict(bnpl_purchase_base="income", bnpl_purchase_ratio=0.073), False),
+    ("limit0.25", dict(bnpl_limit_income_multiple=0.25), False),
+    ("limit1.0", dict(bnpl_limit_income_multiple=1.0), False),
+    ("shock_single_tick", dict(shock_persistent=False), True),
+]
+
+
+def effect_robustness(reps: int) -> list[ParamSet]:
+    """Does the BNPL EFFECT, not only the default level, survive the swept assumptions?
+
+    The `robustness` suite reports default levels with BNPL on at beta=1 only. Here every
+    setting is run with BNPL off, on at beta=0 (the control) and on at beta=1, all on ONE
+    seed block, so each effect is a same-seed paired difference and the settings are paired
+    with one another. `want_off` switches the want-driven path off (q_base=0, beta=0), so
+    BNPL is used only to cover shortfalls: it isolates the channel the default effect runs
+    through. Added 2026-09-24; the six original suites are untouched.
+    """
+    out: list[ParamSet] = []
+    seed0 = 70_000
+    for name, kw, touches_off in EFFECT_SETTINGS:
+        if touches_off:
+            out += replicate(calibrated(bnpl_enabled=False, **kw, label=f"eff_{name}_off"), reps, seed0)
+        for b in (0.0, 1.0):
+            out += replicate(
+                calibrated(bnpl_enabled=True, beta=b, **kw, label=f"eff_{name}_b{b}"), reps, seed0
+            )
+    out += replicate(
+        calibrated(bnpl_enabled=True, beta=0.0, q_base=0.0, label="eff_want_off_b0.0"), reps, seed0
+    )
+    return out
+
+
 SUITES = {
     "rq0": rq0_baseline,
     "rq1": rq1_stacking,
@@ -350,6 +400,7 @@ SUITES = {
     "rq2t": rq2_threshold,
     "rq3": rq3_interventions,
     "robustness": robustness,
+    "effect": effect_robustness,
 }
 
 
