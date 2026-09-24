@@ -7,17 +7,15 @@
 South Africa already had substantial household credit distress before the recent expansion of
 \ac{BNPL}. In early 2017, 14.2\% of unsecured and credit-facility accounts were more than
 90 days in arrears \cite{ncr_ccmr_2017}. This was within a regulated lending market: the
-\ac{NCA} requires affordability assessments, while Regulation 23A specifies a residual-income
-test for assessing whether a borrower can afford additional credit
-\cite{sa_nca_2005,sa_ncr_affordability_2015}. Credit-bureau records may help lenders account for
-existing obligations, but their presence does not mean that
-households are protected from financial distress. A separate late-2025 survey found that
-36\% of consumers expected to miss a bill or loan payment \cite{transunion_cps_sa_2025}.
-These differing figures both illustrate the vulnerability of the
-households into whose credit market \ac{BNPL} has expanded.
+\ac{NCA} requires affordability assessments, and Regulation 23A specifies a residual-income
+test for whether a borrower can afford additional credit
+\cite{sa_nca_2005,sa_ncr_affordability_2015}. In a late-2025 survey, 36\% of consumers
+expected to miss a bill or loan payment \cite{transunion_cps_sa_2025}. The two figures
+measure different outcomes, account arrears and expected missed payments, but each
+indicates households with limited capacity to absorb new obligations.
 
-The concern with \ac{BNPL} is not that it makes credit available. It is that this
-credit may sit outside the information lenders use to assess affordability. Providers have
+The concern examined here is that \ac{BNPL} credit may sit outside the information
+lenders use to assess affordability. Providers have
 argued that interest-free agreements fall outside the \ac{NCA}, and \ac{BNPL} payment
 histories were absent from South African credit reports in 2025
 \cite{nortonrose_bnpl_sa,transunion_cps_sa_2025}. A household could therefore take on
@@ -36,17 +34,17 @@ expected date for records to appear on consumer profiles \cite{businessday_bnpl_
 we treat this as a reported timetable, not a confirmed statutory commencement date.
 FINASA also reports preliminary analysis by one bureau suggesting potential score
 reductions for roughly a quarter of credit-active consumers \cite{finasa_bnpl_2026}.
-These developments raise a practical question: what difference does making the additional
-credit visible actually make to household distress?
+These developments raise the question of how far making \ac{BNPL} credit visible to
+lenders changes household distress.
 
-International evidence provides reasons to investigate this question. Using banking records
+Using banking records
 for 10.6 million United States consumers, deHaan et al.\ \cite{dehaan2024bnpl} find higher
 overdraft charges, credit-card interest and late fees following \ac{BNPL} adoption,
 particularly among liquidity-constrained consumers. The \ac{CFPB} \cite{cfpb2025bnpl}
 also documents widespread simultaneous borrowing, including borrowing across providers.
 Comparable South African evidence is limited, especially for the period before bureau
-reporting. International findings motivate the concern, but do not establish the size of
-the effect in South Africa or the likely effect of local reporting arrangements.
+reporting, so the size of these effects in South Africa, and the likely effect of local
+reporting arrangements, remain unmeasured.
 
 This thesis examines these mechanisms using an \ac{ABM} of 5{,}000 households constructed
 from South African survey microdata. We first calibrate a traditional-credit baseline to
@@ -55,9 +53,10 @@ selected features of the 2017 arrears profile, with \ac{BNPL} disabled. We then 
 horizon. Further experiments vary the number of platforms, access to \ac{BNPL}, peer
 influence, bureau visibility and affordability screening.
 
-The purpose is to isolate what these changes do within a specified model of household
-finances. It is not to estimate the historical effect of \ac{BNPL} in South Africa or to
-forecast default under the new reporting arrangements. The model allows us to examine
+The experiments isolate the effect of these changes within a specified model of household
+finances. Estimating the historical effect of \ac{BNPL} in South Africa, or forecasting
+default under the new reporting arrangements, is outside the scope of this thesis.
+The model allows us to examine
 how additional obligations interact with existing debt, cash buffers and income shocks,
 while making the assumptions behind those interactions explicit.
 
@@ -72,11 +71,9 @@ The main research question is:
     affordability screening affect the outcome?
 \end{quote}
 
-Reporting is represented through the information available for affordability assessments.
-The model has no credit score and does not represent score-based changes in pricing or
-credit access. Its reporting experiment therefore addresses the affordability channel
-only, rather than the full effect of bureau reporting (Section~\ref{sec:asymmetry}).
-Three subsidiary questions guide the analysis:
+Because the model has no credit score, its reporting experiment covers only the
+affordability channel of bureau reporting (Section~\ref{sec:asymmetry}).
+Three subsidiary questions, referred to as RQ1 to RQ3, guide the analysis:
 
 \begin{enumerate}
     \item How well does a synthetic household population built from South African survey
@@ -89,7 +86,7 @@ Three subsidiary questions guide the analysis:
     borrowing and distress, both with and without peer influence on adoption?
 \end{enumerate}
 
-We report outcomes by income quintile because observed literature identifies financial
+We report outcomes by income quintile because empirical studies identify financial
 constraints and lower income as relevant characteristics of \ac{BNPL} users
 \cite{hayashi2025constraints,wang2026buynow}. Section~\ref{sec:calibration} addresses
 the first question through population checks, calibration and validation.
@@ -107,13 +104,13 @@ aggregate financial distress. Cardaci \cite{cardaci2018inequality} models rising
 inequality and consumption emulation, leading to debt-financed spending and eventually
 a banking crisis. That model concerns collateralised debt, so its mechanism differs
 from unsecured pay-in-four lending. D'Orazio and Giulioni \cite{dorazio2017micro}
-similarly show how unsustainable debt can arise from local borrowing rules. These
+show how unsustainable debt can arise from local borrowing rules. These
 studies support examining aggregate outcomes through explicit household decisions,
 rather than assuming that the consequences of additional credit are uniform.
 
 Madeira \cite{madeira2018chile} models Chilean households exposed to labour-income
 shocks, with default arising when they cannot finance minimum consumption. We adopt
-a cash-flow approach for the same basic reason: a household's ability to meet its
+a cash-flow approach for the same reason: a household's ability to meet its
 obligations depends on the income and reserves available when payments fall due.
 This is also consistent with the residual-income basis of the affordability test.
 Madeira's comparison with observed default rates provides a precedent for checking
@@ -122,8 +119,7 @@ a household credit model against evidence from a middle-income economy.
 Hamill et al.\ \cite{hamill2023creditcard} find that promotional strategies increase
 indebtedness in a model of the United Kingdom credit-card market. Their model also
 produces a non-monotonic debt-to-income profile, with the highest burden among
-middle-income households. We use this as a cross-model plausibility check, not as
-independent evidence about South African households. Following Windrum, Fagiolo and
+middle-income households. We use this result only as a cross-model plausibility check. Following Windrum, Fagiolo and
 Moneta \cite{windrum2007validation} and the pattern-oriented approach discussed in
 the \ac{ODD} literature \cite{grimm2020odd,grimm2006odd}, we distinguish patterns
 used to fit the model from those used to assess it afterwards.
@@ -131,8 +127,7 @@ used to fit the model from those used to assess it afterwards.
 \subsubsection*{Empirical Evidence on Buy Now, Pay Later}
 \label{sec:lit-bnpl}
 
-The evidence suggests that \ac{BNPL} can do more than change how an existing purchase
-is financed. Di Maggio et al.\ \cite{dimaggio2022bnpl} find that access increases
+Di Maggio et al.\ \cite{dimaggio2022bnpl} find that \ac{BNPL} access increases
 spending among both constrained and unconstrained users, beyond what intertemporal
 substitution explains. Together with the financial-distress findings of deHaan et al.\
 \cite{dehaan2024bnpl}, this motivates examining whether additional \ac{BNPL}
@@ -140,18 +135,17 @@ obligations increase stress on traditional debt. The model's complementarity che
 assesses this relationship through traditional arrears and interest payments
 (Pattern~1, Table~\ref{tab:patterns}).
 
-The users taking on these obligations are also relevant. Hayashi and Routh
+Hayashi and Routh
 \cite{hayashi2025constraints} find that \ac{BNPL} users are more financially
 constrained than non-users, while Wang \cite{wang2026buynow} reports use concentrated
 among lower-income and lower-credit-score consumers. These findings motivate the
-distributional analysis, but do not provide South African adoption parameters.
+distributional analysis.
 
 Ackert et al.\ \cite{ackert2025bnpl} find that participants in an incentivised
 experiment are more willing to finance purchases with \ac{BNPL} than with credit
-cards, and generally expect peer approval. This motivates allowing purchases that
+cards, and generally expect peer approval. This supports allowing purchases that
 are not driven solely by an immediate cash shortfall, and exploring peer influence
-on adoption. It does not identify the strength of that influence in South Africa.
-Granovetter's threshold model \cite{granovetter1978threshold} provides a second
+on adoption. Granovetter's threshold model \cite{granovetter1978threshold} provides a second
 adoption mechanism: heterogeneous individual thresholds can produce abrupt changes
 in collective behaviour. We compare a threshold rule with a linear peer rule to
 examine whether the default response depends on how adoption spreads.
@@ -162,26 +156,26 @@ examine whether the default response depends on how adoption spreads.
 Borrowing and repayment need not follow a fully forward-looking plan. Present bias
 predicts credit-card borrowing \cite{meier2010present}, and present-biased borrowers
 may fail to make their planned repayments \cite{Kuchler2021}. This evidence motivates
-allowing departures from scheduled repayment. It does not, by itself, determine the
-model's borrowing-amount rule or payment-friction probability; those choices require
-separate justification and sensitivity analysis.
+allowing departures from scheduled repayment. The borrowing-amount rule and the
+payment-friction probability are set separately, in Sections~\ref{sec:amount}
+and~\ref{sec:lim-calibration}.
 
 Keys and Wang \cite{Keys2019} find that 29\% of United States credit-card accounts
 pay at or near the contractual minimum. Responses to changes in payment formulas
 also suggest anchoring beyond what liquidity constraints alone explain. We represent
 this distinction by assigning households either a minimum-payment or a
-scheduled-payment rule. Applying an account-level estimate from United States
-credit-card borrowers to South African households is an assumption, not a locally
-estimated behavioural relationship (Section~\ref{sec:lim-transfer}).
+scheduled-payment rule. Applying this account-level estimate from United States
+credit-card borrowers to South African households is a transfer assumption
+(Section~\ref{sec:lim-transfer}).
 
-\subsubsection*{The Regulatory Setting, at Home and Abroad}
+\subsubsection*{The Regulatory Setting}
 \label{sec:lit-regulatory}
 
 South African regulation informs the traditional lender's affordability test and
 the construction of debt service. The applicable unsecured-credit interest ceiling
 in 2017 was the repurchase rate plus 21 percentage points
-\cite{sa_ncr_ratecaps_2016}. We use the relevant statutory ceilings as proxies for
-product rates, rather than treating them as observed rates paid by households.
+\cite{sa_ncr_ratecaps_2016}. We use the statutory ceilings as proxies for the
+product rates households paid.
 
 International regulation motivates the comparison of alternative lending rules.
 The United Kingdom's Woolard Review \cite{woolard2021} informed the \ac{FCA}'s
@@ -189,19 +183,22 @@ approach to deferred payment credit, including proportionate affordability check
 \cite{fca_ps26_1}. Australia's \ac{ASIC} review \cite{asic2020rep672} found that
 one in five surveyed users had missed a payment in the preceding year under
 industry self-regulation. These sources motivate comparing a lightly screened
-\ac{BNPL} channel with mandatory screening. They do not establish that the
-South African residual-income test is equivalent to the rules applied abroad.
-We separately test bureau visibility, and run both comparisons with and without
+\ac{BNPL} channel with mandatory screening, which the model implements through the
+South African residual-income test. We separately test bureau visibility, and run both comparisons with and without
 peer influence.
 
 \subsubsection*{Synthesis and Gap}
 \label{sec:lit-gap}
 
-The literature establishes reasons to be concerned about additional borrowing,
-uneven household vulnerability and incomplete information. What remains less clear
-is how these mechanisms interact in a South African household population when
-traditional lenders and \ac{BNPL} platforms operate with different information
-and screening rules. This thesis addresses that question by combining
+The literature establishes reasons for concern about additional borrowing,
+uneven household vulnerability and incomplete lender information. The empirical
+\ac{BNPL} and behavioural evidence comes mainly from the United States, the United
+Kingdom and Australia and supplies no South African parameter values; where the
+model draws on it, the transfer is treated as an assumption
+(Section~\ref{sec:lim-transfer}). The reviewed studies do not examine how these
+mechanisms interact in a South African household population in which traditional
+lenders and \ac{BNPL} platforms operate under different information and screening
+rules. This thesis addresses that question by combining
 survey-derived household finances with explicit lender-specific decisions.
 Table~\ref{tab:gap} summarises the role of each literature in the model.
 

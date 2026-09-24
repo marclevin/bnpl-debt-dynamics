@@ -7,7 +7,7 @@ Each household begins with financial characteristics drawn from survey microdata
 Traditional credit is subject to a residual-income test based on Regulation 23A,
 while \ac{BNPL} platforms apply a lighter screen.
 
-This chapter explains who acts in the model, what each institution can observe,
+This section explains who acts in the model, what each institution can observe,
 and how household finances change over time. Parameter choices and calibration
 are discussed in Section~\ref{sec:calibration}. The specification follows the
 \ac{ODD} protocol \cite{grimm2006odd, grimm2020odd}, with the operational rules
@@ -21,8 +21,7 @@ The experiment begins with a traditional-credit baseline calibrated to 2017
 conditions. We then enable \ac{BNPL} while holding the other parameters fixed.
 All households start with zero \ac{BNPL} balances, so any subsequent exposure is
 generated during the simulation. Comparing the runs isolates the effect of the
-additional credit channel within this model; it is not a forecast for a later
-calendar year.
+additional credit channel within the model.
 
 \subsection{Agents and Institutions}
 \label{sec:entities}
@@ -95,8 +94,8 @@ information about them.
 
 Figure~\ref{fig:visibility} shows this information structure. In the benchmark,
 platforms cannot see competitors' exposures and the bureau does not record
-\ac{BNPL}. These are explicit modelling assumptions representing the reporting
-gaps described in Section~\ref{sec:background}.
+\ac{BNPL}, reflecting the reporting position described in
+Section~\ref{sec:background}.
 
 \begin{figure}[H]
 \centering
@@ -138,18 +137,21 @@ In the benchmark, this assessment excludes \ac{BNPL} commitments
 \cite{finscope2019}. The model therefore applies an affordability rule to an
 incomplete view of household obligations.
 
-The boolean parameter \texttt{bnpl\_bureau\_visible} controls whether active
-\ac{BNPL} obligations enter this calculation. It is false in the benchmark.
-Switching it on adds those obligations to the traditional lender's affordability
-assessment, representing one possible channel of the reporting arrangements
-discussed in Section~\ref{sec:background}.
+The boolean parameter \texttt{bnpl\_bureau\_visible}, written
+$\mathbb{1}^{\text{bur}}$, controls whether active \ac{BNPL} obligations enter
+this calculation. It is false in the benchmark. Switching it on adds those
+obligations to the traditional lender's affordability assessment, representing
+one channel of the reporting arrangements discussed in
+Section~\ref{sec:background}. A second switch, $\mathbb{1}^{\text{aff}}$,
+applies the same affordability gate to \ac{BNPL} originations.
+Algorithms~\ref{alg:gate} and~\ref{alg:bnpl} specify how the two switches
+enter lending decisions.
 
-This switch does not create a credit score or change lending prices. It can
-change approval through the affordability calculation, but cannot represent
-score-based refusals. This distinction is in place because FINASA reports preliminary
-bureau analysis suggesting potential score reductions for roughly a quarter of
-credit-active consumers \cite{finasa_bnpl_2026}. That scoring channel remains
-outside the comparison in Section~\ref{sec:scenarios} and is discussed as an
+The bureau switch can change approval through the affordability calculation,
+but it creates no credit score, changes no lending prices and cannot represent
+score-based refusals. The omitted scoring channel may be material, given the
+preliminary score reductions reported by FINASA \cite{finasa_bnpl_2026}. It is
+excluded from the comparison in Section~\ref{sec:scenarios} and discussed as an
 extension in Section~\ref{sec:future-work}.
 
 \subsection{Within-Tick Sequence and State Changes}
@@ -157,7 +159,7 @@ extension in Section~\ref{sec:future-work}.
 
 Each simulation step, or tick, represents 14 days. This places the biweekly
 pay-in-four instalments directly on tick boundaries. Monthly survey flows are
-converted to tick amounts using $12/26$, where $26$ represents the number of ticks in a year and $12$ represents the number of months. Households act in a newly randomised
+converted to tick amounts using $12/26$, the ratio of months to ticks in a year. Households act in a newly randomised
 order each tick, with credit applications decided as they occur. The peer-adoption
 signal is updated once all households have acted.
 
@@ -172,11 +174,11 @@ Each household follows seven steps (Algorithm~\ref{alg:tick}):
     \item Draw any want-driven \ac{BNPL} purchase and update balances, arrears, distress and default.
 \end{enumerate}
 
-The order determines how a shortfall develops. Paying committed expenditure
-first allows essential living costs to leave insufficient cash for debt service,
+The order determines how a shortfall develops. Because committed expenditure is
+paid first, essential living costs can leave too little cash for debt service,
 consistent with a cash-flow approach to distress \cite{madeira2018chile}.
-Allowing credit applications before repayment gives borrowing a role in covering
-the gap \cite{dorazio2017micro}. Distress is assessed before payment friction,
+Credit applications precede repayment, so borrowing can cover that gap
+\cite{dorazio2017micro}. Distress is assessed before payment friction,
 so skipping an otherwise affordable instalment does not itself classify a
 household as unable to pay. Using the previous tick's peer signal also prevents
 adoption decisions from depending on which neighbour acts first.
@@ -195,7 +197,7 @@ identical to an account being 90 days in arrears.
 \label{sec:submodels}
 
 The initial population is constructed as described in
-Section~\ref{sec:population}, with zero opening \ac{BNPL} balances.
+Section~\ref{sec:population}.
 Table~\ref{tab:submodels} sets out the seventeen operational submodels.
 The following subsections explain borrowing amounts, peer adoption and
 cross-platform stacking in more detail.
@@ -206,7 +208,7 @@ cross-platform stacking in more detail.
 \begin{longtable}{L{2.35cm}L{4.75cm}L{2.3cm}L{4.0cm}}
 \caption{Submodel specification}
 \label{tab:submodels} \\
-\multicolumn{4}{p{13.4cm}}{\footnotesize The seventeen submodels, each with its rule, the source grounding it, and its parameters. Every behavioural rule is grounded in literature or flagged as an assumption; every free parameter is sourced, derived or swept, in the sense defined in the caption of Table~\ref{tab:param-register}, which lists every parameter with its baseline value, provenance and sweep range. Bold marks the rules with no literature anchor, for which sensitivity analysis is conducted. Submodels 4, 5, 10, 11 and 13 are elaborated in the text and Submodel 15 in Section~\ref{sec:scenarios}; the rest are given in full as pseudocode in Appendix~\ref{app:pseudo-main}.} \\
+\multicolumn{4}{p{13.4cm}}{\footnotesize The seventeen submodels, each with its rule, source and parameters. Behavioural rules are either grounded in literature or flagged as assumptions, and free parameters are sourced, derived or swept, as defined in the caption of Table~\ref{tab:param-register}, which gives each parameter's default value, provenance and sweep range. Bold marks the rules with no literature anchor, for which sensitivity analysis is conducted. Submodels 4, 5, 10, 11 and 13 are elaborated in the text and Submodel 15 in Section~\ref{sec:scenarios}; the rest are given in full as pseudocode in Appendix~\ref{app:pseudo-main}.} \\
 \toprule
 \textbf{Submodel} & \textbf{Rule} & \textbf{Source} & \textbf{Parameters and validation} \\
 \midrule
@@ -218,13 +220,13 @@ cross-platform stacking in more detail.
 \bottomrule
 \endfoot
 
-1. Income and shock & Baseline income is static. Each employed member of a wage-dominant household separates with a per-tick probability, and the household loses that member's share of its wage component until re-employment. Grant and remittance-dominant households are exempt: grants are statutory transfers. & \cite{madeira2018chile, statssa_lmd_2022} & Onset probability fitted to the \ac{CCMR} 90+ band and reported against the \ac{QLFS} 2017 separation band of 0.54--1.17\% per tick. No magnitude parameter: the loss is the observed wage component. Exit hazard 1.87\% per tick from \ac{QLFS} 2017 Q3--Q4 flows. Single-tick non-persistent shock kept as a robustness arm. \\
+1. Income and shock & Baseline income is static. Each employed member of a wage-dominant household separates with a per-tick probability, and the household loses that member's share of its wage component until re-employment. Grant and remittance-dominant households are exempt: grants are statutory transfers. & \cite{madeira2018chile, statssa_lmd_2022} & Income-shock probability fitted to the \ac{CCMR} 90+ band and reported against the \ac{QLFS} 2017 separation band of 0.54--1.17\% per tick. No magnitude parameter: the loss is the observed wage component. Exit hazard 1.87\% per tick from \ac{QLFS} 2017 Q3--Q4 flows. Single-tick non-persistent shock kept as a robustness arm. \\
 \addlinespace
-2. Consumption & Two tiers. Committed expenditure (food, rent) is an incompressible floor; discretionary spending compresses to zero before any instalment is missed. & Data layer (Section~\ref{sec:population}) & Baseline floor of zero; habit-persistence floors of 0.25 and 0.50 swept. \\
+2. Consumption & Two tiers. Committed expenditure (food, rent) is an incompressible floor; discretionary spending compresses to zero before any instalment is missed. & Data layer (Section~\ref{sec:population}) & Default floor of zero; habit-persistence floors of 0.25 and 0.50 swept. \\
 \addlinespace
 3. Borrowing trigger & Traditional credit is sought only for realised shortfalls. \ac{BNPL} adds a want-driven path governed by peer adoption. & \cite{dorazio2017micro, ackert2025bnpl, dehaan2024bnpl} & $q_{\text{base}}$, $\beta$; see Submodel 11. \\
 \addlinespace
-4. Borrowing amount & Shortfall path: \textbf{structural assumption} with no anchor located; households request the exact shortfall. Want-driven path: purchase size is drawn lognormally with mean $\kappa$ times the household's own monthly discretionary budget, so purchase size inherits the population's heterogeneity. & \cite{statssa_ies_2023} & \textbf{Mandatory sweeps:} shortfall / $+25\%$ / $+$ one tick of committed expenditure; $\kappa = 0.139$ (derived from IES 2022/23 COICOP shares) swept 0.07--0.28; dispersion 0.6 (assumption); sizing base swept discretionary / income. Realised mean order checked against the R992 (2017 Rands) issuer-disclosed average order value \cite{weaver2025iar}. \\
+4. Borrowing amount & Shortfall path: \textbf{structural assumption} with no anchor located; households request the exact shortfall. Want-driven path: purchase size is drawn lognormally with mean $\kappa$ times the household's own monthly discretionary budget, so purchase size inherits the population's heterogeneity. & \cite{statssa_ies_2023} & Sweeps: shortfall / $+25\%$ / $+$ one tick of committed expenditure; $\kappa = 0.139$ (derived from IES 2022/23 COICOP shares) swept 0.07--0.28; dispersion 0.6 (assumption); sizing base swept discretionary / income. Realised mean order checked against the R992 (2017 Rands) issuer-disclosed average order value \cite{weaver2025iar}. \\
 \addlinespace
 5. Lender choice & Eligible households take \ac{BNPL} first, up to $\kappa$ times their monthly discretionary budget, an assumed ceiling on its contribution to the shortfall. The remainder routes to traditional credit. The no-\ac{BNPL} baseline uses traditional credit only. & \cite{ackert2025bnpl} & The cap is an \textbf{assumption}; an uncapped arm is crossed with the three Submodel~4 rules. Comparison with Pattern 1. \\
 \addlinespace
@@ -238,13 +240,13 @@ cross-platform stacking in more detail.
 \addlinespace
 10. Information asymmetry & The bureau records traditional debt and defaults only. Lenders cannot observe \ac{BNPL} or informal debt. & \cite{nortonrose_bnpl_sa, transunion_cps_sa_2025} & \texttt{bnpl\_bureau\_visible} boolean (default off, the pre-2026 position); Scenario 1 in Submodel 15. \\
 \addlinespace
-11. Peer influence & $q_i(t) = \mathrm{clip}(q_{\text{base}} + \beta s_{g(i)}(t-1), 0, 1)$ within reference groups, where $s_g$ is measured on the group's \ac{BNPL}-eligible members. A heterogeneous-threshold variant is pre-registered as the structural alternative and run on identical grids. & \cite{ackert2025bnpl, cardaci2018inequality, granovetter1978threshold} & \textbf{$\beta=0$ control arm required in all comparisons}; the threshold arm reports its own $\gamma=0$ row. \\
+11. Peer influence & $q_i(t) = \mathrm{clip}(q_{\text{base}} + \beta s_{g(i)}(t-1), 0, 1)$ within reference groups, where $s_g$ is measured on the group's \ac{BNPL}-eligible members. A heterogeneous-threshold variant is pre-registered as the structural alternative and run on identical grids. & \cite{ackert2025bnpl, cardaci2018inequality, granovetter1978threshold} & $\beta=0$ control arm reported in all comparisons; the threshold arm reports its own $\gamma=0$ row. \\
 \addlinespace
-12. \ac{BNPL} eligibility & Banked households only; a light automated screen, deliberately not Regulation 23A. Per-order cap ZAR 9{,}927 (2017 Rands); rolling limit $\lambda = 0.10$ of monthly income per platform, set per household per the industry's disclosed ``low and grow'' practice. & \cite{payflex_terms, payjustnow_terms, homechoice2024ir} & Access capped at the empirical 82.8\% banked share. The 0.10 baseline is set so that four per-platform limits sum to the stacked total Woolard observed, roughly 37\% of monthly income across providers; $\lambda$ is swept 0.1--1.0 and reported against a 0.10--0.26 band converted by the author from UK and Australian disclosures \cite{woolard2021, asic2020rep672}. Order-cap and limit binding rates reported by quintile. \\
+12. \ac{BNPL} eligibility & Banked households only; a light automated screen in place of the Regulation 23A test. Per-order cap R9{,}927 (2017 Rands); rolling limit $\lambda = 0.10$ of monthly income per platform, set for each household in line with the industry's disclosed ``low and grow'' practice. & \cite{payflex_terms, payjustnow_terms, homechoice2024ir} & Access capped at the imputed 82.8\% banked share. The default of 0.10 is set so that four per-platform limits sum to the stacked total Woolard observed, roughly 37\% of monthly income across providers; $\lambda$ is swept 0.1--1.0 and reported against a 0.10--0.26 band converted by the author from UK and Australian disclosures \cite{woolard2021, asic2020rep672}. Order-cap and limit binding rates reported by quintile. \\
 \addlinespace
-13. Stacking & Concurrent facilities across platforms, with no aggregate limit. Platforms stay blind to competitor exposures. & Follows Submodel 10 & Platforms swept 1--6 (baseline 4); emergent depth benchmarked against the \ac{CFPB} shares of Section~\ref{sec:background}. \\
+13. Stacking & Concurrent facilities across platforms, with no aggregate limit. Platforms stay blind to competitor exposures. & Follows Submodel 10 & Platforms swept 1--6 (default 4); emergent depth compared with the \ac{CFPB} share in Section~\ref{sec:data-validation}. \\
 \addlinespace
-14. \ac{BNPL} repayment & Exogenous ``Pay-in-4'': 25\% at checkout, then 25\% at each of the next three ticks, interest-free. The checkout debit must clear, so an order is truncated to what the household can fund and liquidity caps purchase size endogenously. Late fees of ZAR 125.74 per tick, capped at ZAR 188.61 per facility (2017 Rands); a household that exhausts the cap is cut off by that platform only. & \cite{payflex_terms} & No free parameters; instalments fall on tick boundaries. Pay-in-3 monthly (PayJustNow) is the structural alternative arm. \\
+14. \ac{BNPL} repayment & Exogenous ``Pay-in-4'': 25\% at checkout, then 25\% at each of the next three ticks, interest-free. The checkout debit must clear, so an order is truncated to what the household can fund and liquidity caps purchase size endogenously. Late fees of R125.74 per tick, capped at R188.61 per facility (2017 Rands); a household that exhausts the cap is cut off by that platform only. & \cite{payflex_terms} & No free parameters; instalments fall on tick boundaries. Pay-in-3 monthly (PayJustNow) is the structural alternative arm. \\
 \addlinespace
 15. Scenario switches & Bureau visibility ($\mathbb{1}^{\text{bur}}$: \ac{BNPL} obligations enter the Regulation 23A test), mandatory affordability screening ($\mathbb{1}^{\text{aff}}$: the Regulation 23A test applied to \ac{BNPL} originations), and peer influence ($\beta > 0$), crossed (Section~\ref{sec:scenarios}). & \cite{businessday_bnpl_2026, fca_ps26_1, woolard2021} & The two regulatory switches are binary; each is compared with the benchmark at $\beta = 0$ and $\beta = 1$. \\
 \addlinespace
@@ -258,7 +260,7 @@ cross-platform stacking in more detail.
 \label{sec:amount}
 
 When a household faces a shortfall, Submodel~4 determines how much it requests.
-The baseline request amount matches the shortfall. Two alternatives add either 25\% or one
+By default, the request equals the shortfall. Two alternatives add either 25\% or one
 tick of committed expenditure. No located study identifies the appropriate
 rule, so all three are compared in the sensitivity analysis
 (Section~\ref{sec:results-robustness}).
@@ -270,9 +272,8 @@ refuses it in full under Submodel~9.
 
 The cap represents a restriction on what retail credit can finance. \ac{BNPL}
 is not general-purpose cash, so the model limits its contribution to a shortfall
-using the same budget share that sizes want-driven purchases. This is a modelling
-approximation, not an empirically established maximum. The sensitivity analysis
-therefore repeats each borrowing-amount rule with the cap removed.
+using the same budget share that sizes want-driven purchases. No empirical
+maximum was located, so the sensitivity analysis repeats each borrowing-amount rule with the cap removed.
 
 \subsubsection*{Submodel 11: Peer Influence}
 \label{sec:peer-influence}
@@ -292,16 +293,16 @@ Here, $\mathrm{clip}$ restricts the probability to $[0,1]$. A positive
 $q_{\text{base}}$ allows borrowing to begin before anyone in the group has
 adopted. The coefficient $\beta$ determines how strongly the household responds
 to others' adoption. Evidence on social approval and consumption emulation
-motivates this channel \cite{ackert2025bnpl, cardaci2018inequality}, but does
-not identify its local strength. Both parameters are swept, with $\beta=0$
+motivates this channel \cite{ackert2025bnpl, cardaci2018inequality} without
+identifying its strength, so both parameters are swept, with $\beta=0$
 providing the no-peer control.
 
 A Granovetter-style threshold rule provides a structural alternative
 \cite{granovetter1978threshold}. Under this rule, the propensity rises to
 $q_i = \mathrm{clip}(q_{\text{base}} + \gamma,0,1)$ when the lagged group
 share reaches the household's threshold. Thresholds are drawn from
-$\mathcal{N}(\mu_\theta, \sigma_\theta)$ and clipped to $[0,1]$. Negative
-draws become zero, allowing some households to respond immediately.
+$\mathcal{N}(\mu_\theta, \sigma_\theta)$ and clipped to $[0,1]$, so households
+with a negative draw respond immediately.
 Fixed initialisation seeds make the control settings comparable. The sweeps
 vary threshold dispersion ($\sigma_\theta$), with additional comparisons of
 the mean, to examine whether outcomes depend on the distribution of peer
@@ -310,25 +311,18 @@ susceptibility. Setting $\gamma=0$ removes the threshold response.
 \subsubsection*{Submodel 13: Stacking}
 \label{sec:stacking}
 
-Each platform limits its own exposure to a household without observing balances
-elsewhere. Repeated borrowing can therefore create concurrent obligations across
-platforms, with no aggregate exposure cap in the benchmark. The model does not
+Because each platform limits only its own exposure to a household, repeated
+borrowing can create concurrent obligations across platforms, with no aggregate
+exposure cap in the benchmark. The model does not
 assign a target number of providers to each household: cross-platform stacking
 arises from borrowing requests and the available platform headroom.
 
 We vary the number of platforms from one to six. One platform rules out
 cross-platform stacking, but still permits multiple agreements within that
 platform. This distinguishes provider count from the number of concurrent
-agreements. The stacking measures are compared with the \ac{CFPB} evidence
-introduced in Section~\ref{sec:background}, with differences in denominators
-and observation periods discussed in the validation chapter.
-
-Two switches define the regulatory comparisons in Section~\ref{sec:scenarios}.
-The bureau switch, $\mathbb{1}^{\text{bur}}$, adds \ac{BNPL} obligations to
-the traditional lender's affordability calculation. The screening switch,
-$\mathbb{1}^{\text{aff}}$, applies the affordability gate to \ac{BNPL}
-originations. Algorithms~\ref{alg:gate} and~\ref{alg:bnpl} specify how the
-switches enter the decisions.
+agreements. The stacking measures are compared with the \ac{CFPB} estimate in
+Section~\ref{sec:data-validation}, which also discusses differences in
+definitions, markets and observation periods.
 
 \subsection{Implementation and Verification}
 \label{sec:implementation}
@@ -339,9 +333,10 @@ on the model. Household data load from the parquet files described in
 Section~\ref{sec:population}. The lending gate reuses the affordability function
 used when constructing scheduled debt service, keeping the two calculations
 consistent. The parameter register in Appendix~\ref{app:specification} is
-generated from the code's declarations and requires regeneration if they change.
+generated from the code's declarations.
 
 Automated checks cover balance-sheet accounting, arrears transitions,
 Regulation 23A worked examples, pay-in-four repayments and late-fee caps.
 Boundary checks disable \ac{BNPL}, remove peer influence ($\beta=0$ or
-$\gamma=0$), and restrict access to one platform.
+$\gamma=0$), and restrict access to one platform. All checks pass on the
+submitted code.
