@@ -132,6 +132,19 @@ def main() -> None:
     expect("cap", t, pm(c1.default_rate_final, ben0.default_rate_final))
     expect("cap", t, f"& {c1.bnpl_adoption_final.mean() * 100:.1f} &")
 
+    t = frag("tab_effect")
+    eff = pd.read_parquet(RAW / "effect.parquet")
+
+    def paired(on_label: str, off_label: str) -> str:
+        on = eff[eff.label == on_label].set_index("seed").default_rate_final
+        off_ = eff[eff.label == off_label].set_index("seed").default_rate_final
+        d = (on - off_.reindex(on.index)) * 100
+        return f"${d.mean():+.2f} \\pm {d.std(ddof=1) / math.sqrt(len(d)):.2f}$"
+
+    expect("effect", t, cell(eff[eff.label == "eff_ref_off"].default_rate_final))
+    expect("effect", t, paired("eff_amountcommitted_b0.0", "eff_amountcommitted_off"))
+    expect("effect", t, paired("eff_want_off_b0.0", "eff_ref_off"))
+
     print(f"OK: {checked} numbers re-derived from results/raw match the generated fragments")
 
 

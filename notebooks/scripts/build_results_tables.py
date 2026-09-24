@@ -49,7 +49,7 @@ def tab_baseline_arms(rq0: pd.DataFrame) -> None:
         ("Population default rate (\\%)", "default_rate_final", 100, 2),
         ("90+ day arrears, credit-active households (\\%)", "active_90_plus_mean", 100, 2),
         ("Traditional arrears rate, all households (\\%)", "trad_arrears_rate_mean", 100, 2),
-        ("Traditional interest paid (R m)", "trad_interest_total", 1e-6, 2),
+        ("Traditional interest charged (R m)", "trad_interest_total", 1e-6, 2),
         ("New traditional lending granted (R m)", "trad_granted_value", 1e-6, 2),
         ("Applications refused at the gate (count)", "trad_refused_gate", 1, 0),
         ("Zero liquid savings (\\% of households)", "zero_savings_rate_mean", 100, 1),
@@ -277,7 +277,7 @@ def tab_bnpl_on_checks(rq0: pd.DataFrame) -> None:
         f"Mean want-driven purchase, $\\beta = 1$ & {rand(mp1, 2)} & as above & {(1 - mp1 / target) * 100:.2f}\\% low: outside; {inside1} of 20 inside \\\\",
         group_row("Registered patterns (Table~\\ref{tab:patterns})", 4),
         f"Pattern 1: traditional arrears rate, on less off & {pm(d_arr0, se_arr0)}pp; {pm(d_arr1, se_arr1)}pp & rise & rises \\\\",
-        f"Pattern 1: traditional interest paid, on over off & ${r_int0 * 100:+.1f}\\%$; ${r_int1 * 100:+.1f}\\%$ & rise & falls: mixed \\\\",
+        f"Pattern 1: traditional interest charged, on over off & ${r_int0 * 100:+.1f}\\%$; ${r_int1 * 100:+.1f}\\%$ & rise & falls: mixed \\\\",
         f"Pattern 3: aggregate debt-to-income peak, no \\ac{{BNPL}} & {peak} ({dti[peak]:.2f}); {second} second ({dti[second]:.2f}) & middle-income peak & reproduced on the registered statistic; the mean of ratios peaks in {peak_mean} \\\\",
         f"Pattern 4: zero liquid savings & {pct(zs_off, 1)}\\% (no \\ac{{BNPL}}); {pct(zs_b0, 1)}\\% ($\\beta = 0$) & 36\\% expected to miss a payment & same order \\\\",
     ]
@@ -472,7 +472,7 @@ def tab_access(rq2: pd.DataFrame, rq2t: pd.DataFrame) -> None:
     N["mu_adoption_hi"], N["mu_default_hi"] = mus[min(mus)]
     table(
         "tab_access",
-        "Is the default response to \\ac{BNPL} access smooth or abrupt?",
+        "Linearity of the default and adoption response to \\ac{BNPL} access",
         "Each row fits a straight line to the mean default rate at the seven access rates swept "
         "(0 to 1.0 of the banked subpopulation; the banked ceiling is 82.8\\% of all households) and "
         "reports the total rise from zero access to full access (with one unpaired standard error "
@@ -541,7 +541,7 @@ def tab_robustness(rob: pd.DataFrame) -> None:
     N["rob_k4_minus_k7"], N["rob_k4_minus_k7_se"] = dd, se
     table(
         "tab_robustness",
-        "Robustness: the parameters that move the answer",
+        "Sensitivity of the default rate: principal arms",
         f"Population default rate at $\\beta = 1$, four platforms and full access, for the sensitivity "
         f"arms whose range exceeds replicate noise. Each group has its own reference arm at the baseline "
         f"value, run on its own seed set (amount rules 50{{,}}000--50{{,}}019, horizon 54{{,}}000--, "
@@ -549,7 +549,7 @@ def tab_robustness(rob: pd.DataFrame) -> None:
         f"noise only. {REPL}. The difference column is arm less reference with one unpaired standard "
         f"error, except $\\dagger$: the uncapped arms share seeds with their capped twins and the "
         f"difference is paired, uncapped less capped. The shortfall rule and its cap have no literature "
-        f"anchor (Section~\\ref{{sec:amount}}). The arms that do not move the answer are in "
+        f"anchor (Section~\\ref{{sec:amount}}). The remaining arms are in "
         f"Table~\\ref{{tab:robustness-appendix}}.",
         "L{7.2cm}rr",
         r"\textbf{Arm} & \textbf{Default (\%)} & \textbf{Difference (pp)}",
@@ -594,7 +594,7 @@ def tab_robustness(rob: pd.DataFrame) -> None:
     )
     table(
         "tab_robustness_appendix",
-        "Robustness: the parameters that do not move the answer",
+        "Sensitivity of the default rate: remaining arms",
         f"Population default rate at $\\beta = 1$, four platforms and full access, for the remaining "
         f"sensitivity arms, laid out as Table~\\ref{{tab:robustness}}: each group's reference is its "
         f"baseline value on the group's own seed set (activation 53{{,}}000--, population 55{{,}}000--, "
@@ -717,9 +717,87 @@ def tab_levers(rq3: pd.DataFrame) -> None:
 
 
 # ============================================================ main
+# Effect-robustness suite: (setting, display name, off-arm setting). The off arm is the
+# setting's own where the setting changes the BNPL-free model, else the reference off arm.
+EFFECT_ROWS = [
+    ("Reference", [("ref", "all parameters at default values", "ref")]),
+    ("Borrowing amount on a shortfall (Submodel 4)", [
+        ("amount125", "shortfall $+25\\%$", "amount125"),
+        ("amountcommitted", "shortfall $+$ one tick of committed spending", "amountcommitted"),
+        ("uncapped", "exact shortfall, \\ac{BNPL} cap removed", "ref"),
+        ("amount125_uncapped", "shortfall $+25\\%$, cap removed", "amount125"),
+        ("amountcommitted_uncapped", "shortfall $+$ committed, cap removed", "amountcommitted"),
+    ]),
+    ("Default horizon (Submodel 7)", [("k4", "$k = 4$ ticks, 56 days", "k4")]),
+    ("Minimum payments (Submodel 6)", [
+        ("minpay0.025", "minimum-payment fraction 0.025", "minpay0.025"),
+        ("minpay0.1", "minimum-payment fraction 0.10", "minpay0.1"),
+        ("m0.2", "minimum-payer share 0.20", "m0.2"),
+        ("m0.4", "minimum-payer share 0.40", "m0.4"),
+    ]),
+    ("Purchase size and limits (Submodels 4 and 12)", [
+        ("kappa0.07", "$\\kappa = 0.07$", "ref"),
+        ("kappa0.28", "$\\kappa = 0.28$", "ref"),
+        ("base_income", "purchases sized on income", "ref"),
+        ("limit0.25", "rolling limit $\\lambda = 0.25$", "ref"),
+        ("limit1.0", "rolling limit $\\lambda = 1.0$", "ref"),
+    ]),
+    ("Income-shock persistence (Submodel 1)", [
+        ("shock_single_tick", "single-tick shock", "shock_single_tick"),
+    ]),
+]
+
+
+def tab_effect(eff: pd.DataFrame) -> None:
+    def a(label: str) -> pd.DataFrame:
+        return arm(eff, label)
+
+    rows, effects0, effects1 = [], {}, {}
+    for group, items in EFFECT_ROWS:
+        rows.append(group_row(group, 4))
+        for key, name, off_key in items:
+            off = a(f"eff_{off_key}_off")
+            d0, s0 = paired_diff(a(f"eff_{key}_b0.0"), off, "default_rate_final")
+            d1, s1 = paired_diff(a(f"eff_{key}_b1.0"), off, "default_rate_final")
+            effects0[key], effects1[key] = (d0, s0), (d1, s1)
+            rows.append(f"{name} & {cell(off.default_rate_final)} & {pm(d0, s0)} & {pm(d1, s1)} \\\\")
+    rows.append(group_row("Want-driven path switched off ($q_{\\text{base}} = 0$, $\\beta = 0$)", 4))
+    ref_off = a("eff_ref_off")
+    dw, sw = paired_diff(a("eff_want_off_b0.0"), ref_off, "default_rate_final")
+    rows.append(f"\\ac{{BNPL}} for shortfalls only & {cell(ref_off.default_rate_final)} & {pm(dw, sw)} & -- \\\\")
+
+    for k, (d, s) in effects0.items():
+        N[f"eff_{k}_b0"], N[f"eff_{k}_b0_se"] = d, s
+    for k, (d, s) in effects1.items():
+        N[f"eff_{k}_b1"], N[f"eff_{k}_b1_se"] = d, s
+    N["eff_want_off_b0"], N["eff_want_off_b0_se"] = dw, sw
+    N["eff_ref_off_default"] = ms(ref_off.default_rate_final)[0]
+    b0 = [d for d, _ in effects0.values()]
+    b1 = [d for d, _ in effects1.values()]
+    N.update(eff_b0_min=min(b0), eff_b0_max=max(b0), eff_b1_min=min(b1), eff_b1_max=max(b1))
+    table(
+        "tab_effect",
+        "The \\ac{BNPL} effect on default under each swept assumption",
+        "The effect of enabling \\ac{BNPL} on the population default rate at the final tick, "
+        "under each setting of the sensitivity analysis, at $\\beta = 0$ (the control) and "
+        "$\\beta = 1$. Each setting is run with \\ac{BNPL} off and on over one seed block "
+        "(70{,}000--70{,}019) shared by every arm, so each effect is a same-seed paired difference, "
+        "\\ac{BNPL} on less off, with one paired standard error. The no-\\ac{BNPL} column gives the "
+        "setting's own \\ac{BNPL}-free default rate where the setting changes that model, and the "
+        f"reference arm's otherwise; {REPL.lower()}. {SHOCK_CAP}. The last row switches the "
+        "want-driven path off, so \\ac{BNPL} is used only to cover shortfalls.",
+        "L{4.8cm}rrr",
+        r"\textbf{Setting} & \textbf{No \ac{BNPL} (\%)} & \textbf{Effect, $\beta=0$ (pp)} & "
+        r"\textbf{Effect, $\beta=1$ (pp)}",
+        rows,
+        size=r"\footnotesize",
+    )
+
+
 def main() -> None:
     rq0, rq1, rq2, rq2t, rq3, rob = (load(n) for n in ("rq0", "rq1", "rq2", "rq2t", "rq3", "robustness"))
-    for df in (rq0, rq1, rq2, rq2t, rq3, rob):
+    eff = load("effect")
+    for df in (rq0, rq1, rq2, rq2t, rq3, rob, eff):
         assert df.groupby("label").seed.nunique().eq(20).all(), "every arm needs 20 unique seeds"
     tab_baseline_arms(rq0)
     tab_stacking(rq1)
@@ -730,7 +808,8 @@ def main() -> None:
     tab_robustness(rob)
     tab_sobol()
     tab_levers(rq3)
-    out = {k: (round(v, 6) if isinstance(v, float) else v) for k, v in N.items()}
+    tab_effect(eff)
+    out ={k: (round(v, 6) if isinstance(v, float) else v) for k, v in N.items()}
     (SUMMARY / "results_numbers.json").write_text(json.dumps(out, indent=2), encoding="utf-8")
     print(f"wrote results/summary/results_numbers.json ({len(out)} numbers)")
 
