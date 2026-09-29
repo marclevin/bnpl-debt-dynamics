@@ -54,6 +54,8 @@ exists and sensitivity analysis is mandatory. Rand values are 2017 Rands; the
 \addlinespace
 \texttt{amount\_\allowbreak{}rule} & D4 & shortfall & assumed & No anchor found in the literature sweep. The model's first uncited rule. & MANDATORY: shortfall / +25\% / plus one tick of committed expenditure \\
 \addlinespace
+\texttt{shortfall\_\allowbreak{}checkout\_\allowbreak{}financed} & D5 & True & assumed & Whether the household can borrow, from the traditional lender, the quarter of a shortfall agreement that is paid at checkout. & effect suite, on/off \\
+\addlinespace
 \texttt{shortfall\_\allowbreak{}bnpl\_\allowbreak{}capped} & D5 & True & assumed & Caps the BNPL share of a SHORTFALL request at kappa x the household's own monthly budget -- the same quantity that sizes a want-driven purchase. & Robustness: uncapped, crossed with the three D4 amount rules \\
 \addlinespace
 \texttt{bnpl\_\allowbreak{}purchase\_\allowbreak{}base} & D4/\allowbreak{}D11 & discretionary & sourced & What a BNPL purchase is sized AGAINST. BNPL finances discretionary consumption, so the household's own discretionary budget is the observed scale at which it makes discretionary purchases. & MANDATORY: discretionary / income \\
@@ -88,11 +90,13 @@ exists and sensitivity analysis is mandatory. Rand values are 2017 Rands; the
 \addlinespace
 \texttt{bnpl\_\allowbreak{}late\_\allowbreak{}fee\_\allowbreak{}cap} & D13 & 188.61 & sourced & Payflex caps the late fee at three weeks: 3 x R95 = R285 per missed instalment as published (2026 vintage), DEFLATED to 2017 Rands (DEFECTS.md B29). & -- \\
 \addlinespace
+\texttt{bnpl\_\allowbreak{}late\_\allowbreak{}fee\_\allowbreak{}cap\_\allowbreak{}share} & D13 & 0.5 & sourced & Payflex caps late fees at the lower of R285 or 50\% of the purchase price. & -- \\
+\addlinespace
 \texttt{bnpl\_\allowbreak{}affordability\_\allowbreak{}check} & D14 & False & sourced & Lever 2. Applies the D9 Reg 23A residual-income test to BNPL. & RQ3 lever 2, on/off \\
 \addlinespace
 \texttt{k\_\allowbreak{}cool} & D14 & 0 & sourced & Lever 3. Baseline 0 = lever OFF. k\_cool=1 tick = 14 days = the UK CCA s.66A statutory right of withdrawal, which lands exactly on a tick boundary. & RQ3 lever 3, 0-4 ticks \\
 \addlinespace
-\texttt{stacking\_\allowbreak{}cap} & D14 & None & assumed & Lever 4. Max concurrent agreements. HYPOTHETICAL: no jurisdiction imposes one. & RQ3 lever 4, 1-4 or None \\
+\texttt{stacking\_\allowbreak{}cap} & D14 & None & assumed & Lever 4. Cap on concurrent facilities: a household that owes this many platforms or more is refused any new draw. & RQ3 lever 4, 1-3 or None \\
 \addlinespace
 \texttt{activation} & D16 & random & sourced & Random asynchronous order, re-drawn every tick (Comer \& Loerch; Alizadeh). & MANDATORY: fixed-order (uniform) robustness run \\
 \end{longtable}

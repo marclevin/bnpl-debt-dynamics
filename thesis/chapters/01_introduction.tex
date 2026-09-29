@@ -14,11 +14,12 @@ expected to miss a bill or loan payment \cite{transunion_cps_sa_2025}. The two f
 measure different outcomes, account arrears and expected missed payments, but each
 indicates households with limited capacity to absorb new obligations.
 
-The concern examined here is that \ac{BNPL} credit may sit outside the information
-lenders use to assess affordability. Providers have
-argued that interest-free agreements fall outside the \ac{NCA}, and \ac{BNPL} payment
-histories were absent from South African credit reports in 2025
-\cite{nortonrose_bnpl_sa,transunion_cps_sa_2025}. A household could therefore take on
+\ac{BNPL} obligations were not part of the information that South African lenders used
+to assess affordability. The \ac{SARB} notes that providers often argue that
+interest-free agreements fall outside the \ac{NCA} \cite{sarb_fsr_2026_1}, and legal
+commentary states that \ac{BNPL} models fall outside the Act \cite{nortonrose_bnpl_sa}.
+TransUnion's late-2025 survey lists \ac{BNPL} loans among information that is not on the
+standard credit report \cite{transunion_cps_sa_2025}. A household could therefore take on
 obligations with several providers without any one lender seeing the full amount it had to
 repay. The \ac{SARB}'s June 2026 Financial Stability Review identifies concurrent \ac{BNPL}
 obligations and less rigorous affordability checks as risks to household indebtedness
@@ -37,14 +38,14 @@ reductions for roughly a quarter of credit-active consumers \cite{finasa_bnpl_20
 These developments raise the question of how far making \ac{BNPL} credit visible to
 lenders changes household distress.
 
-Using banking records
-for 10.6 million United States consumers, deHaan et al.\ \cite{dehaan2024bnpl} find higher
-overdraft charges, credit-card interest and late fees following \ac{BNPL} adoption,
-particularly among liquidity-constrained consumers. The \ac{CFPB} \cite{cfpb2025bnpl}
-also documents widespread simultaneous borrowing, including borrowing across providers.
-Comparable South African evidence is limited, especially for the period before bureau
-reporting, so the size of these effects in South Africa, and the likely effect of local
-reporting arrangements, remain unmeasured.
+Evidence from the United States links \ac{BNPL} use to financial strain. Using banking
+records for 10.6 million consumers, deHaan et al.\ \cite{dehaan2024bnpl} find higher
+overdraft charges, credit-card interest and late fees after \ac{BNPL} adoption, with
+larger increases among liquidity-constrained consumers. The \ac{CFPB} \cite{cfpb2025bnpl}
+documents borrowers who hold several loans at once, including loans from different
+providers. No comparable South African study was located, so neither the size of these
+effects in South Africa nor the effect of the local reporting arrangements has been
+measured.
 
 This thesis examines these mechanisms using an \ac{ABM} of 5{,}000 households constructed
 from South African survey microdata. We first calibrate a traditional-credit baseline to
@@ -86,9 +87,9 @@ Three subsidiary questions, referred to as RQ1 to RQ3, guide the analysis:
     borrowing and distress, both with and without peer influence on adoption?
 \end{enumerate}
 
-We report outcomes by income quintile because empirical studies identify financial
-constraints and lower income as relevant characteristics of \ac{BNPL} users
-\cite{hayashi2025constraints,wang2026buynow}. Section~\ref{sec:calibration} addresses
+We report outcomes by income quintile because United States studies find that
+\ac{BNPL} users differ from non-users in financial constraint, credit score and income
+\cite{hayashi2025constraints,wang2026buynow,dimaggio2022bnpl}. Section~\ref{sec:calibration} addresses
 the first question through population checks, calibration and validation.
 Sections~\ref{sec:results} and~\ref{sec:scenarios} address the remaining questions
 through the simulation experiments.
@@ -104,7 +105,8 @@ aggregate financial distress. Cardaci \cite{cardaci2018inequality} models rising
 inequality and consumption emulation, leading to debt-financed spending and eventually
 a banking crisis. That model concerns collateralised debt, so its mechanism differs
 from unsecured pay-in-four lending. D'Orazio and Giulioni \cite{dorazio2017micro}
-show how unsustainable debt can arise from local borrowing rules. These
+model household borrowing over the business cycle, driven by consumption wants,
+expectations of future income and bank credit rationing. These
 studies support examining aggregate outcomes through explicit household decisions.
 
 Madeira \cite{madeira2018chile} models Chilean households exposed to labour-income
@@ -137,9 +139,10 @@ assesses this relationship through traditional arrears and interest charges
 
 Hayashi and Routh
 \cite{hayashi2025constraints} find that \ac{BNPL} users are more financially
-constrained than non-users, while Wang \cite{wang2026buynow} reports use concentrated
-among lower-income and lower-credit-score consumers. These findings motivate the
-distributional analysis.
+constrained than non-users. Wang \cite{wang2026buynow} reports that borrowers with
+subprime or deep subprime credit scores accounted for most \ac{BNPL} originations in
+2021 and 2022, and Di Maggio et al.\ \cite{dimaggio2022bnpl} find use highest among
+low-to-middle-income consumers. These findings motivate the distributional analysis.
 
 Ackert et al.\ \cite{ackert2025bnpl} find that participants in an incentivised
 experiment are more willing to finance purchases with \ac{BNPL} than with credit

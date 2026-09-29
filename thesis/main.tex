@@ -29,6 +29,7 @@
 
 % --- references and acronyms ------------------------------------------------
 \usepackage{caption}
+\usepackage{xurl}           % long bibliography URLs break across lines
 \usepackage{hyperref}
 \usepackage[printonlyused]{acronym}
 
@@ -77,16 +78,23 @@ not been submitted for any other degree or examination at any other university.
 \section*{Abstract}
 \addcontentsline{toc}{section}{Abstract}
 
-% 250 words (SOL_PLAN_REFORMAT.md). Every number is read from a generated table:
-% 14.2% from tab:ccmr, 45% from tab:stacking, 1.2 and 2.1 points from tab:baseline-arms.
-South African households carried substantial credit distress before \ac{BNPL} arrived: 14.2\% of unsecured and credit-facility accounts were more than ninety days in arrears in 2017, under a regime of statutory affordability tests and bureau reporting from which \ac{BNPL} was exempt.
-Reported industry arrangements, not yet in force, would bring \ac{BNPL} inside that regime without evidence of their effect.
-This thesis builds an agent-based model of 5{,}000 households constructed from \ac{NIDS} and \ac{FinScope} microdata, calibrates the traditional credit market to the 2017 arrears profile with \ac{BNPL} disabled, and then injects \ac{BNPL} into the same environment as a controlled counterfactual, with platforms that cannot see one another and a bureau that cannot see them.
-Two parameters are fitted; the checks the model was not fitted to are reported with their failures.
-Cross-platform stacking emerges without being programmed, reaching 45\% of \ac{BNPL} holders at four platforms, yet population default does not rise with the number of platforms: the injection raises default by 1.2 percentage points without peer influence and 2.1 with it, however many firms the obligations are spread across.
-Default rises smoothly with \ac{BNPL} access under both a linear and a heterogeneous-threshold adoption rule, with no tipping point under either, although the threshold rule roughly triples the rise in holding.
-And in the affordability channel of the reporting requirement, the only channel the model represents, neither bureau visibility nor mandatory affordability screening changes default, with or without peer adoption, because each acts on a single agreement and neither changes how many a household services at once.
+% Every number is read from a generated table or results/summary/results_numbers.json:
+% 14.2% from tab:ccmr, 52% from tab:baseline-arms, 0.1 and 0.6 points from Section 4.1,
+% 1.1 points from tab:effect, 0.25 points from Section 5.
+South African households carried substantial credit distress before \ac{BNPL} arrived.
+In 2017, 14.2\% of unsecured and credit-facility accounts were more than 90 days in arrears, in a market with statutory affordability tests and bureau reporting that did not cover \ac{BNPL}.
+Reported industry arrangements, not yet in force, would add \ac{BNPL} records to the bureau, and their effect on households has not been measured.
+This thesis builds an agent-based model of 5{,}000 households from \ac{NIDS} and \ac{FinScope} microdata.
+We fit two parameters so that the traditional credit market reproduces two bands of the 2017 arrears profile with \ac{BNPL} disabled, and then enable \ac{BNPL} in the same environment, with platforms that cannot see one another and a bureau that cannot see them.
+We report the checks the model was not fitted to, including those it fails.
+With four platforms and no peer influence, 52\% of households holding \ac{BNPL} have balances on two or more platforms, a share that follows from the assumption that households choose among platforms at random.
+Default does not change detectably with the number of platforms.
+Enabling \ac{BNPL} raises default by about 0.1 percentage points without peer influence and by 0.6 points with it, in a market that borrows ten times as much.
+The first estimate depends on an assumption that no evidence fixes: if households cannot borrow the checkout payment of an agreement used to cover a shortfall, the effect is 1.1 points.
+The reporting experiment covers only the affordability channel, because the model has no credit score.
+In that channel neither bureau visibility nor mandatory affordability screening, alone or together, changes default by the 0.25 points that the experiment could detect.
 
+\acresetall
 \tableofcontents
 
 \section*{Acronyms}
@@ -131,7 +139,7 @@ And in the affordability channel of the reporting requirement, the only channel 
 % BACK MATTER
 % ============================================================================
 
-\bibliographystyle{plain}
+\bibliographystyle{plainurl}
 \bibliography{main}
 
 \appendix

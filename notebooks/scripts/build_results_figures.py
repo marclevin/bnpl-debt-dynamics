@@ -1,11 +1,11 @@
 """The results figures for Sections 4 and 5 and Appendix C, from results/raw.
 
-    ./env/python.exe notebooks/scripts/build_results_figures.py
+    PYTHONPATH=. .venv/bin/python notebooks/scripts/build_results_figures.py
 
 Writes to thesis/figures as vector PDF (plus PNG for preview), drawn at the compiled text
 width so nothing is rescaled:
   fig_baseline_arrears   baseline arrears profile against the CCMR bands, fitted bands marked
-  fig_stacking           2+ facility shares (final tick; ever, the CFPB analogue) and default
+  fig_stacking           2+ platform shares (final tick; ever, the CFPB analogue) and default
   fig_access_default     default against access: linear coupling, and thresholds (adoption, default)
   fig_scenarios          the three body scenarios at both betas, default and volume
   fig_tornado            each sensitivity arm's change from its reference, with 95% intervals
@@ -117,9 +117,9 @@ def fig_stacking(rq1: pd.DataFrame) -> None:
         ax.set_xticks(range(1, 7))
         ax.set_xlim(0.6, 6.4)
         dress(ax)
-    axes[0].set_ylim(0, 65)
+    axes[0].set_ylim(0, 70)
     axes[1].set_ylim(0, 105)
-    axes[2].set_ylim(13.5, 16.5)
+    axes[2].set_ylim(12.5, 15.0)
     axes[0].legend(loc="center right", handlelength=1.6)
     fig.tight_layout(w_pad=1.4)
     save(fig, "fig_stacking")
@@ -164,9 +164,9 @@ def fig_access_default(rq2: pd.DataFrame, rq2t: pd.DataFrame) -> None:
         ax.set_xlabel("Access (share of banked)")
         ax.set_xlim(-0.03, 1.03)
         dress(ax)
-    ax_a.set_ylim(13, 17)
+    ax_a.set_ylim(12.5, 15.0)
     ax_b.set_ylim(0, 75)
-    ax_c.set_ylim(13, 17)
+    ax_c.set_ylim(12.5, 15.0)
     fig.tight_layout(w_pad=1.3)
     save(fig, "fig_access_default")
     plt.close(fig)
@@ -199,14 +199,14 @@ def fig_scenarios(rq3: pd.DataFrame) -> None:
         ax.set_xticks(x)
         ax.set_xticklabels(names)
         dress(ax)
-    ax_a.set_ylim(12.5, 16.5)
+    ax_a.set_ylim(12.5, 15.0)
     ax_a.set_ylabel("Population default rate (%)")
     ax_a.set_title("(a) Default at the final tick")
     ax_a.legend(loc="upper left", handlelength=1.2)
     ax_b.axhline(0, color=INK3, lw=0.8)
-    ax_b.set_ylim(-3.2, 3.2)
+    ax_b.set_ylim(-8.5, 3.0)
     ax_b.set_ylabel("Cumulative BNPL volume vs benchmark (%)")
-    ax_b.set_title("(b) Volume: defer or desist?")
+    ax_b.set_title("(b) Cumulative volume")
     fig.tight_layout(w_pad=1.6)
     save(fig, "fig_scenarios")
     plt.close(fig)
@@ -294,9 +294,9 @@ def fig_tornado(rob: pd.DataFrame) -> None:
 
 # =================================================================== scenarios (appendix)
 def fig_scenarios_appendix(rq3: pd.DataFrame) -> None:
-    arms = [("bureau", "Bureau visibility"), ("afford", "Screening")] + \
+    arms = [("bureau", "Bureau visibility"), ("afford", "Screening"), ("both", "Both switches")] + \
            [(f"kcool{k}", f"Cooling-off {k} tick{'s' if k > 1 else ''}") for k in (1, 2, 3, 4)] + \
-           [(f"cap{c}", f"Cap: {c} facilit{'y' if c == 1 else 'ies'} (hypothetical)") for c in (1, 2, 3)]
+           [(f"cap{c}", f"Cap: {c} platform{'' if c == 1 else 's'} owed (hypothetical)") for c in (1, 2, 3)]
     fig, axes = plt.subplots(1, 2, figsize=(TW, 2.9), sharey=True)
     y = np.arange(len(arms))
     for ax, b in zip(axes, (0.0, 1.0)):
@@ -309,7 +309,7 @@ def fig_scenarios_appendix(rq3: pd.DataFrame) -> None:
                         capsize=2.5, elinewidth=0.8, zorder=3)
         ax.axvline(bench.mean() * 100, color=INK, lw=1.0, ls="--", zorder=2)
         ax.set_title(rf"$\beta = {b:g}$")
-        ax.set_xlim(12.5, 16.5)
+        ax.set_xlim(12.5, 15.0)
         ax.set_xlabel("Population default rate (%)")
         dress(ax, ygrid=False, xgrid=True)
     axes[0].set_yticks(y)

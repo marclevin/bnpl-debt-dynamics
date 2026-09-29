@@ -41,7 +41,11 @@ Each run follows 5{,}000 households for 52 ticks, approximately two years.
 The first 12 ticks are excluded from post-burn-in summaries, allowing the initial
 state to develop before those measures are collected. Each configuration has
 twenty replications, using seeds $s_0+i$ with a fixed starting seed for each
-experiment suite. Reported dispersion measures variation across simulation runs
+experiment suite; the variance decomposition of Section~\ref{sec:results-robustness}
+has two per design point. Arms within a suite share seeds, except in the
+scenario suite, where each scenario has its own block. Where two arms share
+seeds we take their difference seed by seed; otherwise we treat them as
+independent. Reported dispersion measures variation across simulation runs
 only and excludes uncertainty in the data and assumptions. Thresholds use a separate random
 stream, allowing exact reproduction of control arms and paired comparisons across
 threshold dispersion.
@@ -260,8 +264,8 @@ discretionary spending on eligible categories in \ac{IES} 2022/23
 \cite{statssa_ies_2023}. Using a share avoids converting currency amounts,
 but still assumes that the spending composition transfers to 2017.
 No usable South African provider estimate was located for the rolling limit.
-We therefore treat $\lambda$ as an assumption, informed by the stacked exposure
-reported by Woolard \cite{woolard2021} and varied in Submodel~12.
+We therefore treat $\lambda$ as an assumption, informed by the illustrative stacked
+exposure given by Woolard \cite{woolard2021} and varied in Submodel~12.
 
 \label{sec:lim-transfer}
 The behavioural evidence discussed in Section~\ref{sec:lit-behavioural}
@@ -282,7 +286,10 @@ With \ac{BNPL} disabled, the income-shock probability is fitted to the 90+ day s
 and payment friction to the 1--30 day share. They primarily affect different
 parts of the distribution: persistent shocks generate long arrears, while
 friction produces brief payment delays. The selected values are 1.6\% and
-9\% per tick respectively. Both remain fixed when \ac{BNPL} is introduced.
+9\% per tick. The shock probability is chosen from a grid with steps of
+0.8 percentage points, so it is resolved only to that precision
+(Table~\ref{tab:arrears-fit}). Both values remain fixed when \ac{BNPL} is
+introduced.
 
 \begin{table}[H]
 \centering
@@ -319,11 +326,11 @@ Neither $q_{\text{base}}$ nor $\beta$ has a direct empirical estimate.
 Setting $\beta=0$ isolates the peer channel; a realistic adoption rate
 remains unidentified. The banking ceiling, the \ac{CFPB} stacking shares and
 TransUnion's finding that 57\% of surveyed consumers hold a \ac{BNPL} product
-\cite{transunion_cps_sa_2025}, against 69.9\% of households ever holding a
+\cite{transunion_cir_sa_2026}, against 70.0\% of households ever holding a
 balance at $\beta=0$, offer only indirect comparisons. To address RQ2, we vary platforms from one to six and
 access within the banked population, alongside peer influence. For RQ3, each
-regulatory switch is compared with the benchmark with and without peer
-influence (Section~\ref{sec:scenarios}).
+regulatory switch, and the two together, are compared with the benchmark with
+and without peer influence (Section~\ref{sec:scenarios}).
 
 \subsection{Validation}
 \label{sec:data-validation}
@@ -373,31 +380,13 @@ comparisons.
 
 The model misses the intermediate arrears bands
 (Table~\ref{tab:arrears-fit}). Both are about 1\%, compared with 3.6\% and
-2.3\% in the \ac{CCMR}. The cumulative 60+ share is closer, at 14.9\%
+2.3\% in the \ac{CCMR}. The cumulative 60+ share is closer, at 15.5\%
 against 16.5\%, but includes the fitted 90+ band. The profile concentrates
 too heavily in brief and persistent arrears. Long unemployment spells under
 the re-employment rule offer a possible explanation, but matching the two
 targets does not establish that arrears transitions are well represented.
 
-\begin{table}[H]
-\centering
-\caption{Baseline arrears profile against the \ac{CCMR}}
-\label{tab:arrears-fit}
-\tabnote{Baseline calibration results, with \ac{BNPL} disabled. Shares are over credit-active households and are compared with the account-level \ac{CCMR} target, in per cent. Means cover twenty replicates (seeds 1000--1019) at income-shock probability 0.016 and payment friction 0.09; the 90+ share has a replicate standard deviation of 0.37 percentage points. ``Fitted'' identifies the two target bands. Unfitted bands belong to the same distribution and are not independent observations. The cumulative 60+ row includes the fitted 90+ band.}
-\begin{tabular}{lrrl}
-\toprule
-\textbf{Age band} & \textbf{\ac{CCMR}} & \textbf{Model} & \textbf{Status} \\
-\midrule
-Current       & 71.63 & 75.93 & unfitted \\
-1--30 days    &  8.24 &  8.22 & fitted \\
-31--60 days   &  3.59 &  0.94 & unfitted \\
-61--90 days   &  2.32 &  0.96 & unfitted \\
-90+ days      & 14.21 & 13.96 & fitted \\
-\midrule
-\emph{60+ days} & \emph{16.54} & \emph{14.91} & \emph{partly fitted} \\
-\bottomrule
-\end{tabular}
-\end{table}
+\input{chapters/generated/tab_arrears_fit}
 
 Three external comparisons fall within the chosen tolerances: household size,
 income inequality and aggregate debt (Table~\ref{tab:validation}).
@@ -444,8 +433,10 @@ E. Resample Gini & $|$agents $-$ source$|$ & 0.015 & $\leq$0.02 & \checkmark \\
 \end{table}
 
 These external tolerances are broad. The income Gini of 0.651 lies in the
-0.630--0.700 interval, whose lower bound uses the World Bank's
-consumption-based estimate \cite{worldbank_gini_zaf}. Income and consumption
+0.630--0.700 interval. The lower bound is the World Bank's consumption-based
+Gini of 63.0 for 2014, as published in the World Development Indicators up to
+February 2026 \cite{worldbank_gini_zaf}. The April 2026 release revises that
+estimate to 59.6 and adds 54.1 for 2022. Income and consumption
 inequality are not the same measure. Similarly, synthetic debt of
 R191.4 billion is 49\% of the corresponding R392.0 billion
 \ac{CCMR} book \cite{ncr_ccmr_2017}. Underreporting may contribute to
@@ -466,31 +457,42 @@ gaps, and zero savings alone does not trigger distress. The tick sequence
 determines that state (Section~\ref{sec:sequence}).
 
 Table~\ref{tab:bnpl-on-checks} reports the unfitted comparisons after
-\ac{BNPL} is enabled. At the final tick, 45.0\% of holders have exposure
-across multiple platforms. The over-the-horizon measure, 37.0\% of
-ever-adopters, is closer in definition to the \ac{CFPB}'s 32\%, although
-the markets and observation periods differ.
+\ac{BNPL} is enabled. At the final tick, 52.0\% of holders have balances on two
+or more platforms. The over-the-horizon measure, 36.8\% of
+ever-adopters, is closer in definition to the \ac{CFPB}'s measure: the share of
+United States \ac{BNPL} borrowers with simultaneous loans at two or more firms
+during a year, 32\% in 2021 and 33\% in 2022. The markets and observation
+periods differ, and the model's shares follow from its routing rule
+(Section~\ref{sec:stacking}).
 
-The mean-purchase comparison is marginal: R645.60 against R992, or
-34.9\% below the target under a 35\% tolerance. The mean falls inside by
-less than R1, and only eight of twenty replications fall inside, so the
-agreement is weak although the stated rule is met. Annual volume also falls
-short: R861 per eligible household against the R1{,}333 lower bound, and
-R1{,}020 per adopter against the R4{,}261 bound for active customers.
-Pattern~1 fails on one of its two measures: enabling \ac{BNPL} raises
-traditional arrears but lowers the interest charged on traditional debt,
+\input{chapters/generated/tab_bnpl_on_checks}
+
+The model fails the purchase-size and volume checks. The mean want-driven
+purchase is R633 against a target of R992, 36.2\% below it under a tolerance of
+35\%, and four of twenty replications fall inside the band. At $\beta=1$ the
+mean is R610 and no replication falls inside. Annual volume is R1{,}010 per
+eligible household against a lower bound of R1{,}333, and R1{,}196 per adopter
+against the R4{,}261 bound for active customers. The model's \ac{BNPL} market
+therefore has smaller purchases and less volume per user than the provider
+disclosure, although more households use it
+(Section~\ref{sec:lim-calibration}).
+
+Pattern~1 is reproduced on one of its two measures. Enabling \ac{BNPL} raises
+the traditional arrears rate by $0.23 \pm 0.07$ points at $\beta=0$ and
+$0.57 \pm 0.07$ at $\beta=1$. The interest charged on traditional debt falls
+by $1.5 \pm 0.4$\% at $\beta=0$ and does not change detectably at $\beta=1$,
 which the condition in Table~\ref{tab:patterns} counts as falsifying.
-Pattern~3 holds for the specified aggregate statistic, and Pattern~4 is of
-the same order, 25.9\% against 36\%. That share is a post-burn-in mean. It
+Pattern~3 is not reproduced: the aggregate debt-to-income ratio is highest in
+Q1, at 0.77 months of income, with Q4 second at 0.69. Pattern~4 is of the same
+order, 25.7\% against 36\%. That share is a post-burn-in mean. It
 lies below the 44.3\% at initialisation because the model saves any cash left
 after discretionary spending, and about three-quarters of the agents that
 start without savings have income above their committed, discretionary and
 scheduled-service outlays.
 
 RQ1 is therefore answered only in part. The model approximates the fitted
-bands and meets several broad population checks, but misses intermediate
-arrears, the servicing share, the volume band and the interest component of
-Pattern~1. These results support using the model to investigate mechanisms,
-with limited confidence in the empirical accuracy of its outcome levels.
-
-\input{chapters/generated/tab_bnpl_on_checks}
+bands and meets three broad population checks. It misses the intermediate
+arrears bands, the servicing share, the purchase-size and volume bands, the
+interest measure of Pattern~1 and Pattern~3. These results support using the
+model to compare mechanisms, with limited confidence in the empirical accuracy
+of its outcome levels.

@@ -1,0 +1,65 @@
+
+========================================================================================
+1. TRADITIONAL INTEREST AND PAYMENT ACCOUNTING
+========================================================================================
+Balance R1,000 at 26% a year (1% a tick), instalment R100 a tick, income ample.
+Correct accounting: 1000 + 10 interest - 100 paid = 910 after one tick.
+  tick 0: balance   1000.00 ->    920.00   interest charged  10.00   arrears   0.00   savings  3900.00
+  tick 1: balance    920.00 ->    838.40   interest charged   9.20   arrears   0.00   savings  7800.00
+  tick 2: balance    838.40 ->    755.17   interest charged   8.38   arrears   0.00   savings 11700.00
+Life of the loan: R1,000 amortised over 12 ticks at 1% a tick (instalment R88.85).
+  balance cleared after 15 ticks; paid to the lender 1144.32 (contract: 12 ticks, 1066.19)
+  scheduled service still shown to the gate after the balance cleared: 88.85 a tick
+  total_debt() with balance 0.00 and arrears 0.00: 0.00
+Arrears inside total debt: balance R1,000, instalment R100, income too low to pay it.
+  after one unpaid tick: d_trad 1010.00, arrears 100.00, total_debt() 1110.00   (owed to the lender: 1010.00)
+
+========================================================================================
+2. SHORTFALL COVERAGE: BNPL FIRST, THEN THE TRADITIONAL LENDER
+========================================================================================
+Income R3,000 a tick, committed R3,000, no savings, instalment R200 due: shortfall R200.
+Discretionary budget large enough that the BNPL share of the request is not capped.
+  traditional credit only (BNPL disabled):
+     traditional applications 1, granted value 200.00
+     BNPL agreements {}
+     distressed this tick: False;  traditional arrears 0.00;  balance 4000.00;  savings 0.00
+  BNPL enabled:
+     traditional applications 0, granted value 0.00
+     BNPL agreements {2: [(200.0, 2, 0.0)]}
+     distressed this tick: True;  traditional arrears 100.00;  balance 3900.00;  savings 0.00
+
+========================================================================================
+3. INSTALMENT TIMING ON THE TWO BORROWING PATHS
+========================================================================================
+Contract: 25% at checkout, then 25% at each of the NEXT three ticks.
+Shortfall path (same household as example 2, BNPL enabled):
+  end of the origination tick: agreements (principal, instalments remaining, arrears) {2: [(200.0, 2, 0.0)]}
+Want-driven path (purchase probability 1, income ample, no debt):
+  end of the origination tick: {0: [(150.27, 3, 0.0)]}
+  end of the next tick:        {0: [(150.27, 2, 0.0)]}
+
+========================================================================================
+4. WHAT THE CAP COUNTS AND WHICH DRAWS IT BLOCKS
+========================================================================================
+  cap 1: 40 requests of R100 in one tick, ample limits, 200 seeds -> platforms owed {1: 200}; open agreements {1: 200}
+  cap 2: 40 requests of R100 in one tick, ample limits, 200 seeds -> platforms owed {2: 200}; open agreements {2: 151, 3: 32, 4: 11, 5: 5, 6: 1}
+  cap 3: 40 requests of R100 in one tick, ample limits, 200 seeds -> platforms owed {3: 200}; open agreements {3: 83, 4: 53, 5: 37, 6: 11, 7: 10, 8: 3, 9: 2, 10: 1}
+  cap 2, household already owes platforms 0 and 1: a further draw of R100 finances 0.00  (a draw on a platform already in use is refused too)
+
+========================================================================================
+5. PLATFORM ROUTING
+========================================================================================
+  platform that receives a first request, 2,000 seeds: {0: 508, 1: 477, 2: 493, 3: 522}
+  second request lands on a different platform although the first has headroom: 0.751   (uniform routing over 4 platforms implies 0.750)
+  one request of R2,000 against per-platform limits of R650: financed 2000.00, split {0: [(866.67, 3, 0.0)], 1: [(866.67, 3, 0.0)], 3: [(266.67, 3, 0.0)]}
+
+========================================================================================
+6. WHAT EACH AFFORDABILITY GATE OBSERVES
+========================================================================================
+  household: traditional instalment R200 a tick; BNPL instalments R100 (platform 0) and R200 (platform 1) a tick
+  traditional lender, bureau visibility False: monthly service it sees =   433.33   (traditional alone 433.33; with BNPL 1083.33)
+  traditional lender, bureau visibility True : monthly service it sees =  1083.33   (traditional alone 433.33; with BNPL 1083.33)
+  screening gate on a new BNPL request: tested below with income that admits the request only if BNPL on other platforms is NOT counted
+     Reg 23A room 5309.62 a month; request R8822.33 fits against traditional service alone, and against traditional plus BNPL: False
+     financed with the bureau switch OFF: 0.00  -> the screening gate counts BNPL held on other platforms
+  income used by both gates: agent.income_monthly = 6500.00, fixed at initialisation (not reduced while a member is unemployed)

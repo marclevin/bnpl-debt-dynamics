@@ -1,7 +1,7 @@
 """Re-derive three numbers per generated table straight from results/raw and assert that each
 appears, formatted, in the fragment build_results_tables.py wrote.
 
-    ./env/python.exe notebooks/scripts/check_results_tables.py
+    PYTHONPATH=. .venv/bin/python notebooks/scripts/check_results_tables.py
 
 Deliberately uses plain pandas and none of results_common's helpers, so a wrong helper
 cannot agree with itself. Fails loudly on the first mismatch.
@@ -43,6 +43,15 @@ def pm(a: pd.Series, b: pd.Series, d: int = 2) -> str:
     return f"${diff:+.{d}f} \\pm {se:.{d}f}$"
 
 
+def pmp(a: pd.DataFrame, b: pd.DataFrame, col: str, d: int = 2) -> str:
+    """The same difference for two arms that share seeds: taken seed by seed."""
+    x = a.set_index("seed")[col]
+    y = b.set_index("seed")[col]
+    assert sorted(x.index) == sorted(y.index), "arms do not share seeds"
+    z = (x - y.reindex(x.index)) * 100
+    return f"${z.mean():+.{d}f} \\pm {z.std(ddof=1) / math.sqrt(len(z)):.{d}f}$"
+
+
 def main() -> None:
     rq0, rq1, rq2, rq2t, rq3, rob = (pd.read_parquet(RAW / f"{n}.parquet") for n in ("rq0", "rq1", "rq2", "rq2t", "rq3", "robustness"))
     off, b0, b1 = (rq0[rq0.label == l] for l in ("baseline_no_bnpl", "bnpl_on_beta0", "bnpl_on_beta1"))
@@ -50,7 +59,7 @@ def main() -> None:
     t = frag("tab_baseline_arms")
     expect("baseline_arms", t, cell(off.default_rate_final))
     expect("baseline_arms", t, cell(b1.bnpl_adoption_final))
-    expect("baseline_arms", t, pm(b0.default_rate_final, off.default_rate_final))
+    expect("baseline_arms", t, pmp(b0, off, "default_rate_final"))
 
     t = frag("tab_stacking")
     n4b0 = rq1[(rq1.n_platforms == 4) & (rq1.beta == 0.0)]
@@ -58,7 +67,7 @@ def main() -> None:
     n6b1 = rq1[(rq1.n_platforms == 6) & (rq1.beta == 1.0)]
     expect("stacking", t, f"4 & {n4b0.stacking_2plus_final.mean() * 100:.1f} &")
     expect("stacking", t, cell(n1b1.default_rate_final))
-    expect("stacking", t, pm(n6b1.default_rate_final, n1b1.default_rate_final))
+    expect("stacking", t, pmp(n6b1, n1b1, "default_rate_final"))
 
     t = frag("tab_stacking_full")
     n3b2 = rq1[(rq1.n_platforms == 3) & (rq1.beta == 2.0)]
@@ -70,7 +79,7 @@ def main() -> None:
     mp = b0.bnpl_purchase_mean_realised.mean()
     expect("bnpl_on_checks", t, "R" + f"{mp:,.2f}".replace(",", "{,}"))
     expect("bnpl_on_checks", t, f"{off.zero_savings_rate_mean.mean() * 100:.1f}\\%")
-    expect("bnpl_on_checks", t, pm(b0.trad_arrears_rate_mean, off.trad_arrears_rate_mean))
+    expect("bnpl_on_checks", t, pmp(b0, off, "trad_arrears_rate_mean"))
 
     t = frag("tab_scenarios")
     bur0 = rq3[rq3.label == "rq3_bureau_b0.0"]
@@ -89,12 +98,17 @@ def main() -> None:
     t = frag("tab_access")
     lo = rq2[(rq2.beta == 0.0) & (rq2.bnpl_access_rate == 0.0)].default_rate_final
     hi = rq2[(rq2.beta == 0.0) & (rq2.bnpl_access_rate == 1.0)].default_rate_final
-    expect("access", t, pm(hi, lo))
-    g = rq2[rq2.beta == 3.0].groupby("bnpl_access_rate").default_rate_final.mean().sort_index()
-    xs = np.asarray(g.index, dtype=float)
-    slope, icpt = np.polyfit(xs, g.values, 1)
-    r2 = 1 - ((g.values - (slope * xs + icpt)) ** 2).sum() / ((g.values - g.values.mean()) ** 2).sum()
-    expect("access", t, f"{r2:.3f}")
+    expect("access", t, pmp(rq2[(rq2.beta == 0.0) & (rq2.bnpl_access_rate == 1.0)],
+                            rq2[(rq2.beta == 0.0) & (rq2.bnpl_access_rate == 0.0)], "default_rate_final"))
+    # the linear fit is printed only where the end-to-end change exceeds two standard errors
+    z = (rq2[(rq2.beta == 3.0) & (rq2.bnpl_access_rate == 1.0)].set_index("seed").default_rate_final
+         - rq2[(rq2.beta == 3.0) & (rq2.bnpl_access_rate == 0.0)].set_index("seed").default_rate_final)
+    if abs(z.mean()) > 2 * z.std(ddof=1) / math.sqrt(len(z)):
+        g = rq2[rq2.beta == 3.0].groupby("bnpl_access_rate").default_rate_final.mean().sort_index()
+        xs = np.asarray(g.index, dtype=float)
+        slope, icpt = np.polyfit(xs, g.values, 1)
+        r2 = 1 - ((g.values - (slope * xs + icpt)) ** 2).sum() / ((g.values - g.values.mean()) ** 2).sum()
+        expect("access", t, f"{r2:.3f}")
     mu = rq2t[rq2t.label == "rq2t_mu0.45"]
     expect("access", t, cell(mu.bnpl_adoption_final, 1))
 
@@ -124,13 +138,19 @@ def main() -> None:
     ben1 = rq3[rq3.label == "rq3_kcool0_b1.0"]
     expect("cooloff", t, cell(k4.default_rate_final))
     expect("cooloff", t, f"{(k4.bnpl_volume_cumulative.mean() / ben1.bnpl_volume_cumulative.mean() - 1) * 100:+.1f}")
-    expect("cooloff", t, pm(k4.default_rate_final, ben1.default_rate_final))
+    expect("cooloff", t, pmp(k4, ben1, "default_rate_final"))
 
     t = frag("tab_cap")
     c1 = rq3[rq3.label == "rq3_cap1_b0.0"]
     expect("cap", t, cell(c1.default_rate_final))
     expect("cap", t, pm(c1.default_rate_final, ben0.default_rate_final))
     expect("cap", t, f"& {c1.bnpl_adoption_final.mean() * 100:.1f} &")
+
+    t = frag("tab_switches")
+    both0 = rq3[rq3.label == "rq3_both_b0.0"]
+    expect("switches", t, cell(both0.default_rate_final))
+    expect("switches", t, pm(both0.default_rate_final, ben0.default_rate_final))
+    expect("switches", t, pm(bur0.default_rate_final, ben0.default_rate_final))
 
     t = frag("tab_effect")
     eff = pd.read_parquet(RAW / "effect.parquet")
@@ -144,6 +164,7 @@ def main() -> None:
     expect("effect", t, cell(eff[eff.label == "eff_ref_off"].default_rate_final))
     expect("effect", t, paired("eff_amountcommitted_b0.0", "eff_amountcommitted_off"))
     expect("effect", t, paired("eff_want_off_b0.0", "eff_ref_off"))
+    expect("effect", t, paired("eff_checkout_unfunded_b0.0", "eff_ref_off"))
 
     print(f"OK: {checked} numbers re-derived from results/raw match the generated fragments")
 

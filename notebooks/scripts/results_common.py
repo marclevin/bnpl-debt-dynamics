@@ -6,9 +6,11 @@ This module holds what both scripts need so the two cannot disagree on a convent
 
 Conventions (stated in every table note):
   * means over the 20 replicates of an arm, with the replicate standard deviation;
-  * a difference between two arms carries one UNPAIRED standard error,
-    sqrt(sd_a^2/n_a + sd_b^2/n_b), except the capped-vs-uncapped amount-rule arms,
-    which share seeds and are compared PAIRED;
+  * a difference between two arms that SHARE seeds is taken seed by seed and carries
+    the paired standard error, the standard deviation of the twenty differences over
+    sqrt(20); a difference between arms on DIFFERENT seed blocks carries the unpaired
+    standard error sqrt(sd_a^2/n_a + sd_b^2/n_b). `delta` chooses between them from the
+    seeds themselves, and every table note says which was used;
   * rates are in per cent, differences in percentage points, money in 2017 Rands.
 """
 from __future__ import annotations
@@ -63,6 +65,43 @@ def diff(a: pd.Series, b: pd.Series) -> tuple[float, float]:
     ma, sa, _ = ms(a)
     mb, sb, _ = ms(b)
     return ma - mb, math.sqrt(sa**2 / len(a) + sb**2 / len(b))
+
+
+def shares_seeds(a: pd.DataFrame, b: pd.DataFrame) -> bool:
+    """Whether two arms form a valid pairing: the same seeds AND the same population.
+
+    A seed fixes the population sample as well as the random stream, so arms of different
+    population size share seed numbers without sharing anything that pairs them.
+    """
+    same_seeds = len(a) == len(b) and set(a.seed) == set(b.seed) and a.seed.is_unique
+    same_population = set(a.n_agents) == set(b.n_agents)
+    return same_seeds and same_population
+
+
+def delta(a: pd.DataFrame, b: pd.DataFrame, col) -> tuple[float, float]:
+    """a - b on `col`: paired by seed when the two arms share seeds, unpaired otherwise.
+
+    `col` is a column name or a function of an arm that returns a per-replicate series.
+    """
+    fa = (lambda d: d[col]) if isinstance(col, str) else col
+    if shares_seeds(a, b):
+        x = pd.Series(fa(a).to_numpy(dtype=float), index=a.seed.to_numpy())
+        y = pd.Series(fa(b).to_numpy(dtype=float), index=b.seed.to_numpy())
+        d = x - y.reindex(x.index)
+        return float(d.mean()), float(d.std(ddof=1) / math.sqrt(len(d)))
+    return diff(fa(a), fa(b))
+
+
+def ratio_change(a: pd.DataFrame, b: pd.DataFrame, col: str) -> tuple[float, float]:
+    """mean(a)/mean(b) - 1 with a delta-method standard error (paired when seeds are shared)."""
+    d, se = delta(a, b, col)
+    mb = float(b[col].mean())
+    return d / mb, se / mb
+
+
+def detectable(d: float, se: float) -> bool:
+    """The thesis convention: a difference beyond two standard errors."""
+    return abs(d) > 2.0 * se
 
 
 def paired_diff(a: pd.DataFrame, b: pd.DataFrame, col: str) -> tuple[float, float]:

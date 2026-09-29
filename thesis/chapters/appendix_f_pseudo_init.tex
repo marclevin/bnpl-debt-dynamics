@@ -56,9 +56,11 @@ $w_i$ & survey weight (data layer only) & \texttt{w5\_wgt} \\
 $a_i(t)$ & liquid savings & \texttt{savings} \\
 $u_i(t)$ & earners currently unemployed & \texttt{n\_unemployed} \\
 $D_i(t)$, $A_i(t)$ & traditional debt; traditional arrears & \texttt{d\_trad}, \texttt{arrears\_trad} \\
-$r_i(t)$, $\iota_i(t)$ & scheduled traditional debt service per tick; annual rate on the consolidated balance. Both open at the data-layer values and move only when a traditional loan is booked (Algorithm~\ref{alg:gate}) & \texttt{scheduled\_service\_tick}, \texttt{apr\_annual} \\
+$r_i(t)$, $\iota_i(t)$ & scheduled traditional debt service per tick; annual rate on the consolidated balance. Both open at the data-layer values and move when a traditional loan is booked (Algorithm~\ref{alg:gate}); $r_i$ returns to zero when the balance clears & \texttt{scheduled\_service\_tick}, \texttt{apr\_annual} \\
 $B_{ip}(t)$ & \ac{BNPL} receivable owed by $i$ to platform $p$ & \texttt{exposure} \\
-$b_i(t)$ & \ac{BNPL} instalments and arrears falling due this tick, all platforms & \texttt{bnpl\_due\_per\_tick} \\
+$b_i(t)$ & \ac{BNPL} instalments and arrears falling due this tick, all platforms; an agreement opened this tick is excluded & \texttt{bnpl\_due\_per\_tick} \\
+$o_i(t)$ & one instalment for each live \ac{BNPL} agreement plus arrears, all platforms, including agreements opened this tick; what a gate that sees \ac{BNPL} is shown & \texttt{bnpl\_obligations\_per\_tick} \\
+$n^{\text{owed}}_i(t)$ & platforms on which $i$ owes a balance & \texttt{stacking\_depth} \\
 $\alpha_i(t)$ & ticks in traditional arrears & \texttt{arrears\_age\_ticks} \\
 $\delta_i(t)$ & consecutive distressed ticks & \texttt{distress\_streak} \\
 $d_i(t)$ & default indicator & \texttt{defaulted} \\
@@ -69,7 +71,7 @@ $s_g(t)$ & share of the eligible members of $g$ holding a \ac{BNPL} balance at t
 $L_{ip}$ & rolling receivable limit of $p$ for $i$, $L_{ip} = \lambda Y_i$ & \texttt{rolling\_limits} \\
 $\bar o$ & per-order cap & \texttt{bnpl\_order\_cap} \\
 $N$ & instalments per order (4) & \texttt{bnpl\_instalments} \\
-$\phi$, $\bar\phi$ & late fee per missed tick; fee cap per agreement & \texttt{bnpl\_late\_fee\_*} \\
+$\phi$, $\bar\phi$ & late fee per missed tick; fee cap per agreement in Rand. The cap applied is the lower of $\bar\phi$ and half the purchase price & \texttt{bnpl\_late\_fee\_*} \\
 \addlinespace
 \multicolumn{3}{l}{\emph{Parameters}} \\
 $p^{\text{sep}}$, $p^{\text{exit}}$ & per-earner separation and re-employment probabilities per tick & \texttt{shock\_prob}, \texttt{shock\_exit\_prob} \\
@@ -82,12 +84,12 @@ $\mathbb{1}^{\text{cap}}$ & cap on the \ac{BNPL} share of a shortfall request at
 $\lambda$ & rolling limit as a multiple of monthly income & \texttt{bnpl\_limit\_income\_multiple} \\
 $q_{\text{base}}$, $\beta$ & baseline propensity; peer weight (linear mechanism) & \texttt{q\_base}, \texttt{beta} \\
 $\gamma$, $\mu_\theta$, $\sigma_\theta$ & appetite step; threshold mean and dispersion (threshold mechanism) & \texttt{gamma}, \texttt{mu\_theta}, \texttt{sigma\_theta} \\
-$k^{\text{cool}}$, $\bar n$ & cooling-off ticks; concurrent-agreement cap (both off in every scenario reported in the body) & \texttt{k\_cool}, \texttt{stacking\_cap} \\
+$k^{\text{cool}}$, $\bar n$ & cooling-off ticks; cap on the number of platforms owed (both off in the benchmark) & \texttt{k\_cool}, \texttt{stacking\_cap} \\
 \addlinespace
 \multicolumn{3}{l}{\emph{Scenario switches}} \\
 $\mathbb{1}^{\text{bnpl}}$ & \ac{BNPL} platforms present (off in the calibration baseline) & \texttt{bnpl\_enabled} \\
-$\mathbb{1}^{\text{bur}}$ & \ac{BNPL} obligations visible to the bureau (Scenario 1) & \texttt{bnpl\_bureau\_visible} \\
-$\mathbb{1}^{\text{aff}}$ & Regulation 23A test applied to \ac{BNPL} originations (Scenario 2) & \texttt{bnpl\_affordability\_check} \\
+$\mathbb{1}^{\text{bur}}$ & \ac{BNPL} obligations visible to the bureau (bureau visibility) & \texttt{bnpl\_bureau\_visible} \\
+$\mathbb{1}^{\text{aff}}$ & Regulation 23A test applied to \ac{BNPL} originations (screening) & \texttt{bnpl\_affordability\_check} \\
 \addlinespace
 \multicolumn{3}{l}{\emph{Functions}} \\
 $\rho(Y)$ & Regulation 23A residual-income capacity: $Y$ less the statutory necessary-expense norm (Table~\ref{tab:reg23a-norms}) & \texttt{nca\_max\_service} \\

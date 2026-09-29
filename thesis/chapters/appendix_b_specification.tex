@@ -28,7 +28,7 @@ Basic principles & Balance sheets form the accounting core. Heuristic decision r
 \addlinespace
 Emergence & Default rates, stacking depths and adoption paths follow from household decisions. Borrowing to service existing debt raises future obligations, while lagged peer adoption raises borrowing propensities. Setting $\beta=0$ removes the peer-adoption effect. & None \\
 \addlinespace
-Adaptation & Households compress consumption and select borrowing and repayment actions from immediate liquidity alone. The traditional lender is non-adaptive. & \cite{dorazio2017micro} \\
+Adaptation & Households compress consumption and select borrowing and repayment actions from immediate liquidity alone, without the income expectations that D'Orazio and Giulioni give their households. The traditional lender is non-adaptive. & \cite{dorazio2017micro} \\
 \addlinespace
 Objectives & No forward-looking utility. Households satisfy obligations in a fixed priority order, compressing discretionary spending under stress. & \cite{meier2010present} \\
 \addlinespace
@@ -71,8 +71,10 @@ Four groups of entries carry standing flags:
     \item \textbf{The uncalibrated peer coefficients.} $q_{\text{base}}$, $\beta$ and the
     threshold parameters of Submodel~11 cannot be calibrated from any South African source. The
     $\beta = 0$ and $\gamma = 0$ control arms are reported in every result.
-    \item \textbf{The rolling limit.} $\lambda = 0.10$ derives from Woolard's observed stacked
-    total, since no provider publishes a limit; it is swept 0.1--1.0.
+    \item \textbf{The rolling limit.} No provider publishes a limit. $\lambda = 0.10$ is set so
+    that four platform limits approximate Woolard's illustrative figure of about \pounds1{,}000
+    of credit across several lenders, which we convert to 37\% of United Kingdom median monthly
+    household income. It is swept 0.1--1.0.
 \end{itemize}
 
 \input{chapters/appendix_b_register}
