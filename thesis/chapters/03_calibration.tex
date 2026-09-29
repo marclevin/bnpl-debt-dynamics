@@ -21,7 +21,7 @@ covers selected uncertain assumptions.
 \toprule
 \textbf{Class} & \textbf{Principal members} & \textbf{Documented in} \\
 \midrule
-Observed & Household income, expenditure, savings and debt (\ac{NIDS} 2017); financial-inclusion flags (\acs{FinScope} 2019); statutory rate ceilings and the Regulation 23A expense table; \ac{BNPL} contract terms, order cap and late fees; the re-employment hazard (\ac{QLFS} 2017) & Sections~\ref{sec:population} and~\ref{sec:servicing}; Appendix~\ref{app:variables} \\
+Observed & Household income, expenditure, savings and debt (\ac{NIDS} 2017); financial-inclusion flags (\acs{FinScope} 2019); statutory rate ceilings and the Regulation 23A expense table; \ac{BNPL} contract terms and late fees; the re-employment hazard (\ac{QLFS} 2017) & Sections~\ref{sec:population} and~\ref{sec:servicing}; Appendix~\ref{app:variables} \\
 \addlinespace
 Constructed & Scheduled debt service (amortised from stocks); income quintiles and reference groups; the purchase ratio $\kappa$ (\ac{IES} 2022/23); 2017-Rand deflation of \ac{BNPL} money parameters & Section~\ref{sec:servicing}; Appendix~\ref{app:variables} \\
 \addlinespace
@@ -258,8 +258,12 @@ therefore partly duplicates a flow included in discretionary spending. This
 overstates compressible outlay and understates service as a share of that outlay.
 The net effect on default is unsigned.
 
-The \ac{BNPL} contract, order cap and late fees come from published provider
-terms \cite{payflex_terms, payjustnow_terms}. Monetary amounts are deflated
+The \ac{BNPL} contract and late fees come from published provider
+terms \cite{payflex_terms, payjustnow_terms}. The order cap of R15{,}000 is an
+assumption: Payflex's terms state no maximum order value, and its support
+material says that the amount a customer may spend depends on an individual
+assessment \cite{payflex_terms, payflex_limits}. The cap binds on 0.3\% of
+platform requests at $\beta=0$. Monetary amounts are deflated
 to 2017 Rands. The purchase-size ratio $\kappa=0.139$ comes from the share of
 discretionary spending on eligible categories in \ac{IES} 2022/23
 \cite{statssa_ies_2023}. Using a share avoids converting currency amounts,
@@ -438,7 +442,13 @@ These external tolerances are broad. The income Gini of 0.651 lies in the
 Gini of 63.0 for 2014, as published in the World Development Indicators up to
 February 2026 \cite{worldbank_gini_zaf}. The April 2026 release revises that
 estimate to 59.6 and adds 54.1 for 2022. Income and consumption
-inequality are not the same measure. Similarly, synthetic debt of
+inequality are not the same measure. The upper bound matches the per-capita
+income Gini of 0.70 that Statistics South Africa reports for 2009
+\cite{statssa2019inequality}. The closest published comparisons are income
+measures: Statistics South Africa reports a per-capita income Gini of 0.67 for
+2015, and Hundenborn et al.\ compute 0.66 from the 2014 wave of \ac{NIDS}
+\cite{statssa2019inequality, hundenborn2018drivers}. The model's 0.651 is
+0.01 to 0.02 below them. Similarly, synthetic debt of
 R191.4 billion is 49\% of the corresponding R392.0 billion
 \ac{CCMR} book \cite{ncr_ccmr_2017}. Underreporting may contribute to
 this gap, but the comparison does not identify its cause. Imputing missing

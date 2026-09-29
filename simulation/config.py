@@ -114,7 +114,10 @@ def load_ies_bnpl_share() -> float:
 #: Vintage of the published Payflex terms the model takes its product mechanics from.
 PAYFLEX_TERMS_VINTAGE = 2026
 
-#: Payflex figures as published (nominal), and as the model uses them (2017 Rands).
+#: Payflex figures as published (nominal), and as the model uses them (2017 Rands). The
+#: order cap is the exception: it is an ASSUMPTION at 2026 prices. Payflex's terms state no
+#: maximum order value (clause 4.4 reserves the right to amend a customer's spend limit;
+#: read 2026-09-29), and no Payflex page was found that states one.
 PAYFLEX_ORDER_CAP_NOMINAL = 15_000.0
 PAYFLEX_LATE_FEE_PER_TICK_NOMINAL = 190.0   # R95 per week x 2 weeks
 PAYFLEX_LATE_FEE_CAP_NOMINAL = 285.0        # 3 weeks x R95
@@ -457,10 +460,11 @@ class ParamSet:
     bnpl_order_cap: float = _p(
         BNPL_ORDER_CAP_2017,
         rule="D11",
-        provenance="SOURCED",
+        provenance="ASSUMPTION",
         source=(
-            f"Payflex per-order cap of R{PAYFLEX_ORDER_CAP_NOMINAL:,.0f} as published "
-            f"({PAYFLEX_TERMS_VINTAGE} vintage), DEFLATED to 2017 Rands "
+            f"Assumed per-order cap of R{PAYFLEX_ORDER_CAP_NOMINAL:,.0f} at "
+            f"{PAYFLEX_TERMS_VINTAGE} prices. NOT a published figure: a search on 2026-09-29 "
+            "found no Payflex page that states a maximum order value. DEFLATED to 2017 Rands "
             "(cpi_deflator_2017.json). Every other quantity in the model is 2017 Rands; "
             "using the nominal figure denominated the BNPL side ~1.4x too high "
             "(DEFECTS.md B29)."
@@ -482,15 +486,19 @@ class ParamSet:
             "median banked Q1 household's monthly income (DEFECTS.md B30). "
             "VALUE CHOSEN 2026-08-13 to make the model's STACKED total match the only "
             "measurement of that quantity: Woolard found it 'relatively easy' to accrue "
-            "~GBP1,000 of bureau-invisible BNPL debt, ~37% of UK median monthly "
-            "household income ACROSS ALL PROVIDERS, so ~0.09 each across four. "
+            "~GBP1,000 of bureau-invisible BNPL debt, 39% of UK median monthly "
+            "household income ACROSS ALL PROVIDERS, so ~0.10 each across four. "
             "lambda=0.10 x 4 platforms reproduces that; the earlier 0.25 gave a stacked "
-            "total of 1.0x monthly income, ~2.7x what Woolard called easy to accrue. "
-            "Cross-check: Afterpay's published initial and maximum limits are ~8% and "
-            "~26% of AU median monthly income, so 0.10 sits at the initial-limit end. "
-            "Reported against that band, NOT fitted to it -- the same treatment "
-            "shock_prob receives against the QLFS band. The income denominators are the "
-            "author's arithmetic and must be pinned before the band is published."
+            "total of 1.0x monthly income, ~2.5x what Woolard called easy to accrue. "
+            "Cross-check: Afterpay's initial limit of around AUD500 and maximum of "
+            "AUD2,000 are 6.5% and 26% of AU median GROSS monthly household income, so "
+            "0.10 sits near the initial-limit end. Reported against that band, NOT fitted "
+            "to it -- the same treatment shock_prob receives against the QLFS band. "
+            "Income denominators pinned 2026-09-29: UK median equivalised household "
+            "disposable income GBP30,500 (ONS, FYE 2020); AU median gross household "
+            "income AUD1,786 a week (ABS, 2019-20). The two measures differ: on AU median "
+            "equivalised disposable income (AUD959 a week) the Afterpay figures are 12% "
+            "and 48%."
         ),
         sweep="MANDATORY: 0.1-1.0, with the binding rate reported BY QUINTILE",
     )

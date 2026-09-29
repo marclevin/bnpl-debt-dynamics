@@ -267,6 +267,8 @@
   "injection_Q5_beta0_se": 0.001967,
   "injection_Q5_beta1": 0.004899,
   "injection_Q5_beta1_se": 0.002681,
+  "order_cap_bind_beta0": 0.002593,
+  "order_cap_bind_beta1": 0.004263,
   "injection_quintiles_detectable_beta0": [],
   "injection_quintiles_detectable_beta1": [
     "Q2",

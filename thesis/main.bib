@@ -372,7 +372,13 @@
   lastchecked = {29 September 2026},
   annote         = {Pay in 4: 25\% at checkout then three further 25\% instalments every
                   two weeks over six weeks, interest free; late fee R95 per week capped
-                  at three weeks; automated credit assessment; orders capped at R15,000.
+                  at three weeks, and at the lower of R285 or 50\% of the purchase price
+                  (clause 8.5); automated credit assessment. The page states NO maximum
+                  order value: clause 4.4 reads ``Payflex reserve the right, at any time
+                  with or without notice, based on our reasonable assessment, to amend
+                  your spend limit''. Checked 2026-09-29; archived copies of the page
+                  from 2019 to 2026 do not state one either. The model's order cap of
+                  R15,000 is therefore an assumption and is not cited to this page.
                   \textbf{All Rand figures here are NOMINAL at 2026 vintage} and are
                   deflated to 2017 Rands before use (statssa\_cpi), since every other
                   quantity in the model is in 2017 Rands. The product MECHANICS --- four
@@ -420,8 +426,9 @@
                  of \pounds65 to \pounds75 and states that ``in theory, it would be
                  relatively easy for a consumer to amass around \pounds1000 of BNPL
                  credit using multiple lenders'': an illustration, not a measured
-                 stacked total. Submodel~12 converts the \pounds1,000 to roughly 37\%
-                 of UK median monthly household income (the author's arithmetic).
+                 stacked total. Submodel~12 converts the \pounds1,000 to 39\% of UK
+                 median monthly household disposable income (ons\_income\_fye2020):
+                 1000 / (30,500 / 12) = 39.3\%.
                  Verified against the published PDF on 2026-09-29. NOTE: the \pounds88
                  and \pounds110 transaction values attributed to this report in
                  data/config/bnpl\_anchors\_2017.json were not found in it}
@@ -442,7 +449,49 @@
                  in the prior year. Used in Submodel~4 as one of the three regulator
                  figures behind the purchase-size RATIO benchmark: the levels are in
                  three currencies and do not transfer, but normalised by median monthly
-                 household income the US and Australian figures both sit near 2\%}
+                 household income the US and Australian figures both sit near 2\%.
+                 Table 2, p. 10 (``Comparison of maximum loan amount and loan term'')
+                 gives Afterpay's maximum loan amount as \$2,000; the report states no
+                 initial limit. Read from the published PDF on 2026-09-29}
+}
+
+@misc{ons_income_fye2020,
+  title        = {Average household income, {UK}: financial year ending 2020},
+  author       = {{Office for National Statistics}},
+  year         = {2021},
+  month        = jan,
+  howpublished = {Statistical bulletin, released 21 January 2021, corrected 22 March 2022},
+  url          = {https://www.ons.gov.uk/peoplepopulationandcommunity/personalandhouseholdfinances/incomeandwealth/bulletins/householddisposableincomeandinequality/financialyear2020},
+  lastchecked = {29 September 2026},
+  annote       = {Main points: ``In financial year ending (FYE) 2020 (April 2019 to March
+                  2020) ... median household income in the UK was \pounds30,500''. The
+                  measure is median equivalised household disposable income of
+                  individuals (modified OECD scale), after direct taxes, from the Household
+                  Finances Survey. The bulletin as first
+                  published gave \pounds29,900; the correction of 22 March 2022 revised it
+                  to \pounds30,500. Used in Submodel~12: \pounds1,000 is 39.3\% of
+                  30,500 / 12 = \pounds2,542 a month (40.1\% on the figure first
+                  published). The 37\% used before this date matches the FYE 2022
+                  median of \pounds32,400, published in January 2023, after the Woolard
+                  Review. Read 2026-09-29}
+}
+
+@misc{abs_income_2019_20,
+  title        = {Household Income and Wealth, {Australia}, 2019--20},
+  author       = {{Australian Bureau of Statistics}},
+  year         = {2022},
+  month        = apr,
+  howpublished = {Released 28 April 2022, from the Survey of Income and Housing 2019--20},
+  url          = {https://www.abs.gov.au/statistics/economy/finance/household-income-and-wealth-australia/2019-20},
+  lastchecked = {29 September 2026},
+  annote       = {Key statistics table, 2019--20: median weekly gross household income
+                  \$1,786 (not equivalised, before tax); median weekly equivalised
+                  disposable household income \$959. Monthly, at 52 / 12 weeks: \$7,739
+                  and \$4,156. Afterpay's maximum of \$2,000 (asic2020rep672, Table 2) is
+                  25.8\% of the gross figure and 48.1\% of the equivalised disposable
+                  figure. The 0.26 of Submodel~12 is the gross measure, which differs
+                  from the equivalised disposable measure used for the United Kingdom
+                  (ons\_income\_fye2020). Read 2026-09-29}
 }
 
 
@@ -560,13 +609,22 @@
 % with the no-disclosure regulatory position in Submodel 11.
 
 @misc{payflex_limits,
-  title        = {What is my {Payflex} limit?},
+  title        = {What's the maximum {I} can spend with {Payflex}?},
   author       = {{Payflex}},
-  year         = {2025},
-  howpublished = {\url{https://support.myboost.co/hc/en-us/articles/12980246778777-What-is-my-PayFlex-limit}},
-  annote         = {No published rolling limit. The spend limit is set per customer from
-                  credit history and repayment behaviour. Payflex publishes only the
-                  R15,000 per-order cap (payflex\_terms)}
+  year         = {2024},
+  howpublished = {Payflex website, frequently asked questions; archived copy of 10 November 2024},
+  url          = {https://web.archive.org/web/20241110151634/https://payflex.co.za/helpie_faq/whats-the-maximum-i-can-spend-with-payflex/},
+  lastchecked = {29 September 2026},
+  annote         = {The whole answer reads: ``This depends on your individual Payflex
+                  assessment. If you purchase regularly using Payflex and always make
+                  your repayments on time, then you'll be in our good books and we may
+                  increase your spending limit over time.'' No Rand figure, no rolling
+                  limit and no maximum order value. Read 2026-09-29. This entry
+                  REPLACES a link to support.myboost.co, which is the help centre of
+                  Boost PayFlex, a Malaysian product priced in ringgit, and not the
+                  South African provider. Third-party pages give different maxima
+                  (loanrating.co.za: R10,000; Peach Payments merchant FAQ: ``e.g.,
+                  R20,000''); neither is a Payflex statement and neither is cited}
 }
 
 @misc{payjustnow_limits,
@@ -756,7 +814,49 @@
                   every vintage from 2019-09 to 2026-02; 2026-04 and 2026-07 vintages give
                   1993 59.3, 2000 57.8, 2005 65.0, 2008 62.5, 2010 60.9, 2014 59.6,
                   2022 54.1 (the live SI.POV.GINI series, last updated 2026-07-13). PIP
-                  welfare type for ZAF is consumption}
+                  welfare type for ZAF is consumption. The February 2026 archive vintage
+                  gives 2005 64.8, 2008 63.0 and 2010 63.4, which the April 2026 vintage
+                  also revises}
+}
+
+@techreport{statssa2019inequality,
+  title       = {Inequality Trends in {South Africa}: A multidimensional diagnostic of
+                 inequality},
+  author      = {{Statistics South Africa}},
+  institution = {Statistics South Africa},
+  address     = {Pretoria},
+  type        = {Report},
+  number      = {03-10-19},
+  year        = {2019},
+  url         = {https://www.statssa.gov.za/publications/Report-03-10-19/Report-03-10-192017.pdf},
+  lastchecked = {29 September 2026},
+  annote      = {Annexure B, Table B3, p. 165, ``Inequality measures based on per capita
+                 income'': Gini for the total population 0.72 (2006), 0.70 (2009), 0.69
+                 (2011) and 0.67 (2015), from the IES 2005/06, LCS 2008/09, IES 2010/11
+                 and LCS 2014/15. Table 4.1.3, p. 33 gives per-capita expenditure Ginis
+                 of 0.67, 0.65, 0.65 and 0.65. Footnote 6, p. 5 cites 0.66 to 0.68 from
+                 Hundenborn et al. Used in data-layer validation check C as the
+                 like-for-like income comparison (0.67 for 2015) and for the upper
+                 bound (0.70 for 2009). Read from an archived copy of the PDF on
+                 2026-09-29}
+}
+
+@techreport{hundenborn2018drivers,
+  title       = {Drivers of inequality in {South Africa}},
+  author      = {Hundenborn, Janina and Leibbrandt, Murray and Woolard, Ingrid},
+  institution = {UNU-WIDER},
+  type        = {{WIDER} Working Paper},
+  number      = {2018/162},
+  year        = {2018},
+  month       = dec,
+  url         = {https://www.wider.unu.edu/publication/drivers-inequality-south-africa},
+  lastchecked = {29 September 2026},
+  annote      = {Table 1, p. 3: Gini of per-capita household income 0.68 (1993, PSLSD),
+                 0.69 (2008, NIDS Wave 1) and 0.66 (2014, NIDS Wave 4), from weighted
+                 data; the income measure excludes agricultural income and imputed
+                 rent. The closest published comparison to the model's NIDS Wave 5
+                 figure that was located; no published per-capita income Gini
+                 computed from Wave 5 was found. Read from the PDF on 2026-09-29}
 }
 
 % --- The 2026 regulatory turn (added 2026-09-10) ------------------------------

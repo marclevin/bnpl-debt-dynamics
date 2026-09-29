@@ -545,6 +545,8 @@ def tab_distribution(rq0: pd.DataFrame) -> None:
         N[f"injection_{q}_beta0"], N[f"injection_{q}_beta0_se"] = d, se
         d, se = delta(b1, off, f"default_rate_final_{q}")
         N[f"injection_{q}_beta1"], N[f"injection_{q}_beta1_se"] = d, se
+    N["order_cap_bind_beta0"] = ms(b0.bnpl_order_cap_bind_rate)[0]
+    N["order_cap_bind_beta1"] = ms(b1.bnpl_order_cap_bind_rate)[0]
     inj = "; ".join(f"{q} {pm(N[f'injection_{q}_beta0'], N[f'injection_{q}_beta0_se'])}pp" for q in Q)
     inj1 = "; ".join(f"{q} {pm(N[f'injection_{q}_beta1'], N[f'injection_{q}_beta1_se'])}pp" for q in Q)
     N["injection_quintiles_detectable_beta0"] = [
