@@ -25,14 +25,18 @@ The data the model reads are not in git (`data/processed/synthetic_population_50
 | Late-fee cap; cap documented and tested | `f40e4bf` |
 | Combined bureau-and-screening arm | `c6c8742` (calibration, six suites and Sobol were run at this commit) |
 | Alternative checkout assumption; effect suite re-run | `e366631` |
+| Alternative checkout assumption removed; one shortfall rule | `4ef473c` |
 
 Commit `e366631` adds a parameter whose default leaves behaviour unchanged. `rerun_effect.py`
 confirms this: the baseline suite and the 880 effect runs already stored are reproduced
-exactly at that commit.
+exactly at that commit. Commit `4ef473c` removes the parameter again, and
+`remove_checkout_arm.py` confirms that the baseline suite and the same 880 effect runs are
+reproduced exactly. The 40 runs of the removed arm are in `effect_checkout_unfunded.parquet`
+in this folder and can be reproduced only from `e366631`.
 
 ## Steps
 
-    # 1. tests (129)
+    # 1. tests (128)
     .venv/bin/python -m pytest simulation/tests -q
 
     # 2. calibration: original grid, targets and objective
@@ -55,6 +59,9 @@ exactly at that commit.
     PYTHONPATH=. .venv/bin/python results/corrections_2026-09-29/diagnostic_summary.py
     PYTHONPATH=. .venv/bin/python results/corrections_2026-09-29/before_after.py --write
     PYTHONPATH=. .venv/bin/python results/corrections_2026-09-29/cap_definitions.py
+    PYTHONPATH=. .venv/bin/python results/corrections_2026-09-29/remove_checkout_arm.py
+
+`before_after.py` and `rerun_effect.py` read the removed arm and run at commit `e366631`.
 
 ## Configurations and seeds
 
@@ -72,7 +79,7 @@ them. Twenty replicates per arm, seeds `seed0 + 0..19`.
 | access, threshold rule | `rq2t.parquet` | 1,460 | 60,000; 61,000 for the mean-threshold arms | yes, within each block |
 | scenarios and levers | `rq3.parquet` | 440 | 40,000 benchmark and cooling-off; 41,000 bureau; 42,000 screening; 43,000 cap; 44,000 both switches | only the cooling-off arms share the benchmark's seeds |
 | sensitivity of the level | `robustness.parquet` | 620 | 50,000 to 59,000, one block per group | within a group |
-| sensitivity of the effect | `effect.parquet` | 920 | 70,000 | yes |
+| sensitivity of the effect | `effect.parquet` | 880 | 70,000 | yes |
 | Sobol | `results/summary/sobol_runs.parquet` | 4,096 | see file | 2 replicates per design point |
 | step-by-step diagnostic | `results/corrections_2026-09-29/diagnostic/*.parquet` | 160 per step | 10,000 | yes |
 

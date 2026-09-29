@@ -119,3 +119,51 @@ the corrections are those listed in section 2 together with these changes of wor
 One audit finding was not accepted as written: the arms with a limit of 0.25 and of 1.0 months
 of income are not identical runs. They give the same default in every replicate at beta = 0,
 and their volumes differ slightly.
+
+## 7. Marc's decisions of 2026-09-29, and what was done
+
+Sections 1 to 6 are left as the record of the corrections. Where this section differs from
+them, this section is the current position.
+
+**1. The corrected shortfall rule is the only one.** Marc confirmed that defect 5 was a defect:
+a household is distressed only if the lender refuses. The alternative assumption
+`shortfall_checkout_financed = False` is removed from the code (commit `4ef473c`): the
+parameter, the branch in `_seek_credit`, the arm `eff_checkout_unfunded`, its test, and its
+entries in the table builder, the check script and the register generator. The thesis no
+longer reports the arm (commit `c29300a`). Section 1's closing sentence, "The thesis reports
+both", and the second item of section 4 describe the position before this decision.
+
+- The 40 runs of the arm were moved from `results/raw/effect.parquet` to
+  `effect_checkout_unfunded.parquet` in this folder, together with the parameter column that
+  only they varied. The file is not tracked, like the other raw runs. The arm can be
+  reproduced from commit `e366631`, and from no later commit.
+- `remove_checkout_arm.py` reran the baseline suite (60 runs) and the remaining effect suite
+  (880 runs) at commit `4ef473c` and compared every numeric column with the stored runs. The
+  largest absolute difference is 0.0 in both (`remove_checkout_arm.log`).
+- `rerun_effect.py` and `before_after.py` read the removed arm. They belong to the record and
+  run at commit `e366631`, not at the current one.
+- Two conclusions rested on the comparison and were removed with it: that the size of the
+  effect depends on the checkout assumption more than on any other setting, and that it
+  depends more on how households finance a shortfall than on what lenders can see. No
+  remaining experiment compares those two things. The limits in the conclusion are now three.
+
+**2. Committed shortfalls stay as they are.** Marc considered carrying an unpaid committed
+shortfall forward and kept the rule of section 3. No code or text changed.
+
+**3. RQ2 is reworded** (commit `03bf1ab`): "When BNPL platforms cannot observe one another's
+exposures, how often do households owe several platforms at once, and how do enabling BNPL,
+platform count, access and peer adoption affect population default?" The restatements in
+Sections 1, 3, 4 and 4.6 follow it. Nothing in the thesis describes stacking as emergent.
+
+**4. Four figures were checked against their sources** (commit `7eb36b8`). No parameter and no
+validation tolerance changed.
+
+| Figure | Source read on 2026-09-29 | Result |
+|---|---|---|
+| Order cap, R15,000 | Payflex terms and conditions; the pages in the payflex.co.za sitemap and archived copies of the terms, 2019 to 2026 (scanned by a search agent); Payflex's archived FAQ "What's the maximum I can spend with Payflex?" | **Not sourced.** No Payflex page states a maximum order value. Clause 4.4 of the terms reserves the right to amend a customer's spend limit, and the FAQ says the limit depends on an individual assessment. Third-party pages give R10,000 (loanrating.co.za) and "e.g., R20,000" (Peach Payments). The cap is now recorded as an assumption. It binds on 0.3% of platform requests at beta = 0. |
+| UK median income behind the 37% | ONS, "Average household income, UK: financial year ending 2020", released 21 January 2021, corrected 22 March 2022 | Median equivalised household disposable income, 30,500 pounds a year. 1,000 pounds is **39.3%** of a month's income. The text now says 39%. The earlier 37% matches the median for the year to March 2022, published after the Woolard Review. |
+| Australian median income behind 0.26 | ABS, "Household Income and Wealth, Australia, 2019-20", released 28 April 2022; ASIC REP 672, Table 2 | Afterpay's maximum of A$2,000 is **25.8%** of median gross household income (A$1,786 a week), so 0.26 stands on that measure. On median equivalised disposable income (A$959 a week), the measure used for the UK, it is 48.1%. The text names the measure and gives both. |
+| Gini bounds, 0.63 and 0.70 | World Bank API, archive vintages of February and April 2026 and the live series; Stats SA Report 03-10-19, Table B3; Hundenborn, Leibbrandt and Woolard, WIDER Working Paper 2018/162, Table 1 | The World Bank citation is accurate: 63.0 for 2014 in the February vintage, 59.6 and 54.1 (2022) in the April vintage, consumption-based. The upper bound matches Stats SA's per-capita income Gini for 2009, 0.70. Income comparisons added: 0.67 (Stats SA, 2015) and 0.66 (NIDS 2014). No published income Gini computed from NIDS Wave 5 was found. |
+
+One bibliography entry was wrong and is corrected: `payflex_limits` pointed at
+support.myboost.co, the help centre of Boost PayFlex, a Malaysian product.
