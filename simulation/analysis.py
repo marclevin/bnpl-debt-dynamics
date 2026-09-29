@@ -293,7 +293,7 @@ def rq1_stacking_figure() -> None:
     ax.text(1.05, 0.325, "CFPB 32% cross-firm (US, order-of-magnitude)", fontsize=7, c="crimson")
     ax.set_xlabel("Number of BNPL platforms (N=1 isolates single-platform accumulation)")
     ax.set_ylabel("Share of households holding 2+ concurrent facilities")
-    ax.set_title("RQ2: emergent cross-platform stacking")
+    ax.set_title("RQ2: cross-platform stacking")
     ax.legend(fontsize=8)
     ax.grid(alpha=0.3)
     fig.tight_layout()

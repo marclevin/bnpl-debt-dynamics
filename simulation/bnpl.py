@@ -6,7 +6,9 @@ D9 is the mechanism, not an oversight.
 
 D12: platforms cannot see one another. This FOLLOWS FROM D10 rather than being a fresh
 assumption: with BNPL outside the NCA there is no shared reporting infrastructure through
-which one platform could observe another's exposure. Stacking depth is therefore emergent.
+which one platform could observe another's exposure. Stacking depth follows from the
+routing rule in `HouseholdAgent._bnpl_draw`, which sends each request to the platforms in
+a random order.
 
 D13: Pay in 4 on the Payflex schedule — 25% at checkout then 25% at each of the next
 three ticks, which lands exactly on tick boundaries. Interest zero. Late fee R95/week
