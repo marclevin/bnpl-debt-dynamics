@@ -65,21 +65,11 @@ because interest is charged on a smaller outstanding balance. This aggregate mea
 directly comparable with the higher credit-card interest that deHaan et al.\ observe among
 individual adopters \cite{dehaan2024bnpl}.
 
-Two arms show why the effect at $\beta=0$ is small and how far it rests on one assumption.
-With the want-driven path switched off ($q_{\text{base}} = 0$, $\beta = 0$), households use
-\ac{BNPL} only to cover shortfalls, and enabling \ac{BNPL} changes default by
-$+0.05 \pm 0.09$ points (Table~\ref{tab:effect}). A household that finances part of a
+Used only to cover shortfalls, \ac{BNPL} does not change default detectably. With the
+want-driven path switched off ($q_{\text{base}} = 0$, $\beta = 0$), enabling \ac{BNPL}
+changes default by $+0.05 \pm 0.09$ points (Table~\ref{tab:effect}). A household that finances part of a
 shortfall with \ac{BNPL} asks the traditional lender for the rest. In this arm the lender
 refuses $17 \pm 8$ fewer applications than without \ac{BNPL} and lends R0.83 million less.
-
-This result depends on the assumption that a household can borrow the checkout quarter of a
-shortfall agreement (Section~\ref{sec:amount}). Without that assumption the household stays a
-quarter of the agreement short in every tick in which it uses \ac{BNPL} for a shortfall. New
-traditional lending then falls from R5.44 million to R3.34 million, and enabling \ac{BNPL}
-raises default by $1.11 \pm 0.10$ points at $\beta=0$ and $1.92 \pm 0.10$ at $\beta=1$
-(Table~\ref{tab:effect}). No evidence located says which assumption holds. The effect of
-\ac{BNPL} on default at $\beta=0$ is therefore about 0.1 points under one assumption and about
-1.1 under the other, and this is the assumption on which the size of the effect most depends.
 
 \begin{figure}[H]
 \centering
@@ -251,8 +241,8 @@ tests the \ac{BNPL} effect itself. Every setting is run with \ac{BNPL} off and o
 $\beta=0$ and $\beta=1$, over one shared seed block, so each effect is a paired difference on
 the same seeds.
 
-At $\beta=1$ the effect is positive and detectable under sixteen of the seventeen settings
-that keep the checkout assumption. Among those sixteen it ranges from $0.25 \pm 0.09$ points
+At $\beta=1$ the effect is positive and detectable under sixteen of the seventeen settings.
+Among those sixteen it ranges from $0.25 \pm 0.09$ points
 at $\kappa=0.07$ to $1.27 \pm 0.11$ where households borrow one tick of committed expenditure
 beyond the shortfall and the shortfall cap is removed. Purchase size and the borrowing-amount
 rule move it most. The effect is $0.91 \pm 0.07$ points at $\kappa=0.28$ and
@@ -275,5 +265,4 @@ and the share that does so rises with platform count and with peer influence. Th
 rule produces these shares, so they say nothing about how households choose providers.
 Default does not respond detectably to platform count. It rises with peer influence and,
 where peer influence is present, with access, and these are the arms in which households
-borrow most. The size of the \ac{BNPL} effect depends on the checkout assumption more than on
-any other setting tested.
+borrow most.

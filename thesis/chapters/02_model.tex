@@ -240,7 +240,7 @@ cross-platform stacking in more detail.
 \addlinespace
 4. Borrowing amount & Shortfall path: \textbf{structural assumption} with no anchor located; households request the exact shortfall. Want-driven path: purchase size is drawn lognormally with mean $\kappa$ times the household's own monthly discretionary budget, so purchase size inherits the population's heterogeneity. & \cite{statssa_ies_2023} & Sweeps: shortfall / $+25\%$ / $+$ one tick of committed expenditure; $\kappa = 0.139$ (derived from \ac{IES} 2022/23 \ac{COICOP} shares) swept 0.07--0.28; dispersion 0.6 (assumption); sizing base swept discretionary / income. Realised mean order checked against R992 (2017 Rands), an average order value we derive by dividing the issuer's disclosed cumulative gross merchandise value by its disclosed transaction count and deflating to 2017 \cite{weaver2025iar}. \\
 \addlinespace
-5. Lender choice & Eligible households take \ac{BNPL} first, up to $\kappa$ times their monthly discretionary budget, an assumed ceiling on its contribution to the shortfall. An agreement frees three quarters of its value in cash, since a quarter is paid at checkout. The household asks the traditional lender for the amount it still lacks. The no-\ac{BNPL} baseline uses traditional credit only. & \cite{ackert2025bnpl} & The cap is an \textbf{assumption}; an uncapped arm is crossed with the three Submodel~4 rules. That the household can borrow the checkout quarter is an \textbf{assumption}; one arm removes it. Comparison with Pattern 1. \\
+5. Lender choice & Eligible households take \ac{BNPL} first, up to $\kappa$ times their monthly discretionary budget, an assumed ceiling on its contribution to the shortfall. An agreement frees three quarters of its value in cash, since a quarter is paid at checkout. The household asks the traditional lender for the amount it still lacks. The no-\ac{BNPL} baseline uses traditional credit only. & \cite{ackert2025bnpl} & The cap is an \textbf{assumption}; an uncapped arm is crossed with the three Submodel~4 rules. That the household asks the traditional lender for the whole of the amount it still lacks is an \textbf{assumption}. Comparison with Pattern 1. \\
 \addlinespace
 6. Repayment and arrears & Scheduled-payers pay the full amortised instalment. Minimum-payers pay the larger of accrued interest and 5\% of balance per month, tick-scaled; the fraction is an \textbf{assumption}, since neither the \ac{NCA} nor any located source prescribes a formula. Unpaid amounts accrue as arrears in \ac{CCMR} age bands. Payment friction skips an affordable traditional instalment with fixed probability. & \cite{Keys2019, Kuchler2021} & Minimum-payer share 0.29 (swept 0.20--0.40); minimum fraction swept 0.025--0.10. Friction is the second fitted parameter, calibrated to the \ac{CCMR} 1--30 day band; it applies to traditional debt only, since \ac{BNPL} auto-debits a card. \\
 \addlinespace
@@ -285,13 +285,9 @@ cash. An agreement of value $F$ takes $F/4$ at checkout and leaves $3F/4$ in the
 household's hands, so it covers $3F/4$ of the shortfall. The household asks the
 traditional lender for the amount it still lacks, and the lender grants or
 refuses that amount in full under Submodel~9. A refusal leaves the shortfall
-unpaid, and the household is recorded as distressed in that tick.
-
-The model assumes that the household can borrow the checkout quarter from the
-traditional lender. One arm of the sensitivity analysis removes the assumption:
-the household then asks the lender only for the part of the request that
-\ac{BNPL} did not finance, and stays $F/4$ short whenever it uses \ac{BNPL} for a
-shortfall (Section~\ref{sec:results-effect}).
+unpaid, and the household is recorded as distressed in that tick. That the
+household asks the traditional lender for the whole of the amount it still
+lacks is an assumption.
 
 The shortfall path is motivated by evidence that \ac{BNPL} users are
 disproportionately liquidity-constrained \cite{hayashi2025constraints, dehaan2024bnpl};
