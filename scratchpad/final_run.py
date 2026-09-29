@@ -1,6 +1,6 @@
 """Final-run driver: the three commands of OVERVIEW step 4, in order, stopping on failure.
 
-    ./env/python.exe scratchpad/final_run.py [--skip-sobol]
+    PYTHONPATH=. .venv/bin/python scratchpad/final_run.py [--skip-sobol]
 
 Everything the three steps print goes to results/final_run.log, which ends with one of
 two sentinel lines: `FINAL RUN COMPLETE` or `FINAL RUN FAILED at <step>`. The log opens

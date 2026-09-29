@@ -231,6 +231,20 @@ def rq3_interventions(reps: int) -> list[ParamSet]:
             reps,
             seed0=42_000,
         )
+        # Levers 1 and 2 together. Added 2026-09-29: the reported arrangements would
+        # apply both, and until then no arm combined them although the two were
+        # described as crossed. Its own seed block, as for the two single switches.
+        out += replicate(
+            calibrated(
+                bnpl_enabled=True,
+                beta=b,
+                bnpl_bureau_visible=True,
+                bnpl_affordability_check=True,
+                label=f"rq3_both_b{b}",
+            ),
+            reps,
+            seed0=44_000,
+        )
         # Lever 4: cap on concurrent facilities (platforms with a balance, not
         # agreements). HYPOTHETICAL -- no jurisdiction imposes one.
         for cap in (1, 2, 3):
