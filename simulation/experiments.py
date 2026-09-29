@@ -380,7 +380,6 @@ EFFECT_SETTINGS: list[tuple[str, dict, bool]] = [
     ("limit0.25", dict(bnpl_limit_income_multiple=0.25), False),
     ("limit1.0", dict(bnpl_limit_income_multiple=1.0), False),
     ("shock_single_tick", dict(shock_persistent=False), True),
-    ("checkout_unfunded", dict(shortfall_checkout_financed=False), False),
 ]
 
 

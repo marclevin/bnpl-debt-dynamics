@@ -164,7 +164,6 @@ def main() -> None:
     expect("effect", t, cell(eff[eff.label == "eff_ref_off"].default_rate_final))
     expect("effect", t, paired("eff_amountcommitted_b0.0", "eff_amountcommitted_off"))
     expect("effect", t, paired("eff_want_off_b0.0", "eff_ref_off"))
-    expect("effect", t, paired("eff_checkout_unfunded_b0.0", "eff_ref_off"))
 
     print(f"OK: {checked} numbers re-derived from results/raw match the generated fragments")
 

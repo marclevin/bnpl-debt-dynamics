@@ -973,9 +973,6 @@ EFFECT_ROWS = [
     ("Income-shock persistence (Submodel 1)", [
         ("shock_single_tick", "single-tick shock", "shock_single_tick"),
     ]),
-    ("Checkout payment on a shortfall agreement (Submodel 5)", [
-        ("checkout_unfunded", "not requested from the traditional lender", "ref"),
-    ]),
 ]
 
 
@@ -1003,18 +1000,14 @@ def tab_effect(eff: pd.DataFrame) -> None:
         N[f"eff_{k}_b1"], N[f"eff_{k}_b1_se"] = d, s
     N["eff_want_off_b0"], N["eff_want_off_b0_se"] = dw, sw
     N["eff_ref_off_default"] = ms(ref_off.default_rate_final)[0]
-    # Ranges over the settings that keep the default rule for the checkout payment; the
-    # alternative rule is reported beside them, not inside them.
-    swept0 = {k: v for k, v in effects0.items() if k != "checkout_unfunded"}
-    swept1 = {k: v for k, v in effects1.items() if k != "checkout_unfunded"}
-    b0 = [d for d, _ in swept0.values()]
-    b1 = [d for d, _ in swept1.values()]
+    b0 = [d for d, _ in effects0.values()]
+    b1 = [d for d, _ in effects1.values()]
     N.update(eff_b0_min=min(b0), eff_b0_max=max(b0), eff_b1_min=min(b1), eff_b1_max=max(b1))
-    N["eff_b0_detectable"] = sorted(k for k, (d, s) in swept0.items() if detectable(d, s))
-    N["eff_b1_detectable"] = sorted(k for k, (d, s) in swept1.items() if detectable(d, s))
-    N["eff_b0_n"], N["eff_b1_n"] = len(swept0), len(swept1)
-    N["eff_b0_negative_detectable"] = sorted(k for k, (d, s) in swept0.items() if detectable(d, s) and d < 0)
-    N["eff_b1_negative_detectable"] = sorted(k for k, (d, s) in swept1.items() if detectable(d, s) and d < 0)
+    N["eff_b0_detectable"] = sorted(k for k, (d, s) in effects0.items() if detectable(d, s))
+    N["eff_b1_detectable"] = sorted(k for k, (d, s) in effects1.items() if detectable(d, s))
+    N["eff_b0_n"], N["eff_b1_n"] = len(effects0), len(effects1)
+    N["eff_b0_negative_detectable"] = sorted(k for k, (d, s) in effects0.items() if detectable(d, s) and d < 0)
+    N["eff_b1_negative_detectable"] = sorted(k for k, (d, s) in effects1.items() if detectable(d, s) and d < 0)
     N["eff_want_off_detectable"] = bool(detectable(dw, sw))
     table(
         "tab_effect",
@@ -1025,10 +1018,7 @@ def tab_effect(eff: pd.DataFrame) -> None:
         "(70{,}000--70{,}019) shared by every arm, so each effect is a same-seed paired difference, "
         "\\ac{BNPL} on less off, with one paired standard error. The no-\\ac{BNPL} column gives the "
         "setting's own \\ac{BNPL}-free default rate where the setting changes that model, and the "
-        f"reference arm's otherwise; {REPL.lower()}. {SHOCK_CAP}. Under the checkout setting the "
-        "traditional lender is asked for the request less the whole amount \\ac{BNPL} financed, so "
-        "the quarter paid at checkout is requested from neither lender (Section~\\ref{sec:amount}). "
-        "The last row switches "
+        f"reference arm's otherwise; {REPL.lower()}. {SHOCK_CAP}. The last row switches "
         "the want-driven path off, so \\ac{BNPL} is used only to cover shortfalls.",
         "L{4.8cm}rrr",
         r"\textbf{Setting} & \textbf{No \ac{BNPL} (\%)} & \textbf{Effect, $\beta=0$ (pp)} & "
@@ -1103,7 +1093,6 @@ def derived_numbers(rq0, rq2, rq2t, rq3, eff) -> None:
     N["zero_savings_beta1"] = ms(b1.zero_savings_rate_mean)[0]
     N["volume_want_off"] = ms(arm(eff, "eff_want_off_b0.0").bnpl_volume_cumulative)[0]
     N["volume_eff_ref_b0"] = ms(arm(eff, "eff_ref_b0.0").bnpl_volume_cumulative)[0]
-    N["lending_checkout_unfunded_b0"] = ms(arm(eff, "eff_checkout_unfunded_b0.0").trad_granted_value)[0]
     N["lending_eff_ref_b0"] = ms(arm(eff, "eff_ref_b0.0").trad_granted_value)[0]
 
     # --- does the effect differ between quintiles? the largest against the smallest ------

@@ -322,20 +322,6 @@ class ParamSet:
         source="No anchor found in the literature sweep. The model's first uncited rule.",
         sweep="MANDATORY: shortfall / +25% / plus one tick of committed expenditure",
     )
-    shortfall_checkout_financed: bool = _p(
-        True,
-        rule="D5",
-        provenance="ASSUMPTION",
-        source=(
-            "Whether the household can borrow, from the traditional lender, the quarter of "
-            "a shortfall agreement that is paid at checkout. True: the lender is asked for "
-            "the request less the cash BNPL freed (three quarters of the amount financed). "
-            "False: the lender is asked for the request less the whole amount financed, so "
-            "the checkout quarter is requested from nobody and the household stays short "
-            "by it. No source says which holds."
-        ),
-        sweep="effect suite, on/off",
-    )
     shortfall_bnpl_capped: bool = _p(
         True,
         rule="D5",

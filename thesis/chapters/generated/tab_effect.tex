@@ -4,7 +4,7 @@
 \centering
 \caption{The \ac{BNPL} effect on default under each swept assumption}
 \label{tab:effect}
-\tabnote{The effect of enabling \ac{BNPL} on the population default rate at the final tick, under each setting of the sensitivity analysis, at $\beta = 0$ (the control) and $\beta = 1$. Each setting is run with \ac{BNPL} off and on over one seed block (70{,}000--70{,}019) shared by every arm, so each effect is a same-seed paired difference, \ac{BNPL} on less off, with one paired standard error. The no-\ac{BNPL} column gives the setting's own \ac{BNPL}-free default rate where the setting changes that model, and the reference arm's otherwise; means over 20 replicates, replicate standard deviation in brackets. Every run uses the fitted shock probability 0.016 and payment friction 0.09, four platforms, and access at the banked ceiling unless stated. Under the checkout setting the traditional lender is asked for the request less the whole amount \ac{BNPL} financed, so the quarter paid at checkout is requested from neither lender (Section~\ref{sec:amount}). The last row switches the want-driven path off, so \ac{BNPL} is used only to cover shortfalls.}
+\tabnote{The effect of enabling \ac{BNPL} on the population default rate at the final tick, under each setting of the sensitivity analysis, at $\beta = 0$ (the control) and $\beta = 1$. Each setting is run with \ac{BNPL} off and on over one seed block (70{,}000--70{,}019) shared by every arm, so each effect is a same-seed paired difference, \ac{BNPL} on less off, with one paired standard error. The no-\ac{BNPL} column gives the setting's own \ac{BNPL}-free default rate where the setting changes that model, and the reference arm's otherwise; means over 20 replicates, replicate standard deviation in brackets. Every run uses the fitted shock probability 0.016 and payment friction 0.09, four platforms, and access at the banked ceiling unless stated. The last row switches the want-driven path off, so \ac{BNPL} is used only to cover shortfalls.}
 \begingroup\setlength{\tabcolsep}{4pt}\footnotesize
 \begin{tabular}{L{4.8cm}rrr}
 \toprule
@@ -33,8 +33,6 @@ rolling limit $\lambda = 0.25$ & 13.30 (0.22) & $+0.20 \pm 0.07$ & $+0.63 \pm 0.
 rolling limit $\lambda = 1.0$ & 13.30 (0.22) & $+0.20 \pm 0.07$ & $+0.67 \pm 0.10$ \\
 \multicolumn{4}{l}{\emph{Income-shock persistence (Submodel 1)}} \\
 single-tick shock & 4.82 (0.06) & $-0.02 \pm 0.01$ & $+0.02 \pm 0.01$ \\
-\multicolumn{4}{l}{\emph{Checkout payment on a shortfall agreement (Submodel 5)}} \\
-not requested from the traditional lender & 13.30 (0.22) & $+1.11 \pm 0.10$ & $+1.92 \pm 0.10$ \\
 \multicolumn{4}{l}{\emph{Want-driven path switched off ($q_{\text{base}} = 0$, $\beta = 0$)}} \\
 \ac{BNPL} for shortfalls only & 13.30 (0.22) & $+0.05 \pm 0.09$ & -- \\
 \bottomrule

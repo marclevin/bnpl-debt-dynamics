@@ -340,10 +340,8 @@ class HouseholdAgent(Agent):
         household finances a purchase of `financed`, pays a quarter of it at checkout and
         keeps the other three quarters in cash. The relief is therefore
         `financed * 3/4`, and what BNPL "cannot cover" is the requested amount less that
-        relief. Until 2026-09-29 the traditional lender was asked for the requested
-        amount less the whole of `financed`, so the checkout quarter was never requested
-        from anyone and a household that used BNPL for a shortfall stayed short by
-        construction, whatever either lender was willing to grant.
+        relief. That the household may borrow this remainder from the traditional lender
+        is an assumption.
         """
         p = self.model.params
         amount = self._requested_amount(shortfall)
@@ -363,12 +361,7 @@ class HouseholdAgent(Agent):
             # cash relief this tick is three quarters of the amount financed.
             net_cash += financed * (1.0 - 1.0 / p.bnpl_instalments)
 
-        if p.shortfall_checkout_financed:
-            remaining = amount - net_cash
-        else:
-            # The alternative assumption: the household treats the amount financed as
-            # need met and does not borrow for its checkout quarter.
-            remaining = amount - financed
+        remaining = amount - net_cash
         if remaining > BALANCE_EPS:
             # A traditional loan is drawn down in full as cash, and booked as debt. The
             # gate is all-or-nothing, so a refusal leaves the whole of `remaining` unmet

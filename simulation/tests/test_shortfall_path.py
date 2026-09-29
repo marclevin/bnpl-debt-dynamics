@@ -49,18 +49,6 @@ def test_bnpl_relieves_three_quarters_and_the_lender_is_asked_for_the_rest():
     assert a.distress_streak == 0
 
 
-def test_the_alternative_assumption_leaves_the_checkout_quarter_unfunded():
-    """With `shortfall_checkout_financed` off the lender is asked for nothing here."""
-    model, a = household(**SHORT, shortfall_checkout_financed=False)
-    model.step()
-    (loan,) = open_agreements(model, a)
-    assert loan.principal == pytest.approx(200.0)
-    assert model.lender.n_applications == 0
-    assert a.paid_trad_tick == pytest.approx(150.0)
-    assert a.arrears_trad == pytest.approx(50.0)
-    assert a.distress_streak == 1
-
-
 def test_a_refusal_leaves_the_shortfall_unpaid_and_recorded():
     model, a = household(**SHORT)
     a.income_monthly = 500.0  # below the Reg 23A expense norm: no room for any instalment

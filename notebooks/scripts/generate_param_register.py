@@ -63,8 +63,6 @@ REGISTER: dict[str, tuple[str, str]] = {
               r"0 and 0.3"),
     "amount_rule": (r"No estimate was located of what households borrow against a shortfall.",
                     r"exact shortfall / $+25\%$ / plus one tick of committed expenditure"),
-    "shortfall_checkout_financed": (r"Whether the household can borrow from the traditional lender the quarter of a shortfall agreement that is paid at checkout. No source says which holds.",
-                                    r"on / off (Table~\ref{tab:effect})"),
     "shortfall_bnpl_capped": (r"Limits the \ac{BNPL} share of a shortfall request to $\kappa$ times the household's monthly discretionary budget, the quantity that sizes a want-driven purchase.",
                               r"capped / uncapped, crossed with the three amount rules"),
     "bnpl_purchase_base": (r"The budget against which a purchase is sized. \ac{BNPL} finances discretionary consumption, so the reference is the household's discretionary budget.",
