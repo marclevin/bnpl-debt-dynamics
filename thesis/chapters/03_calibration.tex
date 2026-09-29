@@ -41,11 +41,12 @@ Each run follows 5{,}000 households for 52 ticks, approximately two years.
 The first 12 ticks are excluded from post-burn-in summaries, allowing the initial
 state to develop before those measures are collected. Each configuration has
 twenty replications, using seeds $s_0+i$ with a fixed starting seed for each
-experiment suite; the variance decomposition of Section~\ref{sec:results-robustness}
-has two per design point. Arms within a suite share seeds, except in the
-scenario suite, where each scenario has its own block. Where two arms share
-seeds we take their difference seed by seed; otherwise we treat them as
-independent. Reported dispersion measures variation across simulation runs
+group of arms; the variance decomposition of Section~\ref{sec:results-robustness}
+has two per design point. Arms within a group share seeds and population size,
+and we take their differences seed by seed. The scenario arms, the cap arms, the
+threshold-mean arms and each group of sensitivity arms have their own seed
+blocks, and we treat differences across blocks or population sizes as
+independent. Table notes give the seeds. Reported dispersion measures variation across simulation runs
 only and excludes uncertainty in the data and assumptions. Thresholds use a separate random
 stream, allowing exact reproduction of control arms and paired comparisons across
 threshold dispersion.
@@ -84,9 +85,9 @@ Section~\ref{sec:servicing}.
 \label{sec:match}
 
 The model also needs banking status and a consistent set of credit-product
-indicators. We impute these from the 2019 \ac{FinScope} survey \cite{finscope2019}.
+indicators. We impute these from the 2019 \ac{FinScope} \cite{finscope2019}.
 Banked status determines eligibility for \ac{BNPL}, so the imputed banked share
-of 82.8\% caps adoption in the constructed population. Five further flags identify store cards, revolving
+of 82.8\% caps holding in the constructed population. Five further flags identify store cards, revolving
 credit, hire purchase, short-term loans and personal loans. These determine the
 terms assigned in Section~\ref{sec:servicing}.
 
@@ -147,11 +148,11 @@ and reports donor reuse.
 \foreach \k/\ypos in {1/-4.95,2/-5.25,3/-5.55,4/-5.85,5/-6.15,6/-6.45} {
   \node[donor, minimum size=6pt] (e\k) at (8.55,\ypos) {};
   \draw[->, thin] (e\k.west) -- (recip2.east); }
-\node[lbl, right, font=\scriptsize] at (8.85,-5.7) {six draws from six\\ different donors: the same\\ marginals, but the joint\\ structure stacking depends\\ on is lost};
+\node[lbl, right, font=\scriptsize] at (8.85,-5.7) {six draws from six\\ different donors: the same\\ marginals, but the joint\\ structure of product\\ holdings is lost};
 \end{tikzpicture}
 \caption{The cell-donor match}
 \label{fig:cell-donor}
-\tabnote{Panel (a): both surveys are partitioned into the same 45 cells by per-capita income quintile and province; a \ac{NIDS} household draws its donor only from the \ac{FinScope} households in its own cell, and every cell holds at least 30 donors. Panel (b): within the cell, one donor is drawn with probability proportional to its survey weight (circle area), and its entire six-flag vector is copied to the recipient, so each recipient receives a combination observed in the donor survey. Panel (c): the rejected alternative, one draw per flag from six different donors, reproduces the same marginals but discards the joint structure that cross-platform stacking depends on. Appendix~\ref{app:matching} gives the procedure formally, with its assumptions and limits.}
+\tabnote{Panel (a): both surveys are partitioned into the same 45 cells by per-capita income quintile and province; a \ac{NIDS} household draws its donor only from the \ac{FinScope} households in its own cell, and every cell holds at least 30 donors. Panel (b): within the cell, one donor is drawn with probability proportional to its survey weight (circle area), and its entire six-flag vector is copied to the recipient, so each recipient receives a combination observed in the donor survey. Panel (c): the rejected alternative, one draw per flag from six different donors, reproduces the same marginals but discards the joint structure of product holdings, which prices each household's opening traditional debt. Appendix~\ref{app:matching} gives the procedure formally, with its assumptions and limits.}
 \end{figure}
 
 National imputed rates differ from their targets by at most 1.8 percentage
@@ -390,11 +391,11 @@ targets does not establish that arrears transitions are well represented.
 
 Three external comparisons fall within the chosen tolerances: household size,
 income inequality and aggregate debt (Table~\ref{tab:validation}).
-Constructed servicing falls outside its benchmark, at 12.8\% of monthly outlay
+Constructed servicing falls outside its tolerance, at 12.8\% of monthly outlay
 against the \ac{FinScope} range of 6.1--9.8\%. That measure was not used to
 fit servicing, although the survey supplies other construction inputs.
 The remaining fourteen checks comprise thirteen construction checks and one
-diagnostic on how often the affordability cap binds. Passing them demonstrates
+diagnostic on how often the Regulation 23A cap binds. Passing them demonstrates
 the internal consistency of the construction only.
 
 \begin{table}[H]
@@ -449,9 +450,9 @@ Community Survey estimate of 3.3 \cite{statssa_cs_2016}, and the weighted
 population contains roughly 10\% more households: 18.67 million against
 16.9 million.
 
-Some households begin in a vulnerable position. Income does not cover
-committed expenditure for 3.9\%, or committed expenditure plus scheduled
-service for 5.2\%; 44.3\% have zero liquid savings. These groups overlap
+Some households begin in a vulnerable position. Among the 5{,}000 agents,
+income does not cover committed expenditure for 3.6\%, or committed expenditure
+plus scheduled service for 5.1\%, and 45.2\% have zero liquid savings. These groups overlap
 and are not counts of initial default. Savings or credit may cover some
 gaps, and zero savings alone does not trigger distress. The tick sequence
 determines that state (Section~\ref{sec:sequence}).
@@ -459,11 +460,10 @@ determines that state (Section~\ref{sec:sequence}).
 Table~\ref{tab:bnpl-on-checks} reports the unfitted comparisons after
 \ac{BNPL} is enabled. At the final tick, 52.0\% of holders have balances on two
 or more platforms. The over-the-horizon measure, 36.8\% of
-ever-adopters, is closer in definition to the \ac{CFPB}'s measure: the share of
+households that ever held a balance, is closer in definition to the \ac{CFPB}'s measure: the share of
 United States \ac{BNPL} borrowers with simultaneous loans at two or more firms
 during a year, 32\% in 2021 and 33\% in 2022. The markets and observation
-periods differ, and the model's shares follow from its routing rule
-(Section~\ref{sec:stacking}).
+periods differ.
 
 \input{chapters/generated/tab_bnpl_on_checks}
 
@@ -485,7 +485,7 @@ which the condition in Table~\ref{tab:patterns} counts as falsifying.
 Pattern~3 is not reproduced: the aggregate debt-to-income ratio is highest in
 Q1, at 0.77 months of income, with Q4 second at 0.69. Pattern~4 is of the same
 order, 25.7\% against 36\%. That share is a post-burn-in mean. It
-lies below the 44.3\% at initialisation because the model saves any cash left
+lies below the 45.2\% at initialisation because the model saves any cash left
 after discretionary spending, and about three-quarters of the agents that
 start without savings have income above their committed, discretionary and
 scheduled-service outlays.

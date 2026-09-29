@@ -54,6 +54,7 @@ exactly at that commit.
     PYTHONPATH=. .venv/bin/python results/corrections_2026-09-29/verify_behaviour.py
     PYTHONPATH=. .venv/bin/python results/corrections_2026-09-29/diagnostic_summary.py
     PYTHONPATH=. .venv/bin/python results/corrections_2026-09-29/before_after.py --write
+    PYTHONPATH=. .venv/bin/python results/corrections_2026-09-29/cap_definitions.py
 
 ## Configurations and seeds
 

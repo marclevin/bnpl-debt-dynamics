@@ -4,7 +4,7 @@
 \centering
 \caption{The 2017 baseline and the \ac{BNPL} injection}
 \label{tab:baseline-arms}
-\tabnote{The calibrated baseline with \ac{BNPL} disabled, and the same population with \ac{BNPL} enabled at four platforms and access at the banked ceiling, without ($\beta = 0$) and with ($\beta = 1$) peer influence. Means over 20 replicates, replicate standard deviation in brackets (seeds 10{,}000--10{,}019 in each arm). The default rate is the share of all households in default at the final tick; the 90+ day share is over credit-active households, averaged over post-burn-in ticks; the traditional arrears rate is the share of all households with a traditional instalment in arrears, averaged over post-burn-in ticks; interest, lending and volume are sums over the post-burn-in horizon in 2017 Rands. ``Holders'' are households with a positive \ac{BNPL} balance at the final tick; ``ever'' quantities are over every tick of the run, burn-in included. Default is absorbing, so the final-tick rate is the share of households that defaulted at any tick of the run. Default with \ac{BNPL} less default without: $+0.03 \pm 0.09$pp at $\beta = 0$ and $+0.61 \pm 0.11$pp at $\beta = 1$; the arms share seeds, so each difference is taken seed by seed and carries one paired standard error, the standard deviation of the twenty differences over $\sqrt{20}$.}
+\tabnote{The calibrated baseline with \ac{BNPL} disabled, and the same population with \ac{BNPL} enabled at four platforms and access at the banked ceiling, without ($\beta = 0$) and with ($\beta = 1$) peer influence. Means over 20 replicates, replicate standard deviation in brackets (seeds 10{,}000--10{,}019 in each arm). The default rate is the share of all households in default at the final tick; the 90+ day share is over credit-active households, averaged over post-burn-in ticks; the traditional arrears rate is the share of all households with a traditional instalment in arrears, averaged over post-burn-in ticks; interest, lending and volume are sums over the post-burn-in horizon in 2017 Rands. ``Holders'' are households with a positive \ac{BNPL} balance at the final tick; ``ever'' quantities are over every tick of the run, burn-in included. Default is absorbing, so the final-tick rate is the share of households that defaulted at any tick of the run. Default with \ac{BNPL} less default without: $+0.03 \pm 0.09$pp at $\beta = 0$ and $+0.61 \pm 0.11$pp at $\beta = 1$; the arms share seeds, so each difference is paired by seed and carries one standard error.}
 \begingroup\setlength{\tabcolsep}{4pt}\footnotesize
 \begin{tabular}{L{6.4cm}rrr}
 \toprule
@@ -17,12 +17,12 @@ Traditional interest charged (R m) & 13.01 (0.28) & 12.81 (0.17) & 12.97 (0.25) 
 New traditional lending granted (R m) & 6.12 (0.39) & 5.43 (0.32) & 6.11 (0.39) \\
 Applications refused at the gate (count) & 1195 (28) & 1196 (24) & 1205 (24) \\
 Zero liquid savings (\% of households) & 25.7 (0.2) & 25.9 (0.2) & 28.8 (0.2) \\
-\ac{BNPL} adoption, end of horizon (\%) & 0.00 (0.00) & 17.55 (0.44) & 66.80 (0.40) \\
+Holding \ac{BNPL}, end of horizon (\%) & 0.00 (0.00) & 17.55 (0.44) & 66.80 (0.40) \\
 Ever held a \ac{BNPL} balance (\%) & 0.00 (0.00) & 69.97 (0.42) & 75.54 (0.15) \\
 Balances on two or more platforms, end of horizon (\% of households) & 0.00 (0.00) & 9.12 (0.21) & 56.87 (0.57) \\
 Balances on two or more platforms, end of horizon (\% of holders) & -- & 52.0 (0.7) & 85.1 (0.5) \\
 Ever held balances on two or more platforms (\% of households) & 0.00 (0.00) & 25.78 (0.45) & 74.44 (0.17) \\
-Ever held balances on two or more platforms (\% of ever-adopters) & 0.0 (0.0) & 36.8 (0.6) & 98.6 (0.2) \\
+Ever held balances on two or more platforms (\% of those that ever held \ac{BNPL}) & 0.0 (0.0) & 36.8 (0.6) & 98.6 (0.2) \\
 Cumulative \ac{BNPL} volume (R m) & 0.00 (0.00) & 6.42 (0.22) & 65.88 (0.91) \\
 \bottomrule
 \end{tabular}

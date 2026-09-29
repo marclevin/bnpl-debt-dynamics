@@ -3,101 +3,102 @@
 \begingroup
 \setlength{\tabcolsep}{3pt}
 \newcolumntype{R}[1]{>{\scriptsize\raggedright\arraybackslash}p{#1}}
-\begin{longtable}{R{2.5cm}R{1.1cm}R{1.75cm}R{1.1cm}R{3.8cm}R{2.9cm}}
+\begin{longtable}{R{2.4cm}R{1.5cm}R{1.75cm}R{1.15cm}R{3.5cm}R{2.85cm}}
 \caption{The full parameter register}
 \label{tab:param-register} \\
-\multicolumn{6}{p{13.4cm}}{\footnotesize Every model parameter, generated from
-the parameter declarations in \texttt{simulation/config.py} so that the table and
-the code cannot drift apart. Columns: the parameter name in the code; the decision
-rule or submodel it implements (D$n$ = Submodel $n$; P$n$ = data-layer phase);
-its baseline value; its provenance; the source fixing or motivating the value; and
-the sweep range where one applies. Provenance: sourced = a citation fixes the
-value; derived = the value is computed from data, not chosen; assumed = no anchor
-exists and sensitivity analysis is mandatory. Rand values are 2017 Rands; the
-\ac{BNPL} contract parameters are published at 2026 vintage and deflated once
-(Appendix~\ref{app:variables}, Part~D.12).} \\
+\multicolumn{6}{p{13.4cm}}{\footnotesize Every model parameter. Names, submodels,
+provenance and values are read from the parameter declarations in the code, so the
+table and the code cannot drift apart. Columns: the parameter name in the code; the
+submodel of Table~\ref{tab:submodels} that it belongs to (``design'' marks the
+experimental design and ``data'' the data layer); its value in the benchmark
+configuration, with both fitted parameters at their fitted values; its provenance; the
+source that fixes or motivates the value; and the range swept where one applies.
+Provenance: sourced = a citation fixes the value; derived = the value is computed from
+data; fitted = the value is chosen by calibration; assumed = no anchor exists. Rand
+values are 2017 Rands; the \ac{BNPL} contract parameters are published at 2026 vintage
+and deflated once (Appendix~\ref{app:variables}, Part~D.12).} \\
 \toprule
-\textbf{Parameter} & \textbf{Rule} & \textbf{Baseline} & \textbf{Prov.} & \textbf{Source} & \textbf{Sweep} \\
+\textbf{Parameter} & \textbf{Submodel} & \textbf{Value} & \textbf{Prov.} & \textbf{Source} & \textbf{Sweep} \\
 \midrule
 \endfirsthead
 \toprule
-\textbf{Parameter} & \textbf{Rule} & \textbf{Baseline} & \textbf{Prov.} & \textbf{Source} & \textbf{Sweep} \\
+\textbf{Parameter} & \textbf{Submodel} & \textbf{Value} & \textbf{Prov.} & \textbf{Source} & \textbf{Sweep} \\
 \midrule
 \endhead
 \bottomrule
 \endfoot
-\texttt{n\_\allowbreak{}ticks} & ODD & 52 & sourced & 24-month horizon at a 14-day tick (03\_calibration.tex) & -- \\
+\texttt{n\_\allowbreak{}ticks} & design & 52 & sourced & A 24-month horizon at a 14-day tick (Section~\ref{sec:sim-params}). & -- \\
 \addlinespace
-\texttt{burn\_\allowbreak{}in} & ODD & 12 & sourced & First 12 ticks discarded (03\_calibration.tex) & -- \\
+\texttt{burn\_\allowbreak{}in} & design & 12 & sourced & The first 12 ticks are excluded from post-burn-in summaries (Section~\ref{sec:sim-params}). & -- \\
 \addlinespace
-\texttt{n\_\allowbreak{}agents} & P3 & None & derived & None = use the full 5,000-agent resample & 1000 / 5000 / 10000 population-stability check \\
+\texttt{n\_\allowbreak{}agents} & data & 5{,}000 & derived & The full resampled population of 5{,}000 (Appendix~\ref{app:variables}, Part~D.10). & 1{,}000 / 5{,}000 / 10{,}000 \\
 \addlinespace
-\texttt{shock\_\allowbreak{}prob} & D1 & 0.01 & assumed & CALIBRATION TARGET, fitted to CCMR baseline arrears. Reported against the QLFS 2017 job-separation band (0.54\%-1.17\% per tick), NOT fitted to it. & calibration grid \\
+\texttt{shock\_\allowbreak{}prob} & 1 & 0.016 & fitted & Fitted to the \ac{CCMR} 90+ day band. Reported against the \ac{QLFS} 2017 job-separation band of 0.54\%--1.17\% per tick, to which it is not fitted. & calibration grid; 0.005--0.026 in the Sobol design \\
 \addlinespace
-\texttt{shock\_\allowbreak{}persistent} & D1 & True & sourced & An unemployment spell persists until re-employment. Madeira models FLOWS into and out of unemployment, and QLFS 2017 shows 68.4\% of the unemployed remain unemployed the next quarter. & False = the original non-persistent rule, reported as a robustness arm \\
+\texttt{shock\_\allowbreak{}persistent} & 1 & on & sourced & An unemployment spell lasts until re-employment. In the \ac{QLFS} 2017, 68.4\% of the unemployed were still unemployed a quarter later. & single-tick shock as a robustness arm \\
 \addlinespace
-\texttt{shock\_\allowbreak{}exit\_\allowbreak{}prob} & D1 & 0.018724 & sourced & Per-tick re-employment hazard. QLFS 2017 Q3$\to$Q4: 11.6\% of the unemployed moved into employment per quarter $\to$ 1.87\% per 14-day tick. & with the QLFS band \\
+\texttt{shock\_\allowbreak{}exit\_\allowbreak{}prob} & 1 & 0.018724 & sourced & Re-employment hazard per tick. In the \ac{QLFS} 2017, 11.6\% of the unemployed moved into employment in a quarter, which is 1.87\% per tick. & -- \\
 \addlinespace
-\texttt{discretionary\_\allowbreak{}floor} & D2 & 0.0 & sourced & Discretionary spend fully compressible in the baseline (D2) & -- \\
+\texttt{discretionary\_\allowbreak{}floor} & 2 & 0 & sourced & Discretionary spending can be compressed to zero. & -- \\
 \addlinespace
-\texttt{q\_\allowbreak{}base} & D3/\allowbreak{}D17 & 0.05 & assumed & Spontaneous want-driven BNPL propensity. NOT SOURCED; swept. & RQ2 adoption sweep; sets the level that beta then amplifies \\
+\texttt{q\_\allowbreak{}base} & 3/11 & 0.05 & assumed & Probability of a want-driven purchase in a tick without peer influence. No source. & 0.01--0.30 in the Sobol design \\
 \addlinespace
-\texttt{beta} & D17 & 0.0 & assumed & Peer imitation strength under the LINEAR mechanism. NOT SOURCED. & RQ2 primary experimental axis -- it is what makes peer effects in BNPL adoption visible -- and toggled on/off for RQ3, whose cool-off lever only bites where beta \textgreater{} 0. The beta=0 row is always reported. \\
+\texttt{beta} & 11 & 0 & assumed & Strength of peer influence under the linear rule (Equation~\ref{eq:peer}). No source. $\beta = 0$ is the control. & 0 / 0.5 / 1 / 2 / 3 in the platform and access experiments; 0 and 1 elsewhere \\
 \addlinespace
-\texttt{peer\_\allowbreak{}mechanism} & D17 & linear & sourced & Which social-transmission rule is active. 'linear' is q = q\_base + beta*s\_g. & RQ2: both mechanisms on identical access grids \\
+\texttt{peer\_\allowbreak{}mechanism} & 11 & linear & sourced & The rule by which adoption spreads: linear (Equation~\ref{eq:peer}) or heterogeneous thresholds \cite{granovetter1978threshold}. & both rules on the same access grid \\
 \addlinespace
-\texttt{mu\_\allowbreak{}theta} & D17 & 0.3 & assumed & Mean adoption threshold: the share of a household's reference group that must already be using BNPL before it responds. & 3-point sensitivity at one access level, not a full cross \\
+\texttt{mu\_\allowbreak{}theta} & 11 & 0.3 & assumed & Mean adoption threshold: the share of a household's reference group that must hold \ac{BNPL} before the household responds. No source. & 0.15 / 0.30 / 0.45 at full access \\
 \addlinespace
-\texttt{sigma\_\allowbreak{}theta} & D17 & 0.2 & sourced & Dispersion of adoption thresholds, truncated to [0,1]. THE PRIMARY EXPERIMENTAL AXIS of the threshold arm, because Granovetter's actual claim is that the VARIANCE of thresholds, not their mean, decides whether a cascade occurs: a chain of thresholds with someone standing at every level propagates, a tightly clustered one does not. & MANDATORY: 0.05-0.40 \\
+\texttt{sigma\_\allowbreak{}theta} & 11 & 0.2 & assumed & Dispersion of adoption thresholds, truncated to $[0,1]$. No source. Granovetter's argument concerns the dispersion of thresholds, so this is the axis swept. & 0.05--0.40 \\
 \addlinespace
-\texttt{gamma} & D17 & 0.0 & assumed & Appetite increment once a household's threshold is crossed. NOT SOURCED. & RQ2 threshold arm; the gamma=0 row is always reported \\
+\texttt{gamma} & 11 & 0 & assumed & Rise in the purchase probability once a household's threshold is crossed. No source. $\gamma = 0$ is the control. & 0 and 0.3 \\
 \addlinespace
-\texttt{amount\_\allowbreak{}rule} & D4 & shortfall & assumed & No anchor found in the literature sweep. The model's first uncited rule. & MANDATORY: shortfall / +25\% / plus one tick of committed expenditure \\
+\texttt{amount\_\allowbreak{}rule} & 4 & shortfall & assumed & No estimate was located of what households borrow against a shortfall. & exact shortfall / $+25\%$ / plus one tick of committed expenditure \\
 \addlinespace
-\texttt{shortfall\_\allowbreak{}checkout\_\allowbreak{}financed} & D5 & True & assumed & Whether the household can borrow, from the traditional lender, the quarter of a shortfall agreement that is paid at checkout. & effect suite, on/off \\
+\texttt{shortfall\_\allowbreak{}checkout\_\allowbreak{}financed} & 5 & on & assumed & Whether the household can borrow from the traditional lender the quarter of a shortfall agreement that is paid at checkout. No source says which holds. & on / off (Table~\ref{tab:effect}) \\
 \addlinespace
-\texttt{shortfall\_\allowbreak{}bnpl\_\allowbreak{}capped} & D5 & True & assumed & Caps the BNPL share of a SHORTFALL request at kappa x the household's own monthly budget -- the same quantity that sizes a want-driven purchase. & Robustness: uncapped, crossed with the three D4 amount rules \\
+\texttt{shortfall\_\allowbreak{}bnpl\_\allowbreak{}capped} & 5 & on & assumed & Limits the \ac{BNPL} share of a shortfall request to $\kappa$ times the household's monthly discretionary budget, the quantity that sizes a want-driven purchase. & capped / uncapped, crossed with the three amount rules \\
 \addlinespace
-\texttt{bnpl\_\allowbreak{}purchase\_\allowbreak{}base} & D4/\allowbreak{}D11 & discretionary & sourced & What a BNPL purchase is sized AGAINST. BNPL finances discretionary consumption, so the household's own discretionary budget is the observed scale at which it makes discretionary purchases. & MANDATORY: discretionary / income \\
+\texttt{bnpl\_\allowbreak{}purchase\_\allowbreak{}base} & 4/12 & discretionary & sourced & The budget against which a purchase is sized. \ac{BNPL} finances discretionary consumption, so the reference is the household's discretionary budget. & discretionary / income \\
 \addlinespace
-\texttt{bnpl\_\allowbreak{}purchase\_\allowbreak{}ratio} & D4/\allowbreak{}D11 & 0.1387 & derived & kappa. Share of a household's discretionary budget spent on the categories BNPL finances (clothing and footwear, furniture and appliances, ICT devices, recreational durables), DERIVED from Stats SA IES 2022/23 COICOP microdata -- see ies\_2022\_bnpl\_share.json. & MANDATORY: 0.07-0.28 (half to double the derived share) \\
+\texttt{bnpl\_\allowbreak{}purchase\_\allowbreak{}ratio} & 4/12 & 0.1387 & derived & $\kappa$: the share of discretionary spending in the categories that \ac{BNPL} finances, derived from \ac{IES} 2022/23 microdata \cite{statssa_ies_2023}. & 0.07--0.28, half to twice the derived share \\
 \addlinespace
-\texttt{bnpl\_\allowbreak{}purchase\_\allowbreak{}cv} & D4 & 0.6 & assumed & Dispersion of BNPL purchase size around its household-relative mean. & with bnpl\_purchase\_ratio \\
+\texttt{bnpl\_\allowbreak{}purchase\_\allowbreak{}cv} & 4 & 0.6 & assumed & Dispersion of purchase size around its mean, which is lognormal. No source. & -- \\
 \addlinespace
-\texttt{min\_\allowbreak{}payer\_\allowbreak{}share} & D6 & 0.29 & sourced & Keys \& Wang (2019): 29\% of accounts pay at or near the minimum. & 0.20-0.40 (brackets the transferred US point estimate) \\
+\texttt{min\_\allowbreak{}payer\_\allowbreak{}share} & 6 & 0.29 & sourced & 29\% of United States card accounts pay at or near the minimum \cite{Keys2019}. & 0.20--0.40 \\
 \addlinespace
-\texttt{payment\_\allowbreak{}friction} & D6 & 0.0 & sourced & Per-tick probability of missing a traditional instalment DESPITE having the cash. & calibration grid; second fitted parameter \\
+\texttt{payment\_\allowbreak{}friction} & 6 & 0.09 & fitted & Probability per tick of missing a traditional instalment that the household could pay \cite{Kuchler2021}. Fitted to the \ac{CCMR} 1--30 day band. & calibration grid \\
 \addlinespace
-\texttt{min\_\allowbreak{}payment\_\allowbreak{}frac} & D6 & 0.05 & assumed & The contractual minimum itself. D6 fixes the SHARE of minimum-payers but never defined the minimum; the NCA prescribes no formula either. & MANDATORY: 0.025-0.10 \\
+\texttt{min\_\allowbreak{}payment\_\allowbreak{}frac} & 6 & 0.05 & assumed & Minimum payment as a share of the balance per month. The \ac{NCA} prescribes no formula. & 0.025--0.10 \\
 \addlinespace
-\texttt{k\_\allowbreak{}default} & D7 & 7 & sourced & 7 ticks = 98 days, inside the CCMR 91-120 band, so it maps onto the 90+ impairment convention. & k=4 (56 days $\to$ the 60+ band, target 16.54\%) \\
+\texttt{k\_\allowbreak{}default} & 7 & 7 & sourced & Seven ticks are 98 days, the first tick boundary past the 90-day impairment convention. & four ticks (56 days) \\
 \addlinespace
-\texttt{bnpl\_\allowbreak{}bureau\_\allowbreak{}visible} & D10/\allowbreak{}D14 & False & sourced & BNPL sits outside the NCA: no bureau reporting obligation (Norton Rose; TransUnion). & RQ3 lever 1 - the comparison the model was built to make \\
+\texttt{bnpl\_\allowbreak{}bureau\_\allowbreak{}visible} & 10/15 & off & sourced & \ac{BNPL} is not reported to the bureau in the benchmark \cite{nortonrose_bnpl_sa, transunion_cps_sa_2025}. & on / off (Section~\ref{sec:scenarios}) \\
 \addlinespace
-\texttt{bnpl\_\allowbreak{}enabled} & O.1a & False & sourced & Injection design: the 2017 baseline is BNPL-free by construction. & the injection itself \\
+\texttt{bnpl\_\allowbreak{}enabled} & design & off & sourced & The 2017 baseline has no \ac{BNPL}; the experiments enable it. & on / off \\
 \addlinespace
-\texttt{bnpl\_\allowbreak{}access\_\allowbreak{}rate} & D11 & 1.0 & derived & Share of the BANKED subpopulation that is BNPL-eligible. Banked = 82.8\% of households by observed data, so access\_rate=1.0 means 82.8\% of all households. & RQ2 axis 1, 0.0-1.0 within the banked subpopulation \\
+\texttt{bnpl\_\allowbreak{}access\_\allowbreak{}rate} & 12 & 1 & derived & Share of banked households that are eligible for \ac{BNPL}. Banked households are 82.8\% of the population. & 0--1.0 in seven steps \\
 \addlinespace
-\texttt{n\_\allowbreak{}platforms} & D12 & 4 & sourced & PayJustNow, Payflex, Mobicred, TymeBank all active in South Africa. & 1-6; N=1 isolates single-platform accumulation from cross-firm stacking \\
+\texttt{n\_\allowbreak{}platforms} & 13 & 4 & sourced & PayJustNow, Payflex, Mobicred and TymeBank were active in South Africa. & 1--6 \\
 \addlinespace
-\texttt{bnpl\_\allowbreak{}order\_\allowbreak{}cap} & D11 & 9926.83 & sourced & Payflex per-order cap of R15,000 as published (2026 vintage), DEFLATED to 2017 Rands (cpi\_deflator\_2017.json). & verify it binds rarely at LMI incomes \\
+\texttt{bnpl\_\allowbreak{}order\_\allowbreak{}cap} & 12 & 9{,}926.83 & sourced & A per-order cap of R15{,}000 at 2026 vintage, deflated to 2017 Rands. & -- \\
 \addlinespace
-\texttt{bnpl\_\allowbreak{}limit\_\allowbreak{}income\_\allowbreak{}multiple} & D11 & 0.1 & assumed & lambda. Rolling available balance per platform, as a multiple of the household's MONTHLY income, applied independently at each of n\_platforms. & MANDATORY: 0.1-1.0, with the binding rate reported BY QUINTILE \\
+\texttt{bnpl\_\allowbreak{}limit\_\allowbreak{}income\_\allowbreak{}multiple} & 12 & 0.1 & assumed & $\lambda$: the limit per platform as a multiple of monthly income. No South African provider publishes a limit; the value is set against Woolard's illustrative stacked exposure \cite{woolard2021}. & 0.10--1.0 \\
 \addlinespace
-\texttt{bnpl\_\allowbreak{}instalments} & D13 & 4 & sourced & Payflex Pay in 4: 25\% at checkout then 25\% at each of the next three ticks. & -- \\
+\texttt{bnpl\_\allowbreak{}instalments} & 14 & 4 & sourced & Pay-in-four: a quarter at checkout and a quarter at each of the next three ticks \cite{payflex_terms}. & -- \\
 \addlinespace
-\texttt{bnpl\_\allowbreak{}late\_\allowbreak{}fee\_\allowbreak{}per\_\allowbreak{}tick} & D13 & 125.74 & sourced & Payflex late fee R95 per week = R190 per 14-day tick as published (2026 vintage), DEFLATED to 2017 Rands (DEFECTS.md B29). & -- \\
+\texttt{bnpl\_\allowbreak{}late\_\allowbreak{}fee\_\allowbreak{}per\_\allowbreak{}tick} & 14 & 125.74 & sourced & A late fee of R95 a week, R190 a tick, at 2026 vintage \cite{payflex_terms}, deflated to 2017 Rands. & -- \\
 \addlinespace
-\texttt{bnpl\_\allowbreak{}late\_\allowbreak{}fee\_\allowbreak{}cap} & D13 & 188.61 & sourced & Payflex caps the late fee at three weeks: 3 x R95 = R285 per missed instalment as published (2026 vintage), DEFLATED to 2017 Rands (DEFECTS.md B29). & -- \\
+\texttt{bnpl\_\allowbreak{}late\_\allowbreak{}fee\_\allowbreak{}cap} & 14 & 188.61 & sourced & Late fees on an agreement are capped at R285 over its life, at 2026 vintage \cite{payflex_terms}, deflated to 2017 Rands. & -- \\
 \addlinespace
-\texttt{bnpl\_\allowbreak{}late\_\allowbreak{}fee\_\allowbreak{}cap\_\allowbreak{}share} & D13 & 0.5 & sourced & Payflex caps late fees at the lower of R285 or 50\% of the purchase price. & -- \\
+\texttt{bnpl\_\allowbreak{}late\_\allowbreak{}fee\_\allowbreak{}cap\_\allowbreak{}share} & 14 & 0.5 & sourced & Late fees on an agreement are capped at the lower of the Rand cap and half the purchase price \cite{payflex_terms}. & -- \\
 \addlinespace
-\texttt{bnpl\_\allowbreak{}affordability\_\allowbreak{}check} & D14 & False & sourced & Lever 2. Applies the D9 Reg 23A residual-income test to BNPL. & RQ3 lever 2, on/off \\
+\texttt{bnpl\_\allowbreak{}affordability\_\allowbreak{}check} & 15 & off & sourced & Applies the Regulation 23A test to each \ac{BNPL} request, the analogue of the \ac{FCA}'s affordability check \cite{fca_ps26_1}. & on / off (Section~\ref{sec:scenarios}) \\
 \addlinespace
-\texttt{k\_\allowbreak{}cool} & D14 & 0 & sourced & Lever 3. Baseline 0 = lever OFF. k\_cool=1 tick = 14 days = the UK CCA s.66A statutory right of withdrawal, which lands exactly on a tick boundary. & RQ3 lever 3, 0-4 ticks \\
+\texttt{k\_\allowbreak{}cool} & 15 & 0 & sourced & Ticks for which want-driven purchases are blocked after a want-driven purchase. One tick is the fourteen-day right of withdrawal in the United Kingdom's rules \cite{fca_ps26_1}. & 0--4 ticks (Appendix~\ref{app:levers}) \\
 \addlinespace
-\texttt{stacking\_\allowbreak{}cap} & D14 & None & assumed & Lever 4. Cap on concurrent facilities: a household that owes this many platforms or more is refused any new draw. & RQ3 lever 4, 1-3 or None \\
+\texttt{stacking\_\allowbreak{}cap} & 15 & none & assumed & Cap on platforms owed: a household that owes this many platforms or more is refused every new agreement. Hypothetical; no jurisdiction imposes one. & 1--3 (Appendix~\ref{app:levers}) \\
 \addlinespace
-\texttt{activation} & D16 & random & sourced & Random asynchronous order, re-drawn every tick (Comer \& Loerch; Alizadeh). & MANDATORY: fixed-order (uniform) robustness run \\
+\texttt{activation} & 17 & random & sourced & Random order, redrawn every tick \cite{comer2013activation, alizadeh2015activation}. & fixed order as a robustness arm \\
 \end{longtable}
 \endgroup

@@ -6,11 +6,11 @@
 % notebooks/scripts/build_results_tables.py from results/raw; nothing is typed.
 
 This section answers RQ3: how bureau visibility and mandatory affordability screening change simulated borrowing and distress, with and without peer influence on adoption.
-We compare three scenarios.
+We compare three scenarios and a fourth arm that combines the two switches.
 The benchmark is the pre-2026 position, in which \ac{BNPL} obligations are invisible to the bureau and requests pass only a light screen.
-Under bureau visibility ($\mathbb{1}^{\text{bur}}$), \ac{BNPL} obligations enter the traditional lender's Regulation 23A test. This is the affordability channel of the 2026 reporting requirement \cite{businessday_bnpl_2026}; the scoring channel is outside the model (Section~\ref{sec:asymmetry}).
+Under bureau visibility ($\mathbb{1}^{\text{bur}}$), \ac{BNPL} obligations enter the traditional lender's Regulation 23A test. This is the affordability channel of the reported 2026 arrangements \cite{businessday_bnpl_2026}; the scoring channel is outside the model (Section~\ref{sec:asymmetry}).
 Under mandatory affordability screening ($\mathbb{1}^{\text{aff}}$), the Regulation 23A test is applied to each \ac{BNPL} request, the South African analogue of the \ac{FCA}'s proportionate affordability check \cite{fca_ps26_1, woolard2021}.
-We also run the two switches together, since the reported arrangements would apply both.
+We also run the two switches together, to test whether either changes the effect of the other.
 Every arm is run at $\beta = 0$ and at $\beta = 1$ (Equation~\ref{eq:peer}), to test whether the results depend on how adoption spreads.
 
 The light screen in the benchmark is a modelling assumption.
@@ -35,50 +35,48 @@ We report cumulative volume beside default because a rule that only delays borro
 Neither switch changes default detectably, alone or with the other.
 Bureau visibility changes default by $+0.04 \pm 0.10$ points at $\beta = 0$ and $+0.09 \pm 0.12$ at $\beta = 1$.
 Screening changes it by $-0.02 \pm 0.10$ and $-0.09 \pm 0.13$ points, and the two together by $+0.05 \pm 0.10$ and $-0.09 \pm 0.11$.
-The largest standard error among the six comparisons is 0.13 points, so each would have detected a change of about 0.25 points.
+The largest standard error among the six comparisons is 0.13 points, so only a change larger than about 0.25 points would exceed two standard errors, and a true change of that size would be missed about half the time.
 The switches may have smaller effects, in either direction, that this design cannot see.
 
-Bureau visibility changes lending without changing default.
+Bureau visibility changes lending without a detectable change in default.
 Once \ac{BNPL} obligations enter the Regulation 23A test, the traditional lender refuses more applications, 1{,}395 against 1{,}191 at $\beta = 0$, and grants R4.87 million in place of R5.46 million.
 Cumulative \ac{BNPL} volume is $5.1 \pm 1.4$\% lower at $\beta = 0$, although the switch does not act on \ac{BNPL} requests.
 The 90+ day arrears share among credit-active households does not change detectably ($+0.14 \pm 0.13$ points at $\beta = 0$).
 The outcomes are population aggregates, so they do not show what becomes of the households that are refused.
 
 Mandatory screening refuses \ac{BNPL} requests that the light screen would grant.
-Holding at the final tick falls from 17.64\% to 15.74\% at $\beta = 0$ and from 66.79\% to 63.96\% at $\beta = 1$.
-Cumulative volume is $5.3 \pm 1.3$\% and $1.5 \pm 0.3$\% lower.
-The screening test is shown the household's \ac{BNPL} instalments on every platform as well as its traditional service, so it already has the complete view that bureau visibility gives the traditional lender.
-Adding bureau visibility to screening changes little: volume is $6.7 \pm 1.3$\% lower at $\beta = 0$ and default is unchanged.
+Holding at the final tick falls from 17.64\% to 15.74\% at $\beta = 0$ and from 66.79\% to 63.96\% at $\beta = 1$, and cumulative volume is $5.3 \pm 1.3$\% lower at $\beta = 0$ and $1.5 \pm 0.3$\% lower at $\beta = 1$.
+The screening test already sees the household's \ac{BNPL} instalments on every platform (Section~\ref{sec:asymmetry}), so adding bureau visibility to screening gives the platforms no new information.
+With both switches, \ac{BNPL} volume is $6.7 \pm 1.3$\% below the benchmark at $\beta = 0$ and default does not change detectably.
+The addition acts on the traditional lender, which refuses about 100 more applications at $\beta = 0$ than under screening alone and lends about R0.3 million less.
 
 Two features of the model limit how much either switch can do.
-A \ac{BNPL} agreement is small beside the room that the Regulation 23A test allows: each platform limits a household to a tenth of its monthly income, and the mean want-driven purchase is R633.
-The test also assesses affordability at origination on the household's surveyed income, whereas sustained distress in the model follows income shocks that outlast the household's buffer (Section~\ref{sec:results-robustness}).
-We offer both as explanations after the fact.
-Neither is tested directly, because the outcomes do not follow the screened households.
+First, a \ac{BNPL} agreement is small beside the room that the Regulation 23A test allows.
+Each platform limits a household to a tenth of its monthly income and the mean want-driven purchase is R633, so adding these instalments to the test changes the decision only for households already close to the limit.
+Second, the test assesses affordability at origination on the household's surveyed income, whereas sustained distress in the model follows income shocks that outlast the household's buffer (Section~\ref{sec:results-robustness}).
+A test applied when credit is granted cannot see a shock that arrives later.
+We offer both as explanations after the fact, and neither is tested directly, because the outcomes do not follow the screened households.
 
 Peer influence raises holding, volume and default in every scenario.
 In the benchmark, holding at the final tick is 66.79\% at $\beta = 1$ against 17.64\% at $\beta = 0$, and cumulative volume is R66.00 million against R6.50 million.
-Default is 0.5 to 0.6 points higher at $\beta = 1$ in every scenario.
-The comparisons give no evidence that peer influence alters the effect of either switch, and an interaction smaller than about 0.3 points would not be detected.
+Default is 0.46 to 0.58 points higher at $\beta = 1$ in the three scenarios, and 0.40 points higher with both switches.
+The comparisons give no evidence that peer influence alters the effect of either switch, although an interaction smaller than about 0.3 points could not be detected.
 
-Appendix~\ref{app:levers} reports two further levers, each at both values of $\beta$.
-Both lower default only where peer influence is present, and both do so by removing a large share of borrowing.
-The first is a cooling-off window that blocks want-driven purchases for one to four ticks after an order (Table~\ref{tab:cooloff}).
-At $\beta = 0$ it does not change default detectably at any length.
-At $\beta = 1$ it lowers default by between $0.28 \pm 0.08$ and $0.39 \pm 0.12$ points, while cumulative volume falls by between 43.0\% and 76.3\%.
-The second is a cap on the number of platforms a household may owe, which is hypothetical, since no jurisdiction imposes one (Table~\ref{tab:cap}).
-A household that owes that number of platforms is refused every new draw until a balance clears, so a cap of one allows one agreement at a time.
-At $\beta = 0$ no cap changes default detectably, although a cap of one removes 40.1\% of volume.
-At $\beta = 1$ a cap of one lowers default by $0.31 \pm 0.12$ points with volume 65.2\% lower, and a cap of two by $0.32 \pm 0.10$ points with volume 31.8\% lower.
+Appendix~\ref{app:levers} reports two further levers, each run at both values of $\beta$.
+The first is a cooling-off window that blocks want-driven purchases for one to four ticks after a want-driven purchase (Table~\ref{tab:cooloff}).
+The second is a cap on the number of platforms a household may owe, which is hypothetical because no jurisdiction imposes one (Table~\ref{tab:cap}).
+A household at the cap is refused every new agreement until a balance clears, so a cap of one allows one agreement at a time.
+At $\beta = 0$ neither lever changes default detectably, although a cap of one removes 40.1\% of volume.
+At $\beta = 1$ the window lowers default by between $0.28 \pm 0.08$ and $0.39 \pm 0.12$ points, and caps of one and two lower it by $0.31 \pm 0.12$ and $0.32 \pm 0.10$ points.
+Cumulative volume in these arms is between 31.8\% and 76.3\% lower.
 A cap of three does not change default detectably.
 
-These results agree with Section~\ref{sec:results}.
-Default in the model rises with \ac{BNPL} where want-driven borrowing is heavy, and the levers that lower it are those that remove about a third or more of that borrowing.
-Bureau visibility and screening remove about 5\% of volume at $\beta = 0$ and under 2\% at $\beta = 1$, and neither changes default detectably.
+Where a lever lowers default detectably, it also removes about a third or more of borrowing, and peer influence is present.
+The experiments do not show that the lost volume is the cause.
+In a diagnostic run at $\beta = 1$, a cap of two that counts agreements in place of platforms removes 32.9\% of volume and changes default by $-0.11 \pm 0.07$ points, which is not detectable (Appendix~\ref{app:levers}).
+Bureau visibility and screening remove between 5\% and 7\% of volume at $\beta = 0$ and under 2\% at $\beta = 1$.
 No lever was run under the alternative borrowing rules of Table~\ref{tab:effect}, so the dependence of these results on those rules is untested (Section~\ref{sec:amount}).
 The model also has no measure of what a household loses when a purchase or a shortfall loan is refused.
 
-In answer to RQ3, bureau visibility and mandatory screening change who is granted credit and how much is borrowed, and neither changes default by an amount this design can detect, which is about 0.25 points.
-Bureau visibility raises the traditional lender's refusals by about a sixth.
-Screening lowers holding by 1.9 to 2.8 points.
-These results bound only the channel modelled (Section~\ref{sec:lim-reading}): the reporting requirement may also act through credit scores, pricing and lenders' responses, which the model does not represent.
+In answer to RQ3, bureau visibility and mandatory screening change who is granted credit and how much is borrowed, and neither changes default detectably.
+These results bound only the channel modelled (Section~\ref{sec:lim-reading}).

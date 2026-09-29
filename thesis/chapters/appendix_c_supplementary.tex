@@ -59,7 +59,7 @@ not bound a central claim and are recorded only here.
 \label{tab:further-caveats} \\
 \multicolumn{3}{p{13.4cm}}{\footnotesize Every limitation the thesis records. The first eight
 bound a central claim and are argued in the body at the location given in the right-hand column,
-with the claim each bounds; they are only indexed here. The remaining ten do not bound a central
+with the claim each bounds; they are only indexed here. The remaining eleven do not bound a central
 claim, and the right-hand column states what each bounds. Section and table references
 are to the body.} \\
 \toprule
@@ -73,7 +73,7 @@ are to the body.} \\
 \bottomrule
 \endfoot
 \multicolumn{3}{l}{\emph{Bounding a central claim, argued in the body}} \\
-The baseline is calibrated, not validated & Two parameters are fitted to two \ac{CCMR} bands; agreement on those bands is not evidence, and the fitted shock rate is about 1.4 times the upper bound of the labour-force separation rate because one channel does the work of several & Section~\ref{sec:lim-calibration}; bounds every baseline agreement \\
+The baseline is calibrated, not validated & Two parameters are fitted to two \ac{CCMR} bands; agreement on those bands is not evidence, and the fitted shock rate is about 1.4 times the upper bound of the labour-force separation rate possibly because one channel does the work of several & Section~\ref{sec:lim-calibration}; bounds every baseline agreement \\
 \addlinespace
 The validation targets are uneven & Only Pattern~2 is South African and vintage-matched, and it is account-level; Pattern~1 is partly designed in; Patterns~3 and 4 are foreign or off-vintage & Section~\ref{sec:lim-validation}; bounds the RQ1 claim \\
 \addlinespace
@@ -83,11 +83,11 @@ Borrowing rules lack direct estimates & The shortfall amount, its \ac{BNPL} cap 
 \addlinespace
 Platform choice is assumed & Households send each request to the platforms in a random order. No evidence on how South African households choose among providers was located & Section~\ref{sec:stacking}; bounds every stacking share, which measures overlapping agreements and not a choice of providers \\
 \addlinespace
-Comparisons detect about 0.2 points & With twenty replications a difference in default has a standard error of about 0.1 points. Smaller effects, including those of the two switches, cannot be distinguished from none & Sections~\ref{sec:results} and~\ref{sec:scenarios}; bounds every statement that a difference is not detectable \\
+Differences below about 0.2 points are not detectable & With twenty replications a difference in default has a standard error of about 0.1 points. A true difference of 0.2 points would be missed about half the time, and smaller effects, including any from the two switches, cannot be distinguished from none & Sections~\ref{sec:results} and~\ref{sec:scenarios}; bounds every statement that a difference is not detectable \\
 \addlinespace
 Default contagion is excluded & No channel carries household default to other households' income or lenders' credit supply & Table~\ref{tab:design-concepts}; Section~\ref{sec:no-cascade}; limits the contagion mechanisms tested in RQ2 \\
 \addlinespace
-The scoring channel is not modelled & The reporting requirement acts through bureau scores as well as affordability arithmetic; the model has no score & Section~\ref{sec:asymmetry}; bounds the RQ3 answer to the affordability channel \\
+The scoring channel is not modelled & The reporting arrangements act through bureau scores as well as affordability arithmetic; the model has no score & Section~\ref{sec:asymmetry}; bounds the RQ3 answer to the affordability channel \\
 \addlinespace
 \multicolumn{3}{l}{\emph{Other limitations, recorded here}} \\
 \ac{FinScope} vintage & No 2017 wave exists, so the 2019 wave supplies the six
@@ -126,6 +126,12 @@ Income at the gate & Both affordability tests use the household's surveyed incom
 model does not reduce while a member is unemployed & A household in a spell of unemployment is
 granted credit that a lender seeing its current income would refuse \\
 \addlinespace
+Committed shortfalls are not repaid & A committed-expenditure shortfall is recorded as distress
+and is not carried forward. Credit raised against it is spent on debt service and discretionary
+spending, or saved (Section~\ref{sec:sequence}) & The household keeps cash that the expenditure
+would have absorbed, which lowers its later distress relative to a rule under which the loan
+pays for the expenditure \\
+\addlinespace
 Resample distortion & Weighted resampling raises the per-capita income Gini from 0.651 to 0.667,
 a 0.015 shift against a 0.02 tolerance. Measured, not corrected & If anything, modestly
 overstates distress among the lowest-income agents \\
@@ -146,7 +152,7 @@ Rands \\
 
 Two further levers are implemented in the model and run on the same grid as the scenarios of
 Section~\ref{sec:scenarios}. The first is a cooling-off window that blocks want-driven
-\ac{BNPL} purchases for $k^{\text{cool}}$ ticks after an order, the analogue of the
+\ac{BNPL} purchases for $k^{\text{cool}}$ ticks after a want-driven purchase, the analogue of the
 fourteen-day right of withdrawal in the United Kingdom's rules \cite{fca_ps26_1}. It does not
 block borrowing for a shortfall. The second is a cap on the number of platforms a household
 may owe, which no jurisdiction imposes and which is therefore hypothetical. Both are run at
@@ -155,14 +161,24 @@ default (Tables~\ref{tab:cooloff} and~\ref{tab:cap}; Figure~\ref{fig:scenarios-a
 places them beside the scenarios).
 
 The cap counts platforms on which the household owes a balance. It does not count agreements.
-A household that owes the stated number of platforms or more is refused every new draw,
-including a draw on a platform it already uses, until a balance clears. A cap of one therefore
+A household that owes the stated number of platforms or more is refused every new agreement,
+including one on a platform it already uses, until a balance clears. A cap of one therefore
 allows one agreement at a time, which is stricter than the single-platform arm of
 Table~\ref{tab:stacking}, where a household may hold several agreements at once. Under a cap of
 two or three a household below the cap may open further agreements on a platform it already
-uses, so it can hold more agreements than the cap. A draw for a shortfall that the cap refuses
+uses, so it can hold more agreements than the cap. A shortfall request that the cap refuses
 passes in full to the traditional lender. Under a cap of one at $\beta = 0$, new traditional
 lending is R$0.50 \pm 0.13$ million higher than in the benchmark.
+
+The cap's effect on default depends on this definition. A diagnostic on the cap arms' seeds,
+paired with an arm without a cap, compares three definitions at $\beta = 1$ and a cap of two.
+The cap as modelled lowers default by $0.35 \pm 0.09$ points and removes 31.7\% of volume. A
+cap that counts agreements in place of platforms removes 32.9\% of volume and changes default
+by $-0.11 \pm 0.07$ points. A cap on platforms that still allows further agreements on
+platforms already in use removes 1\% of volume and changes default by $-0.04 \pm 0.08$
+points. Neither of the last two changes is detectable. Two definitions that remove the same
+share of volume therefore differ in their effect on default, so the results do not establish
+lost volume as the cause of the fall.
 
 \input{chapters/generated/tab_cooloff}
 

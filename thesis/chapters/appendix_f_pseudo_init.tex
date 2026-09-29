@@ -8,9 +8,10 @@ differ, the algorithm governs, and each has been checked line by line against th
 implements it (\texttt{simulation/}). Table~\ref{tab:notation} fixes the notation used throughout.
 Sets are set in script, their cardinalities in upper case, and their elements in lower case; a
 subscript indexes an element, a superscript identifies a variant. Random draws are written
-$U(0,1)$; every draw comes from a single seeded stream per run, except the threshold endowments
-$\theta_i$, which come from a separate initialisation stream so that control arms reproduce the
-main stream exactly.
+$U(0,1)$; every draw within a run comes from generators seeded by the run's seed. The threshold
+endowments $\theta_i$ come from a separate initialisation stream so that control arms reproduce
+the main stream exactly, and the order of activation and the resampling of populations other
+than 5{,}000 each use their own generator.
 
 \begingroup
 \small
@@ -37,7 +38,7 @@ quantity, so that a symbol can be traced to code. Symbols already used in the bo
 $\mathcal{H}$, $H$, $i$ & households, their number ($5{,}000$), a household & \texttt{n\_agents} \\
 $\mathcal{P}$, $P$, $p$ & \ac{BNPL} platforms, their number (4), a platform & \texttt{n\_platforms} \\
 $\mathcal{G}$, $g(i)$ & reference groups (income quintile $\times$ province, 45); the group of $i$ & \texttt{reference\_group} \\
-$c(i)$ & the matching cell of $i$ in the data layer; the same partition as $g(i)$ & --- \\
+$c(i)$ & the matching cell of $i$ in the data layer; the same partition as $g(i)$ & -- \\
 $t$, $T$, $T_0$ & tick, horizon (52), burn-in (12) & \texttt{n\_ticks}, \texttt{burn\_in} \\
 $\chi$ & monthly-to-tick conversion, $12/26$ & \texttt{MONTHLY\_TO\_TICK} \\
 \addlinespace
@@ -94,7 +95,7 @@ $\mathbb{1}^{\text{aff}}$ & Regulation 23A test applied to \ac{BNPL} origination
 \multicolumn{3}{l}{\emph{Functions}} \\
 $\rho(Y)$ & Regulation 23A residual-income capacity: $Y$ less the statutory necessary-expense norm (Table~\ref{tab:reg23a-norms}) & \texttt{nca\_max\_service} \\
 $\mathrm{PMT}(D, \iota, \tau)$ & level monthly instalment amortising $D$ at annual rate $\iota$ over $\tau$ months & \texttt{amortised\_instalment} \\
-$\mathrm{clip}(x, 0, 1)$ & $\min(\max(x, 0), 1)$ & --- \\
+$\mathrm{clip}(x, 0, 1)$ & $\min(\max(x, 0), 1)$ & -- \\
 \end{longtable}
 \endgroup
 

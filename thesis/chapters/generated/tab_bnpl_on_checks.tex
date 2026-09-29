@@ -4,17 +4,17 @@
 \centering
 \caption{Unfitted checks on the \ac{BNPL}-on model}
 \label{tab:bnpl-on-checks}
-\tabnote{Every comparison here is against a quantity no parameter was fitted to. Model values are means over 20 replicates, replicate standard deviation in brackets from the $\beta = 0$ arm of Table~\ref{tab:baseline-arms} unless the $\beta = 1$ arm is named; Patterns 3 and 4 use the no-\ac{BNPL} baseline. The \ac{CFPB} share is of borrowers who held simultaneous loans at more than one firm, 32\% in 2021 and 33\% in 2022 \cite{cfpb2025bnpl}. Volumes are the post-burn-in cumulative volume divided by the number of eligible (banked) households or of households that ever held a balance, annualised over the 1.53-year post-burn-in horizon; the band is the 2017-Rand provider disclosure whose customer denominator is not stated \cite{weaver2025iar}. The mean-purchase comparison population (all adopters), statistic, target and tolerance were specified before the run; the Q3--Q5 and Q4--Q5 means explain the gap and are not alternative comparison populations. Pattern 1 compares arms that share seeds, so its differences are paired by seed and carry one standard error; a reading of rise or fall requires a difference beyond two standard errors.}
+\tabnote{Every comparison here is against a quantity no parameter was fitted to. Model values are means over 20 replicates, replicate standard deviation in brackets from the $\beta = 0$ arm of Table~\ref{tab:baseline-arms} unless the $\beta = 1$ arm is named; Patterns 3 and 4 use the no-\ac{BNPL} baseline. The \ac{CFPB} share is of borrowers who held simultaneous loans at more than one firm, 32\% in 2021 and 33\% in 2022 \cite{cfpb2025bnpl}. Volumes are the post-burn-in cumulative volume divided by the number of eligible (banked) households or of households that ever held a balance, annualised over the 1.53-year post-burn-in horizon; the band is the 2017-Rand provider disclosure whose customer denominator is not stated \cite{weaver2025iar}. The mean-purchase comparison population (all want-driven purchases), statistic, target and tolerance were specified before the run; the Q3--Q5 and Q4--Q5 means explain the gap and are not alternative comparison populations. Pattern 1 compares arms that share seeds, so its differences are paired by seed and carry one standard error; a reading of rise or fall requires a difference beyond two standard errors.}
 \begingroup\setlength{\tabcolsep}{3pt}\footnotesize
 \begin{tabular}{L{3.6cm}L{2.9cm}L{3.2cm}L{4.1cm}}
 \toprule
-\textbf{Check} & \textbf{Model} & \textbf{Benchmark} & \textbf{Reading} \\
+\textbf{Check} & \textbf{Model} & \textbf{Comparison} & \textbf{Reading} \\
 \midrule
 \multicolumn{4}{l}{\emph{Stacking (Submodel 13)}} \\
-Holders with balances on two or more platforms, final tick & 52.0\% & 32\% of borrowers held simultaneous loans at more than one firm (2021) & order of magnitude; ever-stacked share of ever-adopters 36.8\% \\
+Holders with balances on two or more platforms, final tick & 52.0\% & 32\% of borrowers held simultaneous loans at more than one firm (2021) & order of magnitude; ever-stacked share of households that ever held a balance 36.8\% \\
 \multicolumn{4}{l}{\emph{Volume (Submodel 4)}} \\
 Annual \ac{BNPL} volume per eligible household & R1{,}010 & R1{,}333--R4{,}261 (per signed-up and per active customer) & below the band; eligible households compare with the lower bound \\
-Annual \ac{BNPL} volume per adopting household & R1{,}196 & as above & below the band; adopters compare with the upper bound \\
+Annual \ac{BNPL} volume per household that ever held a balance & R1{,}196 & as above & below the band; these households compare with the upper bound \\
 Mean want-driven purchase, $\beta = 0$ & R633.16 & R992 $\pm$ 35\% (R645--R1{,}339) & 36.18\% low: outside the band; 4 of 20 replicates inside; Q3--Q5 mean R890, Q4--Q5 R1{,}186 \\
 Mean want-driven purchase, $\beta = 1$ & R610.19 & as above & 38.50\% low: outside the band; 0 of 20 inside \\
 \multicolumn{4}{l}{\emph{Patterns (Table~\ref{tab:patterns})}} \\

@@ -63,7 +63,7 @@ CPI_DEFLATOR = DATA_CONFIG / "cpi_deflator_2017.json"
 BNPL_ANCHORS = DATA_CONFIG / "bnpl_anchors_2017.json"
 IES_BNPL_SHARE = DATA_CONFIG / "ies_2022_bnpl_share.json"
 
-Provenance = Literal["SOURCED", "DERIVED", "ASSUMPTION"]
+Provenance = Literal["SOURCED", "DERIVED", "ASSUMPTION", "FITTED"]
 
 AmountRule = Literal["shortfall", "shortfall_125", "shortfall_plus_committed"]
 Activation = Literal["random", "uniform"]
@@ -191,7 +191,7 @@ class ParamSet:
     shock_prob: float = _p(
         0.01,
         rule="D1",
-        provenance="ASSUMPTION",
+        provenance="FITTED",
         source=(
             "CALIBRATION TARGET, fitted to CCMR baseline arrears. Reported against the "
             "QLFS 2017 job-separation band (0.54%-1.17% per tick), NOT fitted to it."
@@ -291,7 +291,7 @@ class ParamSet:
     sigma_theta: float = _p(
         0.2,
         rule="D17",
-        provenance="SOURCED",
+        provenance="ASSUMPTION",
         source=(
             "Dispersion of adoption thresholds, truncated to [0,1]. THE PRIMARY "
             "EXPERIMENTAL AXIS of the threshold arm, because Granovetter's actual claim "
@@ -397,7 +397,7 @@ class ParamSet:
     payment_friction: float = _p(
         0.0,
         rule="D6",
-        provenance="SOURCED",
+        provenance="FITTED",
         source=(
             "Per-tick probability of missing a traditional instalment DESPITE having the "
             "cash. Kuchler & Pagel (2021): present-biased borrowers fail to execute "
@@ -530,9 +530,9 @@ class ParamSet:
         rule="D13",
         provenance="SOURCED",
         source=(
-            "Payflex caps the late fee at three weeks: 3 x R95 = R285 per missed "
-            f"instalment as published ({PAYFLEX_TERMS_VINTAGE} vintage), DEFLATED to "
-            "2017 Rands (DEFECTS.md B29)."
+            "Payflex caps late fees at R285 per agreement, over its life, as published "
+            f"({PAYFLEX_TERMS_VINTAGE} vintage), DEFLATED to 2017 Rands (DEFECTS.md B29). "
+            "The cap is per agreement and not per missed instalment."
         ),
     )
     bnpl_late_fee_cap_share: float = _p(
@@ -575,8 +575,8 @@ class ParamSet:
         rule="D14",
         provenance="ASSUMPTION",
         source=(
-            "Lever 4. Cap on concurrent facilities: a household that owes this many "
-            "platforms or more is refused any new draw. It counts platforms with a "
+            "Lever 4. Cap on platforms owed: a household that owes this many "
+            "platforms or more is refused any new agreement. It counts platforms with a "
             "balance, not agreements. HYPOTHETICAL: no jurisdiction imposes one. Must be "
             "labelled as such wherever it is reported."
         ),

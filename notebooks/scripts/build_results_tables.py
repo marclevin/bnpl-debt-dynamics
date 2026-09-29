@@ -28,8 +28,7 @@ N = {}  # the numbers the prose quotes; dumped to results_numbers.json at the en
 REPL = "Means over 20 replicates, replicate standard deviation in brackets"
 #: The two conventions for a difference between arms. `delta` picks the one the seeds allow.
 SE_P = (
-    "the arms share seeds, so each difference is taken seed by seed and carries one paired "
-    "standard error, the standard deviation of the twenty differences over $\\sqrt{20}$"
+    "the arms share seeds, so each difference is paired by seed and carries one standard error"
 )
 SE_U = (
     "the arms use different seed blocks, so each difference carries one unpaired standard error, "
@@ -68,11 +67,11 @@ def tab_baseline_arms(rq0: pd.DataFrame) -> None:
         ("New traditional lending granted (R m)", "trad_granted_value", 1e-6, 2),
         ("Applications refused at the gate (count)", "trad_refused_gate", 1, 0),
         ("Zero liquid savings (\\% of households)", "zero_savings_rate_mean", 100, 1),
-        ("\\ac{BNPL} adoption, end of horizon (\\%)", "bnpl_adoption_final", 100, 2),
+        ("Holding \\ac{BNPL}, end of horizon (\\%)", "bnpl_adoption_final", 100, 2),
         ("Ever held a \\ac{BNPL} balance (\\%)", "ever_adopted", 100, 2),
         ("Balances on two or more platforms, end of horizon (\\% of households)", "stacking_2plus_final", 100, 2),
         ("Ever held balances on two or more platforms (\\% of households)", "ever_stacked_2plus", 100, 2),
-        ("Ever held balances on two or more platforms (\\% of ever-adopters)", "ever_stacked_2plus_of_adopters", 100, 1),
+        ("Ever held balances on two or more platforms (\\% of those that ever held \\ac{BNPL})", "ever_stacked_2plus_of_adopters", 100, 1),
         ("Cumulative \\ac{BNPL} volume (R m)", "bnpl_volume_cumulative", 1e-6, 2),
     ]
     rows = []
@@ -237,7 +236,7 @@ def tab_stacking(rq1: pd.DataFrame) -> None:
         "tab_stacking",
         "Cross-platform stacking and default by platform count",
         f"The platform-count sweep of the stacking experiment, at $\\beta = 0$ (no peer influence, "
-        f"the control) and $\\beta = 1$; the baseline is four platforms. ``2+'' is the share holding "
+        f"the control) and $\\beta = 1$; the reference is four platforms. ``2+'' is the share holding "
         f"a balance on two or more platforms at the final tick, as a share of all households and of "
         f"households holding any \\ac{{BNPL}} balance at that tick; ``ever 2+'' is the share of "
         f"households that ever held a \\ac{{BNPL}} balance and at some tick held two or more, the "
@@ -401,10 +400,10 @@ def tab_bnpl_on_checks(rq0: pd.DataFrame) -> None:
     vol_adopt_verdict = "inside" if lo_vol <= N["vol_per_adopter_year"] <= hi_vol else ("below" if N["vol_per_adopter_year"] < lo_vol else "above")
     rows = [
         group_row("Stacking (Submodel 13)", 4),
-        f"Holders with balances on two or more platforms, final tick & {pct(sh0, 1)}\\% & 32\\% of borrowers held simultaneous loans at more than one firm (2021) & order of magnitude; ever-stacked share of ever-adopters {pct(ev0, 1)}\\% \\\\",
+        f"Holders with balances on two or more platforms, final tick & {pct(sh0, 1)}\\% & 32\\% of borrowers held simultaneous loans at more than one firm (2021) & order of magnitude; ever-stacked share of households that ever held a balance {pct(ev0, 1)}\\% \\\\",
         group_row("Volume (Submodel 4)", 4),
         f"Annual \\ac{{BNPL}} volume per eligible household & {rand(N['vol_per_eligible_year'])} & {rand(lo_vol)}--{rand(hi_vol)} (per signed-up and per active customer) & {vol_elig_verdict} the band; eligible households compare with the lower bound \\\\",
-        f"Annual \\ac{{BNPL}} volume per adopting household & {rand(N['vol_per_adopter_year'])} & as above & {vol_adopt_verdict} the band; adopters compare with the upper bound \\\\",
+        f"Annual \\ac{{BNPL}} volume per household that ever held a balance & {rand(N['vol_per_adopter_year'])} & as above & {vol_adopt_verdict} the band; these households compare with the upper bound \\\\",
         f"Mean want-driven purchase, $\\beta = 0$ & {rand(mp0, 2)} & {rand(target, 0)} $\\pm$ 35\\% ({rand(lo_band)}--{rand(hi_band)}) & {-gap0 * 100:.2f}\\% low: {mp0_reading}; {inside0} of 20 replicates inside; Q3--Q5 mean {rand(br35)}, Q4--Q5 {rand(br45)} \\\\",
         f"Mean want-driven purchase, $\\beta = 1$ & {rand(mp1, 2)} & as above & {(1 - mp1 / target) * 100:.2f}\\% low: {mp1_reading}; {inside1} of 20 inside \\\\",
         group_row("Patterns (Table~\\ref{tab:patterns})", 4),
@@ -424,13 +423,13 @@ def tab_bnpl_on_checks(rq0: pd.DataFrame) -> None:
         f"are the post-burn-in cumulative volume divided by the number of eligible (banked) households "
         f"or of households that ever held a balance, annualised over the {yrs:.2f}-year post-burn-in "
         f"horizon; the band is the 2017-Rand provider disclosure whose customer denominator is not "
-        f"stated \\cite{{weaver2025iar}}. The mean-purchase comparison population (all adopters), "
+        f"stated \\cite{{weaver2025iar}}. The mean-purchase comparison population (all want-driven purchases), "
         f"statistic, target and tolerance were specified before the run; the Q3--Q5 and Q4--Q5 "
         f"means explain the gap and are not alternative comparison populations. Pattern 1 compares "
         f"arms that share seeds, so its differences are paired by seed and carry one standard error; "
         f"a reading of rise or fall requires a difference beyond two standard errors.",
         "L{3.6cm}L{2.9cm}L{3.2cm}L{4.1cm}",
-        r"\textbf{Check} & \textbf{Model} & \textbf{Benchmark} & \textbf{Reading}",
+        r"\textbf{Check} & \textbf{Model} & \textbf{Comparison} & \textbf{Reading}",
         rows,
         size=r"\footnotesize",
         colsep="3pt",
@@ -446,7 +445,7 @@ def tab_scenarios(rq3: pd.DataFrame) -> None:
         ("Population default rate (\\%)", "default_rate_final", 100, 2),
         ("90+ day arrears, credit-active (\\%)", "active_90_plus_mean", 100, 2),
         ("Traditional arrears rate (\\%)", "trad_arrears_rate_mean", 100, 2),
-        ("\\ac{BNPL} adoption, end of horizon (\\%)", "bnpl_adoption_final", 100, 2),
+        ("Holding \\ac{BNPL}, end of horizon (\\%)", "bnpl_adoption_final", 100, 2),
         ("Cumulative \\ac{BNPL} volume (R m)", "bnpl_volume_cumulative", 1e-6, 2),
         ("New traditional lending granted (R m)", "trad_granted_value", 1e-6, 2),
         ("Traditional applications refused", "trad_refused_gate", 1, 0),
@@ -492,11 +491,9 @@ def tab_scenarios(rq3: pd.DataFrame) -> None:
     table(
         "tab_scenarios",
         "Three scenarios for the lending environment, with and without peer influence",
-        f"The benchmark (pre-2026 position: \\ac{{BNPL}} invisible to the bureau and lightly screened), "
-        f"bureau visibility (\\ac{{BNPL}} obligations enter the Regulation 23A test of the traditional "
-        f"lender: the 2026 reporting requirement through its affordability channel only, the scoring "
-        f"channel being outside the model) and mandatory screening (the Regulation 23A test applied to "
-        f"\\ac{{BNPL}} originations), each at $\\beta = 0$ and $\\beta = 1$. Outcomes as in "
+        f"The benchmark, bureau visibility and mandatory screening, as defined in "
+        f"Section~\\ref{{sec:scenarios}}, each at $\\beta = 0$ and $\\beta = 1$. Bureau visibility "
+        f"covers the affordability channel only; the scoring channel is outside the model. Outcomes as in "
         f"Table~\\ref{{tab:baseline-arms}}; the by-quintile rows are the default rate within each "
         f"per-capita income quintile of the population. {REPL}; seeds 40{{,}}000--40{{,}}019 "
         f"(benchmark), 41{{,}}000--41{{,}}019 (bureau) and 42{{,}}000--42{{,}}019 (screening); {SHOCK}. "
@@ -562,10 +559,11 @@ def tab_distribution(rq0: pd.DataFrame) -> None:
         f"{', '.join(sizes[:-1])} and {sizes[-1]} households). "
         f"Default is the share of the quintile's households in default at the final tick, in the "
         f"no-\\ac{{BNPL}} baseline and in the $\\beta = 0$ arm of Table~\\ref{{tab:baseline-arms}}; "
-        f"adoption and traditional arrears are final-tick shares of the quintile's households in the "
+        f"holding and traditional arrears are final-tick shares of the quintile's households in the "
         f"$\\beta = 0$ arm, in per cent; debt-to-income is the aggregate ratio (total debt over total "
-        f"monthly income in the quintile) in the baseline; limit binding is the share of the quintile's "
-        f"\\ac{{BNPL}} requests refused by the rolling per-platform limit, in per cent; the mean purchase "
+        f"monthly income in the quintile) in the baseline; limit binding is the share of the "
+        f"platform requests made by the quintile's households that the rolling per-platform limit "
+        f"truncates or refuses, in per cent; the mean purchase "
         f"is over the quintile's want-driven originations, in 2017 Rands. The default columns are "
         f"{REPL.lower()}; the five right-hand columns are replicate means, with standard deviations of "
         f"at most {sd_share * 100:.1f} points for the three shares, {sd_dti:.2f} for the ratio and "
@@ -575,7 +573,7 @@ def tab_distribution(rq0: pd.DataFrame) -> None:
         "c rr r r r r r",
         r"& \multicolumn{2}{c}{Default rate (\%)} & & & & & \\ \cmidrule(lr){2-3}"
         "\n\\textbf{Quintile} & \\textbf{No \\ac{BNPL}} & \\textbf{$\\beta=0$} & "
-        "\\textbf{Adoption} & \\textbf{Arrears} & \\textbf{Debt/inc.} & \\textbf{Limit binds} & \\textbf{Purchase (R)}",
+        "\\textbf{Holding} & \\textbf{Arrears} & \\textbf{Debt/inc.} & \\textbf{Limit binds} & \\textbf{Purchase (R)}",
         rows,
         size=r"\scriptsize",
         colsep="3pt",
@@ -654,7 +652,7 @@ def tab_access(rq2: pd.DataFrame, rq2t: pd.DataFrame) -> None:
     rows.append(group_row("Threshold mean $\\mu_\\theta$ at full access, $\\sigma_\\theta = 0.20$, $\\gamma = 0.3$", 5))
     mus = {}
     for m, sub in mu.groupby("mu_theta"):
-        rows.append(f"$\\mu_\\theta = {m:g}$ & \\multicolumn{{3}}{{l}}{{default {cell(sub.default_rate_final, 2)}\\%}} & adoption {cell(sub.bnpl_adoption_final, 1)}\\% \\\\")
+        rows.append(f"$\\mu_\\theta = {m:g}$ & \\multicolumn{{3}}{{l}}{{default {cell(sub.default_rate_final, 2)}\\%}} & holding {cell(sub.bnpl_adoption_final, 1)}\\% \\\\")
         mus[m] = (ms(sub.bnpl_adoption_final)[0], ms(sub.default_rate_final)[0])
     N["mu_adoption_lo"], N["mu_default_lo"] = mus[max(mus)]
     N["mu_adoption_hi"], N["mu_default_hi"] = mus[min(mus)]
@@ -662,7 +660,7 @@ def tab_access(rq2: pd.DataFrame, rq2t: pd.DataFrame) -> None:
         mu[mu.mu_theta == max(mus)], mu[mu.mu_theta == min(mus)], "default_rate_final")
     table(
         "tab_access",
-        "Response of default and adoption to \\ac{BNPL} access",
+        "Response of default and holding to \\ac{BNPL} access",
         "Each row reports the change in the default rate from zero access to full access, over the "
         "seven access rates swept (0 to 1.0 of the banked subpopulation; the banked ceiling is "
         "82.8\\% of all households). The two end arms share seeds, so the change is paired by seed "
@@ -670,13 +668,13 @@ def tab_access(rq2: pd.DataFrame, rq2t: pd.DataFrame) -> None:
         "gives the $R^2$ of a straight line fitted to the seven arm means and the largest residual "
         "as a share of the change; a tipping point would show a low $R^2$ and a large residual. "
         "Where the change is within two standard errors there is no response to fit and the two "
-        "cells are left empty. The adoption column gives the same diagnostic for the share holding "
+        "cells are left empty. The holding column gives the same diagnostic for the share holding "
         "\\ac{BNPL} at the final tick. Linear-coupling cells have seeds "
         "30{,}000--30{,}019, threshold cells 60{,}000--60{,}019 and the $\\mu_\\theta$ arms "
         "61{,}000--61{,}019; 20 replicates each; " + SHOCK + ". The $\\gamma = 0$ control is identical "
         "at every $\\sigma_\\theta$ because thresholds are then never consulted.",
         "L{3.7cm}rrrL{3.0cm}",
-        r"\textbf{Arm} & \textbf{Default (pp)} & \textbf{$R^2$} & \textbf{Max residual} & \textbf{Adoption}",
+        r"\textbf{Arm} & \textbf{Default (pp)} & \textbf{$R^2$} & \textbf{Max residual} & \textbf{Holding}",
         rows,
         size=r"\footnotesize",
     )
@@ -839,7 +837,7 @@ def tab_sobol() -> None:
              sobol_n=data["n_base_samples"], sobol_runs=data["n_design_points"] * data["replicates"])
     table(
         "tab_sobol",
-        "Sobol indices for the population default rate and \\ac{BNPL} adoption",
+        "Sobol indices for the population default rate and \\ac{BNPL} holding",
         f"First-order ($S_1$) and total-order ($S_T$) Sobol indices with 95\\% bootstrap confidence "
         f"half-widths, from a Saltelli design of $N = {data['n_base_samples']}$ base samples over six "
         f"parameters ({num(data['n_design_points'])} design points, {data['replicates']} replicates each; "
@@ -850,7 +848,7 @@ def tab_sobol() -> None:
         f"parameters are uncertain; the \\ac{{BNPL}} \\emph{{effect}}, a difference between arms at "
         f"fixed parameters, is a separate quantity and is not decomposed here.",
         "L{4.0cm}c rr rr",
-        r"& & \multicolumn{2}{c}{Default rate} & \multicolumn{2}{c}{Adoption} \\ \cmidrule(lr){3-4}\cmidrule(lr){5-6}"
+        r"& & \multicolumn{2}{c}{Default rate} & \multicolumn{2}{c}{Holding} \\ \cmidrule(lr){3-4}\cmidrule(lr){5-6}"
         "\n\\textbf{Parameter} & \\textbf{Range} & \\textbf{$S_1$} & \\textbf{$S_T$} & \\textbf{$S_1$} & \\textbf{$S_T$}",
         rows,
         size=r"\footnotesize",
@@ -899,13 +897,13 @@ def lever_table(rq3: pd.DataFrame, name: str, caption: str, arms: list[tuple[str
         f"arm less benchmark on default, {se_text}. ``Vol.'' is the change in cumulative post-burn-in "
         f"\\ac{{BNPL}} volume relative to the benchmark, in per cent: a rule that only delays "
         f"borrowing within the horizon leaves it unchanged. ``Trad.'' is new traditional lending "
-        f"granted, in R million. Default, in per cent: {REPL.lower()}; adoption at the final "
+        f"granted, in R million. Default, in per cent: {REPL.lower()}; holding at the final "
         f"tick is a replicate mean in per cent with a standard deviation of at most "
         f"{sd_adopt * 100:.1f} points. {SHOCK_CAP}. {note_extra}",
         "L{1.9cm} rrrrr rrrrr",
         r"& \multicolumn{5}{c}{$\beta = 0$} & \multicolumn{5}{c}{$\beta = 1$} \\ \cmidrule(lr){2-6}\cmidrule(lr){7-11}"
-        "\n\\textbf{Arm} & \\textbf{Default} & \\textbf{$\\Delta$ (pp)} & \\textbf{Adopt.} & \\textbf{Vol.} & \\textbf{Trad.} "
-        "& \\textbf{Default} & \\textbf{$\\Delta$ (pp)} & \\textbf{Adopt.} & \\textbf{Vol.} & \\textbf{Trad.}",
+        "\n\\textbf{Arm} & \\textbf{Default} & \\textbf{$\\Delta$ (pp)} & \\textbf{Hold.} & \\textbf{Vol.} & \\textbf{Trad.} "
+        "& \\textbf{Default} & \\textbf{$\\Delta$ (pp)} & \\textbf{Hold.} & \\textbf{Vol.} & \\textbf{Trad.}",
         rows,
         size=r"\scriptsize",
         colsep="1.5pt",
@@ -926,23 +924,22 @@ def tab_levers(rq3: pd.DataFrame) -> None:
     lever_table(
         rq3, "tab_cooloff", "The cooling-off window",
         [("kcool0", "benchmark")] + [(f"kcool{k}", f"{k} tick{'s' if k > 1 else ''} ({k * 14} days)") for k in (1, 2, 3, 4)],
-        "The window blocks want-driven \\ac{BNPL} purchases for $k^{\\text{cool}}$ ticks after an "
-        "order; one tick is the fourteen-day right of withdrawal in the United Kingdom's rules "
+        "The window blocks want-driven \\ac{BNPL} purchases for $k^{\\text{cool}}$ ticks after a "
+        "want-driven purchase; one tick is the fourteen-day right of withdrawal in the United Kingdom's rules "
         "\\cite{fca_ps26_1}. Borrowing for a shortfall is not blocked. Seeds 40{,}000--40{,}019 in "
         "every arm. Where peer influence is present "
-        "the window also lowers the adoption share each household observes, which is the one "
-        "lever-by-peer interaction in the model.",
+        "the window also lowers the adoption share that households observe; screening and the cap "
+        "act on that share in the same way.",
     )
     lever_table(
         rq3, "tab_cap", "The cap on platforms owed (hypothetical)",
-        [("kcool0", "benchmark")] + [(f"cap{c}", f"{c} platform{'' if c == 1 else 's'}") for c in (1, 2, 3)],
+        [("kcool0", "benchmark")] + [(f"cap{c}", f"cap of {c}") for c in (1, 2, 3)],
         "No jurisdiction imposes a cap of this kind; the arm is hypothetical. "
-        "The cap counts platforms on which the household owes a balance, not agreements. A household "
-        "that owes the stated number of platforms or more is refused every new draw, on any platform, "
-        "until a balance clears. A cap of one therefore allows one agreement at a time, which is "
-        "stricter than a single-platform market, where a household may hold several agreements. "
-        "Under a cap of two or three a household may hold more agreements than the cap, on platforms "
-        "it already uses. A refused draw for a shortfall passes in full to the traditional lender. "
+        "The cap counts platforms on which the household owes a balance; it does not count "
+        "agreements. A household that owes the stated number of platforms or more is refused every "
+        "new agreement, on any platform, until a balance clears, so a cap of one allows one "
+        "agreement at a time (Appendix~\\ref{app:levers}). A shortfall request that the cap refuses "
+        "passes in full to the traditional lender. "
         "Seeds 43{,}000--43{,}019 for the cap arms and 40{,}000--40{,}019 for the benchmark.",
     )
 

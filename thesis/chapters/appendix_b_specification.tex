@@ -26,7 +26,7 @@ Table~\ref{tab:design-concepts} outlines the eleven structural \ac{ODD} design c
 \endfoot
 Basic principles & Balance sheets form the accounting core. Heuristic decision rules replace intertemporal optimisation. Statutory regulations act as explicit computational gates. & \cite{cardaci2018inequality, dorazio2017micro, meier2010present, Keys2019, yun2020housing} \\
 \addlinespace
-Emergence & Default rates, stacking depths and adoption paths follow from household decisions. Borrowing to service existing debt raises future obligations, while lagged peer adoption raises borrowing propensities. Setting $\beta=0$ removes the peer-adoption effect. & None \\
+Emergence & Default rates and adoption paths follow from household decisions; stacking depths follow from the routing rule of Submodel~13. Borrowing to service existing debt raises future obligations, while lagged peer adoption raises borrowing propensities. Setting $\beta=0$ removes the peer-adoption effect. & None \\
 \addlinespace
 Adaptation & Households compress consumption and select borrowing and repayment actions from immediate liquidity alone, without the income expectations that D'Orazio and Giulioni give their households. The traditional lender is non-adaptive. & \cite{dorazio2017micro} \\
 \addlinespace
@@ -66,11 +66,11 @@ Four groups of entries carry standing flags:
     is what makes the baseline calibrated rather than validated
     (Section~\ref{sec:lim-calibration}).
     \item \textbf{The uncited rules.} The shortfall borrowing amount (Submodel~4), the cap on
-    its \ac{BNPL} share (Submodel~5) and the minimum-payment fraction (Submodel~6) have no
-    literature anchor. All carry mandatory sweeps.
+    its \ac{BNPL} share and the checkout assumption (Submodel~5), and the minimum-payment
+    fraction (Submodel~6) have no literature anchor. Each is varied in at least one arm.
     \item \textbf{The uncalibrated peer coefficients.} $q_{\text{base}}$, $\beta$ and the
     threshold parameters of Submodel~11 cannot be calibrated from any South African source. The
-    $\beta = 0$ and $\gamma = 0$ control arms are reported in every result.
+    $\beta = 0$ and $\gamma = 0$ control arms are reported beside every peer-influence result.
     \item \textbf{The rolling limit.} No provider publishes a limit. $\lambda = 0.10$ is set so
     that four platform limits approximate Woolard's illustrative figure of about \pounds1{,}000
     of credit across several lenders, which we convert to 37\% of United Kingdom median monthly

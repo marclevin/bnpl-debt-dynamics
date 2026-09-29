@@ -32,6 +32,7 @@ cash-flow insolvent.
 \caption{Household tick, for household $i$ at tick $t$}
 \label{alg:tick}
 \begin{algorithmic}
+\footnotesize
 \State \textbf{Step 1: income, subject to the employment shock}
 \State $y \gets y_i$
 \If{$\text{source}_i = \text{WAGE}$ and $n_i > 0$}
@@ -83,8 +84,8 @@ its monthly discretionary budget $E^d_i$ (the cap $\mathbb{1}^{\text{cap}}$, on 
 the robustness one). An agreement of value $F$ frees $F(1 - 1/N)$ in cash, because $F/N$ is paid at
 checkout. The household applies to the traditional lender for the amount it still lacks, which is
 the request less the cash that \ac{BNPL} freed. The lender's test is the residual-income calculation on
-the liabilities the bureau shows it, and the line marked bureau visibility is the only place the 2026
-reporting requirement enters the model: with $\mathbb{1}^{\text{bur}}$ on, the household's
+the liabilities the bureau shows it, and the line marked bureau visibility is the only place the reported 2026
+arrangements enter the model: with $\mathbb{1}^{\text{bur}}$ on, the household's
 \ac{BNPL} instalments on every platform are added to the visible obligations. Both gates assess the
 household on its income at initialisation, which an unemployment spell does not reduce. A granted loan is booked: it joins the
 household's one consolidated traditional balance at the unsecured terms of

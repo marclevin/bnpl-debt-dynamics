@@ -110,7 +110,7 @@ def fig_stacking(rq1: pd.DataFrame) -> None:
     axes[1].set_title("(b) 2+ platforms, ever")
     axes[2].set_title("(c) Default rate")
     axes[0].set_ylabel("Share of all households (%)")
-    axes[1].set_ylabel("Share of ever-adopters (%)")
+    axes[1].set_ylabel("Share of households that\never held BNPL (%)")
     axes[2].set_ylabel("Share of all households (%)")
     for ax in axes:
         ax.set_xlabel("Number of BNPL platforms")
@@ -217,7 +217,7 @@ def fig_scenarios(rq3: pd.DataFrame) -> None:
 # the value: the "Swept" class of Table 3.1). Arms are matched by exact label; a prefix match
 # once pooled the default-horizon arms with the kappa arms ("rob_k" is a prefix of "rob_kappa").
 # Population size and activation order are numerical checks, not model assumptions, and the
-# single-tick shock arm (-9.8pp) is off any shared scale; all three stay in the appendix table.
+# single-tick shock arm (-9.2pp) is off any shared scale; all three stay in the appendix table.
 TORNADO_GROUPS = [
     ("Borrowing amount on a shortfall (exact)", "rob_amount_shortfall", [
         ("+25%", "rob_amount_shortfall_125"),
@@ -240,7 +240,7 @@ TORNADO_GROUPS = [
 
 def fig_tornado(rob: pd.DataFrame) -> None:
     def x(label: str) -> pd.Series:
-        return arm(rob, label).default_rate_final * 100
+        return arm(rob, label).set_index("seed").default_rate_final * 100
 
     blocks = []
     for name, ref, arms_, swept in TORNADO_GROUPS:
@@ -248,9 +248,12 @@ def fig_tornado(rob: pd.DataFrame) -> None:
         rows = []
         for arm_name, label in arms_:
             a = x(label)
-            d = a.mean() - r.mean()
-            se = np.sqrt(a.var(ddof=1) / a.count() + r.var(ddof=1) / r.count())
-            rows.append((arm_name, d, stats.t.ppf(0.975, a.count() + r.count() - 2) * se))
+            # Every group shares seeds and population with its reference, so the interval is
+            # that of the paired difference, as in the tables.
+            assert sorted(a.index) == sorted(r.index), f"{label} does not share seeds with {ref}"
+            z = a - r.reindex(a.index)
+            se = z.std(ddof=1) / np.sqrt(z.count())
+            rows.append((arm_name, z.mean(), stats.t.ppf(0.975, z.count() - 1) * se))
         blocks.append((name, swept, rows, max(abs(d) for _, d, _ in rows)))
     blocks.sort(key=lambda b: -b[3])
 

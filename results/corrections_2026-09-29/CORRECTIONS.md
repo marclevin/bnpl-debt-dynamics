@@ -42,6 +42,14 @@ the effect suite. The thesis reports both.
 | **Switches "crossed"** | Each switch was crossed with peer influence only. No arm ran both switches. | "Crossed". An arm with both switches has been added (`rq3_both`, seeds 44,000–44,019). |
 | **Default** | Absorbing, counted from tick 0, over all 5,000 households. The final-tick rate is the share that defaulted at any tick, burn-in included. | "In default at the final tick", which is correct but does not say the measure is cumulative. |
 | **Income at the gates** | Both gates use income at initialisation. An unemployment spell does not reduce it. | "Declared gross income". |
+| **Committed shortfall** | A committed-expenditure shortfall is recorded as distress and is not carried forward. Cash borrowed against it is spent on debt service, then discretionary spending, and the rest is saved. | "Remains recorded as distress even if later borrowing supplies enough cash to cover it", which implies the loan pays for the expenditure. |
+| **Debt service in the distress test** | The amount due: the instalment or minimum payment plus arrears, and the BNPL instalments due. | "Scheduled debt service". |
+| **Rolling limit** | The count is of platform requests that the limit truncates or refuses, over every platform a request reaches. | "Requests refused by the limit". |
+| **Late-fee cap** | Per agreement, over its life. | The parameter register said "per missed instalment". |
+| **Seed blocks** | The sensitivity groups, the scenario arms, the cap arms and the threshold-mean arms each have their own block. | "Arms within a suite share seeds, except in the scenario suite". |
+| **Imputed product flags** | BNPL eligibility uses the banked flag only. The five product flags price opening traditional debt. Stacking follows from routing. | "The joint structure that cross-platform stacking depends on". |
+| **Initial vulnerability** | Of the 5,000 agents, 45.2% start with no liquid savings, 3.6% with income below committed expenditure and 5.1% with income below committed expenditure plus service. | 44.3%, 3.9% and 5.2%, which are the figures of the validation summary and not of the agents. |
+| **Parameter register** | Runs use the fitted shock probability 0.016 and payment friction 0.09. | The register printed the code defaults 0.01 and 0.0, decision numbers in place of submodel numbers, and development notes. |
 
 The cap follows the register ("a maximum on concurrent facilities"; a facility is a platform
 relationship with a balance) and the code was written to it, so the code is unchanged and the
@@ -57,6 +65,10 @@ text is corrected.
   holder is cut off by that platform one tick sooner than before.
 - **One consolidated traditional balance.** A new loan adds its instalment to scheduled
   service, which then runs until the whole balance clears. Unchanged.
+- **Committed shortfalls are not repaid from the loan raised against them.** The design record
+  (DECISIONS.md, D7) notes that the code differs from the written rule here and reserves the
+  choice for Marc. The code is unchanged and the thesis now describes what it does. Moving to
+  the written rule would need a recalibration and a full rerun.
 - **Seeds.** Every suite keeps its original seed block. The scenario arms therefore still use
   seed blocks different from the benchmark's, and their differences are unpaired.
 
@@ -79,3 +91,31 @@ text is corrected.
 - The Sobol analysis has two replicates per design point and decomposes the level of default,
   not the effect of BNPL.
 - The income-shock probability is fitted on a grid with steps of 0.008.
+- A difference is called detectable beyond two standard errors. A true difference of that size
+  would be missed about half the time, so "not detectable" is weak evidence of no effect.
+- The effect of the cap depends on how the cap is defined (`cap_definitions.md`), so the lever
+  results do not establish lost volume as the cause of lower default.
+
+## 6. Independent audit of the revised thesis
+
+Two read-only audits checked the revised text: one recomputed every number in the prose from
+`results/raw` and compared the model description with the code; the other checked style and
+presentation. Every recomputed number matched. The audit found claims that said more than the
+data support and descriptions that did not match the code. Each finding was re-derived before
+it was acted on (the scripts are in `audit_checks/`), and
+the corrections are those listed in section 2 together with these changes of wording:
+
+- "Detects a change of 0.2 points" became a statement of the threshold and of its power.
+- The lender "refuses as many applications" became the measured differences, which differ by
+  seed block (+1 ± 9 and -16 ± 7).
+- The threshold rule does not raise default detectably more than its control (the difference
+  in the rise is between +0.05 ± 0.08 and +0.14 ± 0.13).
+- Adding bureau visibility to screening leaves BNPL volume and default without a detectable
+  change, and raises traditional refusals by about 100.
+- The cooling-off window is not the only lever that lowers the adoption share households see.
+- Explanations that no experiment isolates are now stated as possible explanations.
+- The sensitivity figure now uses paired intervals, as the tables do.
+
+One audit finding was not accepted as written: the arms with a limit of 0.25 and of 1.0 months
+of income are not identical runs. They give the same default in every replicate at beta = 0,
+and their volumes differ slightly.

@@ -80,19 +80,20 @@ not been submitted for any other degree or examination at any other university.
 
 % Every number is read from a generated table or results/summary/results_numbers.json:
 % 14.2% from tab:ccmr, 52% from tab:baseline-arms, 0.1 and 0.6 points from Section 4.1,
-% 1.1 points from tab:effect, 0.25 points from Section 5.
+% 1.1 points from tab:effect, 0.25 points from Section 5 (twice the largest standard error).
 South African households carried substantial credit distress before \ac{BNPL} arrived.
 In 2017, 14.2\% of unsecured and credit-facility accounts were more than 90 days in arrears, in a market with statutory affordability tests and bureau reporting that did not cover \ac{BNPL}.
 Reported industry arrangements, not yet in force, would add \ac{BNPL} records to the bureau, and their effect on households has not been measured.
 This thesis builds an agent-based model of 5{,}000 households from \ac{NIDS} and \ac{FinScope} microdata.
 We fit two parameters so that the traditional credit market reproduces two bands of the 2017 arrears profile with \ac{BNPL} disabled, and then enable \ac{BNPL} in the same environment, with platforms that cannot see one another and a bureau that cannot see them.
 We report the checks the model was not fitted to, including those it fails.
-With four platforms and no peer influence, 52\% of households holding \ac{BNPL} have balances on two or more platforms, a share that follows from the assumption that households choose among platforms at random.
-Default does not change detectably with the number of platforms.
+With four platforms and no peer influence, 52\% of households holding \ac{BNPL} have balances on two or more platforms.
+That share follows from the assumption that households choose among platforms at random, and default does not change detectably with the number of platforms.
 Enabling \ac{BNPL} raises default by about 0.1 percentage points without peer influence and by 0.6 points with it, in a market that borrows ten times as much.
-The first estimate depends on an assumption that no evidence fixes: if households cannot borrow the checkout payment of an agreement used to cover a shortfall, the effect is 1.1 points.
-The reporting experiment covers only the affordability channel, because the model has no credit score.
-In that channel neither bureau visibility nor mandatory affordability screening, alone or together, changes default by the 0.25 points that the experiment could detect.
+The smaller estimate rests on an assumption that no evidence fixes.
+If households cannot borrow the checkout payment of an agreement used to cover a shortfall, the effect is 1.1 points.
+Because the model has no credit score, the reporting experiment covers only the affordability channel.
+In that channel bureau visibility and mandatory affordability screening reduce borrowing, and neither changes default detectably, alone or with the other; a change smaller than about 0.25 points could not have been detected.
 
 \acresetall
 \tableofcontents

@@ -4,7 +4,7 @@
 
 The model follows households as they receive income, spend, borrow and repay debt.
 Each household begins with financial characteristics drawn from survey microdata.
-Traditional credit is subject to a residual-income test based on Regulation 23A,
+Traditional credit is subject to the Regulation 23A residual-income test,
 while \ac{BNPL} platforms apply a lighter screen.
 
 This section explains who acts in the model, what each institution can observe,
@@ -110,7 +110,7 @@ Section~\ref{sec:background}.
 \node[box, minimum width=4.0cm] (hh) at (0,0) {\textbf{Household}\\[1pt]
     \footnotesize income, savings, traditional debt,\\
     \footnotesize \ac{BNPL} obligations};
-\node[box] (lender) at (0,3.0) {\textbf{Traditional lender}\\ \footnotesize Regulation 23A gate};
+\node[box] (lender) at (0,3.0) {\textbf{Traditional lender}\\ \footnotesize Regulation 23A test};
 \node[box] (bureau) at (7.0,3.0) {\textbf{Credit bureau}\\ \footnotesize traditional debt, defaults};
 \node[box] (p1) at (6.0,0.35)  {\footnotesize Platform 1};
 \node[box] (p2) at (8.2,0.35)  {\footnotesize Platform 2};
@@ -120,7 +120,7 @@ Section~\ref{sec:background}.
       label={[lbl]below:{cannot see one another (Submodel 13)}}] (plats) {};
 \node[box] (group) at (0,-2.6) {\textbf{Reference group}\\ \footnotesize income quintile $\times$ province};
 
-\draw[sees] (hh) -- (lender) node[lbl, midway, left] {applications:\\ declared income};
+\draw[sees] (hh) -- (lender) node[lbl, midway, left] {applications:\\ surveyed income};
 \draw[sees, <->] (lender) -- (bureau) node[lbl, midway, above] {reports and reads};
 \draw[sees] (hh.east) -- (plats.west) node[lbl, midway, above] {pay-in-four\\ agreements};
 \draw[gap] (plats.north) -- (bureau.south) node[lbl, midway, right] {\ac{BNPL} unreported\\ (bureau visibility adds it)};
@@ -150,8 +150,9 @@ Section~\ref{sec:background}. A second switch, $\mathbb{1}^{\text{aff}}$,
 applies the same residual-income test to each \ac{BNPL} request before it
 reaches a platform. That test is shown the household's traditional service and
 its \ac{BNPL} instalments on every platform, whether or not the bureau switch is
-on. The two switches therefore differ in which lender decides, and screening
-already gives that decision a complete view of \ac{BNPL} obligations.
+on. The two switches therefore differ in which decision uses the information.
+Bureau visibility changes what the traditional lender sees, while screening puts
+a complete view of \ac{BNPL} obligations in front of each \ac{BNPL} decision.
 Algorithms~\ref{alg:gate} and~\ref{alg:bnpl} specify how the two switches
 enter lending decisions.
 
@@ -192,10 +193,11 @@ household as unable to pay. Using the previous tick's peer signal also prevents
 adoption decisions from depending on which neighbour acts first.
 
 Distress and arrears are distinct states. A household is distressed if it cannot
-cover committed expenditure from opening cash and income, or cannot meet
-scheduled debt service after seeking credit. An initial committed-expenditure
-shortfall remains recorded as distress even if later borrowing supplies enough
-cash to cover it. Arrears track unpaid debt obligations through the \ac{CCMR}
+cover committed expenditure from opening cash and income, or cannot meet the
+debt service due after seeking credit. A committed-expenditure shortfall is
+recorded as distress and is not carried forward. Credit raised against it is
+spent on debt service and then on discretionary spending, and any remainder is
+saved. Arrears track unpaid debt obligations through the \ac{CCMR}
 age bands. Default occurs after seven consecutive distressed ticks, or 98 days,
 and blocks all further credit. The duration is chosen to approximate the
 90-day impairment convention at a 14-day resolution; the distress rule is not
@@ -242,7 +244,7 @@ cross-platform stacking in more detail.
 \addlinespace
 6. Repayment and arrears & Scheduled-payers pay the full amortised instalment. Minimum-payers pay the larger of accrued interest and 5\% of balance per month, tick-scaled; the fraction is an \textbf{assumption}, since neither the \ac{NCA} nor any located source prescribes a formula. Unpaid amounts accrue as arrears in \ac{CCMR} age bands. Payment friction skips an affordable traditional instalment with fixed probability. & \cite{Keys2019, Kuchler2021} & Minimum-payer share 0.29 (swept 0.20--0.40); minimum fraction swept 0.025--0.10. Friction is the second fitted parameter, calibrated to the \ac{CCMR} 1--30 day band; it applies to traditional debt only, since \ac{BNPL} auto-debits a card. \\
 \addlinespace
-7. Distress and default & Distress records an unpaid committed-expenditure shortfall before borrowing, or unmet scheduled service after borrowing, assessed before payment friction. Seven consecutive distressed ticks trigger default; a defaulted household is refused all further credit. & \cite{madeira2018chile} & $k=7$ ticks (98 days), the first tick boundary at or past the 90-day impairment convention; $k=4$ (56 days, the tick boundary nearest the 60-day band) swept. \\
+7. Distress and default & Distress records an unpaid committed-expenditure shortfall before borrowing, or unmet debt service due after borrowing, assessed before payment friction. Seven consecutive distressed ticks trigger default; a defaulted household is refused all further credit. & \cite{madeira2018chile} & $k=7$ ticks (98 days), the first tick boundary at or past the 90-day impairment convention; $k=4$ (56 days, the tick boundary nearest the 60-day band) swept. \\
 \addlinespace
 8. Heterogeneity & No behavioural parameter varies by household type. Heterogeneity enters through the data layer: income, budgets, balances and financial-inclusion flags. The minimum-payer archetype is assigned uniformly at random. & -- & No continuous present-bias parameter: no local calibration data. \\
 \addlinespace
@@ -343,16 +345,16 @@ limit. A household that borrows again before an earlier agreement is repaid will
 therefore usually owe more than one platform: with $N$ platforms, a second
 request reaches a different platform first with probability $(N-1)/N$.
 
-No rule assigns a household a number of providers, and the routing rule
-determines how overlapping agreements are spread across platforms. The stacking
-measures therefore show how often a household's agreements overlap. They carry
-no information about why a household would choose several providers, because
-the model contains no such choice. No evidence on how South African households
-choose among providers was located, so uniform routing is an assumption.
+No rule assigns a household a number of platforms, and the routing rule alone
+determines how overlapping agreements are spread across them. The stacking
+measures therefore show how often a household's agreements overlap, and carry no
+information about why a household would use several providers. No evidence on
+how South African households choose among providers was located, so uniform
+routing is an assumption.
 
 We vary the number of platforms from one to six. One platform rules out
 cross-platform stacking but still permits several agreements on that platform,
-which separates the number of providers from the number of concurrent
+which separates the number of platforms from the number of overlapping
 agreements. Section~\ref{sec:data-validation} compares the stacking measures
 with the \ac{CFPB} estimate and discusses the differences in definitions,
 markets and observation periods.
