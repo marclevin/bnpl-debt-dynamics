@@ -335,11 +335,19 @@ class HouseholdAgent(Agent):
         Returns the NET cash raised. Traditional credit covers what BNPL cannot, and is
         the only channel in the no-BNPL baseline. Cost-ranking is deliberately not used:
         the evidence attributes the choice to convenience and social norm, not price.
+
+        BNPL relieves a shortfall by liquidity substitution (DECISIONS.md D5): the
+        household finances a purchase of `financed`, pays a quarter of it at checkout and
+        keeps the other three quarters in cash. The relief is therefore
+        `financed * 3/4`, and what BNPL "cannot cover" is the requested amount less that
+        relief. Until 2026-09-29 the traditional lender was asked for the requested
+        amount less the whole of `financed`, so the checkout quarter was never requested
+        from anyone and a household that used BNPL for a shortfall stayed short by
+        construction, whatever either lender was willing to grant.
         """
         p = self.model.params
         amount = self._requested_amount(shortfall)
-        covered = 0.0  # spending need met, by either channel
-        net_cash = 0.0  # cash actually freed up
+        net_cash = 0.0  # cash actually freed up or drawn down
 
         if p.bnpl_enabled and self.bnpl_eligible:
             # BNPL finances retail goods, not cash, so a shortfall can be shifted onto it
@@ -350,14 +358,15 @@ class HouseholdAgent(Agent):
             if p.shortfall_bnpl_capped:
                 ask = min(amount, p.bnpl_purchase_ratio * self._purchase_scale())
             financed = self._bnpl_draw(ask)
-            covered += financed
             # BNPL defers 75% of the cost: 25% is debited at checkout (D13), so the net
             # cash relief this tick is three quarters of the amount financed.
             net_cash += financed * (1.0 - 1.0 / p.bnpl_instalments)
 
-        remaining = amount - covered
-        if remaining > 0:
-            # A traditional loan is drawn down in full as cash, and booked as debt.
+        remaining = amount - net_cash
+        if remaining > BALANCE_EPS:
+            # A traditional loan is drawn down in full as cash, and booked as debt. The
+            # gate is all-or-nothing, so a refusal leaves the whole of `remaining` unmet
+            # and the household is recorded as distressed (D7).
             granted = self.model.lender.apply(self, remaining)
             if granted > 0:
                 self._book_trad_loan(granted)
