@@ -1,8 +1,9 @@
 # DEFECTS — everything wrong, or once wrong, with evidence
 
 **One of three working documents.** [`DECISIONS.md`](DECISIONS.md) is *what was chosen and why*.
-[`DEFECTS.md`](DEFECTS.md) is *what is wrong or was wrong*. [`PLAN.md`](../archive/PLAN.md) is *what happens
-next*. Consolidated 2026-08-13 from nine overlapping files.
+[`DEFECTS.md`](DEFECTS.md) is *what is wrong or was wrong*. `PLAN.md` is *what happens
+next*. Consolidated 2026-08-13 from nine overlapping files. `PLAN.md` and `THESIS_GUIDE.md` were
+removed 2026-09-29; last in commit `647b1eb`.
 
 Raised in the full-document review of **2026-08-05** and extended continuously since. This file is
 the record; fixes are tracked here, not in commit messages. Where an issue changes a design
@@ -752,7 +753,7 @@ result than the one currently in the output.
 volume does not *increase*, which a no-op satisfies trivially. Fix requires a regression test that
 `k_cool = 1` **strictly reduces** want-driven purchase count against `k_cool = 0`.
 
-Plan: [`PLAN.md`](../archive/PLAN.md) **P0**. Nothing else in RQ3 is affected — the affordability,
+Plan: `PLAN.md` **P0**. Nothing else in RQ3 is affected — the affordability,
 bureau and stacking-cap arms are unaffected by this bug.
 
 ---
@@ -760,7 +761,7 @@ bureau and stacking-cap arms are unaffected by this bug.
 ## The 2026-08-12 QA pass
 
 Four defects found and closed in one pass, plus one raised for the Granovetter work. Plan and
-evidence: [`PLAN.md`](../archive/PLAN.md). All 79 tests pass (65 existing, 14 new).
+evidence: `PLAN.md`. All 79 tests pass (65 existing, 14 new).
 
 **The baseline is untouched.** `shock_prob` and `payment_friction` are fitted with `bnpl_enabled =
 False`, and the peer channel is inert in that arm, so **no re-calibration is needed** and the CCMR
@@ -1205,7 +1206,7 @@ The known double-count (`data/config/README.md`) pushes it further up, not down.
 ## The 2026-09-21 code review
 
 Found while reviewing `simulation/` for over-engineering and then executing
-[`CODE_CLEANUP_PLAN.md`](../CODE_CLEANUP_PLAN.md).
+`CODE_CLEANUP_PLAN.md` (removed 2026-09-29; last in commit `647b1eb`).
 
 ### B34 · Granted traditional loans were never booked as debt — `BLOCKER` · `BOTH` · `CLOSED`
 

@@ -1,11 +1,12 @@
 # DECISIONS — every choice made, and why
 
 **One of three working documents.** [`DECISIONS.md`](DECISIONS.md) is *what was chosen and why*.
-[`DEFECTS.md`](DEFECTS.md) is *what is wrong or was wrong*. [`PLAN.md`](../archive/PLAN.md) is *what happens
-next*. Consolidated 2026-08-13 from nine overlapping files.
+[`DEFECTS.md`](DEFECTS.md) is *what is wrong or was wrong*. `PLAN.md` is *what happens
+next*. Consolidated 2026-08-13 from nine overlapping files. `PLAN.md` and `THESIS_GUIDE.md` were
+removed 2026-09-29; last in commit `647b1eb`.
 
 Canonical strategy: [`../OVERVIEW.md`](../OVERVIEW.md).
-Plain-language explanation of the whole project: [`../THESIS_GUIDE.md`](../archive/THESIS_GUIDE.md).
+Plain-language explanation of the whole project: `THESIS_GUIDE.md`.
 Data → agent mapping: [`../household_agent.md`](../household_agent.md).
 
 ---
