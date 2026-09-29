@@ -94,6 +94,7 @@ class BNPLModel(Model):
                 rolling_limits=dict(limits),
                 late_fee_per_tick=params.bnpl_late_fee_per_tick,
                 late_fee_cap=params.bnpl_late_fee_cap,
+                late_fee_cap_share=params.bnpl_late_fee_cap_share,
                 n_instalments=params.bnpl_instalments,
             )
             for i in range(params.n_platforms if params.bnpl_enabled else 0)

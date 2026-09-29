@@ -10,7 +10,8 @@ which one platform could observe another's exposure. Stacking depth is therefore
 
 D13: Pay in 4 on the Payflex schedule — 25% at checkout then 25% at each of the next
 three ticks, which lands exactly on tick boundaries. Interest zero. Late fee R95/week
-capped at three weeks (R190 per tick to a maximum of R285 per missed instalment).
+capped at three weeks (R190 per tick to a maximum of R285), and at 50% of the purchase
+price where that is lower.
 """
 
 from __future__ import annotations
@@ -56,6 +57,8 @@ class BNPLPlatform:
     late_fee_per_tick: float
     late_fee_cap: float
     n_instalments: int
+    #: The published cap is the lower of `late_fee_cap` and this share of the purchase.
+    late_fee_cap_share: float = 0.50
 
     #: agent_id -> live loans on this platform.
     loans: dict[int, list[BNPLLoan]] = field(default_factory=dict)
@@ -140,6 +143,10 @@ class BNPLPlatform:
         )
         return amount
 
+    def fee_cap(self, loan: BNPLLoan) -> float:
+        """The most this agreement can be charged in late fees over its life."""
+        return min(self.late_fee_cap, self.late_fee_cap_share * loan.principal)
+
     def obligations(self, agent_id: int) -> float:
         """One instalment per live agreement, plus arrears, whenever it was opened.
 
@@ -176,9 +183,10 @@ class BNPLPlatform:
         """Collect what the household can pay this tick.
 
         Returns (paid, fees_charged). An unpaid instalment accrues the Payflex late fee
-        at R190 per tick to a cap of R285 per loan; once the cap is exhausted the
-        household is cut off from THIS platform while remaining eligible at the others,
-        since platforms are blind to each other (D12).
+        at R190 per tick, to a cap per agreement of R285 or 50% of the purchase price,
+        whichever is lower (both in nominal Rands; the model carries them deflated).
+        Once the cap is exhausted the household is cut off from THIS platform while
+        remaining eligible at the others, since platforms are blind to each other (D12).
         """
         loans = self.loans.get(agent_id)
         if not loans:
@@ -214,7 +222,8 @@ class BNPLPlatform:
                 paid += part
                 shortfall = owed - part
 
-                headroom = max(self.late_fee_cap - loan.fee_accrued, 0.0)
+                cap = self.fee_cap(loan)
+                headroom = max(cap - loan.fee_accrued, 0.0)
                 fee = min(self.late_fee_per_tick, headroom)
                 loan.fee_accrued += fee
                 fees += fee
@@ -222,7 +231,7 @@ class BNPLPlatform:
                 # Fees roll into the single payable rather than being tracked separately.
                 loan.arrears = shortfall + fee
 
-                if loan.fee_accrued >= self.late_fee_cap:
+                if loan.fee_accrued >= cap:
                     self.cut_off.add(agent_id)
 
         # Drop settled loans so stacking depth counts live facilities only.

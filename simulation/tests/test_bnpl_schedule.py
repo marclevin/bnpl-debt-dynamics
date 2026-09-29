@@ -72,6 +72,28 @@ def test_late_fee_is_190_per_tick_and_caps_at_285():
     assert p.loans[1][0].fee_accrued == pytest.approx(285.0)
 
 
+def test_late_fees_on_a_small_purchase_are_capped_at_half_its_price():
+    """Payflex: "capped at the lower of R285.00 or 50% of the Purchase Price"."""
+    p = make_platform()
+    p.request(1, 200.0)  # half the price is R100, below both R190 and R285
+    _, fees1 = p.collect(1, 0.0)
+    assert fees1 == pytest.approx(100.0)
+    _, fees2 = p.collect(1, 0.0)
+    assert fees2 == 0.0
+    assert p.loans[1][0].fee_accrued == pytest.approx(100.0)
+    # The household owes the three instalments and the capped fee, and nothing more.
+    assert p.exposure(1) == pytest.approx(150.0 + 100.0)
+
+
+def test_the_rand_cap_still_binds_on_a_purchase_above_570():
+    p = make_platform()
+    p.request(1, 600.0)  # half the price is R300, above the R285 cap
+    p.collect(1, 0.0)
+    p.collect(1, 0.0)
+    p.collect(1, 0.0)
+    assert p.loans[1][0].fee_accrued == pytest.approx(285.0)
+
+
 def test_household_is_cut_off_once_the_fee_cap_is_exhausted():
     p = make_platform()
     p.request(1, 1000.0)

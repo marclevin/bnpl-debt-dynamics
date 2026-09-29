@@ -118,6 +118,9 @@ PAYFLEX_TERMS_VINTAGE = 2026
 PAYFLEX_ORDER_CAP_NOMINAL = 15_000.0
 PAYFLEX_LATE_FEE_PER_TICK_NOMINAL = 190.0   # R95 per week x 2 weeks
 PAYFLEX_LATE_FEE_CAP_NOMINAL = 285.0        # 3 weeks x R95
+#: The published cap is "the lower of R285.00 (including VAT) or 50% of the Purchase
+#: Price" (payflex.co.za/terms-conditions, read 2026-09-29). A share needs no deflation.
+PAYFLEX_LATE_FEE_CAP_SHARE = 0.50
 
 BNPL_ORDER_CAP_2017 = round(
     to_2017_rands(PAYFLEX_ORDER_CAP_NOMINAL, PAYFLEX_TERMS_VINTAGE), 2
@@ -518,6 +521,16 @@ class ParamSet:
             "2017 Rands (DEFECTS.md B29)."
         ),
     )
+    bnpl_late_fee_cap_share: float = _p(
+        PAYFLEX_LATE_FEE_CAP_SHARE,
+        rule="D13",
+        provenance="SOURCED",
+        source=(
+            "Payflex caps late fees at the lower of R285 or 50% of the purchase price. "
+            "The share binds on purchases under R377 (2017 Rands). Omitted until the "
+            "corrections of 2026-09-29, when fees on a small purchase could exceed it."
+        ),
+    )
 
     # -- D14 intervention levers (RQ3) -------------------------------------------
     bnpl_affordability_check: bool = _p(
@@ -548,10 +561,12 @@ class ParamSet:
         rule="D14",
         provenance="ASSUMPTION",
         source=(
-            "Lever 4. Max concurrent agreements. HYPOTHETICAL: no jurisdiction imposes "
-            "one. Must be labelled as such wherever it is reported."
+            "Lever 4. Cap on concurrent facilities: a household that owes this many "
+            "platforms or more is refused any new draw. It counts platforms with a "
+            "balance, not agreements. HYPOTHETICAL: no jurisdiction imposes one. Must be "
+            "labelled as such wherever it is reported."
         ),
-        sweep="RQ3 lever 4, 1-4 or None",
+        sweep="RQ3 lever 4, 1-3 or None",
     )
 
     # -- D16 scheduling ----------------------------------------------------------

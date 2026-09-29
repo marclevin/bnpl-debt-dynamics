@@ -469,6 +469,11 @@ class HouseholdAgent(Agent):
         if amount <= 0:
             return 0.0
 
+        # Lever 4 (D14), "a maximum on concurrent facilities". A facility is a platform
+        # on which the household owes a balance, so the cap counts PLATFORMS, not
+        # agreements: below the cap a household may open further agreements on a platform
+        # it already uses. At the cap every new draw is refused, including a draw on a
+        # platform already in use, so a cap of one is one agreement at a time.
         if p.stacking_cap is not None and self.stacking_depth() >= p.stacking_cap:
             return 0.0
 

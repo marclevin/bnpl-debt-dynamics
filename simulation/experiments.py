@@ -231,7 +231,8 @@ def rq3_interventions(reps: int) -> list[ParamSet]:
             reps,
             seed0=42_000,
         )
-        # Lever 4: concurrent-facility cap. HYPOTHETICAL -- no jurisdiction imposes one.
+        # Lever 4: cap on concurrent facilities (platforms with a balance, not
+        # agreements). HYPOTHETICAL -- no jurisdiction imposes one.
         for cap in (1, 2, 3):
             out += replicate(
                 calibrated(
