@@ -1,33 +1,43 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-% Four paragraphs, 650 words of prose (SOL_PLAN_REFORMAT.md; the earlier 800-word note is
-% superseded). Every number is read from the generated tables of Sections 3.5, 4 and 5.
+% Prose budget 650 words (SOL_PLAN_REFORMAT.md; the earlier 800-word note is superseded).
+% Every number is read from the generated tables of Sections 3.5, 4 and 5; nothing is typed.
 
-This thesis asked what a lending channel outside the affordability and reporting regime does to a household population already in credit distress, and what bringing it inside would achieve.
-The answers are those of a controlled 2017 counterfactual, not an account of South Africa after 2017.
-RQ1 is answered in part: a population built from \ac{NIDS} and \ac{FinScope} microdata reproduces the fitted arrears bands, three of four external checks on its construction and the order of magnitude of stacking and purchase size, and fails the intermediate arrears bands, the servicing share, the \ac{BNPL} volume band and the interest half of the complementarity pattern (Tables~\ref{tab:validation} and~\ref{tab:bnpl-on-checks}).
-RQ2 is answered yes, then no.
-Mutually invisible platforms produce stacking that no rule programs, 45\% of holders across four platforms, but default does not rise with the number of platforms, and it rises smoothly with access under both the linear and the threshold coupling, with no tipping point in any arm including the controls (Tables~\ref{tab:stacking} and~\ref{tab:access}).
-RQ3 is answered by two nulls: neither bureau visibility nor mandatory screening changes default in the affordability channel, with or without peer adoption, and peer adoption raises the injection's effect from $1.22 \pm 0.11$ to $2.07 \pm 0.10$ points without changing either conclusion (Tables~\ref{tab:baseline-arms} and~\ref{tab:scenarios}).
+This thesis asked how a lending channel outside the affordability and reporting regime affects a household population already in credit distress, and what bringing that channel inside the regime would change.
+The answers come from a controlled counterfactual under 2017 conditions, not a forecast of South Africa after 2017.
+RQ1 is answered in part.
+The model reproduces the two arrears bands to which it was fitted and passes three of four external checks on the population, all under broad tolerances.
+It misses the intermediate arrears bands, the servicing share, the \ac{BNPL} volume band and the interest measure of the complementarity pattern, and mean purchase size at $\beta = 0$ meets its tolerance by less than R1 (Tables~\ref{tab:validation} and~\ref{tab:bnpl-on-checks}).
+These results support using the model to compare mechanisms, with limited confidence in its outcome levels.
+For RQ2, cross-platform stacking emerges although no rule assigns households to several providers.
+With four platforms and no peer influence, 45.0\% of final-tick holders have balances on two or more platforms.
+Enabling \ac{BNPL} raises default by $1.22 \pm 0.11$ percentage points without peer influence and by $2.07 \pm 0.10$ points with it (one standard error; Table~\ref{tab:baseline-arms}).
+Default does not change detectably with the number of platforms, and it rises approximately linearly with access under both adoption rules, with no tipping point on the tested grid (Tables~\ref{tab:stacking} and~\ref{tab:access}).
+For RQ3, neither regulatory switch lowers default in the affordability channel.
+Bureau visibility raises default by $0.26 \pm 0.11$ points without peer influence, which is detectable, and has no detectable effect with it ($0.04 \pm 0.12$ points).
+Mandatory screening lowers adoption by 1.6 to 2.6 points and has no detectable effect on default (Table~\ref{tab:scenarios}).
 
-The contributions are, in descending order of defensibility, a survey-derived household population with imputed financial-inclusion flags, checked against sources its construction did not use and reusable beyond this question; a two-lender-class model in which the classes differ in what they can see, so that the visibility gap is a parameter rather than an assumption; and an affordability-channel comparison of the reporting requirement with its regulatory alternative, run against a nonlinearity hypothesis, specified before the final run, that failed.
-The stacking result rests on rules with sources.
-The level of default rests on two fitted parameters and on a borrowing-amount rule with none, which the sensitivity analysis shows to be the largest single influence on it (Table~\ref{tab:robustness}).
-The \ac{BNPL} effect keeps its sign under every swept assumption, but its size also depends most on that rule (Table~\ref{tab:effect}).
+The most secure contribution is a household population that combines \ac{NIDS} financial data with imputed \ac{FinScope} inclusion flags and is checked against sources its construction did not use.
+The second is a model in which two classes of lender differ in what they can observe, so that the visibility gap can be switched on and off.
+The third is a set of reproducible comparisons of access, adoption rules and lending restrictions.
+The level of default rests on two fitted parameters and on a borrowing-amount rule with no empirical estimate, which moves default by up to 2.15 points (Table~\ref{tab:robustness}).
+Replacing the persistent income shock with a single-tick loss lowers it by 9.79 points (Table~\ref{tab:robustness-appendix}).
+The \ac{BNPL} effect is positive in every setting tested, but its size depends most on the same borrowing-amount rule (Table~\ref{tab:effect}).
 
-The policy implication is a direction, not a threshold.
-The harm the model attributes to \ac{BNPL} is the obligation a household adds, not the firm it adds it at, and an instrument that acts on a single agreement, whether by reporting it or by screening it, leaves the number of agreements untouched.
-Only a limit on the agreements held open at once moves default in the model, and no jurisdiction imposes one.
 \label{sec:lim-reading}
-The experiments estimate changes within a model of households under 2017 conditions.
-Their policy interpretation depends on the assumptions and sensitivity checks reported alongside each result.
-Holding parameters fixed between scenarios isolates the modelled effect, but does not remove uncertainty about those parameters.
-In particular, the bureau-visibility comparison addresses only the affordability channel of the reporting requirement; the scoring channel, which the requirement most directly motivates, is untested here and may do what the affordability channel does not.
+The bureau experiment adds \ac{BNPL} obligations to the traditional lender's affordability calculation.
+Credit scores, pricing and lenders' responses are excluded, so the scoring channel of the reporting requirement is untested.
+The standard errors measure variation between replicates, not uncertainty in the inputs or in the model's structure.
+The robustness analysis tests the level of default and the \ac{BNPL} effect; it does not test the scenario differences.
+Default in the model responds to the number of obligations a household services at once.
+A hypothetical cap of two concurrent agreements lowers default by $1.01 \pm 0.11$ points without peer influence, with cumulative volume within 0.4\% of the benchmark (Appendix~\ref{app:levers}).
+Concurrent obligations are therefore a margin for further study.
+The result does not establish a regulatory threshold, and the model does not measure household welfare.
 
 \label{sec:future-work}
-Four extensions follow, in order of value.
-\textbf{Credit scoring.} A rule linking reported \ac{BNPL} behaviour to scores, pricing and refusals would let the model test the channel the reporting requirement most directly opens, which the scoping clause of this thesis owes (Section~\ref{sec:asymmetry}); it needs evidence on how bureaus and lenders will use the data.
-\textbf{Feedback and contagion.} A lender that restricts credit after losses, or a link from aggregate default to employment, would let distress spread through the channels now excluded (Table~\ref{tab:design-concepts}); peer effects on consumption, as in Cardaci \cite{cardaci2018inequality}, would extend the adoption mechanism.
-\textbf{Adoption parameters.} The \ac{CFPB} stacking shares could constrain $q_{\text{base}}$, subject to the differences between the two markets and at the cost of their standing as a check.
-\textbf{South African behavioural evidence.} Local estimates of minimum-payment anchoring, present bias and peer influence would reduce the reliance on imported parameters (Section~\ref{sec:lim-transfer}).
+Four extensions follow.
+\textbf{Credit scoring.} A rule linking reported \ac{BNPL} behaviour to scores, pricing and refusals would test the channel that the reporting requirement most directly opens (Section~\ref{sec:asymmetry}).
+\textbf{South African behavioural evidence.} Local estimates of borrowing amounts, minimum-payment behaviour, present bias and the persistence of income shocks would replace the assumed and imported rules on which the outcome levels most depend (Sections~\ref{sec:amount} and~\ref{sec:lim-transfer}).
+\textbf{Feedback and contagion.} A lender that restricts credit after losses, or a link from aggregate default to employment, would let distress spread through channels now excluded (Table~\ref{tab:design-concepts}).
+\textbf{Adoption parameters.} The \ac{CFPB} stacking shares could constrain $q_{\text{base}}$, but would then no longer serve as a check.
