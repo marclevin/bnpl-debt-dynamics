@@ -348,6 +348,7 @@ class HouseholdAgent(Agent):
         p = self.model.params
         amount = self._requested_amount(shortfall)
         net_cash = 0.0  # cash actually freed up or drawn down
+        financed = 0.0  # gross value of BNPL agreements opened for this shortfall
 
         if p.bnpl_enabled and self.bnpl_eligible:
             # BNPL finances retail goods, not cash, so a shortfall can be shifted onto it
@@ -362,7 +363,12 @@ class HouseholdAgent(Agent):
             # cash relief this tick is three quarters of the amount financed.
             net_cash += financed * (1.0 - 1.0 / p.bnpl_instalments)
 
-        remaining = amount - net_cash
+        if p.shortfall_checkout_financed:
+            remaining = amount - net_cash
+        else:
+            # The alternative assumption: the household treats the amount financed as
+            # need met and does not borrow for its checkout quarter.
+            remaining = amount - financed
         if remaining > BALANCE_EPS:
             # A traditional loan is drawn down in full as cash, and booked as debt. The
             # gate is all-or-nothing, so a refusal leaves the whole of `remaining` unmet
