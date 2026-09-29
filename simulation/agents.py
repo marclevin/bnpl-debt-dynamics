@@ -22,6 +22,10 @@ from .lender import NEW_LOAN_APR, new_loan_instalment
 from .population import HouseholdRecord
 
 
+#: Balances below one tenth of a cent are treated as cleared.
+BALANCE_EPS = 1e-3
+
+
 class HouseholdAgent(Agent):
     """One NIDS Wave 5 household carried into the model with a balance sheet."""
 
@@ -73,6 +77,10 @@ class HouseholdAgent(Agent):
         self.bnpl_fees_tick = 0.0
         self.bnpl_volume_tick = 0.0
         self.shocked_tick = False
+        #: Cash paid to, and drawn from, the traditional lender this tick. Read by the
+        #: verification suite, which checks the balance against them tick by tick.
+        self.paid_trad_tick = 0.0
+        self.borrowed_trad_tick = 0.0
 
     # ------------------------------------------------------------------ helpers
     @property
@@ -93,18 +101,23 @@ class HouseholdAgent(Agent):
         return sum(1 for p in self.model.platforms if p.has_balance(self.agent_id))
 
     def total_debt(self) -> float:
-        return self.d_trad + self.arrears_trad + self.bnpl_outstanding()
+        """What the household owes. `arrears_trad` is NOT added: an unpaid instalment
+        stays inside `d_trad`, so arrears are a part of the balance, not an addition to it.
+        """
+        return self.d_trad + self.bnpl_outstanding()
 
-    def minimum_payment_tick(self) -> float:
+    def minimum_payment_tick(self, interest: float) -> float:
         """D6 contractual minimum. ASSUMPTION: the register never defined this.
 
         `max(interest accrued, min_payment_frac of balance)`. The interest floor rules
         out negative amortisation by construction; the fraction is the assumed part.
+
+        Called AFTER accrual, so `d_trad` already contains `interest`, the amount accrued
+        this tick. The payment is capped at that balance.
         """
         p = self.model.params
-        interest = self.d_trad * tick_interest_rate(self.apr_annual)
         pct = self.d_trad * p.min_payment_frac * MONTHLY_TO_TICK
-        return min(max(interest, pct), self.d_trad + interest)
+        return min(max(interest, pct), self.d_trad)
 
     # -------------------------------------------------------------------- step
     def step(self) -> None:
@@ -113,6 +126,8 @@ class HouseholdAgent(Agent):
         self.bnpl_fees_tick = 0.0
         self.bnpl_volume_tick = 0.0
         self.shocked_tick = False
+        self.paid_trad_tick = 0.0
+        self.borrowed_trad_tick = 0.0
 
         # --- 1. income arrives, subject to the shock ---------------------------
         # D1: the shock is a separation from employment, so the household loses its
@@ -162,9 +177,13 @@ class HouseholdAgent(Agent):
         self.interest_charged_tick = interest
 
         due_trad = (
-            self.minimum_payment_tick() if self.is_min_payer else self.scheduled_service_tick
+            self.minimum_payment_tick(interest)
+            if self.is_min_payer
+            else self.scheduled_service_tick
         )
-        due_trad = min(due_trad, self.d_trad) + self.arrears_trad
+        # Arrears are instalments already inside the balance, so the household can never
+        # owe the lender more this tick than the balance itself.
+        due_trad = min(due_trad + self.arrears_trad, self.d_trad)
         bnpl_due = self.bnpl_due_per_tick()
 
         service_shortfall = max(due_trad + bnpl_due - cash, 0.0)
@@ -205,9 +224,18 @@ class HouseholdAgent(Agent):
         skipped_payment = self.model.rng.random() < p.payment_friction
         paid_trad = 0.0 if skipped_payment else min(cash, due_trad)
         cash -= paid_trad
+        self.paid_trad_tick = paid_trad
         self.arrears_trad = max(due_trad - paid_trad, 0.0)
-        principal = max(paid_trad - interest, 0.0)
-        self.d_trad = max(self.d_trad - principal, 0.0)
+        # Interest was added to the balance at accrual, so the WHOLE payment comes off
+        # it. Deducting only `paid - interest` charged the interest twice: once into the
+        # balance and once out of the payment.
+        self.d_trad = max(self.d_trad - paid_trad, 0.0)
+        if self.d_trad <= BALANCE_EPS:
+            # A cleared debt carries no instalment. Without this the bureau went on
+            # showing the lender the service of a loan that no longer existed.
+            self.d_trad = 0.0
+            self.arrears_trad = 0.0
+            self.scheduled_service_tick = 0.0
 
         # --- 4. discretionary consumption is set ------------------------------
         # Compressible to zero (D2): a household compresses discretionary spending fully
@@ -323,6 +351,7 @@ class HouseholdAgent(Agent):
             granted = self.model.lender.apply(self, remaining)
             if granted > 0:
                 self._book_trad_loan(granted)
+                self.borrowed_trad_tick += granted
             net_cash += granted
 
         return net_cash
