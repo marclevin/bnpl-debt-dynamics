@@ -31,6 +31,10 @@ class BNPLLoan:
     #: Cumulative late fees charged on this loan. Tracked only to enforce the D13 cap;
     #: it is not separately payable, having already been rolled into `arrears`.
     fee_accrued: float = 0.0
+    #: The tick in which the agreement was opened. Its checkout instalment is paid in
+    #: that tick, so nothing further is collected until the next one. None means the
+    #: agreement was opened outside a model run (unit tests), and is always collectable.
+    opened_tick: int | None = None
 
     @property
     def outstanding(self) -> float:
@@ -97,12 +101,15 @@ class BNPLPlatform:
             return float("inf")
         return self.available(agent_id) / deferred_share
 
-    def request(self, agent_id: int, amount: float) -> float:
+    def request(self, agent_id: int, amount: float, tick: int | None = None) -> float:
         """Attempt to originate a purchase. Returns the amount financed (0.0 if refused).
 
         The screen is light by design (D11): a per-order cap and a rolling available
         balance. No residual-income test unless lever 2 is active, and that check is
         applied by the household before it gets here, not by the platform.
+
+        `tick` is the tick of origination. Collection in that same tick skips the
+        agreement, because its first instalment was the checkout payment.
         """
         self.n_requests += 1
         self.requests_by_agent[agent_id] = self.requests_by_agent.get(agent_id, 0) + 1
@@ -128,12 +135,18 @@ class BNPLPlatform:
                 instalment=amount / self.n_instalments,
                 # 25% is paid at checkout, so three instalments remain.
                 remaining=self.n_instalments - 1,
+                opened_tick=tick,
             )
         )
         return amount
 
-    def due(self, agent_id: int) -> float:
-        """Amount falling due this tick: one instalment per live loan, plus arrears."""
+    def obligations(self, agent_id: int) -> float:
+        """One instalment per live agreement, plus arrears, whenever it was opened.
+
+        This is what an affordability gate that can see this platform is shown. An
+        agreement opened this tick counts, although nothing is collected on it until
+        the next tick.
+        """
         total = 0.0
         for loan in self.loans.get(agent_id, ()):
             if loan.remaining > 0:
@@ -141,7 +154,25 @@ class BNPLPlatform:
             total += loan.arrears
         return total
 
-    def collect(self, agent_id: int, available_cash: float) -> tuple[float, float]:
+    def due(self, agent_id: int, tick: int | None = None) -> float:
+        """Amount that falls due in `tick`: `obligations` less agreements opened in it.
+
+        D13 puts 25% at checkout and 25% at each of the NEXT three ticks. An agreement
+        opened in `tick` has paid its checkout instalment and owes nothing more until
+        the following tick.
+        """
+        total = 0.0
+        for loan in self.loans.get(agent_id, ()):
+            if tick is not None and loan.opened_tick == tick:
+                continue
+            if loan.remaining > 0:
+                total += loan.instalment
+            total += loan.arrears
+        return total
+
+    def collect(
+        self, agent_id: int, available_cash: float, tick: int | None = None
+    ) -> tuple[float, float]:
         """Collect what the household can pay this tick.
 
         Returns (paid, fees_charged). An unpaid instalment accrues the Payflex late fee
@@ -158,6 +189,11 @@ class BNPLPlatform:
         cash = max(available_cash, 0.0)
 
         for loan in loans:
+            if tick is not None and loan.opened_tick == tick:
+                # Opened this tick on the shortfall path, which borrows before it pays.
+                # Until 2026-09-29 the next instalment was collected here, in the tick
+                # of origination, so half the purchase was paid at once.
+                continue
             owed = loan.arrears + (loan.instalment if loan.remaining > 0 else 0.0)
             if owed <= 0:
                 continue

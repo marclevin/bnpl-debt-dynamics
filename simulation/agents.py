@@ -92,7 +92,17 @@ class HouseholdAgent(Agent):
         return self.rec.committed_tick
 
     def bnpl_due_per_tick(self) -> float:
-        return sum(p.due(self.agent_id) for p in self.model.platforms)
+        """BNPL instalments and arrears that fall due in the current tick."""
+        tick = self.model.tick
+        return sum(p.due(self.agent_id, tick) for p in self.model.platforms)
+
+    def bnpl_obligations_per_tick(self) -> float:
+        """One instalment per live agreement plus arrears, across every platform.
+
+        What an affordability gate is shown when it can see BNPL. It includes an
+        agreement opened this tick, which `bnpl_due_per_tick` leaves out.
+        """
+        return sum(p.obligations(self.agent_id) for p in self.model.platforms)
 
     def bnpl_outstanding(self) -> float:
         return sum(p.exposure(self.agent_id) for p in self.model.platforms)
@@ -213,7 +223,7 @@ class HouseholdAgent(Agent):
         # BNPL first: its instalments are contractually fixed and the platform debits a
         # card automatically, whereas the traditional lender tolerates arrears.
         for platform in self.model.platforms:
-            paid, fees = platform.collect(self.agent_id, cash)
+            paid, fees = platform.collect(self.agent_id, cash, self.model.tick)
             cash -= paid
             self.bnpl_fees_tick += fees
 
@@ -463,7 +473,9 @@ class HouseholdAgent(Agent):
         # Lever 2: apply the D9 residual-income test to BNPL as well. Off by default —
         # its absence is precisely what BNPL routes around.
         if p.bnpl_affordability_check:
-            visible = (self.scheduled_service_tick + self.bnpl_due_per_tick()) / MONTHLY_TO_TICK
+            visible = (
+                self.scheduled_service_tick + self.bnpl_obligations_per_tick()
+            ) / MONTHLY_TO_TICK
             new_instalment = (amount / p.bnpl_instalments) / MONTHLY_TO_TICK
             if not nca_gate(self.income_monthly, visible, new_instalment):
                 return 0.0
@@ -479,7 +491,7 @@ class HouseholdAgent(Agent):
             is_new = not platform.has_balance(self.agent_id)
             if is_new and headroom is not None and opened >= headroom:
                 continue
-            got = platform.request(self.agent_id, amount - financed)
+            got = platform.request(self.agent_id, amount - financed, self.model.tick)
             if got > 0:
                 financed += got
                 if is_new:

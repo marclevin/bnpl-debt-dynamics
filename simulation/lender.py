@@ -64,7 +64,7 @@ class CreditBureau:
         """
         visible = agent.scheduled_service_tick / MONTHLY_TO_TICK
         if self.bnpl_visible:
-            visible += agent.bnpl_due_per_tick() / MONTHLY_TO_TICK
+            visible += agent.bnpl_obligations_per_tick() / MONTHLY_TO_TICK
         return visible
 
 
