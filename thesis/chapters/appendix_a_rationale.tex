@@ -2,15 +2,15 @@
 \label{app:rationale}
 
 Section~\ref{sec:model} states the rules the model uses. This appendix records the alternatives
-considered and rejected for each.
+we considered and rejected, and why.
 
 \subsection{Population Construction}
 
 \textbf{Statistical fusion of \ac{NIDS} and \ac{FinScope}.} A hot-deck or model-based fusion would
 recover finer joint structure between the two instruments than copying flags within an
-income-quintile-by-province cell, at the cost of its own validation burden and a real risk of
-fitting the idiosyncrasies of two surveys rather than the population behind them. The crude match
-reproduces cell marginals, which is what the model needs.
+income-quintile-by-province cell. It would bring its own validation burden and a real risk of
+fitting the idiosyncrasies of two surveys rather than the population behind them. The simpler
+match reproduces the cell marginals that the model needs (Appendix~\ref{app:matching}).
 
 \textbf{\ac{CPI} forwarding to 2022.} An earlier design forwarded \ac{NIDS} monetary values to
 2022, which required a second reference year, assumptions about how relative incomes moved between
@@ -24,10 +24,10 @@ calibrated propensity for which no South African estimate exists, and both disca
 committed-versus-discretionary expenditure split already observed in the survey data.
 
 \textbf{Cost ranking as the lender-choice rule (Submodel~5).} \ac{BNPL} is nominally interest-free,
-so a cost-minimising rule selects it trivially and attributes the choice to price. The evidence
-attributes the choice to social approval \cite{ackert2025bnpl}, and the two
-mechanisms imply different interventions: a price-driven choice would respond to disclosure of
-effective cost, while a norm-driven one would not.
+so a cost-minimising rule selects it trivially and attributes the choice to price. Experimental
+evidence links the choice to expected peer approval as well \cite{ackert2025bnpl}, and the two
+mechanisms suggest different interventions: a price-driven choice should respond to disclosure
+of effective cost, while a norm-driven one may not.
 
 \textbf{Scheduled amortisation as the sole repayment rule (Submodel~6).} Keys and Wang
 \cite{Keys2019} find that 29\% of credit-card accounts pay at or near the contractual minimum, and
@@ -36,26 +36,27 @@ constraints alone cannot explain, a lower bound on anchoring. A uniform amortisa
 suppress the behaviour by which obligations persist and compound.
 
 \textbf{A debt-service-to-income threshold as the default condition (Submodel~7).} Any such
-threshold is arbitrary and the \ac{NCA} prescribes none. Madeira's cash-flow insolvency test is
-cited, consistent with the affordability rule the model already implements, and validated against
-observed default rates in a middle-income economy \cite{madeira2018chile}.
+threshold is arbitrary, and the \ac{NCA} prescribes none. We use Madeira's cash-flow test
+instead, which is consistent with the affordability rule the model already implements and
+which Madeira compares with observed default rates in a middle-income economy
+\cite{madeira2018chile}.
 
 \textbf{A continuous present-bias parameter (Submodel~8).} No South African distribution exists
-against which to calibrate one, so it would add a free parameter with no discipline. The model
+against which to calibrate one, so it would add an unconstrained free parameter. The model
 carries a single binary behavioural type instead, whose share is sourced and swept.
 
 \subsection{Lender and Platform Rules}
 
 \textbf{A flat \ac{DSTI} cap as the credit-granting gate (Submodel~9).} An earlier version of this
 model used a ceiling of 0.65. It was unsourced, the \ac{NCA} prescribes no such ratio, and it was
-badly over-permissive at the bottom of the distribution, since a 65\% rule would permit a household
-earning R900 per month to service R585 per month. The Regulation 23A residual-income test produces
-an income-varying ceiling, which across the population spans zero to 93.2\% of income.
+far too permissive at the bottom of the distribution: a 65\% rule would permit a household earning
+R900 per month to service R585 per month. The Regulation 23A residual-income test produces a
+ceiling that varies with income and spans zero to 93.2\% of income across the population.
 
-\textbf{Making the \ac{BNPL} eligibility screen a real affordability test (Submodel~12).} The
-asymmetry between the Regulation 23A test that binds registered lenders and the light screen
-\ac{BNPL} providers apply is the mechanism under study. Imposing a genuine affordability test on
-\ac{BNPL} is an intervention, and appears as the second scenario of Submodel~15.
+\textbf{Making the \ac{BNPL} eligibility screen a full affordability test (Submodel~12).} The
+asymmetry between the Regulation 23A test that binds registered lenders and the light screen that
+\ac{BNPL} providers apply is the mechanism under study. Imposing a full affordability test on
+\ac{BNPL} is an intervention, and appears as the screening scenario of Submodel~15.
 
 \textbf{A purely multiplicative peer-influence rule (Submodel~11).} Every household opens with no
 \ac{BNPL} balance, so the reference-group adoption share is identically zero at initialisation and
@@ -68,8 +69,9 @@ $\beta$ the roles that $p$ and $q$ play in Bass diffusion.
 effect of introducing \ac{BNPL} under baseline conditions. A common macroeconomic shock could
 be added to both arms, but would require a broader experimental design.
 
-\textbf{Uniform activation order (Submodel~17).} Random activation avoids a fixed household
-sequence. There is no shared credit pool for early households to exhaust, and all households
-read the same lagged peer signal. Alternative schedules test for remaining implementation
-sensitivity, motivated by the findings of Comer and Loerch \cite{comer2013activation} and
-Alizadeh and Cioffi-Revilla \cite{alizadeh2015activation}.
+\textbf{A fixed activation order (Submodel~17).} A fixed order would let the same households
+act first in every tick. Random activation avoids this, although little depends on it: there is
+no shared credit pool for early households to exhaust, and all households read the same lagged
+peer signal. Because Comer and Loerch \cite{comer2013activation} and Alizadeh and
+Cioffi-Revilla \cite{alizadeh2015activation} find activation regimes can matter, the fixed
+order is retained as a robustness arm (Appendix~\ref{app:activation}).

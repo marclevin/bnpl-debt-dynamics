@@ -7,32 +7,34 @@
 This thesis asked how a lending channel outside the affordability and reporting regime affects a household population already in credit distress, and what bringing that channel inside the regime would change.
 We answered with a controlled counterfactual under 2017 conditions, so the results describe mechanisms in the model and do not forecast South African default after 2017.
 
-The model supports comparisons between mechanisms better than it supports statements about levels.
-It reproduces the two arrears bands to which it was fitted and passes three of four external checks on the population, all under broad tolerances.
-It misses the intermediate arrears bands, the servicing share, the purchase-size and volume bands of the \ac{BNPL} market, the interest measure of the complementarity pattern and the debt-to-income pattern (Tables~\ref{tab:validation} and~\ref{tab:bnpl-on-checks}).
-RQ1 is therefore answered in part.
+The answer to RQ1 is partial.
+The model reproduces its two fitted arrears bands and passes three of four external checks on the population under broad tolerances, but it misses the intermediate arrears bands, the servicing share, the size and volume of \ac{BNPL} purchases, the interest measure of the complementarity pattern and the debt-to-income pattern (Tables~\ref{tab:validation} and~\ref{tab:bnpl-on-checks}).
+It therefore supports comparisons between mechanisms better than statements about levels.
 
-For RQ2, households come to owe several platforms at once.
-With four platforms and no peer influence, 52.0\% of final-tick holders have balances on two or more, a share that follows from the assumption that households choose among platforms at random.
+For RQ2, households come to owe several platforms at once: with four platforms and no peer influence, 52.0\% of final-tick holders owe two or more, a share set by the assumption that households choose among platforms at random.
 Default does not change detectably with the number of platforms (Table~\ref{tab:stacking}).
-Enabling \ac{BNPL} raises default by $0.12 \pm 0.05$ points without peer influence, pooled over four seed blocks, and by $0.61 \pm 0.11$ points at $\beta = 1$, in a market that borrows ten times as much (Table~\ref{tab:baseline-arms}).
-Default rises with access where peer influence is present, and the experiment is too imprecise to establish the shape of that rise (Table~\ref{tab:access}).
+Enabling \ac{BNPL} raises default by $0.12 \pm 0.05$ points without peer influence and by $0.61 \pm 0.11$ points at $\beta = 1$, in a market that borrows ten times as much (Table~\ref{tab:baseline-arms}), and default rises with access where peer influence is present (Table~\ref{tab:access}).
 
-For RQ3, neither bureau visibility nor mandatory screening changes default detectably in the affordability channel, alone or together (Table~\ref{tab:switches}).
-A change smaller than about 0.25 points could not have been detected.
-Bureau visibility raises the traditional lender's refusals by about a sixth, and screening lowers holding by 1.9 to 2.8 points.
+For RQ3, neither bureau visibility nor mandatory screening changes default detectably, alone or together, and the design cannot reliably detect a change of 0.25 points or less (Table~\ref{tab:switches}).
+Both switches change lending: bureau visibility raises the traditional lender's refusals by about a sixth, and screening lowers \ac{BNPL} holding by 1.9 to 2.8 points.
+
+Taken together, the results link the effect of \ac{BNPL} on default to the volume of borrowing.
+Default rises where peer influence makes households borrow heavily, while the number of platforms a household owes makes no detectable difference.
+Showing \ac{BNPL} obligations to an affordability test changes who receives credit but not, detectably, how many households default.
+A plausible reason, which the experiments do not test, is that a test applied when credit is granted cannot anticipate the income shocks that drive sustained distress in the model.
+The two levers that did lower default, a cooling-off window and a cap on platforms owed, did so only under peer influence and while removing a third or more of \ac{BNPL} volume.
 
 The thesis makes three contributions.
 The most secure is a household population that combines \ac{NIDS} financial data with imputed \ac{FinScope} inclusion flags and is checked against sources its construction did not use.
-The second is a model in which two classes of lender differ in what they can observe, so that the visibility gap can be switched on and off.
+The second is a model in which two classes of lender differ in what they can observe, so that the gap in visibility can be switched on and off.
 The third is a set of reproducible comparisons of access, adoption rules and lending restrictions.
 
 \label{sec:lim-reading}
 Three limits govern how these results should be read.
-First, the level of default rests on two fitted parameters and on a borrowing-amount rule with no empirical estimate, which moves default by up to 1.02 points (Table~\ref{tab:robustness}).
-Replacing the persistent income shock with a single-tick loss lowers default by 9.23 points (Table~\ref{tab:robustness-appendix}).
+First, the level of default rests on two fitted parameters and on a borrowing-amount rule with no empirical estimate, which moves default by up to 1.02 points (Table~\ref{tab:robustness}), and on the persistence of income shocks: replacing the persistent shock with a single-tick loss lowers default by 9.23 points (Table~\ref{tab:robustness-appendix}).
 Second, the bureau experiment adds \ac{BNPL} obligations to the traditional lender's affordability calculation and excludes credit scores, pricing and lenders' responses, so the scoring channel of the reporting arrangements is untested.
 Third, the standard errors measure variation between replicates and exclude uncertainty in the inputs and in the model's structure.
+Appendix~\ref{app:caveats} indexes every limitation recorded in the thesis.
 
 \label{sec:future-work}
 Four extensions follow from these results.

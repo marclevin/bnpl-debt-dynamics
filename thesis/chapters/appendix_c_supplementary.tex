@@ -2,22 +2,21 @@
 \label{app:supplementary}
 
 This appendix holds material kept out of the body for length: specification detail that
-Table~\ref{tab:submodels} states in summary, the index of every limitation the thesis records,
-the two levers that Section~\ref{sec:scenarios} reports in summary, and the sensitivity analyses
-that Section~\ref{sec:results-robustness} reports only in summary.
+Table~\ref{tab:submodels} states in summary, an index of every limitation the thesis records,
+and the full results for the two further levers of Section~\ref{sec:scenarios} and the
+sensitivity analyses of Section~\ref{sec:results-robustness}.
 
 \subsection{Submodel 9: The Credit-Granting Gate}
 \label{app:gate}
 
 The lender uses a simplified residual-income test based on the Regulation 23A expense norms
 \cite{sa_ncr_affordability_2015}. It grants credit when gross household income, less the expense
-norm and visible existing obligations, covers the new instalment.
-Income is the amount observed in the survey, which the model does not reduce during a spell of
-unemployment.
-The implementation does not separately deduct tax or other statutory deductions, so it does not
-reproduce every part of a full affordability assessment. The resulting ceiling
-varies with income, from 10.4\% of income at R900 per month to 83.2\% at R7{,}712 per month, and
-both worked examples published with the regulation are asserted in the verification suite
+norm and visible existing obligations, covers the new instalment. Income is the amount observed
+in the survey, which the model does not reduce during a spell of unemployment. The
+implementation does not separately deduct tax or other statutory deductions, so it does not
+reproduce every part of a full affordability assessment. The resulting ceiling varies with
+income, from 10.4\% of income at R900 per month to 83.2\% at R7{,}712 per month, and the
+verification suite asserts both worked examples published with the regulation
 (Table~\ref{tab:reg23a-norms}).
 
 Regulation 23A applies to an individual consumer and is applied here to household income, because
@@ -31,25 +30,26 @@ across the population the applied ceiling spans zero to 93.2\% of gross income, 
 \subsection{Submodel 17: Activation Order}
 \label{app:activation}
 
-Households act in random asynchronous order, reseeded every tick. The peer channel of Submodel~11
-is activation-order independent by construction, since it reads the reference-group adoption share
-lagged one tick, so every household within a tick sees the same settled share regardless of when it
-acts. The model is nonetheless re-run under a fixed activation order, the same every tick, and any
-material movement is reported as activation-order sensitivity, since Comer and Loerch
-\cite{comer2013activation} and Alizadeh and Cioffi-Revilla \cite{alizadeh2015activation} both find
-emergent population behaviour to be sensitive to the activation regime.
+Households act in random asynchronous order, reseeded every tick. The peer channel of
+Submodel~11 is independent of activation order by construction: it reads the reference-group
+adoption share lagged one tick, so every household within a tick sees the same settled share
+whenever it acts. The lender has no shared funding constraint and platform limits apply per
+household, so activation order does not allocate a common credit pool either.
 
-The lender has no shared funding constraint, and platform limits apply per household.
-Activation order therefore does not allocate a common credit pool. The alternative schedule
-checks whether implementation details or the assignment of random draws affect the outcomes.
+Comer and Loerch \cite{comer2013activation} and Alizadeh and Cioffi-Revilla
+\cite{alizadeh2015activation} both find population behaviour in agent-based models to be
+sensitive to the activation regime, so we re-run the model under a fixed order, the same every
+tick. The check tests whether implementation details or the assignment of random draws affect
+the outcomes. The fixed order changes default by $+0.01 \pm 0.10$ points
+(Table~\ref{tab:robustness-appendix}).
 
 \subsection{Index of Limitations}
 \label{app:caveats}
 
 The thesis has no standalone limitations section; each limitation is argued where the claim it
 qualifies is made. Table~\ref{tab:further-caveats} indexes all of them: the eight that bound the
-central claims, each with a pointer to where it is argued, followed by ten that are real but do
-not bound a central claim and are recorded only here.
+central claims, each with a pointer to where it is argued, followed by eleven that do not bound a
+central claim and are recorded only here.
 
 \begingroup
 \setlength{\tabcolsep}{4pt}
@@ -110,8 +110,8 @@ assigning sub-sector rates to a consolidated balance remains an assumption
 Debt service double-counted & \ac{NIDS} non-food expenditure already contains hire-purchase,
 clothing-account and car payments, and the model deducts derived servicing separately on top
 (Section~\ref{sec:servicing}) & Inflates the compressible spending of the 8.9\% of households
-reporting such a payment and understates the servicing share of outlay; the direction on distress
-is mixed \\
+reporting such a payment and understates the servicing share of outlay; the direction of the net
+effect on distress is not determined \\
 \addlinespace
 No calendar & Flows are smooth per-tick rates. The model has no pay date, no month-end and no
 clustering of debit orders, so it cannot represent a household that is solvent over a month but
@@ -136,8 +136,8 @@ Resample distortion & Weighted resampling raises the per-capita income Gini from
 a 0.015 shift against a 0.02 tolerance. Measured, not corrected & If anything, modestly
 overstates distress among the lowest-income agents \\
 \addlinespace
-Weak interaction & Each household observes its group's aggregate adoption share, never another
-household individually. No South African data exists on who influences whom & The social channel
+Mean-field peer signal & Each household observes its group's aggregate adoption share, never
+another household individually. No South African data exist on who influences whom & The social channel
 is a mean-field one, as in Granovetter's threshold models, not an explicit network \\
 \addlinespace
 \ac{CPI} derivation & The deflator is taken from published Stats SA releases rather than
@@ -157,8 +157,8 @@ fourteen-day right of withdrawal in the United Kingdom's rules \cite{fca_ps26_1}
 block borrowing for a shortfall. The second is a cap on the number of platforms a household
 may owe, which no jurisdiction imposes and which is therefore hypothetical. Both are run at
 $\beta = 0$ and $\beta = 1$, and both are judged on cumulative \ac{BNPL} volume as well as
-default (Tables~\ref{tab:cooloff} and~\ref{tab:cap}; Figure~\ref{fig:scenarios-appendix}
-places them beside the scenarios).
+default (Tables~\ref{tab:cooloff} and~\ref{tab:cap}). Figure~\ref{fig:scenarios-appendix}
+places them beside the scenarios.
 
 The cap counts platforms on which the household owes a balance. It does not count agreements.
 A household that owes the stated number of platforms or more is refused every new agreement,
@@ -170,7 +170,7 @@ uses, so it can hold more agreements than the cap. A shortfall request that the 
 passes in full to the traditional lender. Under a cap of one at $\beta = 0$, new traditional
 lending is R$0.50 \pm 0.13$ million higher than in the benchmark.
 
-The cap's effect on default depends on this definition. A diagnostic on the cap arms' seeds,
+The cap's effect on default depends on this definition. A diagnostic run on the cap arms' seeds,
 paired with an arm without a cap, compares three definitions at $\beta = 1$ and a cap of two.
 The cap as modelled lowers default by $0.35 \pm 0.09$ points and removes 31.7\% of volume. A
 cap that counts agreements in place of platforms removes 32.9\% of volume and changes default
@@ -211,17 +211,16 @@ and~\ref{tab:bnpl-on-checks}.
 \subsection{Further Extensions}
 \label{app:extensions}
 
-Two extensions were considered and are recorded here rather than in
-Section~\ref{sec:future-work}, being further from the thesis's own results.
+Two further extensions are recorded here rather than in Section~\ref{sec:future-work}, because
+they follow less directly from the thesis's results.
 
-\textbf{Macroeconomic dynamics.} Submodel~16 holds the environment static to protect the
-experimental control. A successor design could relax this, since \ac{BNPL} grew in South Africa
-through a period of rising rates, and the interaction between \ac{BNPL} stress and a downturn is
-what a regulator would want to know. The injection effect and the macro effect would then have to
-be separately identified, which requires a more elaborate design than a single counterfactual
-injection.
+\textbf{Macroeconomic dynamics.} Submodel~16 holds the environment static to preserve the
+experimental control. A successor design could relax this to study how \ac{BNPL} obligations
+interact with a downturn or with changing interest rates. The effect of introducing \ac{BNPL} and
+the effect of the macroeconomic change would then have to be identified separately, which requires
+a more elaborate design than a single counterfactual.
 
-\textbf{Competition among traditional lenders.} The traditional side is a single non-adaptive stub.
-Hamill et al. \cite{hamill2023creditcard} show that promotional strategies chosen by
+\textbf{Competition among traditional lenders.} The traditional side is a single non-adaptive
+lender. Hamill et al.\ \cite{hamill2023creditcard} show that promotional strategies chosen by
 profit-maximising lenders raise borrower indebtedness, so a competing, adapting traditional sector
 would add a driver of distress that this model holds fixed.
