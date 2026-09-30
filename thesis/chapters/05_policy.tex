@@ -12,7 +12,7 @@ Under bureau visibility ($\mathbb{1}^{\text{bur}}$), \ac{BNPL} obligations enter
 This is the affordability channel of the reported 2026 arrangements \cite{businessday_bnpl_2026}; their scoring channel is outside the model (Section~\ref{sec:asymmetry}).
 Under mandatory affordability screening ($\mathbb{1}^{\text{aff}}$), the Regulation 23A test is applied to each \ac{BNPL} request, the South African analogue of the \ac{FCA}'s proportionate affordability check \cite{fca_ps26_1, woolard2021}.
 A fourth arm runs the two switches together, to test whether either changes the effect of the other.
-Every arm is run at $\beta = 0$ and at $\beta = 1$ (Equation~\ref{eq:peer}), to test whether the results depend on peer influence.
+Every arm is run at $\beta = 0$ and at $\beta = 1$ (Equation~\ref{eq:peer}).
 
 The light screen in the benchmark is a modelling assumption.
 Whether an agreement that levies late fees is incidental credit, and which provisions of the \ac{NCA} would then apply, is a legal question that the scenarios do not settle (Section~\ref{sec:background}).
@@ -47,11 +47,12 @@ These outcomes are population aggregates, so they do not show what becomes of th
 
 Mandatory screening refuses \ac{BNPL} requests that the light screen would grant.
 Holding at the final tick falls from 17.64\% to 15.74\% at $\beta = 0$ and from 66.79\% to 63.96\% at $\beta = 1$, and cumulative volume is $5.3 \pm 1.3$\% lower at $\beta = 0$ and $1.5 \pm 0.3$\% lower at $\beta = 1$.
+
 The screening test already sees the household's \ac{BNPL} instalments on every platform (Section~\ref{sec:asymmetry}), so adding bureau visibility to screening gives the platforms no new information.
 Its effect falls on the traditional lender, which with both switches refuses about 100 more applications at $\beta = 0$ than under screening alone and lends about R0.3 million less.
 With both switches, \ac{BNPL} volume is $6.7 \pm 1.3$\% below the benchmark at $\beta = 0$, and default does not change detectably.
 
-Two features of the model may explain why neither switch changes default.
+Two features of the model may explain why neither switch changes default detectably.
 First, a \ac{BNPL} agreement is small beside the room that the Regulation 23A test allows.
 Each platform limits a household to a tenth of its monthly income and the mean want-driven purchase is R633, so adding these instalments to the test can change the decision only for households already close to the limit.
 Second, the test assesses affordability at origination on the household's surveyed income, whereas sustained distress in the model follows income shocks that outlast the household's buffer (Section~\ref{sec:results-robustness}).

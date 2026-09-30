@@ -50,9 +50,7 @@ and comparisons across threshold dispersion can be paired.
 \subsection{The Household Population}
 \label{sec:population}
 
-The population contains 5{,}000 agents sampled from South African household
-microdata. Monetary values are expressed in 2017 South African rand (R),
-the year of the primary survey.
+Monetary values are in 2017 Rands (R), the year of the primary survey.
 
 \subsubsection*{Primary Dataset: NIDS Wave 5}
 \label{sec:backbone}
@@ -73,9 +71,8 @@ percentile. Outstanding financial debt supplies the traditional balance.
 Imputed rent is excluded because it is not a cash payment. The asset, debt and rent fields
 record a value only for holders, so we set missing values to zero;
 Section~\ref{sec:data-validation} tests the consequence for aggregate debt. Households are
-grouped into per-capita income quintiles. Appendix~\ref{app:variables} records the fields, formulas and
-missing-data treatment, including the servicing calculation introduced in
-Section~\ref{sec:servicing}.
+grouped into per-capita income quintiles. Appendix~\ref{app:variables} records every field,
+formula and missing-data rule.
 
 \subsubsection*{Imputing Financial Inclusion: FinScope 2019}
 \label{sec:match}
@@ -189,8 +186,8 @@ Personal loan    &  2.1 &  2.3 &  2.3 & 0.2 \\
 We sample $N=5{,}000$ agents with replacement from the 10{,}841 households, with
 probabilities proportional to survey weights (seed: 20260818), so that simulation
 statistics need no further weighting. The resample approximates the weighted source
-distribution, with some sampling variation (Figure~\ref{fig:pop-fidelity}); the largest
-shift is in the per-capita income Gini, which rises by 0.015, from 0.6514 to 0.6668.
+distribution, with some sampling variation (Figure~\ref{fig:pop-fidelity}); the per-capita
+income Gini, for example, rises by 0.015, from 0.6514 to 0.6668.
 
 \begin{figure}[htbp]
 \centering
@@ -373,7 +370,7 @@ The model reproduces the two fitted bands but misses the intermediate ones
 (Table~\ref{tab:arrears-fit}). The 31--60 and 61--90 day bands are each about 1\%, against
 3.6\% and 2.3\% in the \ac{CCMR}. The cumulative 60+ share is closer, at 15.5\% against
 16.5\%, but it includes the fitted 90+ band. The model therefore places too much of its
-arrears in brief and persistent spells. Long unemployment spells under the re-employment
+arrears at the two extremes, brief and persistent. Long unemployment spells under the re-employment
 rule may explain part of this, and matching the two targets does not establish that the
 model represents movements between arrears bands well.
 
@@ -468,8 +465,13 @@ Pattern~1 is reproduced on one of its two measures. Enabling \ac{BNPL} raises th
 traditional arrears rate by $0.23 \pm 0.07$ points at $\beta=0$ and $0.57 \pm 0.07$ at
 $\beta=1$. The interest charged on traditional debt, however, falls by $1.5 \pm 0.4$\% at
 $\beta=0$ and does not change detectably at $\beta=1$. Under the condition set in
-Table~\ref{tab:patterns}, the fall falsifies the pattern on this measure;
-Section~\ref{sec:results-injection} traces it to a smaller traditional book. Pattern~3 is
+Table~\ref{tab:patterns} before the run, the fall falsifies the pattern on this measure. In
+hindsight the condition conflates two effects. Section~\ref{sec:results-injection} traces the
+fall to a smaller traditional book, which is what the lender-choice rule produces when
+\ac{BNPL} takes part of each shortfall, so aggregate interest falls even as traditional
+arrears rise. The arrears measure is less affected by the size of the book.
+
+Pattern~3 is
 not reproduced: the aggregate debt-to-income ratio is highest in Q1, at 0.77 months of
 income, with Q4 second at 0.69. Pattern~4 is of the same order, 25.7\% of agents with zero
 savings against 36\% of consumers expecting to miss a payment. The model's share is a
