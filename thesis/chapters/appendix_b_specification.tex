@@ -2,13 +2,13 @@
 \label{app:specification}
 
 Section~\ref{sec:model} states the mechanism and Table~\ref{tab:submodels} the rule and source for
-each submodel. This appendix completes the \ac{ODD} specification with the two registers the body
-points to: the protocol's design concepts, closing with the mechanisms the model excludes by
-design, and the full numerical parameter register.
+each submodel. This appendix completes the \ac{ODD} specification with two registers: the
+protocol's design concepts, closing with the mechanisms the model excludes by design, and the
+full parameter register.
 
 \subsection*{B.1 Design concepts and exclusions}
 
-Table~\ref{tab:design-concepts} outlines the eleven structural \ac{ODD} design concepts, and closes with the six mechanisms the model excludes by design.
+Table~\ref{tab:design-concepts} sets out the model's treatment of the eleven \ac{ODD} design concepts and the six mechanisms it excludes by design.
 
 \begin{longtable}{L{2.9cm}L{7.3cm}L{3.2cm}}
 \caption{\ac{ODD} design concepts and design exclusions}
@@ -51,30 +51,30 @@ Exclusions & Six mechanisms are excluded by design. \emph{No macroeconomic dynam
 
 \subsection*{B.2 Parameter register}
 
-The register holds every parameter, its baseline value, its provenance, and its sweep
-range where one applies. The table is generated from the model's parameter declarations in
+The register gives every parameter, its baseline value, its provenance, and its sweep range
+where one applies. It is generated from the model's parameter declarations in
 \texttt{simulation/config.py} by \texttt{notebooks/scripts/generate\_param\_register.py}
-and must be regenerated after parameter changes. All Rand values are 2017 Rands; the \ac{BNPL} money
-parameters are published at current vintage and deflated once by a sourced \ac{CPI} factor, and
-the source column keeps the published nominal figure so a reader checking against a provider's
-website is not misled.
+and must be regenerated after parameter changes. All Rand values are 2017 Rands. The \ac{BNPL}
+money parameters are published at 2026 prices and deflated once by a sourced \ac{CPI} factor,
+and the source column keeps the published nominal figure so that a reader can check it against
+the provider's website.
 
-Four groups of entries carry standing flags:
+Four groups of entries need particular attention:
 \begin{itemize}
     \item \textbf{The two fitted parameters.} The income-shock probability (Submodel~1) and the
-    payment-friction rate (Submodel~6) are fitted to the \ac{CCMR} 90+ and 1--30 day bands, which
-    is what makes the baseline calibrated rather than validated
-    (Section~\ref{sec:lim-calibration}).
-    \item \textbf{The uncited rules.} The shortfall borrowing amount (Submodel~4), the cap on
-    its \ac{BNPL} share (Submodel~5) and the minimum-payment fraction (Submodel~6) have no
-    literature anchor. Each is varied in at least one arm.
+    payment-friction rate (Submodel~6) are fitted to the \ac{CCMR} 90+ and 1--30 day bands, so
+    agreement on those bands cannot count as validation (Section~\ref{sec:lim-calibration}).
+    \item \textbf{Rules without a literature anchor.} The shortfall borrowing amount
+    (Submodel~4), the cap on its \ac{BNPL} share (Submodel~5) and the minimum-payment fraction
+    (Submodel~6) have no literature anchor. Each is varied in at least one arm.
     \item \textbf{The uncalibrated peer coefficients.} $q_{\text{base}}$, $\beta$ and the
     threshold parameters of Submodel~11 cannot be calibrated from any South African source. The
     $\beta = 0$ and $\gamma = 0$ control arms are reported beside every peer-influence result.
-    \item \textbf{The rolling limit.} No provider publishes a limit. $\lambda = 0.10$ is set so
-    that four platform limits approximate Woolard's illustrative figure of about \pounds1{,}000
-    of credit across several lenders, which we convert to 39\% of United Kingdom median monthly
-    household disposable income \cite{ons_income_fye2020}. It is swept 0.1--1.0.
+    \item \textbf{The rolling limit.} No South African provider publishes a limit.
+    $\lambda = 0.10$ is set so that four platform limits approximate Woolard's illustrative
+    figure of about \pounds1{,}000 of credit across several lenders, which we convert to 39\% of
+    United Kingdom median monthly equivalised household disposable income
+    \cite{woolard2021, ons_income_fye2020}. It is swept 0.1--1.0 (Submodel~12).
 \end{itemize}
 
 \input{chapters/appendix_b_register}

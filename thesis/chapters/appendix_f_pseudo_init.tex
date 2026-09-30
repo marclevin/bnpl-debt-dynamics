@@ -6,7 +6,7 @@ convention of a master algorithm that dispatches to sub-algorithms. The algorith
 normative statement of the pipeline: where prose elsewhere in the thesis and an algorithm here
 differ, the algorithm governs, and each has been checked line by line against the module that
 implements it (\texttt{simulation/}). Table~\ref{tab:notation} fixes the notation used throughout.
-Sets are set in script, their cardinalities in upper case, and their elements in lower case; a
+Sets are written in script, their cardinalities in upper case, and their elements in lower case; a
 subscript indexes an element, a superscript identifies a variant. Random draws are written
 $U(0,1)$; every draw within a run comes from generators seeded by the run's seed. The threshold
 endowments $\theta_i$ come from a separate initialisation stream so that control arms reproduce
@@ -81,7 +81,7 @@ $f^{\min}$ & minimum-payment fraction of balance per month & \texttt{min\_paymen
 $k$ & distressed ticks that trigger default (7) & \texttt{k\_default} \\
 $\varphi$ & discretionary floor as a share of target (0 in the baseline) & \texttt{discretionary\_floor} \\
 $\kappa$, $\nu$ & purchase-size ratio to $E^d_i$; its coefficient of variation & \texttt{bnpl\_purchase\_ratio}, \texttt{\_cv} \\
-$\mathbb{1}^{\text{cap}}$ & cap on the \ac{BNPL} share of a shortfall request at $\kappa E^d_i$ (on, except in one robustness arm) & \texttt{shortfall\_bnpl\_capped} \\
+$\mathbb{1}^{\text{cap}}$ & cap on the \ac{BNPL} share of a shortfall request at $\kappa E^d_i$ (on, except in the cap-removed robustness arms) & \texttt{shortfall\_bnpl\_capped} \\
 $\lambda$ & rolling limit as a multiple of monthly income & \texttt{bnpl\_limit\_income\_multiple} \\
 $q_{\text{base}}$, $\beta$ & baseline propensity; peer weight (linear mechanism) & \texttt{q\_base}, \texttt{beta} \\
 $\gamma$, $\mu_\theta$, $\sigma_\theta$ & appetite step; threshold mean and dispersion (threshold mechanism) & \texttt{gamma}, \texttt{mu\_theta}, \texttt{sigma\_theta} \\

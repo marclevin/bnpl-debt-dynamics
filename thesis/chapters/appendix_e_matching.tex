@@ -5,7 +5,7 @@ This appendix gives the matching procedure, its assumptions and its limitations.
 Figure~\ref{fig:cell-donor} illustrates the procedure, Algorithm~\ref{alg:match} specifies the
 steps, and Table~\ref{tab:notation} defines the notation.
 
-\subsection*{A. The procedure}
+\subsection*{E.1 The procedure}
 
 Both surveys are partitioned by the same two variables, per-capita income quintile $q$ and
 province $p$, into $|\mathcal{C}| = 45$ cells $c = (q, p)$. For each \ac{NIDS} record $i$ with
@@ -25,7 +25,7 @@ and the most-used donor 20 times. Donor reuse is concentrated where \ac{NIDS} is
 recipients drew from 109 donors, and eleven cells have more than three recipients per donor.
 The heaviest 1\% of donors nonetheless supply only 5.1\% of recipients.
 
-\subsection*{B. Assumptions under which the match is credible}
+\subsection*{E.2 Assumptions under which the match is credible}
 
 \begin{description}
 \item[A1. Cell sufficiency.] Conditional on income quintile and province, the six flags are
@@ -51,7 +51,7 @@ that survey's weighted cell marginals in expectation. Table~\ref{tab:imputation_
 test of A5 and passes at 1.8 percentage points or better.
 \end{description}
 
-\subsection*{C. Circumstances under which the match is problematic}
+\subsection*{E.3 Circumstances under which the match is problematic}
 
 \begin{description}
 \item[P1. Within-cell heterogeneity.] Anything that predicts inclusion within a cell, urban or
@@ -64,7 +64,7 @@ effect are not established by the marginal checks.
 three cells are near the 30-donor floor, and in the densest cells outnumber donors nearly ten
 to one. A heavily reused donor's flag vector is stamped onto many recipients, which reduces the
 effective sample of flag vectors below the nominal 10{,}841. The concentration figures in
-Part~A describe national concentration: the top 1\% of donors supply 5.1\% of
+Section~E.1 describe national concentration: the top 1\% of donors supply 5.1\% of
 recipients. This does not by itself bound concentration within individual cells.
 \item[P3. Matching-key measurement error.] \ac{FinScope} income is banded, so a donor's
 quintile rests on a band midpoint divided by household size. Misassignment across a quintile
@@ -85,7 +85,7 @@ holding. Copying observed combinations supports plausibility but does not verify
 joint distribution in the recipient population.
 \end{description}
 
-\subsection*{D. Which of these would move a result}
+\subsection*{E.4 Which of these would move a result}
 
 The vintage gap (P4) can change the eligibility ceiling and adoption levels.
 The access sweep tests sensitivity to eligibility levels, but does not reconstruct who was banked
@@ -95,8 +95,5 @@ Donor reuse and income-band error (P2--P3) require sensitivity checks before the
 be ranked. P5--P6 limit the validation claim: agreement on construction targets cannot establish
 that the imputed population reproduces unobserved relationships.
 
-The alternative not taken, a model-based or hot-deck fusion recovering finer joint structure
-from both instruments, is recorded in Appendix~\ref{app:rationale}. It would relax A1 at the
-cost of its own validation burden and the risk of fitting the idiosyncrasies of two surveys
-rather than the population behind them; the crude match reproduces cell marginals, which is
-what the model consumes.
+The alternative not taken, a model-based or hot-deck fusion that would relax A1, is discussed
+in Appendix~\ref{app:rationale}.
