@@ -1,5 +1,10 @@
 # Reformat and Rewrite Plan
 
+> **Note added 2026-09-30.** This plan was executed. Where it says stacking is "emergent", the
+> thesis now says the stacking shares follow from the routing rule (Marc's decision of
+> 2026-09-29; RQ2 was reworded accordingly), and every result it anticipated was replaced by the
+> corrected run of 2026-09-29 (`results/corrections_2026-09-29/`).
+
 > **Revised 2026-09-21** to match the supervisor decisions of 2026-09-09, which postdate the first
 > draft of this plan, and the content plan applied on 2026-09-10 (`supervisor_revision_plan.md`).
 > Four things changed: the policy section compares **three crossed scenarios**, not four levers;

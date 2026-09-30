@@ -386,7 +386,9 @@ arm turns out to drive results, the finding is minimum-formula-sensitive and mus
 Searched 2026-08-12. D11's rolling available balance was marked `NOT SOURCED`; a deliberate search
 confirms **no published figure exists for either major SA provider**. Payflex publishes the R15,000
 per-order cap but sets the rolling limit per customer from credit history `[payflex_limits]`;
-PayJustNow declines to publish limits at all `[payjustnow_limits]`.
+PayJustNow declines to publish limits at all `[payjustnow_limits]`. **⚠ Corrected 2026-09-29 (B36):
+Payflex does not publish the R15,000 cap either, and the `[payflex_limits]` link was to a Malaysian
+product.**
 
 Closed as "cannot be sourced", and the absence is worth a sentence in the thesis rather than a
 silent round number: the opacity of BNPL credit limits is consistent with the regulatory position
@@ -1097,6 +1099,8 @@ Worth recording as positives alongside the problems above:
 - **Stacking depth versus CFPB.** At full access and `beta = 1`, **37%** of households hold two or
   more concurrent facilities, against the CFPB's **32%** holding loans across different firms.
   Order-of-magnitude agreement, US-to-SA transfer stated — and **emergent, not imposed** (D12).
+  ⚠ Superseded 2026-09-29: the shares follow from the random routing rule (D12, revised), and the
+  corrected model gives different figures.
 - **The D11 binding checks pass.** The R15,000 order cap binds on **0.3%** of requests, confirming
   D11's prediction that it would rarely bind at LMI incomes. The rolling limit binds on **5.6%** at
   R5,000, so it is largely inert at that value — though B24 shows it is *not* inert at R1,000.
@@ -1269,6 +1273,30 @@ household's product-mix APR with the new-loan APR; then re-run `simulation.calib
 `FITTED_*`, Appendix G and the tests. A full-population run takes about 3 seconds, so the refit is
 minutes, not a night. (b) Run as is and disclose new traditional credit as a transfer. **Do not
 start the final run before choosing.**
+
+### B36 · The R15,000 order cap was attributed to Payflex, which does not publish it — `MAJOR` · `AGENT` · `CLOSED`
+
+**Found and closed 2026-09-29** while sourcing the four uncited figures Marc asked about. The
+Payflex terms and conditions (`[payflex_terms]`) were cited for "orders capped at R15,000" and the
+figure appears in B16, B29, D11, OVERVIEW.md and the thesis as a published fact. The page does not
+state it: its only limit clause (4.4) reserves the right to amend a customer's spend limit, and the
+only Rand amounts on it are the fees. Archived copies from 2019 to 2026 and the pages in the site's
+sitemap state no maximum order value; Payflex's FAQ says the maximum a customer may spend "depends
+on your individual Payflex assessment". Third-party pages give R10,000 (loanrating.co.za) and
+"e.g., R20,000" (Peach Payments). Worse, the `[payflex_limits]` entry that was supposed to back
+the cap pointed at support.myboost.co, the help centre of **Boost PayFlex, a Malaysian product
+priced in ringgit**.
+
+Closed by recording the cap as an **assumption** in `config.py` (provenance `ASSUMPTION`), the
+parameter register and the thesis (Section 3 says so and reports that it binds on 0.3% of platform
+requests at `beta = 0`), and by repointing `[payflex_limits]` at Payflex's own archived FAQ. The
+value is unchanged, so no rerun. Lesson: never cite a provider figure without reading the page.
+
+Three more figures were pinned in the same pass and were not defects, only uncited: the UK median
+income behind lambda (ONS FYE 2020, £30,500; the share is 39%, not 37%), the Australian median
+income (ABS 2019-20) and the Gini bounds (World Bank vintages confirmed; the upper bound matches
+Stats SA's per-capita income Gini of 0.70 for 2009). `results/corrections_2026-09-29/CORRECTIONS.md`
+section 7 has the details.
 
 ### B35 · The "synchronous" activation arm was the "uniform" arm — `MAJOR` · `AGENT` · `CLOSED`
 

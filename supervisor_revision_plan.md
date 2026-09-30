@@ -1,5 +1,9 @@
 # Supervisor Revision Plan — CONTENT
 
+> **Note added 2026-09-30.** Applied 2026-09-10. The "emergent 2+ facility shares" in section 9
+> are now described in the thesis as shares that follow from the routing rule (Marc's decision of
+> 2026-09-29), and the numbers were replaced by the corrected run of 2026-09-29.
+
 Plan date: 2026-09-08. Revised 2026-09-09. Scope: **content and writing only.**
 
 Restructuring is out of scope and already planned in `SOL_PLAN_REFORMAT.md`, which states its own

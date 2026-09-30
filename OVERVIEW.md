@@ -2,9 +2,42 @@
 
 **Project:** Modelling BNPL impact on the South African consumer credit market (Agent-Based Model).
 **This file is the canonical strategy + execution plan.** When a decision changes, change it here
-first, then propagate to the companion docs. Last updated: **2026-09-21**.
+first, then propagate to the companion docs. Last updated: **2026-09-30**.
 
-> ## Where we are and what happens next (2026-09-21)
+> ## Where we are (2026-09-30)
+>
+> **The simulation was corrected and fully rerun on 2026-09-29, and the thesis was revised
+> from the corrected results.** Six implementation defects were fixed (traditional interest
+> charged twice, arrears double-counted, a cleared debt keeping its instalment at the gate, a
+> BNPL instalment collected in the opening tick, the checkout quarter of a shortfall agreement
+> requested from neither lender, and the late-fee cap missing the 50%-of-purchase clause).
+> Recalibration selected the same two parameters (shock 0.016, friction 0.09). The record is
+> `results/corrections_2026-09-29/` (`CORRECTIONS.md`, `BEFORE_AFTER.md`, `REPRODUCE.md`); the
+> state before the corrections is tag `pre-correction-2026-09-29`, with its outputs under
+> `results/superseded_2026-09-29_pre-correction/`. **Every result in the 2026-09-21 block below
+> and in the changelog entries before 2026-09-29 is superseded and must not be quoted.**
+>
+> Headline results now: enabling BNPL raises default by about **0.1pp** without peer influence
+> (pooled +0.12 ± 0.05) and **+0.61 ± 0.11pp** at `beta = 1`, in a market that borrows ten
+> times as much. Platform count, bureau visibility and mandatory screening, alone or together,
+> change default by no detectable amount (a change below about 0.25pp could not be detected).
+> With four platforms 52.0% of final-tick holders owe two or more platforms at `beta = 0`, a
+> share that follows from the random routing rule. Pattern 3 and the purchase-size check now
+> fail and are reported as failures.
+>
+> **Marc's four decisions of 2026-09-29** (CORRECTIONS.md section 7): (1) the corrected
+> shortfall rule is the only one, and the alternative arm is removed from code and thesis;
+> (2) the committed-shortfall rule (D7) stays as implemented; (3) RQ2 is reworded to ask how
+> often households owe several platforms at once, and how enabling BNPL, platform count, access
+> and peer adoption affect default, and nothing describes stacking as emergent; (4) four figures
+> were checked against sources: the **R15,000 order cap is not published by Payflex and is now
+> an assumption**, the UK share behind lambda is 39% (ONS FYE 2020), the lambda band is
+> 0.10-0.48 on equivalised disposable income at both ends, and the Gini bounds are attributed.
+>
+> Body prose is 9,653 words against the 10,000 cap. Still open: the front-matter TODOs and
+> `\date{\today}` in `thesis/main.tex`.
+
+> ## Where we were and what happened next (2026-09-21) -- SUPERSEDED, see above
 >
 > The supervisor's September feedback is fully applied (`supervisor_revision_plan.md`, 2026-09-10).
 > The live plan is [`SOL_PLAN_REFORMAT.md`](SOL_PLAN_REFORMAT.md): restructure to the reference
@@ -45,9 +78,10 @@ first, then propagate to the companion docs. Last updated: **2026-09-21**.
 > do to that distress, and what is the mandated extension of credit-bureau reporting to BNPL likely
 > to achieve?* The model answers the second half for the **affordability channel only**; it has no
 > credit score. **RQ1** -- can a synthetic population built from SA survey microdata reproduce
-> credit-market behaviour it was not fitted to? **RQ2** -- does the mutual invisibility of BNPL
-> platforms produce concurrent-facility stacking, and does population default rise with the number
-> of platforms a household can stack across? **RQ3** -- how do three scenarios (bureau visibility,
+> credit-market behaviour it was not fitted to? **RQ2** (reworded 2026-09-29) -- when BNPL
+> platforms cannot observe one another's exposures, how often do households owe several platforms
+> at once, and how do enabling BNPL, platform count, access and peer adoption affect population
+> default? **RQ3** -- how do three scenarios (bureau visibility,
 > mandatory affordability screening, socially transmitted adoption) change the resulting distress
 > and default? The cooling-off window and the facility cap are appendix material only.
 >
@@ -282,6 +316,10 @@ non-linear threshold in RQ2 structurally possible.
   cell-donor matching method, and the column-level variable map (NIDS + FinScope).
 - [`scratchpad/DEFECTS.md`](scratchpad/DEFECTS.md) — **what is wrong, or was wrong**, with evidence,
   severity and owner. Its entry headings overstate what is open; B32 is the live one.
+- [`results/corrections_2026-09-29/CORRECTIONS.md`](results/corrections_2026-09-29/CORRECTIONS.md)
+  — the six simulation defects corrected on 2026-09-29, the text corrections, and Marc's four
+  decisions. Its neighbours `BEFORE_AFTER.md` and `REPRODUCE.md` give the before-and-after numbers
+  and the commands that reproduce every stored run.
 
 **What happens next** lives at the top of this file, not in a separate plan.
 
@@ -307,6 +345,19 @@ citation-verification evidence for Chapter 2).
 
 ## 9. Changelog (living)
 
+- **2026-09-29 and 2026-09-30 (the corrected model; branch `corrected-model`, commits `b483ea1`
+  to `23ab7d4`).** Six implementation defects were found by a one-household check and corrected;
+  the calibration, all six experiment suites and the Sobol analysis were rerun, and the thesis
+  was revised and audited against the new results. The step-by-step diagnostic on shared seeds
+  attributes almost all of the earlier +1.22pp BNPL effect to one defect: the traditional lender
+  was asked for the request less the *whole* amount BNPL financed, so a household that used BNPL
+  for a shortfall stayed a quarter short by construction. Marc confirmed it as a defect and the
+  model now has one shortfall rule. Full before-and-after in
+  `results/corrections_2026-09-29/BEFORE_AFTER.md`; the numbers are summarised at the top of this
+  file. **Every changelog entry below reports superseded results.** Two claims in earlier entries
+  are also wrong: Payflex does not publish an R15,000 per-order cap (no Payflex page states a
+  maximum order value; the cap is an assumption), and the `payflex_limits` citation pointed at
+  the help centre of a Malaysian product until 2026-09-29.
 - **2026-09-21 (THE FINAL RUN: 3,840 runs at 20 replicates + Sobol at N=256, commit `be45867`).**
   These are the only results that may be quoted; everything earlier is superseded. Differences are
   means over 20 replicates with one unpaired standard error; the replicate sd of the population

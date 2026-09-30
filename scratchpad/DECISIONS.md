@@ -330,6 +330,16 @@ ordered sequence; **the order itself is a modelling decision.**
 - **DECISION.** Design-space option (ii), **BNPL-first**, where BNPL exists and the need is
   BNPL-eligible. Traditional credit is approached for shortfalls BNPL cannot cover, and remains the
   only channel in the no-BNPL baseline.
+- **⚠ REVISED 2026-09-29 (correction, confirmed by Marc).** "What BNPL cannot cover" is the
+  request less the cash BNPL frees, which is three quarters of the amount financed because a
+  quarter is paid at checkout. Until 2026-09-29 the code asked the traditional lender for the
+  request less the *whole* amount financed, so the checkout quarter was requested from nobody and
+  a household that used BNPL for a shortfall was distressed whatever either lender would grant.
+  This produced almost all of the earlier BNPL effect on default. It is corrected (commit
+  `1415625`); an explicit alternative switch that reproduced the old arithmetic was run once and
+  then removed at Marc's decision (commit `4ef473c`). The model has one rule: the household asks
+  the traditional lender for the amount it still lacks, and is distressed only if refused. That
+  it does so is an assumption. See `results/corrections_2026-09-29/CORRECTIONS.md`.
 - *Why not cost-ranked:* BNPL is nominally interest-free, so cost-ranking selects it trivially and
   attributes the choice to price. The evidence attributes it to convenience and social norm
   `[ackert2025bnpl]`, which is a different mechanism with different intervention implications (RQ3).
@@ -457,6 +467,10 @@ ordered sequence; **the order itself is a modelling decision.**
   meaningfully while traditional credit cost nothing; DEFECTS **B34** was fixed later the same
   day, so it now can be, as a default-off robustness arm. Not built. Changing the baseline rule
   would require re-running the calibration.
+- **DECIDED 2026-09-29 by Marc: the implemented rule stays.** A committed shortfall is recorded
+  as distress, cash goes to zero and the unpaid amount is not carried forward; a loan raised
+  against it goes to debt service, discretionary spending and savings. The thesis describes this
+  rule (Section 2.3) and lists it as a limitation (Appendix C). Do not reopen.
 - *Why not DSTI > 50%:* a DSTI threshold is arbitrary, and the D9 work established that the NCA
   itself does not use a DSTI ratio. Madeira's minimum-consumption test is cited, is consistent with
   the Reg 23A affordability rule already implemented in P2, and is validated against real default
@@ -613,6 +627,16 @@ ordered sequence; **the order itself is a modelling decision.**
   platform cap. Verify empirically once implemented; if the cap binds for more than a few percent of
   transactions, revisit.
 
+- **⚠ REVISED 2026-09-29: the R15,000 order cap is NOT published by Payflex.** The claims above
+  and below that Payflex "publishes" an R15,000 per-order cap are wrong. The terms and conditions
+  state no maximum order value (clause 4.4 reserves the right to amend a customer's spend limit);
+  Payflex's FAQ says the amount a customer may spend depends on an individual assessment; archived
+  copies of the terms from 2019 to 2026 and the pages in the site's sitemap state no figure.
+  Third-party pages disagree with one another (loanrating.co.za: R10,000; Peach Payments merchant
+  FAQ: "e.g., R20,000"). The value is kept at R15,000 (R9,927 in 2017 Rands) as an **assumption**
+  and is recorded as such in `config.py`, the register and the thesis. It binds on 0.3% of platform
+  requests at `beta = 0`. The `[payflex_limits]` citation used below pointed at support.myboost.co,
+  the help centre of Boost PayFlex, a Malaysian product; it now cites Payflex's own archived FAQ.
 - **⚠ REVISED 2026-08-12 (QA pass) on both counts.**
 
   **The vintage problem was not moot; it was unnoticed.** Every Rand figure in this rule and in D13
@@ -673,6 +697,15 @@ ordered sequence; **the order itself is a modelling decision.**
     scope the thesis does not need.
 - **Validation hook:** share of eligible households ≈ 82.8% by construction; check that the order
   cap binds rarely.
+- **⚠ REVISED 2026-09-30: the income denominators behind lambda are now pinned to sources.**
+  The "37% of UK median monthly household income" above used a figure published after the Woolard
+  Review. On the ONS figure current at the time (median equivalised household disposable income,
+  FYE 2020, £30,500 a year, corrected release) £1,000 is **39%**, so four limits of 0.10 (40%)
+  still match. The band's upper end is Afterpay's A$2,000 maximum (ASIC REP 672, Table 2) over
+  the ABS 2019-20 median: 26% of gross household income, **48% of equivalised disposable income**.
+  The thesis reports lambda against **0.10-0.48**, both ends on equivalised disposable income, and
+  says that equivalised income understates a multi-member household's income, so both shares
+  overstate the limits relative to the household income lambda multiplies. lambda stays at 0.10.
 
 ### D12. Multi-platform stacking (RQ2)
 - **Governs:** the self-reinforcing debt mechanism. The core of RQ2.
@@ -690,8 +723,16 @@ ordered sequence; **the order itself is a modelling decision.**
 - **Parameters:** `N_platforms = 4` baseline (PayJustNow, Payflex, Mobicred and TymeBank are all
   active in South Africa), swept 1 to 6. `N = 1` is a useful control: it isolates single-platform
   debt accumulation from cross-platform stacking.
+- **⚠ REVISED 2026-09-29: stacking depth follows from the routing rule; do not call it emergent.**
+  Every request goes to the platforms in a random order, redrawn for the request, and what one
+  platform does not finance passes to the next, so with four platforms a second request reaches a
+  different platform first three times in four. The shares therefore measure how often agreements
+  overlap and say nothing about how households choose providers. RQ2 was reworded on 2026-09-29
+  to ask how often households owe several platforms at once. In the corrected model 52.0% of
+  final-tick holders owe two or more platforms at `beta = 0` with four platforms, and default does
+  not change detectably with platform count.
 - **Validation hook (external, transferable with care).** Stacking depth is **emergent, not
-  imposed**. At a realistic access rate the model should approximate the CFPB shares: roughly 63% of
+  imposed** (superseded, see above). At a realistic access rate the model should approximate the CFPB shares: roughly 63% of
   adopters holding simultaneous loans and 32% holding across firms. ⚠ United States figures applied
   to a South African model; treat as an order-of-magnitude check and state the transfer.
 
