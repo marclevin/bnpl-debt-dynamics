@@ -13,9 +13,9 @@ cross-references, the cover page, the declaration, the acronym list and the appe
 
 | | Before | After |
 |---|---:|---:|
-| Body prose, Sections 1–6 | 9,653 | 9,740 |
+| Body prose, Sections 1–6 | 9,653 | 9,742 |
 | Abstract | 257 | 256 |
-| **Body prose + abstract** | **9,910** | **9,996** |
+| **Body prose + abstract** | **9,910** | **9,998** |
 | Captions and table/figure notes in the body (separate) | 3,550 | 3,550 |
 | Appendix prose (excluded) | 5,776 | 5,757 |
 | Appendix captions and notes (excluded) | 1,478 | 1,478 |
