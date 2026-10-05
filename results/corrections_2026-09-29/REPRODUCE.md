@@ -68,7 +68,8 @@ in this folder and can be reproduced only from `e366631`.
 Every run echoes all of its parameters and its seed into its own row of `results/raw/*.parquet`,
 so each run can be reproduced from that row alone. All arms use shock probability 0.016 and
 payment friction 0.09, 5,000 households, 52 ticks and a 12-tick burn-in unless the arm varies
-them. Twenty replicates per arm, seeds `seed0 + 0..19`.
+them. Twenty replicates per arm, seeds `seed0 + 0..19`, except the scenario suite, which has
+one hundred.
 
 | Suite | File | Runs | seed0 | Arms share seeds? |
 |---|---|---|---|---|
@@ -77,7 +78,8 @@ them. Twenty replicates per arm, seeds `seed0 + 0..19`.
 | platform count | `rq1.parquet` | 600 | 20,000 | yes |
 | access, linear rule | `rq2.parquet` | 700 | 30,000 | yes |
 | access, threshold rule | `rq2t.parquet` | 1,460 | 60,000; 61,000 for the mean-threshold arms | yes, within each block |
-| scenarios and levers | `rq3.parquet` | 440 | 40,000 benchmark and cooling-off; 41,000 bureau; 42,000 screening; 43,000 cap; 44,000 both switches | only the cooling-off arms share the benchmark's seeds |
+| cooling-off and cap | `rq3.parquet` | 320 | 40,000 benchmark and cooling-off; 43,000 cap | only the cooling-off arms share the benchmark's seeds |
+| scenarios: benchmark, bureau, screening, both | `rq3s.parquet` | 800 | 80,000 | yes, 100 replicates per arm |
 | sensitivity of the level | `robustness.parquet` | 620 | 50,000 to 59,000, one block per group | within a group |
 | sensitivity of the effect | `effect.parquet` | 880 | 70,000 | yes |
 | Sobol | `results/summary/sobol_runs.parquet` | 4,096 | see file | 2 replicates per design point |
@@ -86,6 +88,18 @@ them. Twenty replicates per arm, seeds `seed0 + 0..19`.
 The run log of the corrected suite is `results/final_run.log` (copy:
 `results/corrections_2026-09-29/final_run_c6c8742.log`); the effect re-run is logged in
 `effect_rerun.log`.
+
+## Scenario arms at 100 replicates (2026-10-05)
+
+Until 2026-10-05 the bureau, screening and combined arms were part of `rq3.parquet`, with 20
+replicates each on seed blocks 41,000, 42,000 and 44,000. They now form the suite `rq3s`, with
+their own benchmark, 100 replicates per arm and one shared seed block.
+`python -m simulation.experiments --which all --reps 20` runs it at five times `--reps`. The
+retained arms of `rq3.parquet` are reproduced exactly. The earlier file is kept, untracked, in
+`results/superseded_2026-10-05_rq3_20_replicates/`. The calibration script has a fourth stage
+that checks the fitted shock probability in steps of 0.001 and writes
+`fine_grid_90_plus` into `calibration.json`; the 460 calibration runs and the selection are
+unchanged.
 
 ## Preserved original outputs
 

@@ -25,6 +25,18 @@ first, then propagate to the companion docs. Last updated: **2026-09-30**.
 > share that follows from the random routing rule. Pattern 3 and the purchase-size check now
 > fail and are reported as failures.
 >
+> **Update 2026-10-05: the scenario arms were rerun at 100 replicates** (suite `rq3s`, seeds
+> 80,000 to 80,099, all four arms on the same seeds). The sentence above on bureau visibility is
+> superseded. Bureau visibility raises default by **+0.22 ± 0.04pp** at `beta = 0` and
+> **+0.15 ± 0.04pp** at `beta = 1`, through about 200 more refusals by the traditional lender,
+> and mostly in Q1. Screening changes default by +0.02 ± 0.05 and +0.02 ± 0.06, not detectable;
+> both switches together by +0.10 ± 0.05 and +0.11 ± 0.05. At 20 replicates the standard error
+> (about 0.1pp) was as large as these effects. Pairing arms by seed removes little variance,
+> because every draw comes from one random stream and same-seed arms diverge; the precision
+> comes from the replicate count. The cooling-off and cap arms stay at 20 replicates in `rq3`.
+> The calibration script also gained a check of the fitted shock probability in steps of 0.001
+> (13.93% at 0.015, 14.48% at 0.016, target 14.21%); the selection is unchanged.
+>
 > **Marc's four decisions of 2026-09-29** (CORRECTIONS.md section 7): (1) the corrected
 > shortfall rule is the only one, and the alternative arm is removed from code and thesis;
 > (2) the committed-shortfall rule (D7) stays as implemented; (3) RQ2 is reworded to ask how
