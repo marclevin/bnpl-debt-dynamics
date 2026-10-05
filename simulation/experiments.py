@@ -7,7 +7,8 @@ them would orphan the existing runs for no gain. Map them to the thesis as:
   * `rq1_stacking`   -> thesis RQ2, the stacking half
   * `rq2_surface`    -> thesis RQ2, the access-and-default half
   * `rq2_threshold`  -> thesis RQ2, pre-registered structural alternative
-  * `rq3_*`          -> thesis RQ3, unchanged
+  * `rq3_*`          -> thesis RQ3, the cooling-off window and the cap
+  * `rq3s_*`         -> thesis RQ3, the two switches and their benchmark
 Thesis RQ1 (does the population reproduce behaviour it was not fitted to) has no grid
 here: it is answered by the data layer and the calibrated baseline, not by a sweep.
 
@@ -197,7 +198,9 @@ def rq2_threshold(reps: int) -> list[ParamSet]:
 
 
 def rq3_interventions(reps: int) -> list[ParamSet]:
-    """RQ3: do cool-off interventions change outcomes or merely defer them?
+    """RQ3 levers: do cool-off interventions change outcomes or merely defer them?
+
+    The bureau and screening switches are in `rq3_scenarios`, which has its own benchmark.
 
     Defer-versus-desist is measured as CUMULATIVE BNPL VOLUME over the horizon, not the
     timing of purchases. Unchanged volume with shifted timing means agents defer; lower
@@ -212,39 +215,6 @@ def rq3_interventions(reps: int) -> list[ParamSet]:
                 reps,
                 seed0=40_000,
             )
-        # Lever 1: bureau visibility. The comparison the model was built to make.
-        out += replicate(
-            calibrated(
-                bnpl_enabled=True, beta=b, bnpl_bureau_visible=True, label=f"rq3_bureau_b{b}"
-            ),
-            reps,
-            seed0=41_000,
-        )
-        # Lever 2: mandatory Reg 23A affordability check on BNPL (FCA PS26/1).
-        out += replicate(
-            calibrated(
-                bnpl_enabled=True,
-                beta=b,
-                bnpl_affordability_check=True,
-                label=f"rq3_afford_b{b}",
-            ),
-            reps,
-            seed0=42_000,
-        )
-        # Levers 1 and 2 together. Added 2026-09-29: the reported arrangements would
-        # apply both, and until then no arm combined them although the two were
-        # described as crossed. Its own seed block, as for the two single switches.
-        out += replicate(
-            calibrated(
-                bnpl_enabled=True,
-                beta=b,
-                bnpl_bureau_visible=True,
-                bnpl_affordability_check=True,
-                label=f"rq3_both_b{b}",
-            ),
-            reps,
-            seed0=44_000,
-        )
         # Lever 4: cap on concurrent facilities (platforms with a balance, not
         # agreements). HYPOTHETICAL -- no jurisdiction imposes one.
         for cap in (1, 2, 3):
@@ -255,6 +225,50 @@ def rq3_interventions(reps: int) -> list[ParamSet]:
                 reps,
                 seed0=43_000,
             )
+    return out
+
+
+#: The scenario arms run at this multiple of the replicates of every other suite. At 20
+#: replicates a difference in default has a standard error of about 0.1 points, which is as
+#: large as the effects the two switches have; at 100 it is about 0.045.
+SCENARIO_REPS_FACTOR = 5
+
+
+def rq3_scenarios(reps: int) -> list[ParamSet]:
+    """RQ3: the benchmark, bureau visibility, mandatory screening, and the two together.
+
+    Every arm uses one seed block, so differences are taken seed by seed. Arms on one seed
+    share a single random stream and diverge once their draws differ, so the pairing removes
+    little variance (seed-wise correlation of default is near zero); the precision comes
+    from the replicate count.
+    """
+    n = SCENARIO_REPS_FACTOR * reps
+    out: list[ParamSet] = []
+    for b in (0.0, 1.0):
+        arms = [
+            calibrated(bnpl_enabled=True, beta=b, label=f"rq3s_bench_b{b}"),
+            # Bureau visibility. The comparison the model was built to make.
+            calibrated(
+                bnpl_enabled=True, beta=b, bnpl_bureau_visible=True, label=f"rq3s_bureau_b{b}"
+            ),
+            # Mandatory Reg 23A affordability check on BNPL (FCA PS26/1).
+            calibrated(
+                bnpl_enabled=True,
+                beta=b,
+                bnpl_affordability_check=True,
+                label=f"rq3s_afford_b{b}",
+            ),
+            # Both together: the reported arrangements would apply both.
+            calibrated(
+                bnpl_enabled=True,
+                beta=b,
+                bnpl_bureau_visible=True,
+                bnpl_affordability_check=True,
+                label=f"rq3s_both_b{b}",
+            ),
+        ]
+        for a in arms:
+            out += replicate(a, n, seed0=80_000)
     return out
 
 
@@ -414,6 +428,7 @@ SUITES = {
     "rq2": rq2_surface,
     "rq2t": rq2_threshold,
     "rq3": rq3_interventions,
+    "rq3s": rq3_scenarios,
     "robustness": robustness,
     "effect": effect_robustness,
 }

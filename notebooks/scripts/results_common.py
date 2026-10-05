@@ -5,10 +5,11 @@ build_results_tables.py or build_results_figures.py from results/raw; nothing is
 This module holds what both scripts need so the two cannot disagree on a convention.
 
 Conventions (stated in every table note):
-  * means over the 20 replicates of an arm, with the replicate standard deviation;
+  * means over the replicates of an arm (20, or 100 for the scenario arms of Section 5),
+    with the replicate standard deviation;
   * a difference between two arms that SHARE seeds is taken seed by seed and carries
-    the paired standard error, the standard deviation of the twenty differences over
-    sqrt(20); a difference between arms on DIFFERENT seed blocks carries the unpaired
+    the paired standard error, the standard deviation of the differences over the
+    square root of their number; a difference between arms on DIFFERENT seed blocks carries the unpaired
     standard error sqrt(sd_a^2/n_a + sd_b^2/n_b). `delta` chooses between them from the
     seeds themselves, and every table note says which was used;
   * rates are in per cent, differences in percentage points, money in 2017 Rands.
@@ -33,7 +34,8 @@ FIGS = ROOT / "thesis" / "figures"
 Q = ["Q1", "Q2", "Q3", "Q4", "Q5"]
 TICK_DAYS = 14
 
-SCENARIOS = [("kcool0", "Benchmark"), ("bureau", "Bureau visibility"), ("afford", "Screening")]
+#: The scenario arms of Section 5, in results/raw/rq3s.parquet under labels `rq3s_<key>_b<beta>`.
+SCENARIOS = [("bench", "Benchmark"), ("bureau", "Bureau visibility"), ("afford", "Screening")]
 
 
 def load(name: str) -> pd.DataFrame:

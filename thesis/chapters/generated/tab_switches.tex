@@ -4,17 +4,17 @@
 \centering
 \caption{Bureau visibility and screening, alone and together}
 \label{tab:switches}
-\tabnote{Outcomes as in Table~\ref{tab:scenarios}, against the same benchmark arm. $\Delta$ is arm less benchmark on default, with one unpaired standard error, $\sqrt{s_a^2/n_a + s_b^2/n_b}$, since the arms and the benchmark use different seed blocks. ``Vol.'' is the change in cumulative post-burn-in \ac{BNPL} volume relative to the benchmark, in per cent: a rule that only delays borrowing within the horizon leaves it unchanged. ``Trad.'' is new traditional lending granted, in R million. Default, in per cent: means over 20 replicates, replicate standard deviation in brackets; holding at the final tick is a replicate mean in per cent with a standard deviation of at most 0.5 points. Every run uses the fitted shock probability 0.016 and payment friction 0.09, four platforms, and access at the banked ceiling unless stated. Seeds 40{,}000--40{,}019 (benchmark), 41{,}000--41{,}019 (bureau visibility), 42{,}000--42{,}019 (screening) and 44{,}000--44{,}019 (both). The screening test is shown the household's traditional service and its \ac{BNPL} instalments on every platform, whether or not the bureau switch is on; the bureau switch changes only what the traditional lender is shown.}
+\tabnote{Outcomes as in Table~\ref{tab:scenarios}, against the same benchmark arm. $\Delta$ is arm less benchmark on default, paired by seed with one standard error, since every arm shares the benchmark's seeds. ``Vol.'' is the change in cumulative post-burn-in \ac{BNPL} volume relative to the benchmark, in per cent: a rule that only delays borrowing within the horizon leaves it unchanged. ``Trad.'' is new traditional lending granted, in R million. Default, in per cent: means over 100 replicates, replicate standard deviation in brackets; holding at the final tick is a replicate mean in per cent with a standard deviation of at most 0.5 points. Every run uses the fitted shock probability 0.016 and payment friction 0.09, four platforms, and access at the banked ceiling unless stated. Seeds 80{,}000--80{,}099 in every arm. The screening test is shown the household's traditional service and its \ac{BNPL} instalments on every platform, whether or not the bureau switch is on; the bureau switch changes only what the traditional lender is shown.}
 \begingroup\setlength{\tabcolsep}{1.5pt}\scriptsize
 \begin{tabular}{L{1.9cm} rrrrr rrrrr}
 \toprule
 & \multicolumn{5}{c}{$\beta = 0$} & \multicolumn{5}{c}{$\beta = 1$} \\ \cmidrule(lr){2-6}\cmidrule(lr){7-11}
 \textbf{Arm} & \textbf{Default} & \textbf{$\Delta$ (pp)} & \textbf{Hold.} & \textbf{Vol.} & \textbf{Trad.} & \textbf{Default} & \textbf{$\Delta$ (pp)} & \textbf{Hold.} & \textbf{Vol.} & \textbf{Trad.} \\
 \midrule
-benchmark & 13.41 (0.34) & -- & 17.6 & -- & 5.46 & 13.94 (0.35) & -- & 66.8 & -- & 5.93 \\
-bureau visibility & 13.44 (0.32) & $+0.04 \pm 0.10$ & 17.4 & -5.1 & 4.87 & 14.03 (0.38) & $+0.09 \pm 0.12$ & 66.6 & -0.7 & 5.37 \\
-screening & 13.39 (0.29) & $-0.02 \pm 0.10$ & 15.7 & -5.3 & 5.33 & 13.85 (0.44) & $-0.09 \pm 0.13$ & 64.0 & -1.5 & 5.82 \\
-both switches & 13.45 (0.26) & $+0.05 \pm 0.10$ & 15.8 & -6.7 & 5.00 & 13.85 (0.32) & $-0.09 \pm 0.11$ & 64.3 & -1.6 & 5.55 \\
+benchmark & 13.30 (0.34) & -- & 17.5 & -- & 5.39 & 13.90 (0.35) & -- & 66.7 & -- & 5.90 \\
+bureau visibility & 13.52 (0.34) & $+0.22 \pm 0.04$ & 17.5 & -2.6 & 4.97 & 14.05 (0.34) & $+0.15 \pm 0.04$ & 66.5 & -0.4 & 5.38 \\
+screening & 13.32 (0.40) & $+0.02 \pm 0.05$ & 15.7 & -3.9 & 5.47 & 13.92 (0.36) & $+0.02 \pm 0.06$ & 64.1 & -1.1 & 5.93 \\
+both switches & 13.40 (0.31) & $+0.10 \pm 0.05$ & 15.9 & -4.9 & 5.10 & 14.01 (0.36) & $+0.11 \pm 0.05$ & 64.2 & -1.5 & 5.53 \\
 \bottomrule
 \end{tabular}
 \endgroup

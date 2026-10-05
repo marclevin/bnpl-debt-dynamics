@@ -26,6 +26,8 @@ from simulation.config import load_ccmr_target  # noqa: E402
 N = {}  # the numbers the prose quotes; dumped to results_numbers.json at the end
 
 REPL = "Means over 20 replicates, replicate standard deviation in brackets"
+REPL_S = "Means over 100 replicates, replicate standard deviation in brackets"
+SEEDS_S = "seeds 80{,}000--80{,}099 in every arm"
 #: The two conventions for a difference between arms. `delta` picks the one the seeds allow.
 SE_P = (
     "the arms share seeds, so each difference is paired by seed and carries one standard error"
@@ -172,7 +174,12 @@ def tab_arrears_fit() -> None:
     lo_p = max(x for x in grid if x < p)
     hi_p = min(x for x in grid if x > p)
     qlfs = cal["qlfs_band"]
+    fine = {float(k): v for k, v in cal["fine_grid_90_plus"].items()}
+    fine_lo = max(x for x in fine if x < p)
+    assert abs(fine[p] - model["90"]) < 1e-9
     N.update(
+        fit_fine_step=round(p - fine_lo, 6), fit_fine_below=fine_lo, fit_90plus_fine_below=fine[fine_lo],
+        fit_90plus_fine_above=fine[min(x for x in fine if x > p)],
         fit_shock_prob=p, fit_friction=f, fit_90plus=model["90"], fit_90plus_sd=ms(fit.active_90_plus_mean)[1],
         fit_d30=model["d30"], fit_d31_60=model["d31_60"], fit_d61_90=model["d61_90"],
         fit_current=model["current"], fit_60plus=model["60"],
@@ -192,7 +199,9 @@ def tab_arrears_fit() -> None:
         f"probability {p:g} and payment friction {f:g}; the 90+ share has a replicate standard "
         f"deviation of {ms(fit.active_90_plus_mean)[1] * 100:.2f} percentage points. The shock "
         f"probability is fitted on a grid with steps of {step:g}: the neighbouring values {lo_p:g} and "
-        f"{hi_p:g} give 90+ shares of {pct(by_p[lo_p])}\\% and {pct(by_p[hi_p])}\\%. ``Fitted'' "
+        f"{hi_p:g} give 90+ shares of {pct(by_p[lo_p])}\\% and {pct(by_p[hi_p])}\\%. A check on the "
+        f"same seeds in steps of {p - fine_lo:.3f} gives {pct(fine[fine_lo])}\\% at {fine_lo:g}, so the target "
+        f"lies between that value and the selected one. ``Fitted'' "
         f"identifies the two target bands. Unfitted bands belong to the same distribution and are not "
         f"independent observations. The cumulative 60+ row includes the fitted 90+ band.",
         "lrrl",
@@ -437,9 +446,9 @@ def tab_bnpl_on_checks(rq0: pd.DataFrame) -> None:
 
 
 # ============================================================ 5 the scenario panel
-def tab_scenarios(rq3: pd.DataFrame) -> None:
+def tab_scenarios(rq3s: pd.DataFrame) -> None:
     def cellset(b):
-        return {key: arm(rq3, f"rq3_{key}_b{b}") for key, _ in SCENARIOS}
+        return {key: arm(rq3s, f"rq3s_{key}_b{b}") for key, _ in SCENARIOS}
     arms = {0.0: cellset(0.0), 1.0: cellset(1.0)}
     outcomes = [
         ("Population default rate (\\%)", "default_rate_final", 100, 2),
@@ -459,7 +468,8 @@ def tab_scenarios(rq3: pd.DataFrame) -> None:
     # differences to the benchmark, for the note
     notes = []
     for b in (0.0, 1.0):
-        bench = arms[b]["kcool0"]
+        bench = arms[b]["bench"]
+        assert all(shares_seeds(arms[b][key], bench) for key, _ in SCENARIOS)
         parts = []
         for key, name in SCENARIOS[1:]:
             dd, se = delta(arms[b][key], bench, "default_rate_final")
@@ -495,11 +505,10 @@ def tab_scenarios(rq3: pd.DataFrame) -> None:
         f"Section~\\ref{{sec:scenarios}}, each at $\\beta = 0$ and $\\beta = 1$. Bureau visibility "
         f"covers the affordability channel only; the scoring channel is outside the model. Outcomes as in "
         f"Table~\\ref{{tab:baseline-arms}}; the by-quintile rows are the default rate within each "
-        f"per-capita income quintile of the population. {REPL}; seeds 40{{,}}000--40{{,}}019 "
-        f"(benchmark), 41{{,}}000--41{{,}}019 (bureau) and 42{{,}}000--42{{,}}019 (screening); {SHOCK}. "
+        f"per-capita income quintile of the population. {REPL_S}; {SEEDS_S}; {SHOCK}. "
         f"Refusals are those of the traditional lender; a \\ac{{BNPL}} request refused by the "
         f"screening test is not counted there. "
-        f"Scenario less benchmark: {SE_U}: {'; '.join(notes)}.",
+        f"Scenario less benchmark: {SE_P}: {'; '.join(notes)}.",
         "L{3.5cm}rrrrrr",
         r"& \multicolumn{3}{c}{$\beta = 0$} & \multicolumn{3}{c}{$\beta = 1$} \\ \cmidrule(lr){2-4}\cmidrule(lr){5-7}"
         "\n\\textbf{Outcome} & \\textbf{Benchmark} & \\textbf{Bureau} & \\textbf{Screening} & \\textbf{Benchmark} & \\textbf{Bureau} & \\textbf{Screening}",
@@ -858,24 +867,26 @@ def tab_sobol() -> None:
 
 
 # ============================================================ C: cooling-off and cap
-def lever_table(rq3: pd.DataFrame, name: str, caption: str, arms: list[tuple[str, str]], note_extra: str) -> None:
+def lever_table(rq3: pd.DataFrame, name: str, caption: str, arms: list[tuple[str, str]], note_extra: str,
+                prefix: str = "rq3", bench_key: str = "kcool0", repl: str = REPL,
+                bench_text: str = "against the benchmark arm of the lever runs") -> None:
     rows = []
     sd_adopt = 0.0
     paired_any, unpaired_any = False, False
     for key, label in arms:
         cells = [label]
         for b in (0.0, 1.0):
-            d = arm(rq3, f"rq3_{key}_b{b}")
-            bench = arm(rq3, f"rq3_kcool0_b{b}")
+            d = arm(rq3, f"{prefix}_{key}_b{b}")
+            bench = arm(rq3, f"{prefix}_{bench_key}_b{b}")
             dv, dv_se = ratio_change(d, bench, "bnpl_volume_cumulative")
             dd, se = delta(d, bench, "default_rate_final")
             dl, dl_se = delta(d, bench, "trad_granted_value")
             sd_adopt = max(sd_adopt, ms(d.bnpl_adoption_final)[1])
-            if key != "kcool0":
+            if key != bench_key:
                 paired_any |= shares_seeds(d, bench)
                 unpaired_any |= not shares_seeds(d, bench)
-            cells += [cell(d.default_rate_final, 2), pm(dd, se) if key != "kcool0" else "--",
-                      pct(ms(d.bnpl_adoption_final)[0], 1), f"{dv * 100:+.1f}" if key != "kcool0" else "--",
+            cells += [cell(d.default_rate_final, 2), pm(dd, se) if key != bench_key else "--",
+                      pct(ms(d.bnpl_adoption_final)[0], 1), f"{dv * 100:+.1f}" if key != bench_key else "--",
                       rm(ms(d.trad_granted_value)[0])]
             N[f"lever_{key}_beta{b:g}_default"] = ms(d.default_rate_final)[0]
             N[f"lever_{key}_beta{b:g}_diff"], N[f"lever_{key}_beta{b:g}_diff_se"] = dd, se
@@ -895,11 +906,11 @@ def lever_table(rq3: pd.DataFrame, name: str, caption: str, arms: list[tuple[str
     table(
         name,
         caption,
-        f"Outcomes as in Table~\\ref{{tab:scenarios}}, against the same benchmark arm. $\\Delta$ is "
+        f"Outcomes as in Table~\\ref{{tab:scenarios}}, {bench_text}. $\\Delta$ is "
         f"arm less benchmark on default, {se_text}. ``Vol.'' is the change in cumulative post-burn-in "
         f"\\ac{{BNPL}} volume relative to the benchmark, in per cent: a rule that only delays "
         f"borrowing within the horizon leaves it unchanged. ``Trad.'' is new traditional lending "
-        f"granted, in R million. Default, in per cent: {REPL.lower()}; holding at the final "
+        f"granted, in R million. Default, in per cent: {repl.lower()}; holding at the final "
         f"tick is a replicate mean in per cent with a standard deviation of at most "
         f"{sd_adopt * 100:.1f} points. {SHOCK_CAP}. {note_extra}",
         "L{1.9cm} rrrrr rrrrr",
@@ -912,16 +923,16 @@ def lever_table(rq3: pd.DataFrame, name: str, caption: str, arms: list[tuple[str
     )
 
 
-def tab_levers(rq3: pd.DataFrame) -> None:
+def tab_levers(rq3: pd.DataFrame, rq3s: pd.DataFrame) -> None:
     lever_table(
-        rq3, "tab_switches", "Bureau visibility and screening, alone and together",
-        [("kcool0", "benchmark"), ("bureau", "bureau visibility"), ("afford", "screening"),
+        rq3s, "tab_switches", "Bureau visibility and screening, alone and together",
+        [("bench", "benchmark"), ("bureau", "bureau visibility"), ("afford", "screening"),
          ("both", "both switches")],
-        "Seeds 40{,}000--40{,}019 (benchmark), 41{,}000--41{,}019 (bureau visibility), "
-        "42{,}000--42{,}019 (screening) and 44{,}000--44{,}019 (both). The screening test is shown "
+        f"{SEEDS_S[0].upper() + SEEDS_S[1:]}. The screening test is shown "
         "the household's traditional service and its \\ac{BNPL} instalments on every platform, "
         "whether or not the bureau switch is on; the bureau switch changes only what the traditional "
         "lender is shown.",
+        prefix="rq3s", bench_key="bench", repl=REPL_S, bench_text="against the same benchmark arm",
     )
     lever_table(
         rq3, "tab_cooloff", "The cooling-off window",
@@ -1115,25 +1126,49 @@ def derived_numbers(rq0, rq2, rq2t, rq3, eff) -> None:
     N["switch_n_detectable"] = sum(
         detectable(N[f"lever_{k}_beta{b:g}_diff"], N[f"lever_{k}_beta{b:g}_diff_se"])
         for k in ("bureau", "afford", "both") for b in (0.0, 1.0))
+    # --- what the prose of Section 5 quotes beyond the two tables ------------------------
+    for b in (0.0, 1.0):
+        arms = {k: arm(rq3, f"rq3s_{k}_b{b}") for k in ("bench", "bureau", "afford", "both")}
+        for k in ("bureau", "afford", "both"):
+            for col, tag in (("active_90_plus_mean", "90plus"), ("trad_refused_gate", "refused"),
+                             ("trad_granted_value", "lending"), ("bnpl_adoption_final", "adoption")):
+                N[f"switch_{k}_beta{b:g}_{tag}_diff"], N[f"switch_{k}_beta{b:g}_{tag}_diff_se"] = delta(arms[k], arms["bench"], col)
+            for q in Q:
+                N[f"switch_{k}_beta{b:g}_default_{q}_diff"], N[f"switch_{k}_beta{b:g}_default_{q}_diff_se"] = \
+                    delta(arms[k], arms["bench"], f"default_rate_final_{q}")
+        for a, c in (("both", "afford"), ("both", "bureau"), ("bureau", "afford")):
+            N[f"switch_{a}_less_{c}_beta{b:g}"], N[f"switch_{a}_less_{c}_beta{b:g}_se"] = delta(arms[a], arms[c], "default_rate_final")
+            N[f"switch_{a}_less_{c}_beta{b:g}_refused"], _ = delta(arms[a], arms[c], "trad_refused_gate")
+            N[f"switch_{a}_less_{c}_beta{b:g}_lending"], _ = delta(arms[a], arms[c], "trad_granted_value")
+        # peer influence and the switches: the beta = 1 less beta = 0 gap in each arm
+    for k in ("bench", "bureau", "afford", "both"):
+        N[f"switch_{k}_beta_gap"], N[f"switch_{k}_beta_gap_se"] = delta(
+            arm(rq3, f"rq3s_{k}_b1.0"), arm(rq3, f"rq3s_{k}_b0.0"), "default_rate_final")
+    for k in ("bureau", "afford", "both"):
+        x = (arm(rq3, f"rq3s_{k}_b1.0").set_index("seed").default_rate_final - arm(rq3, "rq3s_bench_b1.0").set_index("seed").default_rate_final) \
+            - (arm(rq3, f"rq3s_{k}_b0.0").set_index("seed").default_rate_final - arm(rq3, "rq3s_bench_b0.0").set_index("seed").default_rate_final)
+        N[f"switch_{k}_interaction"], N[f"switch_{k}_interaction_se"] = float(x.mean()), float(x.std(ddof=1) / len(x) ** 0.5)
 
 
 def main() -> None:
     rq0, rq1, rq2, rq2t, rq3, rob = (load(n) for n in ("rq0", "rq1", "rq2", "rq2t", "rq3", "robustness"))
     eff = load("effect")
+    rq3s = load("rq3s")
     for df in (rq0, rq1, rq2, rq2t, rq3, rob, eff):
         assert df.groupby("label").seed.nunique().eq(20).all(), "every arm needs 20 unique seeds"
+    assert rq3s.groupby("label").seed.nunique().eq(100).all(), "every scenario arm needs 100 unique seeds"
     tab_arrears_fit()
     tab_baseline_arms(rq0)
     tab_stacking(rq1)
     tab_bnpl_on_checks(rq0)
-    tab_scenarios(rq3)
+    tab_scenarios(rq3s)
     tab_distribution(rq0)
     tab_access(rq2, rq2t)
     tab_robustness(rob)
     tab_sobol()
-    tab_levers(rq3)
+    tab_levers(rq3, rq3s)
     tab_effect(eff)
-    derived_numbers(rq0, rq2, rq2t, rq3, eff)
+    derived_numbers(rq0, rq2, rq2t, rq3s, eff)
     out = {k: (round(float(v), 6) if isinstance(v, (float, np.floating)) else
                (int(v) if isinstance(v, np.integer) else v)) for k, v in N.items()}
     (SUMMARY / "results_numbers.json").write_text(json.dumps(out, indent=2), encoding="utf-8")

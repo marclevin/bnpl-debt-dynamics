@@ -32,7 +32,7 @@ from scipy import stats
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from results_common import (  # noqa: E402
-    GRID, INK, INK2, INK3, RAMP, RC, RED, SCENARIOS, SRC, SURF, TW, arm, dress, load, save,
+    GRID, INK, INK2, INK3, RAMP, RC, RED, SCENARIOS, SRC, SURF, TW, arm, delta, dress, load, save,
 )
 from simulation.config import load_ccmr_bands  # noqa: E402
 
@@ -173,15 +173,15 @@ def fig_access_default(rq2: pd.DataFrame, rq2t: pd.DataFrame) -> None:
 
 
 # =================================================================== scenarios (body)
-def fig_scenarios(rq3: pd.DataFrame) -> None:
+def fig_scenarios(rq3s: pd.DataFrame) -> None:
     fig, (ax_a, ax_b) = plt.subplots(1, 2, figsize=(TW, 2.5))
     x = np.arange(len(SCENARIOS))
     w = 0.36
     for j, (b, colour, label) in enumerate([(0.0, INK3, CTRL_LBL), (1.0, SRC, BETA1_LBL)]):
         means, sds, vols = [], [], []
-        bench = arm(rq3, f"rq3_kcool0_b{b}").bnpl_volume_cumulative.mean()
+        bench = arm(rq3s, f"rq3s_bench_b{b}").bnpl_volume_cumulative.mean()
         for key, _ in SCENARIOS:
-            d = arm(rq3, f"rq3_{key}_b{b}")
+            d = arm(rq3s, f"rq3s_{key}_b{b}")
             means.append(d.default_rate_final.mean() * 100)
             sds.append(half_ci(d.default_rate_final) * 100)
             vols.append((d.bnpl_volume_cumulative.mean() / bench - 1) * 100)
@@ -296,33 +296,42 @@ def fig_tornado(rob: pd.DataFrame) -> None:
 
 
 # =================================================================== scenarios (appendix)
-def fig_scenarios_appendix(rq3: pd.DataFrame) -> None:
-    arms = [("bureau", "Bureau visibility"), ("afford", "Screening"), ("both", "Both switches")] + \
-           [(f"kcool{k}", f"Cooling-off {k} tick{'s' if k > 1 else ''}") for k in (1, 2, 3, 4)] + \
-           [(f"cap{c}", f"Cap: {c} platform{'' if c == 1 else 's'} owed (hypothetical)") for c in (1, 2, 3)]
+def fig_scenarios_appendix(rq3: pd.DataFrame, rq3s: pd.DataFrame) -> None:
+    """Each lever's change in default against its own benchmark.
+
+    The switches (100 replicates) and the levers (20) have different benchmark arms, so the
+    figure plots differences and not levels.
+    """
+    arms = [("rq3s", "bureau", "Bureau visibility"), ("rq3s", "afford", "Screening"), ("rq3s", "both", "Both switches")] + \
+           [("rq3", f"kcool{k}", f"Cooling-off {k} tick{'s' if k > 1 else ''}") for k in (1, 2, 3, 4)] + \
+           [("rq3", f"cap{c}", f"Cap: {c} platform{'' if c == 1 else 's'} owed (hypothetical)") for c in (1, 2, 3)]
+    frames = {"rq3": (rq3, "kcool0"), "rq3s": (rq3s, "bench")}
     fig, axes = plt.subplots(1, 2, figsize=(TW, 2.9), sharey=True)
     y = np.arange(len(arms))
     for ax, b in zip(axes, (0.0, 1.0)):
-        bench = arm(rq3, f"rq3_kcool0_b{b}").default_rate_final
-        means = [arm(rq3, f"rq3_{k}_b{b}").default_rate_final.mean() * 100 for k, _ in arms]
-        sds = [half_ci(arm(rq3, f"rq3_{k}_b{b}").default_rate_final) * 100 for k, _ in arms]
-        for yi, m, s, (k, _) in zip(y, means, sds, arms):
+        for yi, (suite, k, _) in zip(y, arms):
+            df, bench_key = frames[suite]
+            d = arm(df, f"{suite}_{k}_b{b}")
+            dd, se = delta(d, arm(df, f"{suite}_{bench_key}_b{b}"), "default_rate_final")
+            half = stats.t.ppf(0.975, len(d) - 1) * se
             hyp = k.startswith("cap")
-            ax.errorbar(m, yi, xerr=s, fmt="D" if hyp else "o", color=RED if hyp else SRC, ms=4.2,
+            ax.errorbar(dd * 100, yi, xerr=half * 100, fmt="D" if hyp else "o", color=RED if hyp else SRC, ms=4.2,
                         capsize=2.5, elinewidth=0.8, zorder=3)
-        ax.axvline(bench.mean() * 100, color=INK, lw=1.0, ls="--", zorder=2)
+        ax.axvline(0, color=INK, lw=1.0, ls="--", zorder=2)
         ax.set_title(rf"$\beta = {b:g}$")
-        ax.set_xlim(12.5, 15.0)
-        ax.set_xlabel("Population default rate (%)")
+        ax.set_xlim(-0.75, 0.5)
         dress(ax, ygrid=False, xgrid=True)
     axes[0].set_yticks(y)
-    axes[0].set_yticklabels([n for _, n in arms])
+    axes[0].set_yticklabels([n for _, _, n in arms])
     axes[0].invert_yaxis()
     fig.legend(handles=[Line2D([0], [0], color=SRC, marker="o", lw=0, ms=4.2, label="implemented or proposed instrument"),
                         Line2D([0], [0], color=RED, marker="D", lw=0, ms=4.2, label="hypothetical: no jurisdiction imposes it"),
-                        Line2D([0], [0], color=INK, ls="--", lw=1.0, label="benchmark mean")],
+                        Line2D([0], [0], color=INK, ls="--", lw=1.0, label="no change")],
                loc="lower center", ncol=3, bbox_to_anchor=(0.5, 0.0), handlelength=1.2)
-    fig.tight_layout(rect=(0, 0.08, 1, 1), w_pad=1.0)
+    fig.tight_layout(rect=(0, 0.13, 1, 1), w_pad=1.0)
+    x_mid = (axes[0].get_position().x0 + axes[1].get_position().x1) / 2
+    fig.text(x_mid, 0.105, "Change in default against the benchmark (percentage points)", ha="center",
+             fontsize=7.4, color=INK2)
     save(fig, "fig_scenarios_appendix")
     plt.close(fig)
 
@@ -332,9 +341,10 @@ def main() -> None:
     fig_baseline_arrears(rq0)
     fig_stacking(rq1)
     fig_access_default(rq2, rq2t)
-    fig_scenarios(rq3)
+    rq3s = load("rq3s")
+    fig_scenarios(rq3s)
     fig_tornado(rob)
-    fig_scenarios_appendix(rq3)
+    fig_scenarios_appendix(rq3, rq3s)
 
 
 if __name__ == "__main__":

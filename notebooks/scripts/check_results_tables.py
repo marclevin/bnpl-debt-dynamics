@@ -82,12 +82,15 @@ def main() -> None:
     expect("bnpl_on_checks", t, pmp(b0, off, "trad_arrears_rate_mean"))
 
     t = frag("tab_scenarios")
-    bur0 = rq3[rq3.label == "rq3_bureau_b0.0"]
+    rq3s = pd.read_parquet(RAW / "rq3s.parquet")
+    bur0 = rq3s[rq3s.label == "rq3s_bureau_b0.0"]
+    sben0 = rq3s[rq3s.label == "rq3s_bench_b0.0"]
+    aff1 = rq3s[rq3s.label == "rq3s_afford_b1.0"]
     ben0 = rq3[rq3.label == "rq3_kcool0_b0.0"]
-    aff1 = rq3[rq3.label == "rq3_afford_b1.0"]
+    assert len(bur0) == len(sben0) == len(aff1) == 100, "scenario arms need 100 replicates"
     expect("scenarios", t, cell(bur0.default_rate_final))
     expect("scenarios", t, cell(aff1.bnpl_volume_cumulative, 2, 1e-6))
-    expect("scenarios", t, pm(bur0.default_rate_final, ben0.default_rate_final))
+    expect("scenarios", t, pmp(bur0, sben0, "default_rate_final"))
     expect("scenarios", t, cell(aff1.default_rate_final_Q1))
 
     t = frag("tab_distribution")
@@ -147,10 +150,10 @@ def main() -> None:
     expect("cap", t, f"& {c1.bnpl_adoption_final.mean() * 100:.1f} &")
 
     t = frag("tab_switches")
-    both0 = rq3[rq3.label == "rq3_both_b0.0"]
+    both0 = rq3s[rq3s.label == "rq3s_both_b0.0"]
     expect("switches", t, cell(both0.default_rate_final))
-    expect("switches", t, pm(both0.default_rate_final, ben0.default_rate_final))
-    expect("switches", t, pm(bur0.default_rate_final, ben0.default_rate_final))
+    expect("switches", t, pmp(both0, sben0, "default_rate_final"))
+    expect("switches", t, pmp(bur0, sben0, "default_rate_final"))
 
     t = frag("tab_effect")
     eff = pd.read_parquet(RAW / "effect.parquet")

@@ -8,6 +8,9 @@ The fit is to the 90+ band at k=7. The other two bands are reported as UNFITTED
 diagnostics, as are patterns 3 and 4, so the checkpoint distinguishes what was fitted
 from what was merely observed.
 
+A last stage reruns the fitted band on a grid of 0.001 either side of the selected value.
+It is a check on the coarse grid and does not change the selection.
+
 The fitted value is then compared to the QLFS 2017 job-separation band. That comparison
 is a plausibility check on the calibration, NOT a second objective: fitting to both would
 over-determine the baseline.
@@ -147,6 +150,19 @@ def main() -> None:
     best_row = final_tbl.loc[final_tbl["abs_error"].idxmin()]
     p_hat = float(best_row["shock_prob"])
 
+    # --- stage 4: is the coarse grid hiding a better value? --------------------
+    # A CHECK, not a re-fit: the selection above stands. Steps of 0.001 either side of
+    # the selected value, on the same seeds, reported beside it.
+    fine_grid = [round(p_hat + d, 4) for d in (-0.002, -0.001, 0.001, 0.002)]
+    print(f"\n--- stage 4, fine p grid around {p_hat:.4f} at friction={f_hat:.4f}: {fine_grid}")
+    df4 = evaluate(fine_grid, args.reps, args.jobs, friction_grid=[f_hat])
+    fine_tbl = (
+        pd.concat([summarise(df4, target), final_tbl[final_tbl["shock_prob"] == p_hat]])
+        .sort_values("shock_prob")
+        .reset_index(drop=True)
+    )
+    show(fine_tbl, P_COLS)
+
     # --- the QLFS plausibility check ------------------------------------------
     lo, hi = qlfs["p_tick_lower"], qlfs["p_tick_upper"]
     inside = lo <= p_hat <= hi
@@ -185,6 +201,7 @@ def main() -> None:
     RESULTS_SUMMARY.mkdir(parents=True, exist_ok=True)
     all_runs.to_parquet(RESULTS_SUMMARY / "calibration_runs.parquet", index=False)
     final_tbl.to_csv(RESULTS_SUMMARY / "calibration_grid.csv", index=False)
+    fine_tbl.to_csv(RESULTS_SUMMARY / "calibration_fine_grid.csv", index=False)
     payload = {
         "fitted_shock_prob": p_hat,
         "fitted_payment_friction": f_hat,
@@ -205,6 +222,9 @@ def main() -> None:
         },
         "qlfs_band": {"lower": lo, "upper": hi, "fitted_inside": bool(inside)},
         "replicates": args.reps,
+        "fine_grid_90_plus": {
+            f"{r.shock_prob:.3f}": float(r.objective_mean) for r in fine_tbl.itertuples()
+        },
     }
     (RESULTS_SUMMARY / "calibration.json").write_text(
         json.dumps(payload, indent=2), encoding="utf-8"
