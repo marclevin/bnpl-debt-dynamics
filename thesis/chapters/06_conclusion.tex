@@ -7,7 +7,8 @@
 This thesis asked how a lending channel outside the affordability and reporting regime affects a household population already in credit distress, and what bringing that channel inside the regime would change.
 We answered with a controlled counterfactual under 2017 conditions, so the results describe mechanisms in the model and do not forecast South African default after 2017.
 
-The model supports comparisons between mechanisms better than it supports statements about levels.
+The results are comparisons under stated assumptions.
+The size of the \ac{BNPL} effect, and without peer influence whether it can be detected, depend on those assumptions (Table~\ref{tab:effect}).
 It reproduces the two arrears bands to which it was fitted and passes three of four external checks on the population, all under broad tolerances.
 It misses the intermediate arrears bands, the servicing share, the purchase-size and volume bands of the \ac{BNPL} market, the interest measure of the complementarity pattern and the debt-to-income pattern (Tables~\ref{tab:validation} and~\ref{tab:bnpl-on-checks}).
 RQ1 is therefore answered in part.
@@ -18,9 +19,9 @@ Default does not change detectably with the number of platforms (Table~\ref{tab:
 Enabling \ac{BNPL} raises default by $0.12 \pm 0.05$ points without peer influence, pooled over four seed blocks, and by $0.61 \pm 0.11$ points at $\beta = 1$, in a market that borrows ten times as much (Table~\ref{tab:baseline-arms}).
 Default rises with access where peer influence is present, and the experiment is too imprecise to establish the shape of that rise (Table~\ref{tab:access}).
 
-For RQ3, neither bureau visibility nor mandatory screening changes default detectably in the affordability channel, alone or together (Table~\ref{tab:switches}).
-A change smaller than about 0.25 points could not have been detected.
-Bureau visibility raises the traditional lender's refusals by about a sixth, and screening lowers holding by 1.9 to 2.8 points.
+For RQ3, bureau visibility raises default in the affordability channel, by $0.22 \pm 0.04$ points without peer influence and by $0.15 \pm 0.04$ at $\beta = 1$ (Table~\ref{tab:switches}).
+It raises the traditional lender's refusals by about a sixth, and the rise in default is largest in the lowest income quintile.
+Mandatory screening lowers holding by 1.9 to 2.6 points and does not change default detectably; a change smaller than about 0.11 points could not have been detected.
 
 The thesis makes three contributions.
 The most secure is a household population that combines \ac{NIDS} financial data with imputed \ac{FinScope} inclusion flags and is checked against sources its construction did not use.
@@ -32,6 +33,7 @@ Three limits govern how these results should be read.
 First, the level of default rests on two fitted parameters and on a borrowing-amount rule with no empirical estimate, which moves default by up to 1.02 points (Table~\ref{tab:robustness}).
 Replacing the persistent income shock with a single-tick loss lowers default by 9.23 points (Table~\ref{tab:robustness-appendix}).
 Second, the bureau experiment adds \ac{BNPL} obligations to the traditional lender's affordability calculation and excludes credit scores, pricing and lenders' responses, so the scoring channel of the reporting arrangements is untested.
+A refused household has no other source of credit in the model.
 Third, the standard errors measure variation between replicates and exclude uncertainty in the inputs and in the model's structure.
 
 \label{sec:future-work}

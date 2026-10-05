@@ -48,7 +48,7 @@ checks whether implementation details or the assignment of random draws affect t
 
 The thesis has no standalone limitations section; each limitation is argued where the claim it
 qualifies is made. Table~\ref{tab:further-caveats} indexes all of them: the eight that bound the
-central claims, each with a pointer to where it is argued, followed by ten that are real but do
+central claims, each with a pointer to where it is argued, followed by eleven that are real but do
 not bound a central claim and are recorded only here.
 
 \begingroup
@@ -83,7 +83,7 @@ Borrowing rules lack direct estimates & The shortfall amount, its \ac{BNPL} cap 
 \addlinespace
 Platform choice is assumed & Households send each request to the platforms in a random order. No evidence on how South African households choose among providers was located & Section~\ref{sec:stacking}; bounds every stacking share, which measures overlapping agreements and not a choice of providers \\
 \addlinespace
-Differences below about 0.2 points are not detectable & With twenty replications a difference in default has a standard error of about 0.1 points. A true difference of 0.2 points would be missed about half the time, and smaller effects, including any from the two switches, cannot be distinguished from none & Sections~\ref{sec:results} and~\ref{sec:scenarios}; bounds every statement that a difference is not detectable \\
+Differences below about 0.2 points are not detectable & With twenty replications a difference in default has a standard error of about 0.1 points. A true difference of 0.2 points would be missed about half the time, and smaller effects cannot be distinguished from none. The four scenario arms of Section~\ref{sec:scenarios} have one hundred replications and a standard error of about 0.05 points & Sections~\ref{sec:results} and~\ref{sec:scenarios}; bounds every statement that a difference is not detectable \\
 \addlinespace
 Default contagion is excluded & No channel carries household default to other households' income or lenders' credit supply & Table~\ref{tab:design-concepts}; Section~\ref{sec:no-cascade}; limits the contagion mechanisms tested in RQ2 \\
 \addlinespace
@@ -150,8 +150,8 @@ Rands \\
 \subsection{Two Further Levers}
 \label{app:levers}
 
-Two further levers are implemented in the model and run on the same grid as the scenarios of
-Section~\ref{sec:scenarios}. The first is a cooling-off window that blocks want-driven
+Two further levers are implemented in the model and run at the same two values of $\beta$ as the
+scenarios of Section~\ref{sec:scenarios}, with twenty replications and their own benchmark arm. The first is a cooling-off window that blocks want-driven
 \ac{BNPL} purchases for $k^{\text{cool}}$ ticks after a want-driven purchase, the analogue of the
 fourteen-day right of withdrawal in the United Kingdom's rules \cite{fca_ps26_1}. It does not
 block borrowing for a shortfall. The second is a cap on the number of platforms a household
@@ -189,7 +189,7 @@ lost volume as the cause of the fall.
 \includegraphics[width=\textwidth]{figures/fig_scenarios_appendix.png}
 \caption{Every lever against the benchmark, with and without peer influence}
 \label{fig:scenarios-appendix}
-\tabnote{The population default rate at the final tick under every implemented lever, at $\beta = 0$ (left) and $\beta = 1$ (right): the two switches of Section~\ref{sec:scenarios} and their combination, the cooling-off window of one to four ticks and the cap of one to three platforms owed. Points are means over 20 replicates with 95\% confidence intervals of the mean; the dashed line is the benchmark mean at the same $\beta$. The cap is hypothetical: no jurisdiction imposes one. Values and differences with standard errors are in Tables~\ref{tab:switches}, \ref{tab:cooloff} and~\ref{tab:cap}.}
+\tabnote{The change in the population default rate at the final tick under every implemented lever, at $\beta = 0$ (left) and $\beta = 1$ (right): the two switches of Section~\ref{sec:scenarios} and their combination, the cooling-off window of one to four ticks and the cap of one to three platforms owed. Points are differences in the default rate, lever less benchmark at the same $\beta$, with 95\% confidence intervals; the dashed line marks no change. The switches have 100 replicates and are compared with the benchmark of Table~\ref{tab:switches}; the window and the cap have 20 and are compared with the benchmark of Table~\ref{tab:cooloff}. The cap is hypothetical: no jurisdiction imposes one. Values and differences with standard errors are in Tables~\ref{tab:switches}, \ref{tab:cooloff} and~\ref{tab:cap}.}
 \end{figure}
 
 \subsection{Supplementary Sensitivity Results}

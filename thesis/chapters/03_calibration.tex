@@ -42,8 +42,12 @@ The first 12 ticks are excluded from post-burn-in summaries, allowing the initia
 state to develop before those measures are collected. Each configuration has
 twenty replications, using seeds $s_0+i$ with a fixed starting seed for each
 group of arms; the variance decomposition of Section~\ref{sec:results-robustness}
-has two per design point. Arms within a group share seeds and population size,
-and we take their differences seed by seed. The scenario arms, the cap arms, the
+has two per design point. The four scenario arms of Section~\ref{sec:scenarios}
+have one hundred, because the differences between them are smaller than twenty
+replications resolve. Arms within a group share seeds and population size,
+and we take their differences seed by seed. Arms on one seed draw from a single
+random stream and diverge once their draws differ, so this pairing reduces the
+standard error little. The scenario arms, the cap arms, the
 threshold-mean arms and each group of sensitivity arms have their own seed
 blocks, and we treat differences across blocks or population sizes as
 independent. Table notes give the seeds. Reported dispersion measures variation across simulation runs
@@ -292,8 +296,9 @@ and payment friction to the 1--30 day share. They primarily affect different
 parts of the distribution: persistent shocks generate long arrears, while
 friction produces brief payment delays. The selected values are 1.6\% and
 9\% per tick. The shock probability is chosen from a grid with steps of
-0.8 percentage points, so it is resolved only to that precision
-(Table~\ref{tab:arrears-fit}). Both values remain fixed when \ac{BNPL} is
+0.8 percentage points. A check in steps of 0.1 points places the target between
+1.5\%, which gives a 90+ share of 13.93\%, and the selected 1.6\%, which gives
+14.48\% (Table~\ref{tab:arrears-fit}). Both values remain fixed when \ac{BNPL} is
 introduced.
 
 \begin{table}[H]
@@ -503,6 +508,8 @@ scheduled-service outlays.
 RQ1 is therefore answered only in part. The model approximates the fitted
 bands and meets three broad population checks. It misses the intermediate
 arrears bands, the servicing share, the purchase-size and volume bands, the
-interest measure of Pattern~1 and Pattern~3. These results support using the
-model to compare mechanisms, with limited confidence in the empirical accuracy
-of its outcome levels.
+interest measure of Pattern~1 and Pattern~3. These results give limited
+confidence in the empirical accuracy of the model's outcome levels. A
+misspecified balance sheet can distort a comparison between arms as well as a
+level, so Section~\ref{sec:results-effect} tests the \ac{BNPL} effect under each
+alternative assumption.
