@@ -43,7 +43,7 @@ REGISTER: dict[str, tuple[str, str]] = {
     "burn_in": (r"Arrears, savings and volume measures exclude the first 12 ticks; default is counted from the first tick (Section~\ref{sec:sim-params}).", ""),
     "n_agents": (r"The full resampled population of 5{,}000 (Appendix~\ref{app:variables}, Part~D.10).",
                  r"1{,}000 / 5{,}000 / 10{,}000"),
-    "shock_prob": (r"Fitted to the post-burn-in mean of the \ac{CCMR} 90+ day band. Reported against the \ac{QLFS} 2017 job-separation band of 0.54\%--1.17\% per tick \cite{statssa_lmd_2022}, to which it is not fitted.",
+    "shock_prob": (r"Fitted to the post-burn-in mean of the \ac{CCMR} 90+ day band. Reported against the \ac{QLFS} 2017 job-separation band of 0.54--1.17\% per tick \cite{statssa_lmd_2022}, to which it is not fitted.",
                    r"calibration grid; 0.005--0.026 in the Sobol design"),
     "shock_persistent": (r"An unemployment spell lasts until re-employment. In the \ac{QLFS} 2017, 68.4\% of the unemployed were still unemployed a quarter later \cite{statssa_lmd_2022}.",
                          r"single-tick shock as a robustness arm"),

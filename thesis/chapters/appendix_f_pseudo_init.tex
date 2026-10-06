@@ -84,14 +84,14 @@ $p^{\text{sep}}$, $p^{\text{exit}}$ & per-earner separation and re-employment pr
 $\pi$ & payment friction: probability of skipping an affordable traditional instalment & \texttt{payment\_friction} \\
 $f^{\min}$ & minimum-payment fraction of balance per month & \texttt{min\_payment\_frac} \\
 $k$ & distressed ticks that trigger default (7) & \texttt{k\_default} \\
-$\varphi$ & discretionary floor as a share of target (0 in the baseline) & \texttt{discretionary\_floor} \\
+$\varphi$ & discretionary floor as a share of target (0 by default) & \texttt{discretionary\_floor} \\
 $\kappa$, $\nu$ & purchase-size ratio to $E^d_i$; its coefficient of variation & \texttt{bnpl\_purchase\_ratio}, \texttt{\_cv} \\
 $\mathbb{1}^{\text{cap}}$ & cap on the \ac{BNPL} share of a shortfall request at $\kappa E^d_i$ (off only in the three uncapped robustness arms) & \texttt{shortfall\_bnpl\_capped} \\
 $\mathbb{1}^{\text{short}}$ & \ac{BNPL} may relieve a shortfall (off only in one robustness arm) & \texttt{shortfall\_bnpl} \\
 $\mathbb{1}^{\text{fund}}$ & credit raised against a committed shortfall pays it first (on only in one robustness arm) & \texttt{committed\_shortfall\_funded} \\
 $\mathbb{1}^{\text{loyal}}$ & platforms already owed are tried first (on only in one robustness arm) & \texttt{platform\_routing} \\
 $\lambda$ & rolling limit as a multiple of monthly income & \texttt{bnpl\_limit\_income\_multiple} \\
-$q_{\text{base}}$, $\beta$ & baseline propensity; peer weight (linear mechanism) & \texttt{q\_base}, \texttt{beta} \\
+$q_{\text{base}}$, $\beta$ & base propensity; peer weight (linear mechanism) & \texttt{q\_base}, \texttt{beta} \\
 $\gamma$, $\mu_\theta$, $\sigma_\theta$ & appetite step; threshold mean and dispersion (threshold mechanism) & \texttt{gamma}, \texttt{mu\_theta}, \texttt{sigma\_theta} \\
 $k^{\text{cool}}$, $\bar n$ & cooling-off ticks; cap on the number of platforms owed (both off in the benchmark) & \texttt{k\_cool}, \texttt{stacking\_cap} \\
 \addlinespace
@@ -211,7 +211,7 @@ stream.
     \State Keep $Y_i$, $E^d_i$, $\rho_i$ monthly; keep $a_i(0)$ and $D_i(0)$ unscaled
     \State $g(i) \gets (q(i), p(i))$
 \EndFor
-\State $\epsilon_i \gets 1$ for a random share \texttt{bnpl\_access\_rate} of banked households, else 0 \Comment{1.0 in the baseline: 82.8\% of all}
+\State $\epsilon_i \gets 1$ for a random share \texttt{bnpl\_access\_rate} of banked households, else 0 \Comment{1.0 in the benchmark: 82.8\% of all}
 \State $m_i \gets 1$ for a random share 0.29 of households, else 0
 \If{threshold mechanism} $\theta_i \gets \mathrm{clip}\bigl(\mathcal{N}(\mu_\theta, \sigma_\theta^2), 0, 1\bigr)$ from the initialisation stream \EndIf
 \State $B_{ip}(0), A_i(0), \delta_i(0), \alpha_i(0), d_i(0), u_i(0), \bar t_i \gets 0$;\quad $s_g(0) \gets 0$ for all $g$

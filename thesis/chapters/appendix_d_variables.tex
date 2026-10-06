@@ -36,7 +36,7 @@ scaled to the 14-day tick at instantiation (Part~D.11).} \\
 \endfoot
 \texttt{income\_monthly} & \texttt{w5\_hhincome} & taken as \ac{NIDS} derives it & record dropped & P1 \\
 \addlinespace
-\texttt{income\_source} & \texttt{w5\_hhwage}, \texttt{w5\_hhgovt}, \texttt{w5\_hhremitt}, \texttt{w5\_hhother}, \texttt{w5\_hhagric}, \texttt{w5\_hhinvest}, \texttt{w5\_hhcapital} & largest of wage, grant, and the sum of the other five; OTHER if none is positive & zero-filled & P1 \\
+\texttt{income\_source} & \texttt{w5\_hhwage}, \texttt{w5\_hhgovt}, \texttt{w5\_hhremitt}, \texttt{w5\_hhother}, \texttt{w5\_hhagric}, \texttt{w5\_hhinvest}, \texttt{w5\_hhcapital} & largest of wage, grant, and the sum of the other five; other if none is positive & zero-filled & P1 \\
 \addlinespace
 \texttt{income\_wage\_tick} & \texttt{w5\_hhwage} & clipped to $[0, \texttt{w5\_hhincome}]$; $\times\,12/26$ & zero-filled & P5 \\
 \addlinespace
@@ -46,7 +46,7 @@ scaled to the 14-day tick at instantiation (Part~D.11).} \\
 \addlinespace
 \texttt{discretionary\_\allowbreak tick} & \texttt{w5\_expnf} & non-food cash expenditure, floored at 0; $\times\,12/26$. Rent is a separate \ac{NIDS} component and is not subtracted; imputed rent (\texttt{w5\_hhimprent}) is excluded & zero-filled & P1, P5 \\
 \addlinespace
-\texttt{liquid\_savings} & \texttt{w5\_f\_ass} & financial assets, clipped at the 99th percentile (ZAR 133{,}662) & zero-filled (48.2\%) & P1 \\
+\texttt{liquid\_savings} & \texttt{w5\_f\_ass} & financial assets, clipped at the 99th percentile (R133{,}662) & zero-filled (48.2\%) & P1 \\
 \addlinespace
 \texttt{d\_trad} & \texttt{w5\_f\_deb} & financial debt, as reported & zero-filled (56.6\%) & P1 \\
 \addlinespace
@@ -111,7 +111,7 @@ within five cents. \texttt{committed\_tick} is food plus rent paid, the incompre
 \texttt{discretionary\_tick} is non-food, floored at zero. Rent is not subtracted from non-food,
 because \ac{NIDS} records it as a separate component that non-food already excludes. Imputed
 rent, the consumption value of owner-occupied housing, is a non-cash item and is excluded from
-both tiers; including it would have inflated compressible consumption by a median of ZAR 700 per
+both tiers; including it would have inflated compressible consumption by a median of R700 per
 month for the 82.6\% of households assigned an imputed rent. Rent paid is zero-filled for the
 80.2\% of households that report none, so for them committed expenditure is food alone.
 
@@ -131,7 +131,7 @@ financial assets. The field follows a gateway question and records a value only 
 household reports holding financial assets, so a missing value denotes non-holding and is set to
 zero (48.2\% of households); the field never records a literal zero, which is asserted before the
 fill. The distribution is clipped at its unweighted 99th percentile over all households, zeros
-included, ZAR 133{,}662, to limit the influence of
+included, R133{,}662, to limit the influence of
 a small number of extreme reports. This is the weakest field in the layer, since reported
 financial assets are neither necessarily liquid nor necessarily accessible, and validation
 pattern~4 (the share of agents reaching zero savings) is judged against it.
@@ -150,7 +150,7 @@ terms by product.
 
 \texttt{income\_quintile} is assigned on income per household member,
 \texttt{w5\_hhincome}/\texttt{w5\_hhsizer}, using cut points that put one fifth of weighted
-households in each class (a household at a cut point falls in the lower class): ZAR 900, 1{,}801, 3{,}400 and 7{,}712 per person per month. The
+households in each class (a household at a cut point falls in the lower class): R900, R1{,}801, R3{,}400 and R7{,}712 per person per month. The
 quintile is both a reporting category and, crossed with province, the matching cell of
 Appendix~\ref{app:matching} and the reference group of Submodel~11. \ac{FinScope} donors are
 assigned to the same cut points from the midpoint of a seven-band income question divided by
@@ -192,7 +192,7 @@ $\mathrm{PMT}(D, \iota, \tau) = D\,r / (1 - (1+r)^{-\tau})$ with $r = \iota/12$.
 Regulation 23A residual-income test permits: gross monthly income less the statutory minimum
 necessary expenses for the household's income band (Table~\ref{tab:reg23a-norms}). The cap binds
 for 3.8\% of indebted households ($n = 178$) and removes 22.8\% of aggregate calculated service.
-Fifty-three indebted households (27 agents after resampling) have income at or below ZAR 800,
+Fifty-three indebted households (27 agents after resampling) have income at or below R800,
 the first band boundary, where the norm equals
 income and capacity is zero; they enter the model holding debt with no scheduled service, since
 the data cannot say whether the debt is legacy, informal or non-compliant. The same function is
@@ -209,14 +209,14 @@ indebted source households the resulting debt-service-to-income ratio has a weig
 from the Affordability Assessment Regulations \cite{sa_ncr_affordability_2015}. For income $Y$ in
 a band, necessary expenses are the fixed amount plus the percentage of income above the band's
 lower bound; residual-income capacity is $\rho(Y) = Y$ less that amount. The implementation is
-asserted against the regulation's two published worked examples (ZAR 2{,}000 $\to$ 881.00; ZAR
-10{,}000 $\to$ 1{,}505.38). The regulation is written for an individual consumer and is applied
+asserted against the regulation's two published worked examples (R2{,}000 $\to$ R881.00;
+R10{,}000 $\to$ R1{,}505.38). The regulation is written for an individual consumer and is applied
 here to household income, which makes the test more permissive for multi-earner households
 (Appendix~\ref{app:gate}); across the population the resulting ceiling spans 0 to 93.2\% of gross
 income, with a mean of 49.6\% in the bottom quintile.}
 \begin{tabular}{rrr}
 \toprule
-\textbf{Lower bound (ZAR)} & \textbf{Fixed (ZAR)} & \textbf{Plus \% above bound} \\
+\textbf{Lower bound (R)} & \textbf{Fixed (R)} & \textbf{Plus \% above bound} \\
 \midrule
 0.00 & 0.00 & 100.00 \\
 800.01 & 800.00 & 6.75 \\
@@ -258,9 +258,9 @@ of the amortisation rather than compounding it.
 
 Nothing in the \ac{NIDS} or \ac{FinScope} layer is deflated: monetary values are 2017 Rands as
 surveyed, and the imputed flags are categorical. The only deflated quantities are three
-\ac{BNPL} parameters at 2026 prices, the assumed per-order cap (ZAR 15{,}000
-$\to$ 9{,}927) and Payflex's published late fee (ZAR 95 a week, ZAR 190 per tick $\to$ 125.74) and fee cap
-(ZAR 285 $\to$ 188.61), which are converted once by a cumulative price factor taken from published Stats SA \ac{CPI}
+\ac{BNPL} parameters at 2026 prices, the assumed per-order cap (R15{,}000
+$\to$ R9{,}927) and Payflex's published late fee (R95 a week, R190 per tick $\to$ R125.74) and fee cap
+(R285 $\to$ R188.61), which are converted once by a cumulative price factor taken from published Stats SA \ac{CPI}
 releases \cite{statssa_cpi}; the factor reproduces the published index to within 0.8\%. The
 purchase-size ratio $\kappa$ is a share of the household's own discretionary budget and needs no
 deflation.

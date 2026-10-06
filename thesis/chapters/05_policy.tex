@@ -8,10 +8,10 @@
 % diagnostic (32.9%, -0.11 +- 0.07), typed from results/corrections_2026-09-29/cap_definitions.md.
 
 This section answers RQ3.
-We compare three scenarios, and a fourth arm that combines the two switches to test whether either changes the effect of the other.
+We compare three scenarios, the benchmark and two switches, with a fourth arm that combines the switches to test whether either changes the effect of the other.
 The benchmark is the pre-2026 position, in which \ac{BNPL} obligations are invisible to the bureau and requests pass only a light screen.
-Under bureau visibility ($\mathbb{1}^{\text{bur}}$), \ac{BNPL} obligations enter the traditional lender's Regulation 23A test. This is the affordability channel of the reported 2026 arrangements \cite{businessday_bnpl_2026}; the scoring channel is outside the model (Section~\ref{sec:asymmetry}).
 The light screen in the benchmark is a modelling assumption; whether an agreement that levies late fees is incidental credit, and which provisions would then apply, is a legal question that the scenarios do not settle (Section~\ref{sec:background}).
+Under bureau visibility ($\mathbb{1}^{\text{bur}}$), \ac{BNPL} obligations enter the traditional lender's Regulation 23A test. This is the affordability channel of the reported 2026 arrangements \cite{businessday_bnpl_2026}; the scoring channel is outside the model (Section~\ref{sec:asymmetry}).
 Under mandatory affordability screening ($\mathbb{1}^{\text{aff}}$), the Regulation 23A test is applied to each \ac{BNPL} request, playing the role of the \ac{FCA}'s affordability check \cite{fca_ps26_1, woolard2021}.
 Every arm is run at $\beta = 0$ and at $\beta = 1$ (Equation~\ref{eq:peer}), to test whether the results depend on how adoption spreads.
 
@@ -33,10 +33,10 @@ We report cumulative volume beside default because a rule that only delays borro
 \input{chapters/generated/tab_switches}
 
 Bureau visibility raises default, and screening does not change it detectably.
-Bureau visibility raises default by $0.22 \pm 0.04$ points at $\beta = 0$ and by $0.15 \pm 0.04$ at $\beta = 1$; at $\beta = 0$ that is more than the $0.12 \pm 0.05$ by which enabling \ac{BNPL} raises default (Section~\ref{sec:results-injection}), although the two come from different seeds.
+The rise is $0.22 \pm 0.04$ points at $\beta = 0$ and $0.15 \pm 0.04$ at $\beta = 1$; at $\beta = 0$ that is more than the $0.12 \pm 0.05$ by which enabling \ac{BNPL} raises default (Section~\ref{sec:results-injection}), although the two come from different seeds.
 Screening changes it by $+0.02 \pm 0.05$ and $+0.02 \pm 0.06$ points.
-With both switches default is $0.10 \pm 0.05$ and $0.11 \pm 0.05$ points above the benchmark, each just beyond two standard errors.
 With standard errors of 0.05 and 0.06 points, an effect of screening of about a tenth of a point in either direction cannot be ruled out.
+With both switches default is $0.10 \pm 0.05$ and $0.11 \pm 0.05$ points above the benchmark, each just beyond two standard errors.
 
 Bureau visibility changes only the traditional lender's test, so it acts through that lender's refusals.
 Once \ac{BNPL} obligations enter the Regulation 23A test, the lender refuses more applications, 1{,}388 against 1{,}190 at $\beta = 0$, and grants R4.97 million in place of R5.39 million.
@@ -50,8 +50,8 @@ The result therefore gives the direction of the affordability channel over two y
 
 Screening lowers \ac{BNPL} holding and volume.
 Holding at the final tick falls from 17.54\% to 15.69\% at $\beta = 0$ and from 66.74\% to 64.11\% at $\beta = 1$, and cumulative volume is $3.9 \pm 0.5$\% lower at $\beta = 0$ and $1.1 \pm 0.2$\% lower at $\beta = 1$.
-The screening test already sees the household's \ac{BNPL} instalments on every platform (Section~\ref{sec:asymmetry}), so adding bureau visibility to screening gives the platforms no new information.
-The addition acts on the traditional lender, and at $\beta = 0$ screening roughly halves the effect of bureau visibility: with both switches the lender refuses 114 more applications than in the benchmark, against 198 under bureau visibility alone, and default is $0.12 \pm 0.04$ points below default under bureau visibility alone.
+The screening test already sees the household's \ac{BNPL} instalments and arrears on every platform (Section~\ref{sec:asymmetry}), so adding bureau visibility to screening gives the platforms no new information.
+Bureau visibility then acts only on the traditional lender, and at $\beta = 0$ screening roughly halves its effect: with both switches the lender refuses 114 more applications than in the benchmark, against 198 under bureau visibility alone, and default is $0.12 \pm 0.04$ points below default under bureau visibility alone.
 At $\beta = 1$ the two arms do not differ detectably.
 
 Three features of the model may explain why screening alone does not change default.
@@ -70,4 +70,3 @@ No lever was run under the alternative borrowing rules of Table~\ref{tab:effect}
 
 In answer to RQ3, bureau visibility leads the traditional lender to refuse more applications and raises default by 0.15 to 0.22 points, mostly in the lowest income quintile.
 Mandatory screening lowers \ac{BNPL} holding and volume and on its own does not change default detectably; added to bureau visibility at $\beta = 0$, it lowers default by $0.12 \pm 0.04$ points relative to bureau visibility alone.
-These results cover only the affordability channel (Section~\ref{sec:lim-reading}).

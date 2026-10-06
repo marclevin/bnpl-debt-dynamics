@@ -17,9 +17,9 @@ The model, every experiment and the thesis are complete. What remains before sub
   provisional until the departmental template is confirmed, and `\date{\today}` must be fixed.
 - **Open items** in [`scratchpad/DEFECTS.md`](scratchpad/DEFECTS.md).
 
-Body prose is **9,739 words** against the 10,000-word cap (abstract, appendices, tables,
+Body prose is **9,689 words** against the 10,000-word cap (abstract, appendices, tables,
 figures, algorithm floats and bibliography excluded); count with `python3 scratchpad/wc_prose.py`.
-The abstract is 218 words. The thesis compiles to 115 pages with no undefined references.
+The abstract is 225 words. The thesis compiles to 115 pages with no undefined references.
 
 ## The research questions
 

@@ -785,7 +785,7 @@ def tab_robustness(rob: pd.DataFrame) -> None:
     for lam in (0.25, 0.5, 1.0):
         rows.append(row(f"{lam:.2f}", f"rob_limit{lam}", "rob_limit0.1"))
     rows += [group_row("Income-shock persistence (Submodel 1)", 3),
-             row("persistent until re-employment (baseline rule, seeds 50{,}000--)", "rob_amount_shortfall"),
+             row("persistent until re-employment (default rule, seeds 50{,}000--)", "rob_amount_shortfall"),
              row("single-tick shock", "rob_shock_single_tick", "rob_amount_shortfall")]
     N.update(
         rob_act_random=ms(a("rob_act_random").default_rate_final)[0],
@@ -804,7 +804,7 @@ def tab_robustness(rob: pd.DataFrame) -> None:
         "Sensitivity of the default rate: remaining arms",
         f"Population default rate at $\\beta = 1$, four platforms and full access, for the remaining "
         f"sensitivity arms, laid out as Table~\\ref{{tab:robustness}}: each group's reference is its "
-        f"baseline value on the group's own seed set (activation 53{{,}}000--, population 55{{,}}000--, "
+        f"default value on the group's own seed set (activation 53{{,}}000--, population 55{{,}}000--, "
         f"minimum-payer share 51{{,}}000--, minimum payment 52{{,}}000--, limit 56{{,}}000--, "
         f"single-tick shock 58{{,}}000--, compared with the exact-shortfall reference on 50{{,}}000--). {REPL}; differences are arm less reference, paired by "
         f"seed with one standard error, except $\\ddagger$, where the two arms use different seed "
@@ -929,7 +929,7 @@ def tab_levers(rq3: pd.DataFrame, rq3s: pd.DataFrame) -> None:
         [("bench", "benchmark"), ("bureau", "bureau visibility"), ("afford", "screening"),
          ("both", "both switches")],
         f"{SEEDS_S[0].upper() + SEEDS_S[1:]}. The screening test is shown "
-        "the household's traditional service and its \\ac{BNPL} instalments on every platform, "
+        "the household's traditional service and its \\ac{BNPL} instalments and arrears on every platform, "
         "whether or not the bureau switch is on; the bureau switch changes only what the traditional "
         "lender is shown.",
         prefix="rq3s", bench_key="bench", repl=REPL_S, bench_text="against the same benchmark arm",

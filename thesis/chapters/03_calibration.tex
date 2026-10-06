@@ -1,7 +1,7 @@
 \section{Calibration and Empirical Grounding}
 \label{sec:calibration}
 
-We construct the population from South African survey data, assign debt-service
+This section answers RQ1. We construct the population from South African survey data, assign debt-service
 and product parameters, fit two parameters to the baseline arrears profile, and
 then check what the model reproduces beyond those targets.
 
@@ -52,7 +52,7 @@ and excludes uncertainty in the data and assumptions.
 \subsection{The Household Population}
 \label{sec:population}
 
-Monetary values are in 2017 South African rand (R),
+Monetary values are in 2017 South African Rands (R),
 the year of the primary survey.
 
 \subsubsection*{Primary Dataset: NIDS Wave 5}
@@ -162,7 +162,7 @@ quintile-by-indicator cells is 2.3 points (Figure~\ref{fig:inclusion-fidelity}).
 \centering
 \caption{National rates for the six imputed indicators}
 \label{tab:imputation_errors}
-\tabnote{This table compares the national rate of each imputed indicator in three populations: the \ac{FinScope} 2019 benchmark, weighted by its survey weight; the 10{,}841-household synthetic population after matching, weighted by \ac{NIDS} survey weight; and the unweighted 5{,}000-agent resample used in the simulation. The difference column is synthetic less \ac{FinScope}, in percentage points, computed before rounding; the tolerance is 3 percentage points (Table~\ref{tab:validation}). Because the match draws donors within the same quintile-by-province cell in proportion to weight, agreement here is expected by construction: it tests the implementation, not the population's external validity (Appendix~\ref{app:matching}).}
+\tabnote{This table compares the national rate of each imputed indicator in three populations: the \ac{FinScope} 2019 target, weighted by its survey weight; the 10{,}841-household synthetic population after matching, weighted by \ac{NIDS} survey weight; and the unweighted 5{,}000-agent resample used in the simulation. The difference column is synthetic less \ac{FinScope}, in percentage points, computed before rounding; the tolerance is 3 percentage points (Table~\ref{tab:validation}). Because the match draws donors within the same quintile-by-province cell in proportion to weight, agreement here is expected by construction: it tests the implementation, not the population's external validity (Appendix~\ref{app:matching}).}
 \begin{tabular}{lrrrr}
 \toprule
 \textbf{Imputed indicator} & \textbf{FinScope 2019} & \textbf{Synthetic} & \textbf{Agents} & \textbf{Difference} \\
@@ -183,7 +183,7 @@ Personal loan    &  2.1 &  2.3 &  2.3 & 0.2 \\
 \includegraphics[width=\textwidth]{figures/fig_inclusion_fidelity.png}
 \caption{Fidelity of the imputed indicators}
 \label{fig:inclusion-fidelity}
-\tabnote{Panel (a) compares the national rate of each of the six imputed indicators across the \ac{FinScope} 2019 benchmark, the weighted synthetic population and the unweighted 5{,}000-agent population, as in Table~\ref{tab:imputation_errors}. Panel (b) shows the synthetic-less-\ac{FinScope} gap for each indicator within each per-capita income quintile, thirty cells in all; the largest single deviation is 2.3 percentage points against a tolerance of 5. Quintiles are the weighted \ac{NIDS} bounds of Appendix~\ref{app:variables}.}
+\tabnote{Panel (a) compares the national rate of each of the six imputed indicators across the \ac{FinScope} 2019 target, the weighted synthetic population and the unweighted 5{,}000-agent population, as in Table~\ref{tab:imputation_errors}. Panel (b) shows the synthetic-less-\ac{FinScope} gap for each indicator within each per-capita income quintile, thirty cells in all; the largest single deviation is 2.3 percentage points against a tolerance of 5. Quintiles are the weighted \ac{NIDS} bounds of Appendix~\ref{app:variables}.}
 \end{figure}
 
 \subsubsection*{Population Resampling}
@@ -192,7 +192,7 @@ Personal loan    &  2.1 &  2.3 &  2.3 & 0.2 \\
 We sample $N=5{,}000$ agents with replacement from the 10{,}841 households,
 using probabilities proportional to survey weights (seed: 20260818). Simulation
 statistics can then be calculated without applying weights again.
-Figure~\ref{fig:pop-fidelity} shows the comparison: the per-capita income Gini
+Figure~\ref{fig:pop-fidelity} compares the resample with its source; the per-capita income Gini
 rises by 0.015, from 0.6514 to 0.6668.
 
 \begin{figure}[htbp]
@@ -268,7 +268,7 @@ stacked exposure \cite{woolard2021}, and sweep it from 0.10 to 1.0 (Submodel~12)
 \label{sec:lim-transfer}
 The behavioural evidence discussed in Section~\ref{sec:lit-behavioural}
 comes from United States borrowers. It supplies the minimum-payer share of
-0.29 and the case for payment friction and want-driven borrowing, ; we located no South
+0.29 and the case for payment friction and want-driven borrowing; we located no South
 African or other developing-market estimates for these rules. We vary the minimum-payer share from 0.20 to 0.40, which shows how much
 the value matters but cannot show that it transfers.
 A continuous present-bias parameter is omitted because no South African
@@ -316,8 +316,8 @@ Current                  & 71.63 \\
 
 Other inputs retain their assigned values except where varied.
 Neither $q_{\text{base}}$ nor $\beta$ has a direct empirical estimate.
-Setting $\beta=0$ removes the peer channel, and a realistic adoption rate
-remains unidentified. The banking ceiling, the \ac{CFPB} stacking shares and
+A realistic adoption rate is therefore unidentified, and $\beta=0$ removes
+the peer channel. The banking ceiling, the \ac{CFPB} stacking shares and
 TransUnion's finding that 57\% of surveyed consumers hold a \ac{BNPL} product
 \cite{transunion_cir_sa_2026}, against 70.0\% of households ever holding a
 balance at $\beta=0$, offer only indirect comparisons.
@@ -334,7 +334,7 @@ construction, but only as far as they measure comparable populations and outcome
 Only Pattern~2 is both South African and matched to the model's base year.
 Even here, the administrative unit is an account and the model unit is a
 household. Arrears shares are calculated over credit-active households
-(the 45\% holding traditional debt at the start), while population default is tracked
+(those holding traditional debt or arrears, 45\% at the start), while population default is tracked
 separately. This improves the comparison but does not remove the unit mismatch,
 which also limits interpretation of the fitted income-shock probability.
 
@@ -459,7 +459,7 @@ The model fails the purchase-size and volume checks. The mean want-driven
 purchase is R633 against a target of R992, 36.2\% below it under a tolerance of
 35\%, and four of twenty replications fall inside the band. At $\beta=1$ the
 mean is R610 and no replication falls inside. Annual volume is R1{,}010 per
-eligible household against a lower bound of R1{,}333, and R1{,}196 per adopter
+eligible household against a lower bound of R1{,}333, and R1{,}196 per ever-holder
 against the R4{,}261 bound for active customers. The model's \ac{BNPL} market
 therefore has smaller purchases and less volume per user than the provider
 disclosure.
@@ -486,7 +486,7 @@ the input data more than the model's behaviour. Among the behavioural comparison
 the arrears measure of Pattern~1, Pattern~4 and the ever-stacked share agree in
 direction or order of magnitude. The model misses the intermediate
 arrears bands, the servicing share, the purchase-size and volume bands, the
-interest measure of Pattern~1 and Pattern~3. These results give limited
+Pattern~3 and the interest measure of Pattern~1. These results give limited
 confidence in the empirical accuracy of the model's outcome levels. A
 misspecified balance sheet can distort a comparison between arms as well as a
 level. Section~\ref{sec:results-effect} tests the \ac{BNPL} effect under alternative

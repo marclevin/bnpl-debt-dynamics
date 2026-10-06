@@ -4,7 +4,7 @@
 Figure~\ref{fig:cell-donor} illustrates the procedure, Algorithm~\ref{alg:match} specifies the
 steps, and Table~\ref{tab:notation} defines the notation.
 
-\subsection*{A. The procedure}
+\subsection*{E.1 The procedure}
 
 Both surveys are partitioned by the same two variables, per-capita income quintile $q$ and
 province $p$, into $|\mathcal{C}| = 45$ cells $c = (q, p)$. For each \ac{NIDS} record $i$ with
@@ -24,7 +24,7 @@ and the most-used donor 20 times. Donor reuse is concentrated where \ac{NIDS} is
 recipients drew from 109 donors, and eleven cells have more than three recipients per donor.
 The heaviest 1\% of donors nonetheless supply only 5.1\% of recipients.
 
-\subsection*{B. Assumptions under which the match is credible}
+\subsection*{E.2 Assumptions under which the match is credible}
 
 \begin{description}
 \item[A1. Cell sufficiency.] Conditional on income quintile and province, the six flags are
@@ -54,7 +54,7 @@ that survey's weighted cell marginals in expectation. Table~\ref{tab:imputation_
 gaps also absorb differences between the two surveys' cell compositions.
 \end{description}
 
-\subsection*{C. Circumstances under which the match is problematic}
+\subsection*{E.3 Circumstances under which the match is problematic}
 
 \begin{description}
 \item[P1. Within-cell heterogeneity.] Anything that predicts inclusion within a cell, urban or
@@ -67,7 +67,7 @@ effect are not established by the marginal checks.
 three cells are near the 30-donor floor, and in the densest cells outnumber donors nearly ten
 to one. A heavily reused donor's flag vector is stamped onto many recipients, which reduces the
 effective sample of flag vectors below the nominal 10{,}841. The 5.1\% concentration figure of
-Part~A is national and does not bound concentration within a cell.
+Part~E.1 is national and does not bound concentration within a cell.
 \item[P3. Matching-key error.] \ac{FinScope} income is banded and in 2019 Rands, so a donor's
 quintile rests on a band midpoint divided by household size and placed against 2017 cut points.
 Donors therefore do not split evenly into fifths, and misassignment across a quintile boundary
@@ -90,7 +90,7 @@ holding. Copying observed combinations supports plausibility but does not verify
 joint distribution in the recipient population.
 \end{description}
 
-\subsection*{D. Which of these would move a result}
+\subsection*{E.4 Which of these would move a result}
 
 The vintage gap (P5) and the one-adult respondent (P4) can change the eligibility ceiling and
 adoption levels, in opposite directions.

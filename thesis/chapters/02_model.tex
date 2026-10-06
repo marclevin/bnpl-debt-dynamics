@@ -10,9 +10,9 @@ while \ac{BNPL} platforms apply a lighter screen.
 Parameter choices and calibration are in Section~\ref{sec:calibration}. The
 specification follows the
 \ac{ODD} protocol \cite{grimm2006odd, grimm2020odd}, with the operational rules
-summarised in Table~\ref{tab:submodels}. Appendix~\ref{app:specification} records
-the design concepts and exclusions, Appendix~\ref{app:rationale} explains the
-alternatives considered, and Appendices~\ref{app:pseudo-init}
+summarised in Table~\ref{tab:submodels}. Appendix~\ref{app:rationale} explains the
+alternatives considered, Appendix~\ref{app:specification} records the design concepts and
+exclusions, and Appendices~\ref{app:pseudo-init}
 and~\ref{app:pseudo-main} provide the pseudocode.
 
 \label{sec:purpose}
@@ -132,24 +132,21 @@ and the scheduled service on its traditional debt, which the bureau records.
 Income is the amount observed in the survey. The model does not reduce it while
 a member is unemployed, so a household in a spell of unemployment is assessed on
 income it is not receiving. In the benchmark the assessment excludes \ac{BNPL}
-commitments \cite{nortonrose_bnpl_sa, transunion_cps_sa_2025}, and the model
-contains no informal borrowing, which South African households also use
+commitments \cite{nortonrose_bnpl_sa, transunion_cps_sa_2025}. The model also
+omits informal borrowing, which South African households use
 \cite{finscope2019}. The lender therefore applies an affordability rule to an
 incomplete view of household obligations.
 
 The boolean parameter \texttt{bnpl\_bureau\_visible}, written
 $\mathbb{1}^{\text{bur}}$, controls whether active \ac{BNPL} obligations enter
-this calculation. It is false in the benchmark. Switching it on adds those
-obligations to the traditional lender's affordability assessment, representing
+this calculation. It is false in the benchmark; switching it on represents
 one channel of the reporting arrangements discussed in
 Section~\ref{sec:background}. A second switch, $\mathbb{1}^{\text{aff}}$,
 applies the same residual-income test to each \ac{BNPL} request before it
-reaches a platform. That test is shown the household's traditional service and
+reaches a platform. That test sees the household's traditional service and
 its \ac{BNPL} instalments and arrears on every platform, whether or not the bureau switch is
 on.
-Bureau visibility changes what the traditional lender sees, while screening puts
-a complete view of \ac{BNPL} obligations in front of each \ac{BNPL} decision.
-The model does not say how a platform would obtain that view without bureau
+The model does not say how a platform would obtain that information without bureau
 reporting, so the screening arm is an upper bound on what a platform's own
 check could see.
 Algorithms~\ref{alg:gate} and~\ref{alg:bnpl} specify how the two switches
@@ -169,7 +166,8 @@ Each simulation step, or tick, represents 14 days. This places the fortnightly
 pay-in-four instalments directly on tick boundaries. Monthly survey flows are
 converted to tick amounts using $12/26$, the ratio of months to ticks in a year. Households act in a newly randomised
 order each tick, with credit applications decided as they occur. The peer-adoption
-signal is updated once all households have acted.
+signal is updated once all households have acted, so adoption does not depend on which
+group member acts first.
 
 Each household follows seven steps (Algorithm~\ref{alg:tick}):
 \begin{enumerate}
@@ -177,7 +175,7 @@ Each household follows seven steps (Algorithm~\ref{alg:tick}):
     \item Pay committed expenditure from income and savings.
     \item Accrue interest and calculate traditional and \ac{BNPL} payments due, including arrears. Minimum-payers owe the larger of interest and the minimum balance fraction; scheduled-payers owe their contractual instalment.
     \item Seek credit for a shortfall, using \ac{BNPL} first where eligible and traditional credit for the remainder. Assess distress before payment friction.
-    \item Collect the \ac{BNPL} instalments that fall due, then pay traditional debt subject to payment friction.
+    \item Pay the \ac{BNPL} instalments that fall due, then traditional debt subject to payment friction.
     \item Spend remaining cash on discretionary consumption, up to the budget, and save the rest.
     \item Draw any want-driven \ac{BNPL} purchase and update balances, arrears, distress and default.
 \end{enumerate}
@@ -188,14 +186,13 @@ consistent with a cash-flow approach to distress \cite{madeira2018chile}.
 Credit applications precede repayment, so borrowing can cover that gap.
 Distress is assessed before payment friction,
 so skipping an otherwise affordable instalment does not itself classify a
-household as unable to pay. Using the previous tick's peer signal also prevents
-adoption decisions from depending on which group member acts first.
+household as unable to pay.
 
 Distress and arrears are distinct states. A household is distressed if it cannot
 cover committed expenditure from opening cash and income, or cannot meet the
 debt service due after seeking credit. A committed-expenditure shortfall is
 recorded as distress and is not carried forward. Credit raised against it is
-spent on debt service and then on discretionary spending, and any remainder is
+spent on debt service and then on discretionary consumption, and any remainder is
 saved; a robustness arm spends it on the unpaid committed expenditure first
 (Section~\ref{sec:results-effect}). Arrears track unpaid debt obligations through the \ac{CCMR}
 age bands. Default occurs after seven consecutive distressed ticks, or 98 days,
@@ -229,13 +226,13 @@ initial population is constructed in Section~\ref{sec:population}.
 \bottomrule
 \endfoot
 
-1. Income and shock & Baseline income is static. Each employed member of a wage-dominant household separates with a per-tick probability, and the household loses that member's share of its wage component until re-employment. Households whose income is mainly grants or other non-wage income are exempt, because the shock is a job separation. & \cite{madeira2018chile, statssa_lmd_2022} & Income-shock probability fitted to the \ac{CCMR} 90+ band and reported against the \ac{QLFS} 2017 separation band of 0.54--1.17\% per tick. No magnitude parameter: the loss is the observed wage component. Re-employment hazard 1.87\% per tick from \ac{QLFS} 2017 Q3--Q4 flows. Single-tick non-persistent shock kept as a robustness arm. \\
+1. Income and shock & Surveyed income is static. Each employed member of a wage-dominant household separates with a per-tick probability, and the household loses that member's share of its wage component until re-employment. Households whose income is mainly grants or other non-wage income are exempt, because the shock is a job separation. & \cite{madeira2018chile, statssa_lmd_2022} & Income-shock probability fitted to the \ac{CCMR} 90+ band and reported against the \ac{QLFS} 2017 separation band of 0.54--1.17\% per tick. No magnitude parameter: the loss is the observed wage component. Re-employment hazard 1.87\% per tick from \ac{QLFS} 2017 Q3--Q4 flows. Single-tick non-persistent shock kept as a robustness arm. \\
 \addlinespace
 2. Consumption & Two tiers. Committed expenditure (food, rent) is an incompressible floor; discretionary spending compresses to zero before any instalment is missed for lack of cash. & Data layer (Section~\ref{sec:population}) & Floor of zero; not swept. \\
 \addlinespace
 3. Borrowing trigger & Traditional credit is sought only for realised shortfalls. \ac{BNPL} adds a want-driven path whose probability can rise with peer adoption. & \cite{ackert2025bnpl, dehaan2024bnpl} & $q_{\text{base}}$, $\beta$; see Submodel 11. \\
 \addlinespace
-4. Borrowing amount & Shortfall path: \textbf{structural assumption} with no anchor located; households request the exact shortfall. Want-driven path: purchase size is drawn lognormally with mean $\kappa$ times the household's own monthly discretionary budget, so purchase size inherits the population's heterogeneity. & \cite{statssa_ies_2023} & Sweeps: shortfall / $+25\%$ / $+$ one tick of committed expenditure; $\kappa = 0.139$ (derived from \ac{IES} 2022/23 \ac{COICOP} shares) swept 0.07--0.28; dispersion 0.6 (assumption); sizing base swept discretionary / income. Realised mean order checked against R992 (2017 Rands), an average order value we derive by dividing the issuer's disclosed cumulative gross merchandise value by its disclosed transaction count and deflating to 2017 \cite{weaver2025iar}. \\
+4. Borrowing amount & Shortfall path: \textbf{structural assumption} with no anchor located; households request the exact shortfall. Want-driven path: purchase size is drawn lognormally with mean $\kappa$ times the household's own monthly discretionary budget, so purchase size inherits the population's heterogeneity. & \cite{statssa_ies_2023} & Sweeps: shortfall / $+25\%$ / $+$ one tick of committed expenditure; $\kappa = 0.139$ (derived from \ac{IES} 2022/23 \ac{COICOP} shares) swept 0.07--0.28; dispersion 0.6 (assumption); sizing base swept discretionary / income. Realised mean order checked against R992 (2017 Rands), an average order value we derive by dividing Weaver Fintech's disclosed cumulative gross merchandise value by its disclosed transaction count and deflating to 2017 \cite{weaver2025iar}. \\
 \addlinespace
 5. Lender choice & Eligible households take \ac{BNPL} first, up to $\kappa$ times their monthly discretionary budget, an assumed ceiling on the amount financed. An agreement frees three quarters of its value in cash, since a quarter is paid at checkout. The household asks the traditional lender for the amount it still lacks. The no-\ac{BNPL} baseline uses traditional credit only. & \cite{ackert2025bnpl} & The cap is an \textbf{assumption}; an uncapped arm is crossed with the three Submodel~4 rules. Asking the traditional lender for the whole remainder is an \textbf{assumption}. Compared with Pattern~1 (Table~\ref{tab:patterns}). \\
 \addlinespace
@@ -255,9 +252,9 @@ initial population is constructed in Section~\ref{sec:population}.
 \addlinespace
 13. Stacking & Each request goes to the platforms in a random order, redrawn for every request, and what one platform does not finance passes to the next. There is no aggregate limit, and no platform sees another's exposure. The routing rule is an \textbf{assumption}. & Follows Submodel 10 & Platforms swept 1--6 (default 4); a loyal-routing arm tries platforms already owed first; stacking depth compared with the \ac{CFPB} share in Section~\ref{sec:data-validation}. \\
 \addlinespace
-14. \ac{BNPL} repayment & Exogenous ``Pay-in-4'': 25\% at checkout, then 25\% at each of the next three ticks, interest-free. On a want-driven purchase the checkout debit must clear, so the order is truncated to what the household can fund. Late fees of R125.74 per tick (2017 Rands), capped per agreement at the lower of R188.61 and half the purchase price; a household that exhausts the cap is cut off by that platform only. & \cite{payflex_terms} & No free parameters; instalments fall on tick boundaries. \\
+14. \ac{BNPL} repayment & Exogenous pay-in-four: 25\% at checkout, then 25\% at each of the next three ticks, interest-free. On a want-driven purchase the checkout debit must clear, so the order is truncated to what the household can fund. Late fees of R125.74 per tick (2017 Rands), capped per agreement at the lower of R188.61 and half the purchase price; a household that exhausts the cap is cut off by that platform only. & \cite{payflex_terms} & No free parameters; instalments fall on tick boundaries. \\
 \addlinespace
-15. Scenario switches & Bureau visibility ($\mathbb{1}^{\text{bur}}$: \ac{BNPL} obligations enter the traditional lender's Regulation 23A test) and mandatory affordability screening ($\mathbb{1}^{\text{aff}}$: the Regulation 23A test applied to \ac{BNPL} requests), each alone and both together (Section~\ref{sec:scenarios}). & \cite{businessday_bnpl_2026, fca_ps26_1, woolard2021} & The two regulatory switches are binary; each arm is compared with the benchmark at $\beta = 0$ and $\beta = 1$. \\
+15. Scenario switches & Bureau visibility ($\mathbb{1}^{\text{bur}}$: \ac{BNPL} obligations enter the traditional lender's Regulation 23A test) and mandatory affordability screening ($\mathbb{1}^{\text{aff}}$: the Regulation 23A test applied to \ac{BNPL} requests), each alone and both together (Section~\ref{sec:scenarios}). Two further levers, a cooling-off window and a cap on platforms owed, are in Appendix~\ref{app:levers}. & \cite{businessday_bnpl_2026, fca_ps26_1, woolard2021} & The two regulatory switches are binary; each arm is compared with the benchmark at $\beta = 0$ and $\beta = 1$. \\
 \addlinespace
 16. Macro environment & Static. The repurchase rate is fixed at 7.00\%, freezing statutory maximum interest rates. & Experimental design (Section~\ref{sec:purpose}) & Exogenous constraint. \\
 \addlinespace
@@ -270,7 +267,7 @@ initial population is constructed in Section~\ref{sec:population}.
 
 When a household faces a shortfall, Submodel~4 determines how much it requests.
 By default, the request equals the shortfall. Two alternatives add either 25\% or one
-tick of committed expenditure. No located study identifies the appropriate
+tick of committed expenditure. No study we found identifies the appropriate
 rule, so all three are compared in the sensitivity analysis
 (Section~\ref{sec:results-robustness}).
 
@@ -339,7 +336,7 @@ No rule assigns a household a number of platforms, and the routing rule alone
 determines how overlapping agreements are spread across them. The stacking
 measures therefore show how often a household's agreements overlap, and carry no
 information about why a household would use several providers. No evidence on
-how South African households choose among providers was located, so uniform
+how South African households choose among providers was located, so random
 routing is an assumption. A robustness arm uses the opposite rule: a household
 tries the platforms it already owes first and moves to another only when a limit
 binds (Section~\ref{sec:results-stacking}).
@@ -355,13 +352,13 @@ markets and observation periods.
 \label{sec:implementation}
 
 The model is implemented in Python using Mesa. The lending gate reuses the affordability function
-used when constructing scheduled debt service, keeping the two calculations
+from the construction of scheduled debt service, keeping the two calculations
 consistent. The parameter register in Appendix~\ref{app:specification} is
 generated from the code's declarations.
 
 Automated checks cover cash and debt accounting, arrears transitions,
 Regulation 23A worked examples, pay-in-four repayments, late-fee caps, the
-shortfall path and the hypothetical cap on platforms owed (Appendix~\ref{app:levers}). Several follow one household with
+shortfall path and the platform-cap lever of Appendix~\ref{app:levers}. Several follow one household with
 a hand-set balance sheet through a tick and compare each balance with its value
 calculated by hand. Boundary checks disable \ac{BNPL}, remove peer influence
 ($\beta=0$ or $\gamma=0$), and restrict access to one platform. All checks pass
