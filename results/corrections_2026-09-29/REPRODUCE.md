@@ -81,7 +81,7 @@ one hundred.
 | cooling-off and cap | `rq3.parquet` | 320 | 40,000 benchmark and cooling-off; 43,000 cap | only the cooling-off arms share the benchmark's seeds |
 | scenarios: benchmark, bureau, screening, both | `rq3s.parquet` | 800 | 80,000 | yes, 100 replicates per arm |
 | sensitivity of the level | `robustness.parquet` | 620 | 50,000 to 59,000, one block per group | within a group |
-| sensitivity of the effect | `effect.parquet` | 880 | 70,000 | yes |
+| sensitivity of the effect | `effect.parquet` | 1,020 (880 before 2026-10-06) | 70,000 | yes |
 | Sobol | `results/summary/sobol_runs.parquet` | 4,096 | see file | 2 replicates per design point |
 | step-by-step diagnostic | `results/corrections_2026-09-29/diagnostic/*.parquet` | 160 per step | 10,000 | yes |
 
@@ -100,6 +100,14 @@ retained arms of `rq3.parquet` are reproduced exactly. The earlier file is kept,
 that checks the fitted shock probability in steps of 0.001 and writes
 `fine_grid_90_plus` into `calibration.json`; the 460 calibration runs and the selection are
 unchanged.
+
+## Routing and shortfall-path arms (2026-10-06)
+
+Three switches were added to `simulation/config.py`, each off by default: loyal platform
+routing, no BNPL on the shortfall path, and credit paying a committed shortfall first. The
+effect suite gained 140 runs on the same seeds. `results/variants_2026-10-06/run_variants.py`
+re-ran the whole suite and confirmed that the 880 stored runs are reproduced exactly before
+saving; see `results/variants_2026-10-06/README.md`.
 
 ## Preserved original outputs
 

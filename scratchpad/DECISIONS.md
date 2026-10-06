@@ -1,12 +1,19 @@
 # DECISIONS — every choice made, and why
 
-**One of three working documents.** [`DECISIONS.md`](DECISIONS.md) is *what was chosen and why*.
-[`DEFECTS.md`](DEFECTS.md) is *what is wrong or was wrong*. `PLAN.md` is *what happens
-next*. Consolidated 2026-08-13 from nine overlapping files. `PLAN.md` and `THESIS_GUIDE.md` were
-removed 2026-09-29; last in commit `647b1eb`.
+**One of two working documents.** [`DECISIONS.md`](DECISIONS.md) is *what was chosen and why*.
+[`DEFECTS.md`](DEFECTS.md) is *what is wrong or was wrong*. Consolidated 2026-08-13 from nine
+overlapping files. `PLAN.md` and `THESIS_GUIDE.md` were removed 2026-09-29; last in commit
+`647b1eb`.
 
-Canonical strategy: [`../OVERVIEW.md`](../OVERVIEW.md).
-Plain-language explanation of the whole project: `THESIS_GUIDE.md`.
+**Read this as a design history.** Entries are dated and earlier text is kept where it was
+superseded, with a marked note. The thesis text (`thesis/chapters/*.tex`) is the authority for
+what the model does and claims, and the generated tables and `results/summary/results_numbers.json`
+for numbers. Any figure in this file older than 2026-09-29 predates the corrections and rerun of
+that date (`results/corrections_2026-09-29/`) and must not be quoted. References to numbered
+sections of `OVERVIEW.md` (for example §1a, §7) point at the version before its 2026-10-06
+rewrite; that version is in git history. *Updated in place 2026-10-06.*
+
+Project overview: [`../OVERVIEW.md`](../OVERVIEW.md).
 Data → agent mapping: [`../household_agent.md`](../household_agent.md).
 
 ---
@@ -97,6 +104,16 @@ ordered sequence; **the order itself is a modelling decision.**
 - **Sensitivity:** re-run with debt-service-first ordering (option ii) as a robustness check.
 - **Validation hook:** ordering changes the timing of arrears onset. Baseline arrears profile is
   checked against the NCR CCMR age analysis (see D6).
+- **⚠ SUPERSEDED as implemented (noted 2026-10-06).** The code and the thesis (Section 2.3,
+  Algorithm `alg:tick`) do not follow the order above. Each household: (1) receives income, after
+  any shock; (2) pays committed expenditure from income and savings; (3) accrues interest and works
+  out what is due, arrears included; (4) seeks credit for a shortfall, BNPL first, and distress is
+  assessed here, before payment friction; (5) pays the BNPL instalments due, then traditional debt
+  subject to friction; (6) spends what is left on discretionary consumption up to budget and saves
+  the rest; (7) draws any want-driven BNPL purchase. So credit is sought **before** debt service,
+  not last, and discretionary spending comes **after** debt service. The reasoning above (committed
+  expenditure first; borrowing in response to a realised shortfall) still holds. The
+  debt-service-first robustness run listed under Sensitivity was never built.
 
 ### D1. Income arrival and shock
 - **Governs:** the inflow each tick and the trigger for distress borrowing.
@@ -107,6 +124,9 @@ ordered sequence; **the order itself is a modelling decision.**
   income source is `WAGE`. Households dependent on `GRANT` income face no labour shock, because South
   African social grants are statutory transfers and do not vary with employment. This conditioning
   uses `income_source`, which the data layer already carries. The shock hits **income**, not savings.
+  *(Clarified 2026-10-06: `income_source` has three categories, `WAGE`, `GRANT` and `OTHER`,
+  where `OTHER` sums remittances, other, agricultural and investment income. Only `WAGE`-dominant
+  households are shocked; `GRANT` and `OTHER` households are both exempt, as Submodel 1 states.)*
 - **REVISED 2026-08-12: the shock is PERSISTENT, not single-tick.** The original rule said
   "non-persistent (single tick) in the baseline". Implementation showed that rule cannot work, and
   re-reading the anchor showed it was never right:
@@ -139,6 +159,9 @@ ordered sequence; **the order itself is a modelling decision.**
     `w5_hhremitt`), so every household's wage share of income is in the data.
   - A shocked household loses its wage component for one tick. Grant and remittance income is
     untouched, which makes D1's existing WAGE/GRANT conditioning quantitative instead of categorical.
+    *(Superseded: the loss lasts for the unemployment spell, not one tick (see the persistence
+    revision above), and is the separated member's share of the wage component, since the hazard
+    applies per employed member.)*
   - **No data-pipeline rebuild.** `source_w5_hhid` is already a column on
     `synthetic_population_5000.parquet`, so `w5_hhwage` joins straight onto the validated
     population. P1 to P3 are not re-run and the 14/14 validation is untouched.
@@ -172,6 +195,12 @@ ordered sequence; **the order itself is a modelling decision.**
     account-versus-household mismatch on the CCMR target (D6).
   - ⚠ The model shock is non-persistent (one tick) while a QLFS separation may persist for quarters,
     so the band bounds the rate of shock **onset**, not the stock of unemployed households.
+    *(Superseded: the shock is now persistent and per earner, so the comparison is like-for-like.
+    The household-versus-individual caveat above no longer applies.)*
+  - **Outcome.** Fitted `p` = **0.016** per tick (2026-09-21, after DEFECTS B34; confirmed by the
+    2026-09-29 recalibration and by a 0.001-step check on 2026-10-05: 0.015 gives 13.93%, 0.016
+    gives 14.48%, target 14.21%). That is about **1.4 times** the 1.17% upper bound, read in the
+    thesis as a reduced-form hazard of income loss and other distress (Section 3.4).
 - **Validation hook:** this is the parameter that *carries* the validation. Because `p` is fitted to
   baseline arrears, the baseline is calibrated rather than validated, and only the BNPL-on results
   are genuine predictions. **State this explicitly in the limitations chapter.** The QLFS band does
@@ -192,6 +221,8 @@ ordered sequence; **the order itself is a modelling decision.**
   African estimate for, and both would discard the observed NIDS expenditure split we already hold.
 - **Parameters:** compression floor on discretionary spending = 0 in baseline.
 - **Sensitivity:** partial floor (habit persistence) at 25% and 50% of baseline discretionary.
+  *(Not run. `discretionary_floor` exists in `config.py` at 0.0 and the thesis states "Floor of
+  zero; not swept" (Submodel 2).)*
 - **Validation hook:** compression rate drives savings drawdown; check the share of agents reaching
   zero liquid savings against the TransUnion Consumer Pulse finding that 36% of South African
   consumers anticipated missing a bill payment `[transunion_cps_sa_2025]`.
@@ -200,8 +231,9 @@ ordered sequence; **the order itself is a modelling decision.**
 - **Governs:** demand for credit, and later for BNPL specifically.
 - **Anchors:** `[ANCHOR: ABM]` `[dorazio2017micro]` (credit requested on shortfall);
   `[ANCHOR: BEHAV]` Meier & Sprenger `[meier2010present]` (present bias predicts borrowing);
-  `[ANCHOR: BNPL]` Hayashi & Routh `[toh2025bnplconstraints]` (BNPL users are financially
-  constrained; 96% of late payers at least mildly constrained);
+  `[ANCHOR: BNPL]` Hayashi & Routh `[hayashi2025constraints]` (BNPL users are financially
+  constrained; 96% of late payers at least mildly constrained; bib key renamed from
+  `toh2025bnplconstraints`);
   Ackert et al. `[ackert2025bnpl]` (BNPL chosen over a credit-card loan for the same purchase,
   with expected social approval).
 - **DECISION.** The trigger is **dual, and differs by lender type**:
@@ -312,6 +344,11 @@ ordered sequence; **the order itself is a modelling decision.**
     20 replicates inside; the `beta = 1` arm R613.87 (38.12% low) is outside, 0 of 20 inside;
     bracket Q3–Q5 R909, Q4–Q5 R1,211. Written up in `tab:bnpl-on-checks` and the RQ1 close of
     Section 3.5 as a pass by the narrowest margin. `kappa` was not touched.
+  - **⚠ Outcome SUPERSEDED by the corrected run of 2026-09-29: a named miss.** The mean
+    want-driven purchase is **R633, 36.2% below R992** against the 35% tolerance, with 4 of 20
+    replicates inside; at `beta = 1` it is R610 with none inside. The thesis reports it as a
+    failure, with the who-buys explanation, in Section 3.5 and `tab:bnpl-on-checks`. The
+    tolerance and `kappa` were left as registered.
 
   **The rule for the shortfall path is unchanged and remains uncited.** D4's status as the model's
   first uncited rule stands; what changed is that its BNPL *level* is now derived and externally
@@ -351,6 +388,11 @@ ordered sequence; **the order itself is a modelling decision.**
   traditional stress *falling* when BNPL is enabled (pure substitution), it contradicts the best
   available causal evidence and the lender-choice rule is wrong. **This is the single most useful
   falsification test the model has.**
+  *(Qualified later: the thesis treats Pattern 1 as a diagnostic, not an independent test, because
+  the want-driven path was added partly so that the pattern could appear (Section 3.5). Result
+  after the 2026-09-29 corrections: it holds on arrears, +0.23 +- 0.07 points at `beta = 0` and
+  +0.57 +- 0.07 at `beta = 1`, and fails on interest, which falls 1.5 +- 0.4% at `beta = 0`
+  because the traditional book shrinks.)*
 
 - **⚠ REVIEWED AND DELIBERATELY LEFT UNCHANGED, 2026-08-13. What BNPL is used for, and the one
   asymmetry that remains.** There are two BNPL paths and they are sized differently:
@@ -391,12 +433,23 @@ ordered sequence; **the order itself is a modelling decision.**
   the cap narrows the sensitivity. With BNPL off the cap is inert (asserted in
   `test_degenerate.py`), so the calibration does not depend on it. Provenance: `ASSUMPTION`.
 
+  **ROBUSTNESS ARM ADDED 2026-10-06: `shortfall_bnpl` (default `True`).** The shortfall path frees
+  cash on the assumption that the household finances a purchase it would otherwise have paid in
+  cash; no such purchase is modelled. `shortfall_bnpl = False` sends every shortfall to the
+  traditional lender, so BNPL is used only for want-driven purchases. Arm `eff_no_shortfall_bnpl_*`
+  in the effect suite, seeds 70,000 to 70,019, baseline not recalibrated
+  (`results/variants_2026-10-06/README.md`). **Result:** the BNPL effect on default at
+  `beta = 1` is **0.47 +- 0.11** points against a reference of 0.60 +- 0.12, still detectable, so
+  most of the effect runs through want-driven borrowing; at `beta = 0` it is +0.06 +- 0.10, not
+  detectable (`tab:effect`; Section 4.5).
+
 ### D6. Repayment rule and arrears
 - **Governs:** how debt is retired versus how it snowballs. Drives the default observable.
 - **Anchors:** `[ANCHOR: BEHAV]` Keys & Wang `[Keys2019]` (29% of accounts pay at or near the
   contractual minimum; at least 22% of near-minimum payers anchor to the formula);
   Kuchler & Pagel `[Kuchler2021]` (present-biased borrowers fail to execute planned paydown);
-  `[ANCHOR: REG/DATA]` NCR CCMR age-analysis bands `[ncr_ccmr_2025]`.
+  `[ANCHOR: REG/DATA]` NCR CCMR age-analysis bands `[ncr_ccmr_2017]` (was `[ncr_ccmr_2025]`, which
+  the thesis does not cite; the 2017-Q1 report is the target, below).
 - **DECISION.** **Mixed repayment behaviour**, not uniform amortisation:
   - A share `m` of agents are **minimum-payers**: they pay the contractual minimum only.
   - The remainder pay the **scheduled amortised instalment** (`monthly_trad_repayment`, constructed
@@ -471,6 +524,13 @@ ordered sequence; **the order itself is a modelling decision.**
   as distress, cash goes to zero and the unpaid amount is not carried forward; a loan raised
   against it goes to debt service, discretionary spending and savings. The thesis describes this
   rule (Section 2.3) and lists it as a limitation (Appendix C). Do not reopen.
+- **ROBUSTNESS ARM ADDED 2026-10-06: `committed_shortfall_funded` (default `False`).** The
+  baseline rule above stays; the arm tests it without changing it. With the switch on, credit
+  raised in a tick with a committed shortfall pays the unpaid food and rent first, and the tick
+  is still recorded as distressed (`agents.py`, after `_seek_credit`). Arm
+  `eff_committed_funded_*`, seeds 70,000 to 70,019, baseline not recalibrated. **Result:** the
+  BNPL effect at `beta = 1` is **0.68 +- 0.11** points against 0.60 +- 0.12; at `beta = 0`
+  +0.06 +- 0.09, not detectable (`tab:effect`; Sections 2.3 and 4.5).
 - *Why not DSTI > 50%:* a DSTI threshold is arbitrary, and the D9 work established that the NCA
   itself does not use a DSTI ratio. Madeira's minimum-consumption test is cited, is consistent with
   the Reg 23A affordability rule already implemented in P2, and is validated against real default
@@ -490,6 +550,12 @@ ordered sequence; **the order itself is a modelling decision.**
   **90+ days** figure of **14.21%** of accounts (combined unsecured and credit facilities). With
   `k = 4` it targets the 60+ figure of **16.54%**. Subject to the D6 account-versus-household unit
   mismatch.
+  *(Superseded. The default rate is not fitted to anything. Calibration fits the 90+ **arrears**
+  band among credit-active households (D6) through the shock probability, and the 1 to 30 day
+  band through payment friction. Default is a separate, cumulative measure over all households,
+  counted from tick 0: 13.31% at the final tick with BNPL off. `k = 4` is a sensitivity arm on
+  the default level (+0.84 +- 0.11 points at `beta = 1`), not a second target. Section 2.3 says
+  the distress rule is not identical to an account being 90 days in arrears.)*
 
 ### D8. Behavioural heterogeneity
 - **Governs:** whether all agents share one rule set.
@@ -504,11 +570,20 @@ ordered sequence; **the order itself is a modelling decision.**
 - *Why not a latent continuous present-bias parameter:* no South African distribution of present
   bias exists to calibrate it against, so it would add a free parameter with no discipline.
 - **Parameters:** quintile assignment is data-driven, not free. Type share `m` is D6's parameter.
+- **⚠ CORRECTED 2026-10-06: no rule parameter varies by quintile or attribute.** The first bullet of
+  the decision was never implemented. In the code and the thesis (Submodel 8) every behavioural
+  parameter is common to all households; heterogeneity enters only through the data layer
+  (income, budgets, balances, the banked flag and five product flags) and through the
+  minimum-payer type, assigned uniformly at random. `credit_access_formal` is no longer carried
+  (see II.4).
 - **Validation hook (pattern-oriented).** `[hamill2023creditcard]` reports a non-monotonic income to
   debt-to-income relationship with a middle-income peak. If this model produces monotonically rising
   DTI in income, it disagrees with an independent ABM of the same phenomenon. Following the ODD
   second update's emphasis on stating the patterns that judge realism `[grimm2020odd]`, this is
   registered as a target pattern in advance.
+  *(Outcome after the 2026-09-29 corrections: not reproduced. The pre-registered aggregate
+  debt-to-income ratio is highest in Q1, 0.77 months of income, with Q4 second at 0.69. Reported
+  as a failure in Section 3.5.)*
 
 ---
 
@@ -542,6 +617,10 @@ ordered sequence; **the order itself is a modelling decision.**
   `credit_rate_table.csv`. The loan amount is whatever D4 says the household asks for.
 - **Still open:** what counts as *visible* existing obligations (→ D10), and whether the lender
   applies the statutory minimum or a stricter internal policy.
+  *(Resolved: visible obligations are the scheduled service on traditional debt, plus BNPL
+  obligations only under the bureau-visibility switch (D10). The lender applies the statutory
+  test and nothing stricter, and is assessed on income at initialisation: an unemployment spell
+  does not reduce the income the gate sees (Section 2.2).)*
 
 ### D10. Information asymmetry: what the lender can and cannot see
 - **Governs:** the core mechanism of the thesis. Banks cannot see BNPL obligations.
@@ -553,7 +632,8 @@ ordered sequence; **the order itself is a modelling decision.**
   infrastructure rather than from legal commentary.
 - **DECISION.** A single in-model **bureau record** exists and holds **traditional debt only**.
   When assessing an application the traditional lender observes:
-  - the household's gross income (declared),
+  - the household's gross income (declared; *as implemented, the surveyed income at
+    initialisation, not reduced during an unemployment spell*),
   - its own outstanding loans to that household,
   - all other **traditional** debt, via the bureau.
 
@@ -571,6 +651,13 @@ ordered sequence; **the order itself is a modelling decision.**
   and gate against the full liability set. The **gap between the two runs is the measured cost of
   the regulatory reporting gap**, which is a direct quantitative answer to the policy question
   behind RQ3.
+  *(Prediction not borne out; outcome from the 100-replicate scenario rerun of 2026-10-05.
+  Bureau visibility does not move outcomes toward the no-BNPL baseline. It raises default by
+  0.22 +- 0.04 points at `beta = 0` and 0.15 +- 0.04 at `beta = 1`, through more refusals by the
+  traditional lender (1,388 against 1,190 at `beta = 0`), with the rise in default largest in Q1, because a refused household has no other
+  source of credit. The thesis reports this as the direction of the affordability channel over
+  two years, not as the cost of the reporting gap (Section 5). The model has no credit score, so
+  only that channel is tested.)*
 
 ---
 
@@ -585,10 +672,11 @@ ordered sequence; **the order itself is a modelling decision.**
 ### D11. BNPL eligibility and limit
 - **Governs:** who can use BNPL at all, and how much. Sets the ceiling on the RQ2 access sweep.
 - **Anchors:** `[ANCHOR: BNPL/REG]` Payflex `[payflex_terms]` (automated credit assessment, orders
-  capped at **R15,000**); PayJustNow `[payjustnow_terms]` (an *available balance* rather than a
-  credit limit; where a purchase exceeds the facility the difference is added to the first
-  instalment); `[ANCHOR: BNPL]` Hayashi & Routh `[toh2025bnplconstraints]` (users are financially
-  constrained, so the screen cannot be a serious affordability test).
+  capped at **R15,000**; *⚠ wrong: Payflex publishes no order cap, see the 2026-09-29 revision
+  below. The R15,000 cap is an ASSUMPTION*); PayJustNow `[payjustnow_terms]` (an *available
+  balance* rather than a credit limit; where a purchase exceeds the facility the difference is
+  added to the first instalment); `[ANCHOR: BNPL]` Hayashi & Routh `[hayashi2025constraints]`
+  (users are financially constrained, so the screen cannot be a serious affordability test).
 
 - **DECISION (eligibility).** A household is BNPL-eligible only if it is **banked**. Both major
   South African providers debit a bank card for the checkout instalment, so an unbanked household
@@ -601,9 +689,9 @@ ordered sequence; **the order itself is a modelling decision.**
   precisely because it is outside the NCA (D10). Making the BNPL screen a real affordability test is
   an *intervention*, not the baseline (D14, lever 2).
 - **DECISION (limit).** A per-order cap of R15,000 following Payflex, plus a rolling available
-  balance per platform.
-- **Parameters:** order cap R15,000 (Payflex, current vintage); rolling balance **NOT SOURCED**,
-  swept.
+  balance per platform. *(The cap is an assumption, not a Payflex figure: see 2026-09-29 below.)*
+- **Parameters:** order cap R15,000 (Payflex, current vintage; *assumption, R9,927 in 2017
+  Rands*); rolling balance **NOT SOURCED**, swept.
 - **⚠ SEARCHED AND NOT FOUND, 2026-08-12. The absence is itself the finding, and is citable.**
   A deliberate search for a published rolling limit returned nothing from either major provider:
   - **Payflex** publishes the R15,000 per-order cap but no rolling limit. Its support material
@@ -646,7 +734,8 @@ ordered sequence; **the order itself is a modelling decision.**
   CCMR targets. The order cap is now **R9,927** in 2017 Rands, deflated once from a sourced factor
   `[statssa_cpi]` (DEFECTS.md **B29**). It binds on ~2–3% of requests after the change, so the
   "revisit if it exceeds a few percent" trigger above is now live and should be watched in the
-  re-run.
+  re-run. *(Watched: in the corrected run it binds on 0.3% of platform requests at `beta = 0`
+  (Section 3.3).)*
 
   **The rolling limit is now a FUNCTION, not a constant.** The flat R5,000 was **217% of the median
   banked Q1 household's monthly income**, at each of four platforms independently. The absence of a
@@ -659,7 +748,10 @@ ordered sequence; **the order itself is a modelling decision.**
 
   **REVISED DECISION.** `rolling_limit_i = lambda × income_monthly_i`, per household rather than per
   platform, with **`lambda = 0.10`** (set 2026-08-13; initially 0.25) and the R9,927 order cap as
-  the ceiling.
+  the ceiling. *(Wording corrected 2026-10-06: the limit is set per household **and applies at
+  each platform independently**, as the next paragraph and `config.py` say; "per household
+  rather than per platform" meant that the level is household-specific, not that one limit is
+  shared across platforms. Four platforms at 0.10 give 40% of monthly income in total.)*
 
   **⚠ Why 0.10 and not the middle of the band.** The limit applies at *each* of four platforms
   independently, so what the external evidence actually measures is the **stacked total**. Woolard's
@@ -676,6 +768,9 @@ ordered sequence; **the order itself is a modelling decision.**
   requests** at `beta = 0` (Q1 53%), against 25% at `lambda = 0.25` and 5.6% under the old flat
   R5,000. The limit has gone from a background constraint to a first-order one. That is what the
   Woolard anchor implies, and the 0.1–1.0 sweep is what demonstrates how much it matters.
+  *(Superseded figures. In the corrected run the limit binds on 24.8% of Q1 platform requests and
+  13.6% of Q5's, and raising `lambda` tenfold to 1.0 changes default by +0.10 +- 0.09 points at
+  `beta = 1`, not detectable (Section 4.4). It is not a first-order constraint on default.)*
 
   - **Income and NOT Reg 23A capacity.** Tempting but wrong: this rule's entire point is that the
     BNPL screen is deliberately *not* the statutory test, and setting BNPL limits from statutory
@@ -731,10 +826,24 @@ ordered sequence; **the order itself is a modelling decision.**
   to ask how often households owe several platforms at once. In the corrected model 52.0% of
   final-tick holders owe two or more platforms at `beta = 0` with four platforms, and default does
   not change detectably with platform count.
+- **ROBUSTNESS ARM ADDED 2026-10-06: `platform_routing` (`"random"` default, `"loyal"`).** Under
+  `"loyal"` a request goes first to the platforms the household already owes, in random order,
+  then to the rest, so a household spreads across platforms only when a limit binds. Both rules
+  draw the same random numbers, so `"random"` reproduces every stored run. Arm
+  `eff_routing_loyal_*`, seeds 70,000 to 70,019. **Result:** the share of final-tick holders owing
+  two or more platforms falls from **52.6% to 36.6%** at `beta = 0` and from **85.2% to 22.0%** at
+  `beta = 1` (effect suite; the benchmark arms give 52.0% and 85.1%), and the ever-stacked share
+  of ever-holders at `beta = 1` from 98.6% to 51.4%, with no detectable change in default
+  (-0.07 +- 0.07 and +0.02 +- 0.13 points). The stacking answer to RQ2 is therefore a bracket
+  between the two routing rules (Sections 2.4, 4.2 and 4.6). No South African evidence on how
+  households choose providers was located; both rules are assumptions.
 - **Validation hook (external, transferable with care).** Stacking depth is **emergent, not
   imposed** (superseded, see above). At a realistic access rate the model should approximate the CFPB shares: roughly 63% of
   adopters holding simultaneous loans and 32% holding across firms. ⚠ United States figures applied
   to a South African model; treat as an order-of-magnitude check and state the transfer.
+  *(As reported: the thesis compares only the cross-firm share, 32% in 2021 and 33% in 2022, with
+  the over-the-horizon share of ever-holders who held balances on two or more platforms: 36.8%
+  at `beta = 0` (Section 3.5).)*
 
 ### D13. BNPL repayment structure and penalties
 - **Governs:** how BNPL obligations retire or snowball.
@@ -756,7 +865,13 @@ ordered sequence; **the order itself is a modelling decision.**
   household is cut off from that platform, while remaining eligible at others, since platforms are
   blind to each other (D12).
 - **Parameters:** all sourced from Payflex except the post-cap handling, which is an assumption.
-- **Sensitivity:** Pay in 3 monthly (PayJustNow) as the structural alternative.
+- **⚠ CORRECTED (2026-08-12 and 2026-09-29).** The fee figures above are nominal and the cap is
+  misdescribed. Deflated to 2017 Rands (B29) the fee is **R125.74 per tick** and the Rand cap
+  **R188.61**. The Payflex terms cap late fees at "the lower of R285.00 (including VAT) or 50% of
+  the Purchase Price", **per agreement over its life**, not per missed instalment; the 50% clause
+  was added on 2026-09-29 (`bnpl_late_fee_cap_share`, CORRECTIONS.md defect 6). A household that
+  exhausts the cap is cut off by that platform only (Submodel 14).
+- **Sensitivity:** Pay in 3 monthly (PayJustNow) as the structural alternative. *(Not run.)*
 
 ### D14. Intervention levers (RQ3)
 - **Governs:** the policy experiments. RQ3.
@@ -764,6 +879,17 @@ ordered sequence; **the order itself is a modelling decision.**
   the UK regulatory perimeter from **15 July 2026** and requires **proportionate affordability
   checks**; the Woolard Review `[woolard2021]`, whose 26 recommendations initiated that process;
   and **CCA s.66A**, which gives a **14-day right of withdrawal** on regulated credit agreements.
+  *(CCA here is the United Kingdom Consumer Credit Act 1974, not South African law. The thesis no
+  longer cites s.66A.)*
+
+> **⚠ SCOPE CHANGED (RQs approved 2026-09-09; numbering per OVERVIEW.md).** RQ3 now asks how
+> **bureau visibility** and **mandatory affordability screening** change borrowing and distress,
+> with and without peer influence; the thesis runs them alone and together, at `beta = 0` and
+> `beta = 1`, with 100 replicates (suite `rq3s`, 2026-10-05). Peer influence is the third
+> scenario dimension. Levers 3 (cooling-off) and 4 (cap) are reported only in Appendix C. Results:
+> bureau visibility raises default 0.15 to 0.22 points through refusals (see D10); screening lowers
+> BNPL holding and volume and changes default by +0.02, not detectably. The "defer versus desist"
+> framing below no longer defines RQ3; volume is still reported beside default.
 
 Four levers, three of which correspond to instruments that actually exist:
 
@@ -813,7 +939,8 @@ Four levers, three of which correspond to instruments that actually exist:
 ### D16. Scheduling and activation order
 - **Governs:** the order in which households act within a tick. A known ODD design concept.
 - **Already decided (Set 7):** synchronous biweekly clock, households act, then the lender processes,
-  then state updates.
+  then state updates. *(Superseded by the decision below as implemented: applications are decided
+  inline as each household acts.)*
 - **Anchors:** `[ANCHOR: ABM]` Comer & Loerch `[comer2013activation]`, who replicate a
   well-documented civil-violence model and find **statistically significant differences in emergent
   population behaviour** across uniform, synchronous and random activation; and Alizadeh &
@@ -821,7 +948,12 @@ Four levers, three of which correspond to instruments that actually exist:
   and find that **different regimes produce different results, with no scheme dominating**.
 
 - **DECISION. Random asynchronous activation of households within a tick, reseeded every tick.**
-  The lender processes applications only after all households have acted.
+  The lender processes applications only after all households have acted. *(⚠ Not as
+  implemented. The lender and the platforms decide each application inline, as the household
+  acts; only the peer signal is updated after all households have acted (Section 2.3,
+  Submodel 17). Neither lender has an aggregate supply limit, so the "scarce resource" argument
+  below is weaker than written; the fixed-order check changes default by no detectable amount
+  (Appendix C).)*
 - *Why random rather than uniform:* under a fixed order the same households would hold first claim
   on a scarce resource every single tick, and credit here **is** scarce, being rationed by the D9
   affordability gate and by per-platform limits (D11). Uniform activation would manufacture a
@@ -881,7 +1013,8 @@ Four levers, three of which correspond to instruments that actually exist:
     Report Northern Cape separately, or pool it, in any group-level result.
 
 - **DECISION (mechanism).** Let `s_g(t-1)` be the share of households in group `g` holding a
-  non-zero BNPL balance at the end of the previous tick. Then
+  non-zero BNPL balance at the end of the previous tick (*from 2026-08-13: the share of the
+  group's BNPL-eligible households, see below*). Then
 
   ```
   q_i(t) = clip( q_base + beta * s_g(i)(t-1),  0, 1 )
@@ -911,6 +1044,11 @@ Four levers, three of which correspond to instruments that actually exist:
   gate (D9) and arrears accrual (D6) yields a *sharp* default threshold is not presupposed.
   Granovetter-style heterogeneous thresholds are **pre-registered now** as the structural robustness
   check should the linear form give only a smooth response.
+  *(Outcome: the registered claim is not supported. Neither the linear rule nor the threshold rule
+  shows a tipping point. Default rises with access where `beta > 0` (0.60 +- 0.11 points at
+  `beta = 1`, 0.95 +- 0.09 at `beta = 3`), the experiment cannot tell a straight line from a curve,
+  and the threshold rule raises holding far more than its control without raising default
+  detectably more (Section 4.3).)*
 
 - **Consequence for RQ2.** The model now holds two distinct self-reinforcing loops: a **financial**
   one (borrow to service existing debt, D0 step 5) and a **social** one (adopt because peers
@@ -982,6 +1120,15 @@ Four levers, three of which correspond to instruments that actually exist:
 | RQ2: do households stack facilities no lender sees, and does default rise? | two loops: **financial** (borrow to service) and **social** (adopt because peers adopted), plus population default vs BNPL access | D3, D5, D6, D7, D11, D12, **D17** | stacking depth, BNPL-first propensity, BNPL access rate × **`beta`** (2-D surface) |
 | RQ3: do cool-off periods work? | **defer vs desist, measured as total BNPL volume over the horizon, not timing** | D3, D14 | cool-off length `k_cool` (0 to 4 ticks; **1 tick = the CCA s.66A 14-day statutory figure**), and each lever on/off |
 
+**⚠ The table above uses the early wording. Current RQs (thesis Section 1.2; numbering per
+OVERVIEW.md, old RQ0 → RQ1, old RQ1 and RQ2 → RQ2, old RQ3 → RQ3):**
+
+| RQ | Question | Rules involved | Swept or switched |
+| -- | -------- | -------------- | ----------------- |
+| RQ1 | How well does the population reproduce the selected arrears bands, and how does it do against benchmarks not used in fitting or construction? | D0-D2, D6, D7, D9 | none; calibration and checks (Section 3) |
+| RQ2 | When platforms cannot observe one another, how often do households owe several at once, and how do enabling BNPL, platform count, access and peer adoption affect default? | D3-D5, D11, D12, D17 | BNPL on/off, platforms 1-6, access × `beta`, threshold rule, routing rule (Section 4) |
+| RQ3 | How do bureau visibility and mandatory affordability screening change borrowing and distress, with and without peer influence? | D9, D10, D11, D14, D17 | the two switches alone and together, at `beta` = 0 and 1 (Section 5); cooling-off and cap in Appendix C |
+
 **`beta` is the RQ2 experimental axis and the RQ3 toggle.** It is the strength of peer influence on
 BNPL adoption, so sweeping it is what makes social transmission visible at all in RQ2; it is then
 switched on and off under RQ3, because the cool-off lever only bites where `beta > 0`. **`beta = 0`
@@ -992,7 +1139,9 @@ See D17 for why this matters methodologically.
 **Validation targets:** four external targets, listed in OVERVIEW §7. The baseline (no-BNPL) arrears
 profile targets the **2017-Q1 CCMR** (`data/config/ccmr_2017_baseline.json`): 71.63% current,
 16.54% 60+ days, 14.21% 90+ days, account basis. All four are unaffected by D17, since the peer
-channel is inert in the baseline. See [[behavioural-validation-hedge]].
+channel is inert in the baseline. See [[behavioural-validation-hedge]] *(a note outside this
+repo; the thesis treatment is Section 3.5, where only Pattern 2 is both South African and
+vintage-matched and Patterns 1, 3 and 4 are plausibility comparisons)*.
 
 **Plus one calibration cross-check (2026-08-12), which is not a fifth target.** The fitted `p` is
 reported against the QLFS 2017 job-separation band in
@@ -1022,10 +1171,15 @@ constrains the one parameter that carries them. See D1.
   for either major SA provider. The absence stands for the *level*; it does not stand for the
   *form*. The limit is now `lambda ×` monthly income per household, reported against a Woolard/ASIC
   band, with the functional form licensed by HomeChoice's audited "low and grow" disclosure.
+  (*Applies at each platform; the R15,000 order cap is an assumption, not a Payflex figure.*)
 - **⚠ Vintage** (2026-08-12): every BNPL Rand figure in D4, D11 and D13 was nominal at current
   vintage in a 2017-Rand model, and is now deflated once from a sourced CPI factor. See DEFECTS.md
   **B29** — the fourth case of implementation falsifying a specification that read as complete.
 - **D14 lever 4** (stacking cap) has no real-world instrument and is labelled hypothetical.
+- **Added 2026-09-29 and 2026-10-06:** the R15,000 order cap (D11), uniform platform routing
+  (D12), BNPL first on the shortfall path (D5) and the unfunded committed shortfall (D7) are
+  further assumptions with no anchor. Routing and both shortfall-path rules have robustness
+  arms since 2026-10-06.
 
 Every other rule carries a citation, parameters with sources or sweep flags, and a validation hook.
 
@@ -1073,7 +1227,7 @@ observed arrears. Results are directional and mechanistic, never forecasts.
 | 5. Matching | **Simple cell-donor by income quintile x province**; categorical flags only |
 | 6. Agents | Households + one traditional lender stub + 4 BNPL platforms; multiple *traditional* lenders deferred |
 | 7. Topology | Bipartite household/lender, **plus** peer influence on BNPL adoption (D17); static income + per-earner shock |
-| 8. Validation | Internal (~5%) + match diagnostics + four external targets |
+| 8. Validation | Internal (~5%) + match diagnostics + four external targets *(as reported: Pattern 2 is the calibration target; Patterns 1, 3 and 4 are plausibility comparisons, Section 3.5)* |
 
 **Why 2017-only.** CPI-forwarding NIDS to 2022 would have introduced a second reference year,
 distributional assumptions, and external validation targets that could not be defended. Staying in
@@ -1152,10 +1306,16 @@ independently within the cell, so naive amortisation could force impossible debt
 - **Servicing now has external validation targets.** NIDS observed DSTI among the 1,219 payers:
   median 5.36%, mean 11.19%. FinScope C8 (21-matchstick budget game), categories 5 and 9, among
   holders of >=1 modelled product: 9.78% of monthly spending. Model DSTI by quintile 2.8-6.1%.
+  *(Superseded by DEFECTS B33: the like-for-like measure, service as a share of monthly outlay
+  among debtors, is 12.8% against FinScope's 6.1 to 9.8%, and is the one data-layer check of 18
+  that fails. The NIDS 5.36% is not independent of the construction.)*
 - **OPEN: debt service is double-counted.** e2_2_30 and e2_2_33 are components of NIDS non-food
   expenditure (sum of all 54 E2 components / `w5_expnf` has median ratio 1.04), so
   `expenditure_discretionary` already contains them (median 12.6% of non-food spend for payers)
   and the model deducts derived servicing on top. `w5_h_nfcarspn` too. Not yet fixed.
+  *(Status 2026-10-06: not fixed, disclosed. Section 3.3 states that adding reconstructed service
+  partly counts this flow twice, overstating compressible outlay, with an unsigned net effect on
+  default.)*
 - **NCA Regulation 23A(9) residual-income ceiling.** Replaced an earlier flat `MAX_DSTI = 0.65`,
   which had no statutory basis. Debt service is capped at gross income minus Reg 23A necessary
   expenses, giving an **income-varying** ceiling: 10.4% of income at R900/month rising to 83.2% at
@@ -1163,10 +1323,13 @@ independently within the cell, so naive amortisation could force impossible debt
 
 Result: max DSTI 0.911, **zero** households repaying more than income, weighted-mean DSTI by
 quintile 2.8-6.1%. The guard binds for only **3.4% of debtors** (158 of 4,702).
+*(Recomputed 2026-10-06 on the current backbone: 178 of 4,702, **3.8%**, removing 22.8% of calculated service, as
+the thesis reports in Section 3.3 and Appendix D.9.)*
 
 **Diagnostic kept as a finding, not capped away:** 53 debtor households have income at or below the
 Reg 23A norm, so **no NCA-compliant lender could lawfully have granted their debt**. 33 survive into
-the 5,000-agent resample, all in Q1.
+the 5,000-agent resample, all in Q1. *(Recomputed 2026-10-06 on the current files: still 53 in the
+backbone; **27** in the resample, all in Q1. Not reported in the thesis; see DEFECTS B12.)*
 
 ## II.4 Variable map
 
@@ -1202,6 +1365,13 @@ NIDS individual file (`n_earners`, which makes the shock a per-earner hazard).
 `banked` is the one that matters most: BNPL requires a bank card, so it caps BNPL eligibility at
 **82.8%** of the resampled population.
 
+*(⚠ Superseded flag set. The current population carries `banked` plus the five product flags
+`G10` to `G14` (store card, revolving credit, hire purchase, short-term loan, personal loan),
+which price opening traditional debt (II.3). `credit_access_formal`, `informal_finance` and
+`savings_product` are no longer carried; the columns of
+`data/processed/synthetic_population_5000.parquet` confirm this. National rates are in the
+thesis, `tab:imputation_errors`.)*
+
 ### Conditioning, from NIDS
 
 `income_quintile` (primary grouping **and** match cell), `household_size`, `household_composition`,
@@ -1221,6 +1391,11 @@ key for joins, not carried into the ABM).
 - **14 checks in P4, all passing**, including the Gini check: 0.651 weighted per-capita on the
   10,841-household backbone against 0.667 unweighted on the 5,000-agent resample, a 0.015 gap
   against a 0.02 tolerance.
+- *(Superseded. P4 now runs **18 checks and 17 pass**
+  (`data/processed/p4_validation_summary.json`); the failure is debt service against FinScope,
+  12.8% against 6.1 to 9.8% (DEFECTS B33). The marginals above are for the old flag set; the
+  current ones are banked +0.4 and the five product flags within 1.8 points (thesis
+  `tab:imputation_errors`, `tab:validation`).)*
 
 ## II.6 Known limitations of the data layer
 
@@ -1229,7 +1404,8 @@ key for joins, not carried into the ABM).
 - **Cell-donor matching is crude:** preserves cell-level marginals, not household-level joint
   structure beyond quintile x province.
 - **`liquid_savings` is the weakest NIDS field**, proxied by financial assets — and pattern 4
-  validates against it, which needs saying out loud (DEFECTS B11).
+  validates against it, which needs saying out loud (DEFECTS B11). *(Pattern 4 is now an
+  order-of-magnitude plausibility comparison only, Section 3.5.)*
 - **Committed/discretionary split is approximate:** NIDS gives only food / non-food / rent, so
   "discretionary" carries transport, utilities and education, none of which is truly discretionary.
 - **Reg 23A is a per-consumer test applied to a household**, because the agent is a household.
@@ -1237,4 +1413,5 @@ key for joins, not carried into the ABM).
   composition, one static lender rule.
 - **Social structure is minimal, not absent.** Households interact only through the D17 reference
   group and only on BNPL adoption. Three Northern Cape groups hold 23-31 agents, so their peer share
-  is noise-prone.
+  is noise-prone. *(Corrected 2026-10-06 from the current resample: all five Northern Cape groups
+  are small, 17 to 35 agents, as D17 says.)*

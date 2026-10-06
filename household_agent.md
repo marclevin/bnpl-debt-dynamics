@@ -1,131 +1,54 @@
-# The Household Agent: Data → Agent Mapping
+# The household agent: data to agent
 
-*How survey data becomes one agent in the model. Built for a supervisor walkthrough.
-Everything is in **2017 units**; see [`OVERVIEW.md`](OVERVIEW.md) for the full strategy.*
+Each agent is a NIDS Wave 5 (2017) household, resampled in proportion to its survey weight,
+with financial-inclusion flags copied from one FinScope 2019 donor. Money is in 2017 Rands.
+The thesis version of this mapping is Table 1 (`tab:agent-mapping`, Section 2.1); construction
+detail is in Appendix D and the match in Appendix E.
 
----
+## Fields
 
-## The idea in one sentence
+Fields marked *tick* are monthly survey flows scaled by 12/26 to the 14-day tick; stocks are
+not scaled.
 
-Each **household agent** is a real **NIDS Wave 5 (2017)** household, given a **balance sheet** and
-an **income-quintile tag**, then enriched with **financial-inclusion flags matched in from
-FinScope**.
+| Agent field | Meaning | Source |
+| --- | --- | --- |
+| `income_monthly` | Total monthly income | NIDS `w5_hhincome` |
+| `income_wage_tick` | Wage income, the part an income shock removes | NIDS `w5_hhwage` |
+| `n_earners` | Employed members on the roster | NIDS individual file |
+| `income_source` | Dominant source: WAGE, GRANT or OTHER (remittances and all else) | NIDS income components |
+| `committed_tick` | Food and rent paid, which the household cannot reduce | NIDS food and rent expenditure |
+| `discretionary_tick` | All other non-food cash spending, including transport and utilities | NIDS non-food expenditure |
+| `liquid_savings` | Financial assets, winsorised at the 99th percentile | NIDS `w5_f_ass` |
+| `d_trad` | Outstanding traditional debt | NIDS `w5_f_deb` |
+| `apr_annual`, `term_months` | Rate and horizon for that balance, from the donor's flagged products | statutory 2017 maxima and Table `tab:credit-terms` |
+| `scheduled_service_tick` | Debt service per tick, amortised and capped by Regulation 23A | constructed |
+| `banked` | Eligibility for BNPL | FinScope, imputed |
+| store card, revolving credit, hire purchase, short-term loan, personal loan | Product flags that price the opening debt | FinScope, imputed |
+| `income_quintile` | Weighted per-capita income quintile; match key | NIDS |
+| `province` | Match key and reference-group key | NIDS |
+| `reference_group` | Quintile by province, whose adoption the household observes | derived (45 groups) |
+| `household_size` | Members | NIDS `w5_hhsizer` |
 
-```
-  NIDS W5 household row ──┐
-  (income, spend, debt)   ├──►  Household Agent  (balance sheet + flags + quintile)
-  FinScope flags ─────────┘
-   (matched by quintile)
-```
+Two attributes are not observed: every agent starts with no BNPL balance (the injection
+design), and its repayment archetype, minimum-payer or scheduled-payer, is assigned at random
+with probability 0.29 of being a minimum-payer.
 
-No invented people, no inflation maths: the numbers stay in 2017 Rands.
+## How the population is built
 
----
+| Step | What it does | Where |
+| --- | --- | --- |
+| P1 backbone | 13,719 NIDS records filtered to 10,841 households with income, size and a positive weight; income, expenditure, savings and debt derived | `notebooks/p0_backbone.ipynb` |
+| P2 match | One FinScope donor per household, drawn in proportion to weight within its quintile-by-province cell (45 cells, each with at least 30 donors); all six flags copied together | `notebooks/p2_finscope_match.ipynb` |
+| P3 resample | 5,000 households drawn with replacement in proportion to weight (3,221 unique sources) | `notebooks/p3_resample.ipynb` |
+| P4 validate | Construction, imputation and resampling checks (Table `tab:validation`) | `notebooks/p4_validation.ipynb` |
+| P5 instantiate | Each row becomes a household agent | `simulation/population.py` |
 
-## The agent at a glance
+## Assumptions to keep in view
 
-```
-                    ┌──────────────────────────────────────┐
-                    │           HOUSEHOLD AGENT             │
-                    ├──────────────────────────────────────┤
-   INFLOW    ──►    │  income_monthly      (+ source)       │   from NIDS
-                    │  income_wage  (the part a shock hits) │   from NIDS
-                    │                                       │
-   OUTFLOW   ──►    │  expenditure_committed                │   from NIDS
-                    │  expenditure_discretionary            │
-                    ├──────────────────────────────────────┤
-   ASSETS    ──►    │  liquid_savings                       │   from NIDS
-   LIABILITIES ─►   │  D_trad  +  monthly_trad_repayment    │
-                    ├──────────────────────────────────────┤
-   FLAGS     ──►    │  banked / credit / savings / informal │   from FinScope (matched)
-                    ├──────────────────────────────────────┤
-   TAGS      ──►    │  income_quintile (Q1–Q5)              │
-                    │  size, composition, head demographics │   from NIDS
-                    └──────────────────────────────────────┘
-```
-
----
-
-## The mapping table
-
-All money in **2017 Rands, no CPI**. NIDS file: `data/raw/NIDS_W5/hhderived.csv`.
-FinScope flags attached via the simple quintile cell-donor match.
-
-| Agent field                   | Plain meaning                          | Source → column(s)                                                   |
-| ----------------------------- | -------------------------------------- | ------------------------------------------------------------------- |
-| `income_monthly`              | Money in each month                    | NIDS `w5_hhincome`                                                   |
-| `income_source`               | Where most of it comes from            | NIDS `w5_hhwage` / `w5_hhgovt` / `w5_hhremitt` / … → WAGE/GRANT/OTHER |
-| `income_wage`                 | The part at risk in a job-loss shock   | NIDS `w5_hhwage` (joined on `source_w5_hhid`)                        |
-| `expenditure_committed`       | Must-pay spending (food + rent)        | NIDS `w5_expf` + `w5_rentexpend`                                     |
-| `expenditure_discretionary`   | Flexible spending                      | NIDS `w5_expnf` (≥ 0); rent is a separate NIDS component and is NOT subtracted |
-| `liquid_savings`              | Cash buffer                            | NIDS `w5_f_ass` (proxy: weak field)                                |
-| `D_trad`                      | Traditional debt owed                  | NIDS `w5_f_deb`                                                      |
-| `monthly_trad_repayment`      | Monthly debt payment                   | constructed: amortize `D_trad` at NCA statutory max rates, capped by NCA Reg 23A |
-| `banked_status`               | Banked / underbanked / unbanked        | **FinScope (matched)**                                              |
-| `credit_access_formal`        | Has formal credit                      | **FinScope (matched)**                                              |
-| `savings_product`             | Holds a savings product                | **FinScope (matched)**                                              |
-| `informal_finance`            | Mashonisa / stokvel / insurance        | **FinScope (matched)**                                              |
-| `income_quintile`             | Which fifth of the income distribution | NIDS `w5_hhincome` + `w5_wgt` (weighted): also the **match key**   |
-| `reference_group`             | Whose behaviour this agent observes    | **derived** at model init: `income_quintile` × `province` (45 groups) |
-| `household_size`              | How many people                        | NIDS `w5_hhsizer`                                                    |
-| `household_composition`       | Adults / children / elderly            | NIDS member records                                                 |
-| `head_demographics`           | Age, gender, race, education of head   | NIDS individual-derived (joined to `w5_hhid`)                       |
-
-**Not agent fields:** `w5_wgt` (drives the resample), `w5_hhid` (join key).
-
----
-
-## How the population is built (5 phases)
-
-```
-P1 BACKBONE   NIDS → derive income_source, committed/discretionary, savings proxy,
-              D_trad, income_quintile   (stays in 2017 Rands, no CPI)
-P2 MATCH      FinScope → copy banked / credit / savings / informal flags
-              onto each NIDS household, by income-quintile cell (× province if it fits)
-P3 RESAMPLE   draw 5,000 households, probability ∝ w5_wgt (with replacement)
-P4 VALIDATE   internal NIDS distributions + FinScope-marginal match diagnostics
-P5 INSTANTIATE  each row → Household Agent (balance sheet + flags + tags)
-                       │
-                       ▼
-              5,000 Household Agents, ready for the ABM
-```
-
-Weighting in P3 makes 5,000 sampled households look like the real national population, at a fixed
-size we can re-run many times.
-
----
-
-## Three honest assumptions (flagged for the chapter)
-
-1. **2017 throughout.** The population reflects 2017 conditions; results are not forwarded to a
-   current year. A deliberate scope choice, not an oversight.
-2. **FinScope 2019 as a 2017 proxy.** We have no 2017 FinScope wave; the 2-year gap on categorical
-   flags is noted, not corrected.
-3. **Crude match.** Flags are copied at the income-quintile cell level, so they reproduce cell
-   marginals but not finer joint structure.
-
----
-
-## What this agent does *not* have yet (on purpose)
-
-- **No BNPL balance at initialisation.** This is the injection design, not a missing feature: every
-  household starts at zero BNPL so that the 2017 baseline is BNPL-free and the injection is clean
-  (see [`OVERVIEW.md`](OVERVIEW.md) §1a). The BNPL rules themselves are fully specified in D11-D14.
-- One *traditional* lender only, so no multi-bank competition. The BNPL side does have 4 platforms.
-
-**Households do now interact.** Each agent belongs to a **reference group** (income quintile ×
-province, the same cell as the FinScope match) and its want-driven BNPL adoption probability rises
-with the group's adoption share. See [`scratchpad/DECISIONS.md`](scratchpad/DECISIONS.md)
-D17. The channel is inert until BNPL is switched on, and `beta = 0` turns it off entirely.
-
-The four behavioural validation targets **are** now sourced (see [`OVERVIEW.md`](OVERVIEW.md) §7).
-BNPL-provider data is an upside, not a dependency.
-
----
-
-## See also
-
-- [`OVERVIEW.md`](OVERVIEW.md): living source of truth (strategy + execution plan).
-- [`scratchpad/DECISIONS.md`](scratchpad/DECISIONS.md): full column-level variable list.
-- [`scratchpad/DECISIONS.md`](scratchpad/DECISIONS.md): the simple cell-donor matching method.
-- [`scratchpad/DECISIONS.md`](scratchpad/DECISIONS.md): why each decision was made.
+- **2017 throughout.** Results describe a 2017 population with BNPL added; they are not
+  forwarded to a later year.
+- **FinScope 2019 stands in for 2017.** The flags are categorical, so they need no deflation,
+  but 2019 banking may overstate access in 2017.
+- **The match reproduces cell marginals.** It keeps the joint structure of product holdings
+  within a donor, but ignores recipient characteristics outside the match keys, such as urban
+  or rural location.
