@@ -205,6 +205,10 @@ class HouseholdAgent(Agent):
         shortfall = committed_shortfall + service_shortfall
         if shortfall > 0 and not self.defaulted:
             cash += self._seek_credit(shortfall)
+            if p.committed_shortfall_funded and committed_shortfall > 0:
+                # Robustness arm: the loan pays the food or rent left unpaid at step 2
+                # before anything else. Distress is still recorded below.
+                cash -= min(cash, committed_shortfall)
 
         # --- D7 distress is assessed HERE, before payment friction -------------
         # Either condition suffices. (1) Income plus savings could not cover committed
@@ -348,7 +352,7 @@ class HouseholdAgent(Agent):
         net_cash = 0.0  # cash actually freed up or drawn down
         financed = 0.0  # gross value of BNPL agreements opened for this shortfall
 
-        if p.bnpl_enabled and self.bnpl_eligible:
+        if p.bnpl_enabled and self.bnpl_eligible and p.shortfall_bnpl:
             # BNPL finances retail goods, not cash, so a shortfall can be shifted onto it
             # only up to what the household spends in the categories it finances: the
             # same kappa x budget that sizes a want-driven purchase. The remainder falls
@@ -495,6 +499,11 @@ class HouseholdAgent(Agent):
 
         order = list(self.model.platforms)
         self.model.rng.shuffle(order)
+        if p.platform_routing == "loyal":
+            # Platforms already owed come first; the sort is stable, so each group keeps
+            # its random order and the random numbers drawn are the same as under
+            # 'random'.
+            order.sort(key=lambda pl: not pl.has_balance(self.agent_id))
 
         financed = 0.0
         opened = 0

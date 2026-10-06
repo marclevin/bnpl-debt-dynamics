@@ -986,6 +986,11 @@ EFFECT_ROWS = [
     ("Income-shock persistence (Submodel 1)", [
         ("shock_single_tick", "single-tick shock", "shock_single_tick"),
     ]),
+    ("Routing and the shortfall path (Submodels 5, 7 and 13)", [
+        ("routing_loyal", "platforms already owed tried first", "ref"),
+        ("no_shortfall_bnpl", "no \\ac{BNPL} on the shortfall path", "ref"),
+        ("committed_funded", "credit pays a committed shortfall first", "committed_funded"),
+    ]),
 ]
 
 
@@ -1104,6 +1109,22 @@ def derived_numbers(rq0, rq2, rq2t, rq3, eff) -> None:
         x, se = delta(d_, off, "active_90_plus_mean")
         N[f"arrears90_change_{name}"], N[f"arrears90_change_{name}_se"] = x, se
     N["zero_savings_beta1"] = ms(b1.zero_savings_rate_mean)[0]
+    # Why lending falls at beta=0 but not at beta=1: applications against the mean loan.
+    for name, d_ in (("beta0", b0), ("beta1", b1)):
+        x, se = delta(d_, off, "trad_applications")
+        N[f"applications_change_{name}"], N[f"applications_change_{name}_se"] = x, se
+        x, se = delta(d_, off, lambda d: d.trad_granted_value / d.trad_granted.clip(lower=1))
+        N[f"mean_grant_change_{name}"], N[f"mean_grant_change_{name}_se"] = x, se
+    # Stacking under the two routing rules, on the effect suite's seeds (added 2026-10-06).
+    for rule, key in (("random", "ref"), ("loyal", "routing_loyal")):
+        for b in (0.0, 1.0):
+            d_ = arm(eff, f"eff_{key}_b{b}")
+            N[f"stack_holders_{rule}_beta{b:g}"] = ms(holders_share(d_))[0]
+            N[f"stack_ever_{rule}_beta{b:g}"] = ms(d_.ever_stacked_2plus_of_adopters)[0]
+            N[f"volume_{rule}_beta{b:g}"] = ms(d_.bnpl_volume_cumulative)[0]
+    for b in (0.0, 1.0):
+        x, se = paired_diff(arm(eff, f"eff_routing_loyal_b{b}"), arm(eff, f"eff_ref_b{b}"), "default_rate_final")
+        N[f"routing_default_diff_beta{b:g}"], N[f"routing_default_diff_beta{b:g}_se"] = x, se
     N["volume_want_off"] = ms(arm(eff, "eff_want_off_b0.0").bnpl_volume_cumulative)[0]
     N["volume_eff_ref_b0"] = ms(arm(eff, "eff_ref_b0.0").bnpl_volume_cumulative)[0]
     N["lending_eff_ref_b0"] = ms(arm(eff, "eff_ref_b0.0").trad_granted_value)[0]

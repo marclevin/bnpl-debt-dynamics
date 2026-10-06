@@ -394,6 +394,10 @@ EFFECT_SETTINGS: list[tuple[str, dict, bool]] = [
     ("limit0.25", dict(bnpl_limit_income_multiple=0.25), False),
     ("limit1.0", dict(bnpl_limit_income_multiple=1.0), False),
     ("shock_single_tick", dict(shock_persistent=False), True),
+    # Added 2026-10-06. None changes the stored rows above.
+    ("routing_loyal", dict(platform_routing="loyal"), False),
+    ("no_shortfall_bnpl", dict(shortfall_bnpl=False), False),
+    ("committed_funded", dict(committed_shortfall_funded=True), True),
 ]
 
 

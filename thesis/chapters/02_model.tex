@@ -48,10 +48,8 @@ The model contains five types of entity:
     Each household belongs to the group formed by its income quintile and province.
 \end{itemize}
 
-Table~\ref{tab:agent-mapping} links the initial household variables to their
-sources. These include observed survey fields, imputed characteristics and
-constructed financial quantities. Section~\ref{sec:calibration} explains their
-construction.
+Table~\ref{tab:agent-mapping} links each initial household variable to its
+source, and Section~\ref{sec:calibration} explains the construction.
 
 \begin{table}[H]
 \centering
@@ -198,7 +196,8 @@ cover committed expenditure from opening cash and income, or cannot meet the
 debt service due after seeking credit. A committed-expenditure shortfall is
 recorded as distress and is not carried forward. Credit raised against it is
 spent on debt service and then on discretionary spending, and any remainder is
-saved. Arrears track unpaid debt obligations through the \ac{CCMR}
+saved; a robustness arm spends it on the unpaid committed expenditure first
+(Section~\ref{sec:results-effect}). Arrears track unpaid debt obligations through the \ac{CCMR}
 age bands. Default occurs after seven consecutive distressed ticks, or 98 days,
 and blocks all further credit. The duration is chosen to approximate the
 90-day impairment convention at a 14-day resolution; the distress rule is not
@@ -254,7 +253,7 @@ initial population is constructed in Section~\ref{sec:population}.
 \addlinespace
 12. \ac{BNPL} eligibility & Banked households only; a light automated screen in place of the Regulation 23A test. Platforms also refuse a defaulted household, an \textbf{assumption}. Per-order cap R9{,}927 (2017 Rands; R15{,}000 at current prices), an \textbf{assumption}; rolling limit $\lambda = 0.10$ of monthly income per platform, set for each household, following providers' disclosed per-customer limits but without their ``grow'' step. & \cite{payflex_terms, payjustnow_terms, homechoice2024ir} & Access capped at the imputed 82.8\% banked share. At the default of 0.10, four per-platform limits sum to 40\% of monthly income, close to the 39\% we obtain by expressing Woolard's illustrative figure of about \pounds1{,}000 of \ac{BNPL} credit amassed across several lenders as a share of UK median monthly household disposable income, equivalised, in the year to March 2020 \cite{woolard2021, ons_income_fye2020}. $\lambda$ is swept 0.1--1.0 and reported against a 0.10--0.48 band whose upper end is Afterpay's maximum of A\$2{,}000 as a share of Australian median monthly household disposable income, equivalised, in 2019--20 \cite{asic2020rep672, abs_income_2019_20}. Equivalised income is below the income of a household with more than one member, so both shares overstate the limits relative to the household income that $\lambda$ multiplies. Order-cap and limit binding rates reported by quintile. \\
 \addlinespace
-13. Stacking & Each request goes to the platforms in a random order, redrawn for every request, and what one platform does not finance passes to the next. There is no aggregate limit, and no platform sees another's exposure. The routing rule is an \textbf{assumption}. & Follows Submodel 10 & Platforms swept 1--6 (default 4); stacking depth compared with the \ac{CFPB} share in Section~\ref{sec:data-validation}. \\
+13. Stacking & Each request goes to the platforms in a random order, redrawn for every request, and what one platform does not finance passes to the next. There is no aggregate limit, and no platform sees another's exposure. The routing rule is an \textbf{assumption}. & Follows Submodel 10 & Platforms swept 1--6 (default 4); a loyal-routing arm tries platforms already owed first; stacking depth compared with the \ac{CFPB} share in Section~\ref{sec:data-validation}. \\
 \addlinespace
 14. \ac{BNPL} repayment & Exogenous ``Pay-in-4'': 25\% at checkout, then 25\% at each of the next three ticks, interest-free. On a want-driven purchase the checkout debit must clear, so the order is truncated to what the household can fund. Late fees of R125.74 per tick (2017 Rands), capped per agreement at the lower of R188.61 and half the purchase price; a household that exhausts the cap is cut off by that platform only. & \cite{payflex_terms} & No free parameters; instalments fall on tick boundaries. \\
 \addlinespace
@@ -292,7 +291,7 @@ shortfall path; no located study measures how much of a shortfall they finance
 with it. Because \ac{BNPL} finances retail purchases and not general spending,
 the model caps the amount financed for a shortfall at the mean want-driven
 purchase. No empirical
-maximum was located, so the sensitivity analysis repeats each borrowing-amount rule with the cap removed.
+maximum was located, so the sensitivity analysis repeats each borrowing-amount rule with the cap removed, and a further arm removes \ac{BNPL} from the shortfall path altogether.
 
 \subsubsection*{Submodel 11: Peer Influence}
 \label{sec:peer-influence}
@@ -341,7 +340,9 @@ determines how overlapping agreements are spread across them. The stacking
 measures therefore show how often a household's agreements overlap, and carry no
 information about why a household would use several providers. No evidence on
 how South African households choose among providers was located, so uniform
-routing is an assumption.
+routing is an assumption. A robustness arm uses the opposite rule: a household
+tries the platforms it already owes first and moves to another only when a limit
+binds (Section~\ref{sec:results-stacking}).
 
 We vary the number of platforms from one to six. One platform rules out
 cross-platform stacking but still permits several agreements on that platform,
@@ -353,10 +354,7 @@ markets and observation periods.
 \subsection{Implementation and Verification}
 \label{sec:implementation}
 
-The model is implemented in Python using Mesa. Households, the lender, the
-bureau and platforms have separate classes; reference-group membership is stored
-on the model. Household data load from the parquet files described in
-Section~\ref{sec:population}. The lending gate reuses the affordability function
+The model is implemented in Python using Mesa. The lending gate reuses the affordability function
 used when constructing scheduled debt service, keeping the two calculations
 consistent. The parameter register in Appendix~\ref{app:specification} is
 generated from the code's declarations.

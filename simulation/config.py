@@ -69,6 +69,7 @@ AmountRule = Literal["shortfall", "shortfall_125", "shortfall_plus_committed"]
 Activation = Literal["random", "uniform"]
 PurchaseBase = Literal["discretionary", "income"]
 PeerMechanism = Literal["linear", "threshold"]
+Routing = Literal["random", "loyal"]
 
 # ---------------------------------------------------------------------------
 # 2017 Rands. EVERY monetary quantity in this model is denominated in 2017 Rands:
@@ -325,6 +326,33 @@ class ParamSet:
         source="No anchor found in the literature sweep. The model's first uncited rule.",
         sweep="MANDATORY: shortfall / +25% / plus one tick of committed expenditure",
     )
+    shortfall_bnpl: bool = _p(
+        True,
+        rule="D5",
+        provenance="ASSUMPTION",
+        source=(
+            "Whether BNPL may relieve a SHORTFALL at all. True is the BNPL-first rule. "
+            "False sends every shortfall to the traditional lender, so BNPL is used only "
+            "for want-driven purchases. Added 2026-10-06 as an effect-robustness arm: the "
+            "shortfall path frees cash by substituting a financed purchase for one paid in "
+            "cash, and this arm shows how much the BNPL effect depends on that channel."
+        ),
+        sweep="effect-robustness arm: off",
+    )
+    committed_shortfall_funded: bool = _p(
+        False,
+        rule="D7",
+        provenance="ASSUMPTION",
+        source=(
+            "Whether credit raised in a tick with a committed-expenditure shortfall first "
+            "pays the unpaid part of committed expenditure. False (the baseline) records the "
+            "shortfall as distress and spends the credit on debt service, then discretionary "
+            "spending, then savings. True spends it on the committed shortfall first, so the "
+            "food or rent the household could not pay is paid from the loan. Added "
+            "2026-10-06 as an effect-robustness arm; the baseline is not recalibrated."
+        ),
+        sweep="effect-robustness arm: on",
+    )
     shortfall_bnpl_capped: bool = _p(
         True,
         rule="D5",
@@ -575,6 +603,21 @@ class ParamSet:
             "labelled as such wherever it is reported."
         ),
         sweep="RQ3 lever 4, 1-3 or None",
+    )
+
+    platform_routing: Routing = _p(
+        "random",
+        rule="D12",
+        provenance="ASSUMPTION",
+        source=(
+            "How a BNPL request is routed across platforms. 'random': a fresh random order "
+            "for every request. 'loyal': platforms on which the household already owes a "
+            "balance are tried first, in random order, then the rest in random order, so a "
+            "household spreads across platforms only when a limit binds. No SA evidence on "
+            "provider choice; the two rules bracket the stacking shares. Added 2026-10-06. "
+            "Both rules draw the same random numbers, so 'random' reproduces earlier runs."
+        ),
+        sweep="effect-robustness arm: loyal",
     )
 
     # -- D16 scheduling ----------------------------------------------------------
