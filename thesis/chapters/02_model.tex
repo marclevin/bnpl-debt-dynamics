@@ -7,9 +7,8 @@ Each household begins with financial characteristics drawn from survey microdata
 Traditional credit is subject to the Regulation 23A residual-income test,
 while \ac{BNPL} platforms apply a lighter screen.
 
-This section explains who acts in the model, what each institution can observe,
-and how household finances change over time. Parameter choices and calibration
-are discussed in Section~\ref{sec:calibration}. The specification follows the
+Parameter choices and calibration are in Section~\ref{sec:calibration}. The
+specification follows the
 \ac{ODD} protocol \cite{grimm2006odd, grimm2020odd}, with the operational rules
 summarised in Table~\ref{tab:submodels}. Appendix~\ref{app:specification} records
 the design concepts and exclusions, Appendix~\ref{app:rationale} explains the
@@ -86,7 +85,6 @@ construction.
 \subsection{Balance Sheets and Information}
 \label{sec:asymmetry}
 
-Household finances are tracked through income, expenditure, savings and debt.
 Food and rent form committed expenditure, which the household cannot reduce.
 Discretionary spending can fall to zero to make room for repayments, and liquid
 savings provide a buffer when income is insufficient. Traditional debt and
@@ -211,11 +209,8 @@ the share of all households that defaulted at any point in the two years.
 \subsection{Credit and Adoption Mechanisms}
 \label{sec:submodels}
 
-The initial population is constructed as described in
-Section~\ref{sec:population}.
-Table~\ref{tab:submodels} sets out the seventeen operational submodels.
-The following subsections explain borrowing amounts, peer adoption and
-cross-platform stacking in more detail.
+Table~\ref{tab:submodels} sets out the seventeen operational submodels; the
+initial population is constructed in Section~\ref{sec:population}.
 
 \begingroup
 \setlength{\tabcolsep}{4pt}
@@ -288,16 +283,15 @@ cash. An agreement of value $F$ takes $F/4$ at checkout and leaves $3F/4$ in the
 household's hands, so it covers $3F/4$ of the shortfall. The household asks the
 traditional lender for the amount it still lacks, and the lender grants or
 refuses that amount in full under Submodel~9. A refusal leaves the shortfall
-unpaid, and the household is recorded as distressed in that tick. That the
-household asks the traditional lender for the whole of the amount it still
-lacks is an assumption.
+unpaid, and the household is recorded as distressed in that tick. The request
+for the whole remainder is an assumption.
 
-The shortfall path is motivated by evidence that \ac{BNPL} users are
-disproportionately liquidity-constrained \cite{hayashi2025constraints, dehaan2024bnpl};
-no located study measures how much of a shortfall they finance with it.
-The cap represents a restriction on what retail credit can finance. \ac{BNPL}
-is not general-purpose cash, so the model limits its contribution to a shortfall
-using the same budget share that sizes want-driven purchases. No empirical
+\ac{BNPL} users are disproportionately liquidity-constrained
+\cite{hayashi2025constraints, dehaan2024bnpl}, which is the reason for the
+shortfall path; no located study measures how much of a shortfall they finance
+with it. Because \ac{BNPL} finances retail purchases and not general spending,
+the model caps its contribution to a shortfall at the budget share that sizes
+want-driven purchases. No empirical
 maximum was located, so the sensitivity analysis repeats each borrowing-amount rule with the cap removed.
 
 \subsubsection*{Submodel 11: Peer Influence}
@@ -318,8 +312,8 @@ Here, $\mathrm{clip}$ restricts the probability to $[0,1]$. A positive
 $q_{\text{base}}$ allows borrowing to begin before anyone in the group has
 adopted. The coefficient $\beta$ determines how strongly the household responds
 to others' adoption. Evidence on social approval and consumption emulation
-motivates this channel \cite{ackert2025bnpl, cardaci2018inequality} without
-identifying its strength, so both parameters are swept. The defaults are
+supports the channel \cite{ackert2025bnpl, cardaci2018inequality} but does not
+identify its strength, so both parameters are swept. The defaults are
 $q_{\text{base}}=0.05$ and $\beta=0$, the no-peer control.
 
 A Granovetter-style threshold rule provides a structural alternative
@@ -328,10 +322,8 @@ $q_i = \mathrm{clip}(q_{\text{base}} + \gamma,0,1)$ when the lagged group
 share reaches the household's threshold. Thresholds are drawn from
 $\mathcal{N}(\mu_\theta, \sigma_\theta)$, with defaults $\mu_\theta=0.30$ and
 $\sigma_\theta=0.20$, and clipped to $[0,1]$, so households with a negative draw
-respond immediately. The sweeps
-vary threshold dispersion ($\sigma_\theta$), with additional comparisons of
-the mean, to examine whether outcomes depend on the distribution of peer
-susceptibility. Setting $\gamma=0$ removes the threshold response.
+respond immediately. The sweeps vary threshold dispersion ($\sigma_\theta$),
+and separate arms vary the mean. Setting $\gamma=0$ removes the threshold response.
 
 \subsubsection*{Submodel 13: Stacking}
 \label{sec:stacking}

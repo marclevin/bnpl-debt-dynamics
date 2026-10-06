@@ -1,10 +1,7 @@
 \section{Results}
 \label{sec:results}
 
-This section answers RQ2: how often households owe several platforms at once when
-platforms cannot observe one another, and how enabling \ac{BNPL}, platform count, access and
-peer adoption affect default. RQ3
-follows in Section~\ref{sec:scenarios}. Every arm in this section has twenty replications at the income-shock
+This section answers RQ2. Every arm in this section has twenty replications at the income-shock
 probability and payment friction fitted in Section~\ref{sec:calibration}; no \ac{BNPL}-side
 parameter is re-tuned. Differences in the text carry one standard error, paired by seed where
 the two arms share seeds, and we describe a difference as detectable only when it exceeds two.
@@ -50,9 +47,9 @@ Peer influence changes how much households borrow far more than how many ever bo
 share of households that ever hold a \ac{BNPL} balance is 70.0\% at $\beta=0$ and 75.5\% at
 $\beta=1$, while cumulative volume is R6.42 million and R65.88 million. The share of
 households with no liquid savings rises by $0.15 \pm 0.06$ points at $\beta=0$ and by
-$3.05 \pm 0.06$ at $\beta=1$. Default and depleted savings therefore rise together where
-borrowing is heavy. These are population aggregates, so they do not show that the households
-which default are those whose savings were depleted.
+$3.05 \pm 0.06$ at $\beta=1$. Default and depleted savings rise together where borrowing is
+heavy, although these population aggregates do not show that the households which default are
+those whose savings were depleted.
 
 At $\beta=0$ \ac{BNPL} partly replaces traditional credit. New traditional lending falls from
 R6.12 million to R5.43 million, which is consistent with the lender-choice rule sending an
@@ -106,10 +103,10 @@ between $-0.09 \pm 0.07$ and $+0.14 \pm 0.13$ at the other three values
 (Table~\ref{tab:stacking-full}). No contrast between one platform and a larger number exceeds
 two standard errors.
 
-Two features of the design limit what the sweep shows. Volume changes little beyond two
-platforms, so the sweep cannot show what additional platforms would do in a market where they
-expand borrowing. Each platform also brings its own limit, so platform count and total credit
-capacity move together and the sweep does not isolate invisibility.
+Volume changes little beyond two platforms, so the sweep cannot show what additional platforms
+would do in a market where they expand borrowing. Each platform also brings its own limit, so
+platform count and total credit capacity move together and the sweep does not isolate
+invisibility.
 
 \input{chapters/generated/tab_stacking}
 
@@ -130,12 +127,11 @@ $+0.14 \pm 0.11$ points, which is not detectable. The change is $0.27 \pm 0.11$ 
 $\beta=0.5$, $0.60 \pm 0.11$ at $\beta=1$, $0.78 \pm 0.09$ at $\beta=2$ and $0.95 \pm 0.09$
 at $\beta=3$.
 
-The experiment cannot establish the shape of this response. Steps between adjacent access
+The experiment cannot distinguish a straight line from a curved response. Steps between adjacent access
 levels range from $-0.09$ to $+0.33$ points with standard errors of 0.07 to 0.14, and six of
 the thirty exceed two standard errors. Straight-line fits to the arm means have $R^2$ between
 0.68 and 0.94. The largest step is $0.33 \pm 0.09$ points, between access of 0.85 and full
-access at $\beta=3$. The grid therefore cannot distinguish a straight line from a curved
-response.
+access at $\beta=3$.
 
 The heterogeneous-threshold rule raises holding far more than the control does, but it does
 not raise default detectably more. At
@@ -149,7 +145,7 @@ threshold from 0.15 to 0.45 lowers full-access holding from 50.8\% to 28.2\% and
 default by $-0.17 \pm 0.11$ points, which is not detectable.
 
 \label{sec:no-cascade}
-Two limits apply to the search for a tipping point. The grid has seven access levels, so a
+Neither rule shows a tipping point, but the test is limited. The grid has seven access levels, so a
 threshold narrower than their spacing could go undetected. No channel in the model carries one
 household's default to another household's income or to a lender's supply of credit
 (Table~\ref{tab:design-concepts}), so contagion through those channels lies outside the test.
@@ -248,10 +244,8 @@ at $\kappa=0.07$ to $1.27 \pm 0.11$ where households borrow one tick of committe
 beyond the shortfall and the shortfall cap is removed. Purchase size and the borrowing-amount
 rule move it most. The effect is $0.91 \pm 0.07$ points at $\kappa=0.28$ and
 $1.22 \pm 0.10$ when purchases are sized on income. Under the single-tick shock the effect is
-$0.02 \pm 0.01$ points, with default without \ac{BNPL} at 4.82\%. The \ac{BNPL}
-effect therefore depends on persistent income loss: \ac{BNPL} adds to default
-where shocks outlast the household's buffer and does not produce default without
-them.
+$0.02 \pm 0.01$ points, with default without \ac{BNPL} at 4.82\%. Without
+persistent income shocks, \ac{BNPL} barely adds to default.
 
 At $\beta=0$ the effect ranges from $-0.11 \pm 0.08$ to $+0.52 \pm 0.09$ points. It exceeds two
 standard errors under five of the seventeen settings and is detectably negative under none.

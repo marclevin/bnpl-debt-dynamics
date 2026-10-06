@@ -1,10 +1,9 @@
 \section{Calibration and Empirical Grounding}
 \label{sec:calibration}
 
-This section explains how the model is connected to South African household data.
-We construct the population, assign debt-service and product parameters, and fit
-two parameters to the baseline arrears profile. We then assess what the model
-reproduces beyond those fitted targets.
+We construct the population from South African survey data, assign debt-service
+and product parameters, fit two parameters to the baseline arrears profile, and
+then check what the model reproduces beyond those targets.
 
 The inputs differ in provenance. Some are observed directly, some are
 constructed from survey fields, and others come from foreign studies or
@@ -252,8 +251,7 @@ Unflagged balance & 28\% & 25 & Fallback for the 74.0\% of donors flagging no sp
 \end{tabular}
 \end{table}
 
-The cap affects relatively few households but makes a substantial aggregate
-adjustment: it binds for 3.8\% of debtors and removes 22.8\% of calculated
+The cap binds for only 3.8\% of debtors but removes 22.8\% of calculated
 service (Appendix~\ref{app:var-servicing}). There is also an accounting overlap.
 The non-food expenditure aggregate already includes clothing-account,
 hire-purchase and vehicle payments. Among households reporting such payments,
@@ -279,10 +277,10 @@ exposure given by Woolard \cite{woolard2021} and varied in Submodel~12.
 \label{sec:lim-transfer}
 The behavioural evidence discussed in Section~\ref{sec:lit-behavioural}
 comes from United States borrowers. It supplies the minimum-payer share of
-0.29 and motivates payment friction and want-driven borrowing, but provides
-no local estimates for these rules. No comparable developing-market
-evidence was located. We vary the minimum-payer share from 0.20 to 0.40,
-while recognising that this cannot resolve the transfer assumption.
+0.29 and the case for payment friction and want-driven borrowing, but no local
+estimates for these rules, and no comparable developing-market evidence was
+located. We vary the minimum-payer share from 0.20 to 0.40, which shows how much
+the value matters but cannot show that it transfers.
 A continuous present-bias parameter is omitted because no South African
 distribution was available to calibrate it.
 
@@ -345,12 +343,11 @@ and without peer influence (Section~\ref{sec:scenarios}).
 \subsection{Validation}
 \label{sec:data-validation}
 
-The checks serve different purposes. Construction checks assess whether the
-population preserves the intended data properties. Calibration checks assess
-fit to selected targets. External comparisons use quantities not fitted or
-directly imposed during construction, but their usefulness depends on whether
-they measure comparable populations and outcomes.
-Table~\ref{tab:patterns} lists the four patterns used to guide the assessment.
+Construction checks test whether the population preserves the properties of
+its sources, and calibration checks test the fit to the two targets. Only
+external comparisons, against quantities neither fitted nor imposed, are
+evidence about the model's behaviour, and only as far as they measure comparable
+populations and outcomes. Table~\ref{tab:patterns} lists the four patterns used.
 
 \label{sec:lim-validation}
 Only Pattern~2 is both South African and matched to the model's base year.
@@ -453,12 +450,12 @@ income Gini of 0.70 that Statistics South Africa reports for 2009
 measures: Statistics South Africa reports a per-capita income Gini of 0.67 for
 2015, and Hundenborn et al.\ compute 0.66 from the 2014 wave of \ac{NIDS}
 \cite{statssa2019inequality, hundenborn2018drivers}. The model's 0.651 is
-0.01 to 0.02 below them. Similarly, synthetic debt of
+0.01 to 0.02 below them. Synthetic debt of
 R191.4 billion is 49\% of the corresponding R392.0 billion
 \ac{CCMR} book \cite{ncr_ccmr_2017}. Underreporting may contribute to
-this gap, but the comparison does not identify its cause. Imputing missing
-balances at holder means would instead produce 111\% of the administrative
-book, so the debt comparison is sensitive to the missing-data treatment.
+this gap. Imputing missing balances at holder means would instead produce 111\%
+of the administrative book, so the comparison depends on the missing-data
+treatment.
 
 Mean household size passes its tolerance but, at 3.03, is below the
 Community Survey estimate of 3.3 \cite{statssa_cs_2016}, and the weighted

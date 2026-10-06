@@ -55,11 +55,9 @@ horizon. Further experiments vary the number of platforms, access to \ac{BNPL}, 
 influence, bureau visibility and affordability screening.
 
 The experiments isolate the effect of these changes within a specified model of household
-finances. Estimating the historical effect of \ac{BNPL} in South Africa, or forecasting
-default under the new reporting arrangements, is outside the scope of this thesis.
-The model allows us to examine
-how additional obligations interact with existing debt, cash buffers and income shocks,
-while making the assumptions behind those interactions explicit.
+finances, in which additional obligations interact with existing debt, cash buffers and
+income shocks through stated rules. They do not estimate the historical effect of
+\ac{BNPL} in South Africa or forecast default under the new reporting arrangements.
 
 \subsection{Research Questions}
 \label{sec:rqs}
@@ -89,10 +87,8 @@ Three subsidiary questions, referred to as RQ1 to RQ3, guide the analysis:
 
 We report outcomes by income quintile because United States studies find that
 \ac{BNPL} users differ from non-users in financial constraint, credit score and income
-\cite{hayashi2025constraints,wang2026buynow,dimaggio2022bnpl}. Section~\ref{sec:calibration} addresses
-the first question through population checks, calibration and validation.
-Sections~\ref{sec:results} and~\ref{sec:scenarios} address the remaining questions
-through the simulation experiments.
+\cite{hayashi2025constraints,wang2026buynow,dimaggio2022bnpl}. Section~\ref{sec:calibration}
+answers RQ1, Section~\ref{sec:results} RQ2 and Section~\ref{sec:scenarios} RQ3.
 
 \subsection{Related Literature}
 \label{sec:literature}
@@ -100,14 +96,13 @@ through the simulation experiments.
 \subsubsection*{Agent-Based Models of Household Credit}
 \label{sec:lit-abm}
 
-Household credit models provide a way to connect individual borrowing decisions to
-aggregate financial distress. Cardaci \cite{cardaci2018inequality} models rising
+Agent-based models of household credit derive aggregate distress from individual
+borrowing decisions. Cardaci \cite{cardaci2018inequality} models rising
 inequality and consumption emulation, leading to debt-financed spending and eventually
 a banking crisis. That model concerns collateralised debt, so its mechanism differs
 from unsecured pay-in-four lending. D'Orazio and Giulioni \cite{dorazio2017micro}
 model household borrowing over the business cycle, driven by consumption wants,
-expectations of future income and bank credit rationing. These
-studies support examining aggregate outcomes through explicit household decisions.
+expectations of future income and bank credit rationing.
 
 Madeira \cite{madeira2018chile} models Chilean households exposed to labour-income
 shocks, with default arising when they cannot finance minimum consumption. We adopt
@@ -132,23 +127,21 @@ used to fit the model from those used to assess it afterwards.
 Di Maggio et al.\ \cite{dimaggio2022bnpl} find that \ac{BNPL} access increases
 spending among both constrained and unconstrained users, beyond what intertemporal
 substitution explains. Together with the financial-distress findings of deHaan et al.\
-\cite{dehaan2024bnpl}, this motivates examining whether additional \ac{BNPL}
-obligations increase stress on traditional debt. The model's complementarity check
-assesses this relationship through traditional arrears and interest charges
-(Pattern~1, Table~\ref{tab:patterns}).
+\cite{dehaan2024bnpl}, this suggests that additional \ac{BNPL} obligations may
+increase stress on traditional debt. The model's complementarity check tests this
+through traditional arrears and interest charges (Pattern~1, Table~\ref{tab:patterns}).
 
 Hayashi and Routh
 \cite{hayashi2025constraints} find that \ac{BNPL} users are more financially
 constrained than non-users. Wang \cite{wang2026buynow} reports that borrowers with
 subprime or deep subprime credit scores accounted for most \ac{BNPL} originations in
 2021 and 2022, and Di Maggio et al.\ \cite{dimaggio2022bnpl} find use highest among
-low-to-middle-income consumers. These findings motivate the distributional analysis.
+low-to-middle-income consumers.
 
 Ackert et al.\ \cite{ackert2025bnpl} find that participants in an incentivised
 experiment are more willing to finance purchases with \ac{BNPL} than with credit
-cards, and generally expect peer approval. This supports allowing purchases that
-are not driven solely by an immediate cash shortfall, and exploring peer influence
-on adoption. Granovetter's threshold model \cite{granovetter1978threshold} provides a second
+cards, and generally expect peer approval. The model therefore allows purchases
+that no cash shortfall forces, and lets peers influence adoption. Granovetter's threshold model \cite{granovetter1978threshold} provides a second
 adoption mechanism: heterogeneous individual thresholds can produce abrupt changes
 in collective behaviour. We compare a threshold rule with a linear peer rule to
 examine whether the default response depends on how adoption spreads.
@@ -185,10 +178,9 @@ The United Kingdom's Woolard Review \cite{woolard2021} informed the \ac{FCA}'s
 approach to deferred payment credit, including proportionate affordability checks
 \cite{fca_ps26_1}. Australia's \ac{ASIC} review \cite{asic2020rep672} found that
 one in five surveyed users had missed a payment in the preceding year under
-industry self-regulation. These sources motivate comparing a lightly screened
-\ac{BNPL} channel with mandatory screening, which the model implements through the
-South African residual-income test. We separately test bureau visibility, and run both comparisons with and without
-peer influence.
+industry self-regulation. We therefore compare a lightly screened \ac{BNPL} channel
+with mandatory screening under the South African residual-income test, and separately
+test bureau visibility, each with and without peer influence.
 
 \subsubsection*{Synthesis and Gap}
 \label{sec:lit-gap}
