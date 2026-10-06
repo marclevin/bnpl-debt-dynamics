@@ -66,7 +66,7 @@ missing weights. Applying the survey weights gives
 
 We construct monthly income, its dominant source, committed expenditure,
 discretionary expenditure, liquid savings and traditional debt. Income sources
-are grouped as wage, grant, or remittance and other. Food and rent paid form
+are grouped as wage, grant, or other. Food and rent paid form
 committed expenditure; other non-food cash spending, including transport and
 utilities, is treated as discretionary because \ac{NIDS} offers no finer split.
 Financial assets provide the savings proxy and are winsorised at the 99th
@@ -97,8 +97,9 @@ so no draw requires a coarser match.
 
 All six flags come from the same donor. This preserves combinations
 observed in \ac{FinScope} and reproduces its weighted within-cell distribution
-in expectation. It does not recover relationships with recipient characteristics
-omitted from the match, such as urban or rural location; within a cell, flags
+in expectation. \ac{FinScope} records one adult's holdings, so flags understate
+holding in households with several adults. The match does not recover relationships with
+recipient characteristics omitted from it, such as urban or rural location; within a cell, flags
 are assigned without regard to them. Using 2019 banking data may also
 overstate access in 2017. Appendix~\ref{app:matching} explains these assumptions
 and reports donor reuse.
@@ -390,7 +391,7 @@ the internal consistency of the construction only.
 \centering
 \caption{Data-layer validation scorecard}
 \label{tab:validation}
-\tabnote{Eighteen checks on the constructed population, grouped by what they test. Groups A, B and E contain thirteen construction checks on consistency, imputed marginals and resampling. The household-size row in Group A is an external comparison with the Community Survey. Group C compares with quantities that no construction step targeted. Group D bounds the debt-service construction: the first row is the share of debtors for whom the Regulation 23A cap binds, the second the servicing share of monthly outlay among households holding a modelled product, against \ac{FinScope}'s self-reported range. Tolerances with a source: the household-size band is the 2016 Community Survey \cite{statssa_cs_2016}, the Gini interval is bounded below by the World Bank consumption-based estimate of 63.0 for 2014 as published until February 2026 (the April 2026 release revises it to 59.6 and adds 54.1 for 2022) \cite{worldbank_gini_zaf}, and the Group D range is \ac{FinScope}'s \cite{finscope2019}; the remainder are ours. Values are survey-weighted except in Group E, which compares the unweighted agents with the weighted source.}
+\tabnote{Eighteen checks on the constructed population, grouped by what they test. Groups A, B and E contain thirteen construction checks on consistency, imputed marginals and resampling. The household-size row in Group A is an external comparison with the Community Survey. Group C compares with quantities that no construction step targeted. Group D bounds the debt-service construction: the first row is the share of debtors for whom the Regulation 23A cap binds, the second the servicing share of monthly outlay among indebted households, against \ac{FinScope}'s self-reported range among holders of a modelled product. Tolerances with a source: the household-size band is the 2016 Community Survey \cite{statssa_cs_2016}, the Gini interval is bounded below by the World Bank consumption-based estimate of 63.0 for 2014 as published until February 2026 (the April 2026 release revises it to 59.6 and adds 54.1 for 2022) \cite{worldbank_gini_zaf}, and the Group D range is \ac{FinScope}'s \cite{finscope2019}; the remainder are ours. Values are survey-weighted except in Group E, which compares the unweighted agents with the weighted source.}
 \begin{tabular}{L{4.9cm}L{3.6cm}rrc}
 \toprule
 \textbf{Check} & \textbf{Metric} & \textbf{Value} & \textbf{Tolerance} & \\

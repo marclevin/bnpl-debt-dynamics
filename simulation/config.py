@@ -481,8 +481,8 @@ class ParamSet:
     n_platforms: int = _p(
         4,
         rule="D12",
-        provenance="SOURCED",
-        source="PayJustNow, Payflex, Mobicred, TymeBank all active in South Africa.",
+        provenance="ASSUMPTION",
+        source="Several providers operate in South Africa (PayJustNow, Payflex among them); four is a stylised count, swept 1-6.",
         sweep="1-6; N=1 isolates single-platform accumulation from cross-firm stacking",
     )
     bnpl_order_cap: float = _p(

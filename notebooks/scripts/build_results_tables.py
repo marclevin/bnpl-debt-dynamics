@@ -806,7 +806,7 @@ def tab_robustness(rob: pd.DataFrame) -> None:
         f"sensitivity arms, laid out as Table~\\ref{{tab:robustness}}: each group's reference is its "
         f"baseline value on the group's own seed set (activation 53{{,}}000--, population 55{{,}}000--, "
         f"minimum-payer share 51{{,}}000--, minimum payment 52{{,}}000--, limit 56{{,}}000--, "
-        f"single-tick shock 58{{,}}000--). {REPL}; differences are arm less reference, paired by "
+        f"single-tick shock 58{{,}}000--, compared with the exact-shortfall reference on 50{{,}}000--). {REPL}; differences are arm less reference, paired by "
         f"seed with one standard error, except $\\ddagger$, where the two arms use different seed "
         f"blocks or population sizes and the standard error is unpaired. The single-tick shock arm "
         f"recovers the original one-tick income-loss rule, "
@@ -854,8 +854,8 @@ def tab_sobol() -> None:
         f"parameters ({num(data['n_design_points'])} design points, {data['replicates']} replicates each; "
         f"{num(N['sobol_runs'])} runs), \\ac{{BNPL}} on at $\\beta$ drawn from its range and every other "
         f"parameter at its calibrated value. The indices decompose the variance of the final-tick "
-        f"outcome across the ranges shown; an $S_1$ above one reflects bootstrap noise around a "
-        f"single dominant parameter. They describe what moves the \\emph{{level}} of default when "
+        f"outcome across the ranges shown; an index above one or below zero reflects "
+        f"bootstrap noise. They describe what moves the \\emph{{level}} of default when "
         f"parameters are uncertain; the \\ac{{BNPL}} \\emph{{effect}}, a difference between arms at "
         f"fixed parameters, is a separate quantity and is not decomposed here.",
         "L{4.0cm}c rr rr",

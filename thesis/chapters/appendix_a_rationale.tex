@@ -1,16 +1,16 @@
 \section{Design Rationale: Alternatives Considered and Rejected}
 \label{app:rationale}
 
-Section~\ref{sec:model} states the rules the model uses. This appendix records the alternatives
-considered and rejected for each.
+The model's rules (Section~\ref{sec:model}) were chosen over the following alternatives.
 
 \subsection{Population Construction}
 
 \textbf{Statistical fusion of \ac{NIDS} and \ac{FinScope}.} A hot-deck or model-based fusion would
 recover finer joint structure between the two instruments than copying flags within an
 income-quintile-by-province cell, at the cost of its own validation burden and a real risk of
-fitting the idiosyncrasies of two surveys rather than the population behind them. The crude match
-reproduces cell marginals, which is what the model needs.
+fitting the idiosyncrasies of two surveys rather than the population behind them. The cell match
+reproduces the weighted within-cell distribution of flag combinations, which is what the servicing
+construction needs.
 
 \textbf{\ac{CPI} forwarding to 2022.} An earlier design forwarded \ac{NIDS} monetary values to
 2022, which required a second reference year, assumptions about how relative incomes moved between
@@ -23,11 +23,10 @@ the 2017 anchor is independently required by the counterfactual injection design
 calibrated propensity for which no South African estimate exists, and both discard the
 committed-versus-discretionary expenditure split already observed in the survey data.
 
-\textbf{Cost ranking as the lender-choice rule (Submodel~5).} \ac{BNPL} is nominally interest-free,
-so a cost-minimising rule selects it trivially and attributes the choice to price. The evidence
-attributes the choice to social approval \cite{ackert2025bnpl}, and the two
-mechanisms imply different interventions: a price-driven choice would respond to disclosure of
-effective cost, while a norm-driven one would not.
+\textbf{Cost ranking as the lender-choice rule (Submodel~5).} \ac{BNPL} is nominally
+interest-free, so a cost ranking would also send a shortfall to \ac{BNPL} first, but would
+attribute the choice to price. The experimental evidence points to expected social approval
+\cite{ackert2025bnpl}. The model's rule gives the same order without a price motive.
 
 \textbf{Scheduled amortisation as the sole repayment rule (Submodel~6).} Keys and Wang
 \cite{Keys2019} find that 29\% of credit-card accounts pay at or near the contractual minimum, and
@@ -36,9 +35,9 @@ constraints alone cannot explain, a lower bound on anchoring. A uniform amortisa
 suppress the behaviour by which obligations persist and compound.
 
 \textbf{A debt-service-to-income threshold as the default condition (Submodel~7).} Any such
-threshold is arbitrary and the \ac{NCA} prescribes none. Madeira's cash-flow insolvency test is
-cited, consistent with the affordability rule the model already implements, and validated against
-observed default rates in a middle-income economy \cite{madeira2018chile}.
+threshold would be arbitrary, and the \ac{NCA} prescribes none. The model uses Madeira's cash-flow
+test instead, which matches the residual-income basis of the lending gate and which Madeira
+compares with observed default rates in a middle-income economy \cite{madeira2018chile}.
 
 \textbf{A continuous present-bias parameter (Submodel~8).} No South African distribution exists
 against which to calibrate one, so it would add a free parameter with no discipline. The model
@@ -54,22 +53,23 @@ an income-varying ceiling, which across the population spans zero to 93.2\% of i
 
 \textbf{Making the \ac{BNPL} eligibility screen a real affordability test (Submodel~12).} The
 asymmetry between the Regulation 23A test that binds registered lenders and the light screen
-\ac{BNPL} providers apply is the mechanism under study. Imposing a genuine affordability test on
-\ac{BNPL} is an intervention, and appears as the second scenario of Submodel~15.
+\ac{BNPL} providers apply is one of the conditions the model studies, so a genuine test on
+\ac{BNPL} is an intervention: the screening scenario of Section~\ref{sec:scenarios}.
 
 \textbf{A purely multiplicative peer-influence rule (Submodel~11).} Every household opens with no
-\ac{BNPL} balance, so the reference-group adoption share is identically zero at initialisation and
-adoption could never begin. The additive form of Equation~\ref{eq:peer} gives $q_{\text{base}}$ and
-$\beta$ the roles that $p$ and $q$ play in Bass diffusion.
+\ac{BNPL} balance, so under $q_i = \beta s_g$ want-driven borrowing could start only after
+shortfall borrowing had created balances, and never where \ac{BNPL} relieves no shortfall. The
+additive form of Equation~\ref{eq:peer} lets $q_{\text{base}}$ start adoption and $\beta$ amplify
+it.
 
 \subsection{Environment and Scheduling}
 
-\textbf{Macroeconomic dynamics (Submodel~16).} The environment is held fixed to isolate the
-effect of introducing \ac{BNPL} under baseline conditions. A common macroeconomic shock could
-be added to both arms, but would require a broader experimental design.
+\textbf{Macroeconomic dynamics (Submodel~16).} A common macroeconomic shock could be added to
+both arms, but would require a broader experimental design (Table~\ref{tab:design-concepts}).
 
-\textbf{Uniform activation order (Submodel~17).} Random activation avoids a fixed household
-sequence. There is no shared credit pool for early households to exhaust, and all households
-read the same lagged peer signal. Alternative schedules test for remaining implementation
-sensitivity, motivated by the findings of Comer and Loerch \cite{comer2013activation} and
-Alizadeh and Cioffi-Revilla \cite{alizadeh2015activation}.
+\textbf{Fixed activation order (Submodel~17).} A fixed order would let the same households act
+first in every tick. Little in the model depends on order: there is no shared credit pool for
+early households to exhaust, and every household reads the same lagged peer signal. Random order
+removes the residual dependence, and a fixed-order arm, prompted by Comer and Loerch
+\cite{comer2013activation} and Alizadeh and Cioffi-Revilla \cite{alizadeh2015activation},
+changes default by less than two standard errors (Appendix~\ref{app:activation}).

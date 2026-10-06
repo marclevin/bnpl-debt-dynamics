@@ -1,19 +1,14 @@
 \section{Model Specification: Design Concepts and Parameter Register}
 \label{app:specification}
 
-Section~\ref{sec:model} states the mechanism and Table~\ref{tab:submodels} the rule and source for
-each submodel. This appendix completes the \ac{ODD} specification with the two registers the body
-points to: the protocol's design concepts, closing with the mechanisms the model excludes by
-design, and the full numerical parameter register.
-
 \subsection*{B.1 Design concepts and exclusions}
 
-Table~\ref{tab:design-concepts} outlines the eleven structural \ac{ODD} design concepts, and closes with the six mechanisms the model excludes by design.
+Table~\ref{tab:design-concepts} gives the model's treatment of the eleven \ac{ODD} design concepts and the eight mechanisms it excludes by design.
 
 \begin{longtable}{L{2.9cm}L{7.3cm}L{3.2cm}}
 \caption{\ac{ODD} design concepts and design exclusions}
 \label{tab:design-concepts} \\
-\multicolumn{3}{p{13.4cm}}{\footnotesize The eleven design concepts of the \ac{ODD} protocol \cite{grimm2020odd}, each with the model's treatment and the literature that grounds it; ``None'' in the source column marks a modelling choice with no external anchor. The final row lists the six mechanisms excluded by design and the reason for each. The absence of default-to-income and lender-loss feedback limits the contagion mechanisms tested in Section~\ref{sec:results-rq2}.} \\
+\multicolumn{3}{p{13.4cm}}{\footnotesize The eleven design concepts of the \ac{ODD} protocol \cite{grimm2020odd}, each with the model's treatment and the literature that grounds it; ``None'' in the source column marks a modelling choice with no external anchor. The final row lists the eight mechanisms excluded by design and the reason for each. The absence of default-to-income and lender-loss feedback limits the contagion mechanisms tested in Section~\ref{sec:results-rq2}.} \\
 \toprule
 \textbf{Concept} & \textbf{Treatment} & \textbf{Source} \\
 \midrule
@@ -28,7 +23,7 @@ Basic principles & Balance sheets form the accounting core. Heuristic decision r
 \addlinespace
 Emergence & Default rates and adoption paths follow from household decisions; stacking depths follow from the routing rule of Submodel~13. Borrowing to service existing debt raises future obligations, while lagged peer adoption raises borrowing propensities. Setting $\beta=0$ removes the peer-adoption effect. & None \\
 \addlinespace
-Adaptation & Households compress consumption and select borrowing and repayment actions from immediate liquidity alone, without the income expectations that D'Orazio and Giulioni give their households. The traditional lender is non-adaptive. & \cite{dorazio2017micro} \\
+Adaptation & Households compress discretionary spending and borrow against shortfalls from current liquidity, and their want-driven purchase propensity rises with lagged peer adoption; they form none of the income expectations that D'Orazio and Giulioni give their households. The traditional lender and the platforms are non-adaptive. & \cite{dorazio2017micro} \\
 \addlinespace
 Objectives & No forward-looking utility. Households satisfy obligations in a fixed priority order, compressing discretionary spending under stress. & \cite{meier2010present} \\
 \addlinespace
@@ -36,28 +31,24 @@ Learning & Excluded. Behavioural rules are static over the horizon. & None \\
 \addlinespace
 Prediction & Excluded. Agents treat current income as persistent. & None \\
 \addlinespace
-Sensing & Agents know their own balance sheets and observe the lagged adoption share among their reference group's \ac{BNPL}-eligible members. The traditional lender is blind to \ac{BNPL} and informal debt. & \cite{nortonrose_bnpl_sa} \\
+Sensing & Agents know their own balance sheets and observe the lagged adoption share among their reference group's \ac{BNPL}-eligible members. In the benchmark the traditional lender sees only bureau-recorded traditional debt and defaults, and each platform sees only its own exposure; the bureau switch adds \ac{BNPL} obligations to the lender's view (Submodel~15). & \cite{nortonrose_bnpl_sa} \\
 \addlinespace
 Interaction & Households interact with lenders through credit applications, and with each other indirectly through reference-group adoption shares. & \cite{ackert2025bnpl} \\
 \pagebreak
-Stochasticity & Income shocks, archetype and eligibility assignment, purchase-size draws, platform routing order, payment friction, and threshold endowments (drawn from a separate initialisation stream so control arms reproduce exactly). Runs are seeded and replicated, with dispersion reported. & None \\
+Stochasticity & Income shocks and re-employment, archetype and eligibility assignment, want-driven purchases and their size, platform routing order, payment friction, activation order, and threshold endowments (drawn from a separate stream so control arms reproduce exactly across threshold dispersion). Runs are seeded and replicated, with dispersion reported. & None \\
 \addlinespace
 Collectives & Reference groups (income quintile $\times$ province) aggregate individual adoption into the peer signal. & \cite{cardaci2018inequality} \\
 \addlinespace
-Observation & Tracked per tick: population default rate, \ac{CCMR} arrears distribution, aggregate traditional and \ac{BNPL} debt volumes, mean and quintile \ac{DSTI}, consumption compression, and application and rejection counts. & None \\
+Observation & Tracked per tick: population default rate; the \ac{CCMR} arrears distribution of credit-active households; traditional debt, arrears and interest; \ac{BNPL} balances, holding, volume and fees; the number of platforms each household owes; reference-group adoption shares; and the share with no liquid savings. Per run: the traditional lender's applications, grants and refusals, order-cap and limit binding rates, and default, purchase size and debt-to-income by income quintile. & None \\
 \addlinespace
-Exclusions & Six mechanisms are excluded by design. \emph{No macroeconomic dynamics}: holding the environment fixed isolates the injection effect under baseline conditions. \emph{No contagion}: one aggregate lender with no balance sheet that can fail, and no feedback from household default to income, so default cannot spread through these channels. \emph{No competition among traditional lenders}, which suppresses the lender-conduct mechanism of Hamill et al. \emph{No learning and no scarring}. \emph{No peer effects on consumption}: peer influence acts only on \ac{BNPL} adoption. \emph{Static household composition}. & \cite{hamill2023creditcard, cardaci2018inequality} \\
+Exclusions & Eight mechanisms are excluded by design. \emph{No macroeconomic dynamics}: holding the environment fixed isolates the injection effect under baseline conditions. \emph{No contagion}: one aggregate lender with no balance sheet that can fail, and no feedback from household default to income, so default cannot spread through these channels. \emph{No competition among traditional lenders}, which suppresses the lender-conduct mechanism of Hamill et al. \emph{No learning and no scarring}. \emph{No peer effects on consumption}: peer influence acts only on \ac{BNPL} adoption. \emph{Static household composition}. \emph{No credit scores or risk pricing}: the bureau switch acts only through the affordability test. \emph{No other source of credit}: a household that the lender refuses has no informal or alternative lender. & \cite{hamill2023creditcard, cardaci2018inequality} \\
 \end{longtable}
 
 \subsection*{B.2 Parameter register}
 
-The register holds every parameter, its baseline value, its provenance, and its sweep
-range where one applies. The table is generated from the model's parameter declarations in
-\texttt{simulation/config.py} by \texttt{notebooks/scripts/generate\_param\_register.py}
-and must be regenerated after parameter changes. All Rand values are 2017 Rands; the \ac{BNPL} money
-parameters are published at current vintage and deflated once by a sourced \ac{CPI} factor, and
-the source column keeps the published nominal figure so a reader checking against a provider's
-website is not misled.
+Table~\ref{tab:param-register} gives every parameter with its value, provenance and sweep range.
+It is generated from the parameter declarations in \texttt{simulation/config.py} by
+\texttt{notebooks/scripts/generate\_param\_register.py}.
 
 Four groups of entries carry standing flags:
 \begin{itemize}
@@ -65,16 +56,20 @@ Four groups of entries carry standing flags:
     payment-friction rate (Submodel~6) are fitted to the \ac{CCMR} 90+ and 1--30 day bands, which
     is what makes the baseline calibrated rather than validated
     (Section~\ref{sec:lim-calibration}).
-    \item \textbf{The uncited rules.} The shortfall borrowing amount (Submodel~4), the cap on
-    its \ac{BNPL} share (Submodel~5) and the minimum-payment fraction (Submodel~6) have no
-    literature anchor. Each is varied in at least one arm.
+    \item \textbf{The uncited rules.} The shortfall borrowing amount (Submodel~4), \ac{BNPL} relief
+    of a shortfall and its cap (Submodel~5), the minimum-payment fraction (Submodel~6), the use of
+    credit raised against a committed shortfall (Submodel~7) and platform routing (Submodel~13)
+    have no literature anchor. Each is varied in at least one arm. Two assumed values are not
+    varied: purchase-size dispersion and the order cap, which binds on 0.3\% of platform requests
+    at $\beta=0$.
     \item \textbf{The uncalibrated peer coefficients.} $q_{\text{base}}$, $\beta$ and the
-    threshold parameters of Submodel~11 cannot be calibrated from any South African source. The
+    threshold parameters of Submodel~11 have no South African estimate. The
     $\beta = 0$ and $\gamma = 0$ control arms are reported beside every peer-influence result.
-    \item \textbf{The rolling limit.} No provider publishes a limit. $\lambda = 0.10$ is set so
-    that four platform limits approximate Woolard's illustrative figure of about \pounds1{,}000
-    of credit across several lenders, which we convert to 39\% of United Kingdom median monthly
-    household disposable income \cite{ons_income_fye2020}. It is swept 0.1--1.0.
+    \item \textbf{The rolling limit.} No South African provider publishes a limit. $\lambda = 0.10$
+    is set so that four platform limits sum to about Woolard's illustrative \pounds1{,}000 of
+    credit across several lenders \cite{woolard2021}, 39\% of United Kingdom median monthly
+    equivalised household disposable income \cite{ons_income_fye2020}. It is swept 0.10--1.0 and
+    reported against a 0.10--0.48 band (Submodel~12).
 \end{itemize}
 
 \input{chapters/appendix_b_register}

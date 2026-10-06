@@ -24,9 +24,10 @@ Submodel~11 independent of activation order. Algorithm~\ref{alg:main} dispatches
 
 Algorithm~\ref{alg:tick} is the seven-step sequence of Section~\ref{sec:sequence}, with the step
 numbers of that list marked. Credit is sought at step~4 for the shortfall realised at steps~2
-and~3, before the payments it funds are made; distress is assessed after credit and before
-payment friction, so that a household which skips an affordable instalment is not counted as
-cash-flow insolvent.
+and~3, before the payments it funds are made; distress is assessed before payment friction, so
+that a household which skips an affordable instalment is not counted as cash-flow insolvent. In
+one robustness arm, $\mathbb{1}^{\text{fund}}$, the credit first pays the committed expenditure
+left unpaid at step~2; the household is still recorded as distressed.
 
 \begin{algorithm}[H]
 \caption{Household tick, for household $i$ at tick $t$}
@@ -49,7 +50,10 @@ cash-flow insolvent.
 \State $b \gets \sum_{p} \text{due}_p(i, t)$ \Comment{\ac{BNPL} instalments and arrears due at $t$, all platforms}
 \State $\text{short}^s \gets \max(\text{due} + b - \text{cash}, 0)$
 \State \textbf{Step 4: seek credit for the realised shortfall; assess distress}
-\If{$\text{short}^c + \text{short}^s > 0$ and $d_i = 0$} $\text{cash} \gets \text{cash} + \Call{SeekCredit}{i,\ \text{short}^c + \text{short}^s}$ \Comment{Algorithm~\ref{alg:gate}} \EndIf
+\If{$\text{short}^c + \text{short}^s > 0$ and $d_i = 0$}
+    \State $\text{cash} \gets \text{cash} + \Call{SeekCredit}{i,\ \text{short}^c + \text{short}^s}$ \Comment{Algorithm~\ref{alg:gate}}
+    \If{$\mathbb{1}^{\text{fund}}$ and $\text{short}^c > 0$} $\text{cash} \gets \text{cash} - \min(\text{cash}, \text{short}^c)$ \Comment{robustness arm} \EndIf
+\EndIf
 \State $\text{distressed} \gets \text{short}^c > 0$ or $\text{due} + b > \text{cash}$ \Comment{after credit, before friction}
 \State \textbf{Step 5: pay \ac{BNPL} first, then traditional debt}
 \ForAll{platforms $p$}
@@ -80,13 +84,14 @@ seven to eight is 91--120, and nine or more is 120+.
 
 Algorithm~\ref{alg:gate} is the shortfall path of Submodels~3 to~5 and~9. The household asks
 for the amount Submodel~4 specifies and takes \ac{BNPL} first where it can, up to $\kappa$ times
-its monthly discretionary budget $E^d_i$ (the cap $\mathbb{1}^{\text{cap}}$, on in every arm but
-the robustness one). An agreement of value $F$ frees $F(1 - 1/N)$ in cash, because $F/N$ is paid at
+its monthly discretionary budget $E^d_i$ (the cap $\mathbb{1}^{\text{cap}}$, removed in the three uncapped robustness arms). With
+$\mathbb{1}^{\text{short}}$ off, in a further robustness arm, the whole request goes to the
+traditional lender. An agreement of value $F$ frees $F(1 - 1/N)$ in cash, because $F/N$ is paid at
 checkout. The household applies to the traditional lender for the amount it still lacks, which is
 the request less the cash that \ac{BNPL} freed. The lender's test is the residual-income calculation on
 the liabilities the bureau shows it, and the line marked bureau visibility is the only place the reported 2026
 arrangements enter the model: with $\mathbb{1}^{\text{bur}}$ on, the household's
-\ac{BNPL} instalments on every platform are added to the visible obligations. Both gates assess the
+\ac{BNPL} instalments and arrears on every platform, $o_i$, are added to the visible obligations. Both gates assess the
 household on its income at initialisation, which an unemployment spell does not reduce. A granted loan is booked: it joins the
 household's one consolidated traditional balance at the unsecured terms of
 Table~\ref{tab:credit-terms}, raising the balance and the scheduled service and reweighting the
@@ -100,7 +105,7 @@ and repeated borrowing limits itself.
 \Function{SeekCredit}{$i$, shortfall}
     \State $\text{amount} \gets$ shortfall, or $1.25 \times$ shortfall, or shortfall $+\, e^c_i$ \Comment{Submodel~4, swept}
     \State $\text{raised} \gets 0$
-    \If{$\mathbb{1}^{\text{bnpl}}$ and $\epsilon_i = 1$}
+    \If{$\mathbb{1}^{\text{bnpl}}$ and $\epsilon_i = 1$ and $\mathbb{1}^{\text{short}}$}
         \State $\text{ask} \gets \mathbb{1}^{\text{cap}} \;?\; \min(\text{amount},\ \kappa\, E^d_i) : \text{amount}$ \Comment{Submodel~5: what \ac{BNPL} can finance}
         \State $\text{financed} \gets \Call{BnplDraw}{i, \text{ask}}$ \Comment{Algorithm~\ref{alg:bnpl}}
         \State $\text{raised} \gets \text{financed} \cdot (1 - 1/N)$ \Comment{$1/N$ is debited at checkout}
@@ -135,13 +140,13 @@ and repeated borrowing limits itself.
 Algorithm~\ref{alg:bnpl} covers the want-driven purchase of Submodels~3 and~4 and the routing
 of any \ac{BNPL} request across platforms that cannot see one another (Submodels~12 and~13).
 The platform's screen is a per-order cap and a rolling limit expressed in receivable terms.
-The line marked screening applies the Regulation 23A test to the origination itself and is off
-in every other arm. The test is shown the household's traditional service and $o_i$, one
+The line marked screening applies the Regulation 23A test to the origination itself and is on
+only in the screening arms. The test is shown the household's traditional service and $o_i$, one
 instalment for each live \ac{BNPL} agreement on every platform plus any arrears, whether or not the
 bureau switch is on. A request goes to the platforms in a random order, redrawn for every request,
 and whatever one platform does not finance passes to the next. No rule assigns a household a
-number of platforms; how overlapping agreements are spread across platforms follows from this
-routing rule. The hypothetical cap $\bar n$ counts the platforms on which the household owes a
+number of platforms. A robustness arm, $\mathbb{1}^{\text{loyal}}$, tries the platforms the
+household already owes first, so it spreads across platforms only when a limit binds. The hypothetical cap $\bar n$ counts the platforms on which the household owes a
 balance, $n^{\text{owed}}_i$. A household at the cap is refused every draw, and a household below
 it may open at most $\bar n - n^{\text{owed}}_i$ further platforms in one request.
 
@@ -165,7 +170,7 @@ it may open at most $\bar n - n^{\text{owed}}_i$ further platforms in one reques
         \If{$\text{new} > \max(\rho(Y_i) - \text{visible},\ 0)$} \Return 0 \EndIf
     \EndIf
     \State $\text{financed} \gets 0$
-    \ForAll{platforms $p$ in a random order, while $\text{financed} < \text{amount}$}
+    \ForAll{platforms $p$ in a random order, those $i$ owes first if $\mathbb{1}^{\text{loyal}}$, while $\text{financed} < \text{amount}$}
         \If{$\bar n$ is set, $i$ owes $p$ nothing, and this request has opened $\bar n - n^{\text{owed}}_i$ platforms} continue \EndIf
         \State $\text{financed} \gets \text{financed} + \Call{Request}{p, i,\ \text{amount} - \text{financed}}$
     \EndFor

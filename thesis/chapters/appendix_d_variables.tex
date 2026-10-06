@@ -5,13 +5,11 @@ This appendix specifies how every constructed household variable is built, so th
 reproduced from the raw survey files without reference to the code. Table~\ref{tab:var-map}
 gives the source field, rule and missing-data treatment for every agent field; the subsections
 that follow give, for each constructed variable, its source fields, formula, missing-data
-treatment, transformations and diagnostics. All monetary values are in 2017 Rands: nothing in the
-\ac{NIDS} layer is deflated, and the only deflated quantities in the model are the \ac{BNPL}
-contract parameters (Part~D.12). The construction runs in the order of
-Algorithm~\ref{alg:init}: backbone (\texttt{notebooks/p0\_backbone.ipynb}), match
-(\texttt{p2\_finscope\_match.ipynb}), resample (\texttt{p3\_resample.ipynb}), and agent
-instantiation (\texttt{simulation/population.py}), and each row of Table~\ref{tab:var-map}
-names where its rule is implemented.
+treatment, transformations and diagnostics. All monetary values are in 2017 Rands (Part~D.12). The construction follows
+Algorithm~\ref{alg:init}, and the last column of Table~\ref{tab:var-map} names the stage
+implementing each rule: P1 backbone (\texttt{notebooks/p0\_backbone.ipynb}), P2 match and debt
+service (\texttt{p2\_finscope\_match.ipynb}), P3 resample (\texttt{p3\_resample.ipynb}) and P5
+instantiation (\texttt{simulation/population.py}).
 
 \begingroup
 \setlength{\tabcolsep}{3pt}
@@ -19,8 +17,8 @@ names where its rule is implemented.
 \begin{longtable}{L{3.0cm}L{3.2cm}L{3.8cm}L{2.0cm}L{1.3cm}}
 \caption{Source field, rule and missing-data treatment for every agent field}
 \label{tab:var-map} \\
-\multicolumn{5}{p{13.3cm}}{\footnotesize Every field initialised on an agent
-(Table~\ref{tab:agent-mapping}), the survey field or fields it is built from, the rule, what
+\multicolumn{5}{p{13.3cm}}{\footnotesize Every agent field of
+Table~\ref{tab:agent-mapping}, with the data-layer fields behind them, the survey field or fields it is built from, the rule, what
 happens when the source is missing, and the notebook or module implementing the rule. \ac{NIDS}
 fields are from the Wave 5 household-derived file unless marked; \ac{FinScope} fields are from the
 2019 household file. ``Zero-filled'' means a missing value denotes non-holding and is set to zero,
@@ -58,7 +56,7 @@ scaled to the 14-day tick at instantiation (Part~D.11).} \\
 \addlinespace
 head demographics & roster \texttt{w5\_r\_relhead}; individual \texttt{w5\_best\_age\_yrs}, \texttt{\_gen}, \texttt{\_race}, \texttt{\_edu} & the roster member coded as head, merged on person identifier & 105 unmatched, retained & P1 \\
 \addlinespace
-\texttt{banked}; product flags & \ac{FinScope} \texttt{F1}; \texttt{G10}--\texttt{G14} & ``Yes'' $\to$ true; copied as one vector from the matched donor (Appendix~\ref{app:matching}) & not applicable & P2 \\
+\texttt{banked}; product flags & \ac{FinScope} \texttt{F1}; \texttt{G10}--\texttt{G14} & ``Yes'' $\to$ true; copied as one vector from the matched donor (Appendix~\ref{app:matching}) & ``Don't know'' $\to$ false (14 donors) & P2 \\
 \addlinespace
 \texttt{apr\_annual}, \texttt{term\_months} & product flags $\times$ rate table & unweighted mean over the classes held; unsecured terms if none & -- & P5 \\
 \addlinespace
@@ -92,8 +90,9 @@ Submodel~1: only wage-dominant households are shocked, because grants are statut
 \texttt{w5\_hhwage} on the household identifier, zero-filled where absent and clipped to lie
 between zero and total income. It is the base the shock removes: a separation costs the household
 one earner's share, \texttt{w5\_hhwage} divided by \texttt{n\_earners}. Every wage-dominant
-household has a positive wage component and at least one employed member on the roster; both
-conditions are asserted at load and hold for all 2{,}892 such households in the resample.
+household has a positive wage component, by the classification rule, and at least one employed
+member on the roster, which is asserted at load; both hold for all 3{,}038 wage-dominant agents
+(1{,}841 distinct source households).
 
 \subsection*{D.3 Employed members}
 
@@ -113,16 +112,15 @@ within five cents. \texttt{committed\_tick} is food plus rent paid, the incompre
 because \ac{NIDS} records it as a separate component that non-food already excludes. Imputed
 rent, the consumption value of owner-occupied housing, is a non-cash item and is excluded from
 both tiers; including it would have inflated compressible consumption by a median of ZAR 700 per
-month for the 82.6\% of households that own their homes. Rent paid is zero-filled for the 80.2\%
-of households that report none, so for a home-owning household committed expenditure is food
-alone.
+month for the 82.6\% of households assigned an imputed rent. Rent paid is zero-filled for the
+80.2\% of households that report none, so for them committed expenditure is food alone.
 
-Two limitations are recorded here rather than in the body. The non-food aggregate already
-contains reported clothing-account, hire-purchase and vehicle payments (median 12.6\% of
-non-food outlay among the 8.9\% of households reporting one), so the constructed servicing of
-Part~D.9 charges a flow partly present in discretionary spending; this
-overstates compressible outlay for indebted agents and understates their servicing share of
-outlay. Its effect on distress and scenario differences is not necessarily one-sided. The label ``discretionary''
+The non-food aggregate already contains reported clothing-account and hire-purchase payments
+(median 12.6\% of non-food outlay among the 11.2\% of sample households reporting one) and
+vehicle-finance payments, so the constructed servicing of Part~D.9 charges a flow partly present
+in discretionary spending (Section~\ref{sec:servicing}). This overstates compressible outlay for
+indebted agents and understates their servicing share of outlay; its net effect on distress and
+on scenario differences is unsigned. The label ``discretionary''
 also covers transport, utilities and education, none of which is discretionary in the ordinary sense,
 because \ac{NIDS} offers no finer split.
 
@@ -132,7 +130,8 @@ because \ac{NIDS} offers no finer split.
 financial assets. The field follows a gateway question and records a value only where the
 household reports holding financial assets, so a missing value denotes non-holding and is set to
 zero (48.2\% of households); the field never records a literal zero, which is asserted before the
-fill. The distribution is clipped at its 99th percentile, ZAR 133{,}662, to limit the influence of
+fill. The distribution is clipped at its unweighted 99th percentile over all households, zeros
+included, ZAR 133{,}662, to limit the influence of
 a small number of extreme reports. This is the weakest field in the layer, since reported
 financial assets are neither necessarily liquid nor necessarily accessible, and validation
 pattern~4 (the share of agents reaching zero savings) is judged against it.
@@ -142,16 +141,16 @@ pattern~4 (the share of agents reaching zero savings) is judged against it.
 \texttt{d\_trad} is \texttt{w5\_f\_deb}, reported financial debt, zero-filled for the 56.6\% of
 households recording none on the same gateway logic as savings. The aggregate is the external
 test of the zero-fill: total synthetic debt is 49\% of the \ac{CCMR} gross debtor book for the
-in-scope products, consistent with the self-reporting undercount usual in micro-surveys, whereas
-imputing the missing entries at holder means would give 111\% of the entire administrative book.
+in-scope products; imputing the missing entries at holder means would give 111\% of the same
+book, more than the bureau records.
 \ac{NIDS} reports one consolidated balance, so nothing in the construction can weight rates or
 terms by product.
 
 \subsection*{D.7 Income quintile}
 
 \texttt{income\_quintile} is assigned on income per household member,
-\texttt{w5\_hhincome}/\texttt{w5\_hhsizer}, using cut points that put one fifth of the weighted
-population in each class: ZAR 900, 1{,}801, 3{,}400 and 7{,}712 per person per month. The
+\texttt{w5\_hhincome}/\texttt{w5\_hhsizer}, using cut points that put one fifth of weighted
+households in each class (a household at a cut point falls in the lower class): ZAR 900, 1{,}801, 3{,}400 and 7{,}712 per person per month. The
 quintile is both a reporting category and, crossed with province, the matching cell of
 Appendix~\ref{app:matching} and the reference group of Submodel~11. \ac{FinScope} donors are
 assigned to the same cut points from the midpoint of a seven-band income question divided by
@@ -176,13 +175,14 @@ as not credit. The flags are categorical and are not deflated.
 household's rate and horizon are the unweighted means over the classes its donor flags; the
 74.0\% of donors flagging none are priced as unsecured (28\%, 25 months). Store-card and
 hire-purchase horizons are measured in \ac{NIDS} as the median ratio of the household's total
-financial debt to its observed monthly payment for that product ($n = 782$ and $121$); because
+financial debt to its observed monthly payment for that product, among households paying only
+that product ($n = 782$ and $121$); because
 the numerator is the whole balance and the denominator a single product's payment, these are
 upper bounds on the true horizon. Personal-loan and unflagged horizons are the \ac{CCMR}
 stock-flow implied life of the unsecured book, three times the gross debtors book divided by
 quarterly credit granted (24.8 months); the short-term horizon is one month by product
 definition; revolving credit, which has no contractual term, takes the reciprocal of the
-mid-range minimum-payment fraction (20 months). A one-month floor on the term is a numerical
+default minimum-payment fraction, 0.05 (20 months). A one-month floor on the term is a numerical
 guard only and never binds.
 
 \emph{Amortisation.} The uncapped instalment is the level monthly payment,
@@ -192,12 +192,14 @@ $\mathrm{PMT}(D, \iota, \tau) = D\,r / (1 - (1+r)^{-\tau})$ with $r = \iota/12$.
 Regulation 23A residual-income test permits: gross monthly income less the statutory minimum
 necessary expenses for the household's income band (Table~\ref{tab:reg23a-norms}). The cap binds
 for 3.8\% of indebted households ($n = 178$) and removes 22.8\% of aggregate calculated service.
-Fifty-three households have income at or below the first band boundary, where the norm equals
+Fifty-three indebted households (27 agents after resampling) have income at or below ZAR 800,
+the first band boundary, where the norm equals
 income and capacity is zero; they enter the model holding debt with no scheduled service, since
 the data cannot say whether the debt is legacy, informal or non-compliant. The same function is
-the credit-granting gate of Submodel~9, so the data layer and the model apply one test. Across indebted
-agents the resulting debt-service-to-income ratio has a weighted mean of 10.9\% and a median of
-3.3\%; the full-population mean is 4.8\%, reflecting the 56.6\% of households with no debt.
+the credit-granting gate of Submodel~9, so the data layer and the model apply one test. Across the 4{,}702
+indebted source households the resulting debt-service-to-income ratio has a weighted mean of
+10.9\% and an unweighted median of 3.3\%; the weighted full-population mean is 4.8\%, since
+56.0\% of weighted households hold no debt.
 
 \begin{table}[H]
 \centering
@@ -225,11 +227,10 @@ income, with a mean of 49.6\% in the bottom quintile.}
 \end{tabular}
 \end{table}
 
-\emph{Diagnostics.} Among households holding a modelled product, constructed servicing is 12.8\%
-of monthly outlay against a \ac{FinScope} self-reported range of 6.1--9.8\%; the debt-service-
-to-income ratio among debtors has a weighted mean of 10.9\% and a median of 3.3\%. The excess
-over the survey range is in the direction ceiling rates imply, and the double count of
-Part~D.4 works the other way on the denominator.
+\emph{Diagnostics.} Among indebted households, constructed servicing is 12.8\% of monthly
+outlay, against a \ac{FinScope} self-reported range of 6.1--9.8\% among holders of a modelled
+product. The excess is in the direction ceiling rates imply, and the double count of Part~D.4
+inflates the outlay denominator, so removing it would widen the gap.
 
 \subsection*{D.10 Resampling}
 \label{app:var-resample}
@@ -237,7 +238,7 @@ Part~D.4 works the other way on the denominator.
 The 10{,}841 weighted households are resampled with replacement, with probability proportional
 to \texttt{w5\_wgt} (seed 20260818), to 5{,}000 unweighted agents drawn from 3{,}221 unique
 source records. Every downstream statistic is therefore unweighted. The resample raises the
-per-capita income Gini from 0.651 to 0.667; its fidelity on the categorical attributes is
+per-capita income Gini from 0.6514 to 0.6668; its fidelity on the categorical attributes is
 within 1.4 percentage points (Figure~\ref{fig:pop-fidelity}).
 
 \subsection*{D.11 Tick scaling}
@@ -248,7 +249,7 @@ instantiation, by $\chi = 12/26$: income, its wage component, committed and disc
 expenditure, and scheduled service. Three monthly quantities are kept unscaled because the rules
 that use them are specified monthly: \texttt{income\_monthly} and \texttt{nca\_capacity\_monthly}
 for the Regulation 23A test, and \texttt{discretionary\_monthly} for sizing \ac{BNPL} purchases,
-which are lumpy monthly-scale items rather than fortnightly flows. Stocks, savings and debt, are
+which are lumpy monthly-scale items rather than fortnightly flows. Stocks (savings and debt) are
 not scaled. Per-tick interest is the annual rate divided by 26, matching the monthly convention
 of the amortisation rather than compounding it.
 
@@ -258,7 +259,7 @@ of the amortisation rather than compounding it.
 Nothing in the \ac{NIDS} or \ac{FinScope} layer is deflated: monetary values are 2017 Rands as
 surveyed, and the imputed flags are categorical. The only deflated quantities are three
 \ac{BNPL} parameters at 2026 prices, the assumed per-order cap (ZAR 15{,}000
-$\to$ 9{,}927) and Payflex's published late fee (ZAR 190 per tick $\to$ 125.74) and fee cap
+$\to$ 9{,}927) and Payflex's published late fee (ZAR 95 a week, ZAR 190 per tick $\to$ 125.74) and fee cap
 (ZAR 285 $\to$ 188.61), which are converted once by a cumulative price factor taken from published Stats SA \ac{CPI}
 releases \cite{statssa_cpi}; the factor reproduces the published index to within 0.8\%. The
 purchase-size ratio $\kappa$ is a share of the household's own discretionary budget and needs no

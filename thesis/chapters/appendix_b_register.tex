@@ -10,13 +10,14 @@
 provenance and values are read from the parameter declarations in the code, so the
 table and the code cannot drift apart. Columns: the parameter name in the code; the
 submodel of Table~\ref{tab:submodels} that it belongs to (``design'' marks the
-experimental design and ``data'' the data layer); its value in the benchmark
-configuration, with both fitted parameters at their fitted values; its provenance; the
+experimental design and ``data'' the data layer); its default value, that of the
+\ac{BNPL}-free baseline with both fitted parameters at their fitted values (the benchmark
+differs only in setting \texttt{bnpl\_enabled} on); its provenance; the
 source that fixes or motivates the value; and the range swept where one applies.
-Provenance: sourced = a citation fixes the value; derived = the value is computed from
+Provenance: sourced = a citation, statute or stated convention fixes the value; derived = the value is computed from
 data; fitted = the value is chosen by calibration; assumed = no anchor exists. Rand
-values are 2017 Rands; the \ac{BNPL} contract parameters are published at 2026 vintage
-and deflated once (Appendix~\ref{app:variables}, Part~D.12).} \\
+values are 2017 Rands; the three \ac{BNPL} money parameters, Payflex's published late fee and
+fee cap and the assumed order cap, are set at 2026 prices and deflated once (Appendix~\ref{app:variables}, Part~D.12).} \\
 \toprule
 \textbf{Parameter} & \textbf{Submodel} & \textbf{Value} & \textbf{Prov.} & \textbf{Source} & \textbf{Sweep} \\
 \midrule
@@ -29,21 +30,21 @@ and deflated once (Appendix~\ref{app:variables}, Part~D.12).} \\
 \endfoot
 \texttt{n\_\allowbreak{}ticks} & design & 52 & sourced & A 24-month horizon at a 14-day tick (Section~\ref{sec:sim-params}). & -- \\
 \addlinespace
-\texttt{burn\_\allowbreak{}in} & design & 12 & sourced & The first 12 ticks are excluded from post-burn-in summaries (Section~\ref{sec:sim-params}). & -- \\
+\texttt{burn\_\allowbreak{}in} & design & 12 & sourced & Arrears, savings and volume measures exclude the first 12 ticks; default is counted from the first tick (Section~\ref{sec:sim-params}). & -- \\
 \addlinespace
 \texttt{n\_\allowbreak{}agents} & data & 5{,}000 & derived & The full resampled population of 5{,}000 (Appendix~\ref{app:variables}, Part~D.10). & 1{,}000 / 5{,}000 / 10{,}000 \\
 \addlinespace
-\texttt{shock\_\allowbreak{}prob} & 1 & 0.016 & fitted & Fitted to the \ac{CCMR} 90+ day band. Reported against the \ac{QLFS} 2017 job-separation band of 0.54\%--1.17\% per tick, to which it is not fitted. & calibration grid; 0.005--0.026 in the Sobol design \\
+\texttt{shock\_\allowbreak{}prob} & 1 & 0.016 & fitted & Fitted to the post-burn-in mean of the \ac{CCMR} 90+ day band. Reported against the \ac{QLFS} 2017 job-separation band of 0.54\%--1.17\% per tick \cite{statssa_lmd_2022}, to which it is not fitted. & calibration grid; 0.005--0.026 in the Sobol design \\
 \addlinespace
-\texttt{shock\_\allowbreak{}persistent} & 1 & on & sourced & An unemployment spell lasts until re-employment. In the \ac{QLFS} 2017, 68.4\% of the unemployed were still unemployed a quarter later. & single-tick shock as a robustness arm \\
+\texttt{shock\_\allowbreak{}persistent} & 1 & on & sourced & An unemployment spell lasts until re-employment. In the \ac{QLFS} 2017, 68.4\% of the unemployed were still unemployed a quarter later \cite{statssa_lmd_2022}. & single-tick shock as a robustness arm \\
 \addlinespace
-\texttt{shock\_\allowbreak{}exit\_\allowbreak{}prob} & 1 & 0.018724 & sourced & Re-employment hazard per tick. In the \ac{QLFS} 2017, 11.6\% of the unemployed moved into employment in a quarter, which is 1.87\% per tick. & -- \\
+\texttt{shock\_\allowbreak{}exit\_\allowbreak{}prob} & 1 & 0.018724 & sourced & Re-employment hazard per tick. In the \ac{QLFS} 2017, 11.6\% of the unemployed moved into employment in a quarter, which is 1.87\% per tick \cite{statssa_lmd_2022}. & -- \\
 \addlinespace
 \texttt{discretionary\_\allowbreak{}floor} & 2 & 0 & sourced & Discretionary spending can be compressed to zero. & -- \\
 \addlinespace
-\texttt{q\_\allowbreak{}base} & 3/11 & 0.05 & assumed & Probability of a want-driven purchase in a tick without peer influence. No source. & 0.01--0.30 in the Sobol design \\
+\texttt{q\_\allowbreak{}base} & 3/11 & 0.05 & assumed & Probability of a want-driven purchase in a tick without peer influence. No source. & 0.01--0.30 in the Sobol design; 0 in the shortfall-only arm (Table~\ref{tab:effect}) \\
 \addlinespace
-\texttt{beta} & 11 & 0 & assumed & Strength of peer influence under the linear rule (Equation~\ref{eq:peer}). No source. $\beta = 0$ is the control. & 0 / 0.5 / 1 / 2 / 3 in the platform and access experiments; 0 and 1 elsewhere \\
+\texttt{beta} & 11 & 0 & assumed & Strength of peer influence under the linear rule (Equation~\ref{eq:peer}). No source. $\beta = 0$ is the control and $\beta = 1$ the illustrative setting reported beside it. & 0 / 0.5 / 1 / 2 / 3 in the platform and access experiments; 0--3 in the Sobol design; 1 in the level-sensitivity arms; 0 and 1 in the effect, scenario and lever arms \\
 \addlinespace
 \texttt{peer\_\allowbreak{}mechanism} & 11 & linear & sourced & The rule by which adoption spreads: linear (Equation~\ref{eq:peer}) or heterogeneous thresholds \cite{granovetter1978threshold}. & both rules on the same access grid \\
 \addlinespace
@@ -55,9 +56,9 @@ and deflated once (Appendix~\ref{app:variables}, Part~D.12).} \\
 \addlinespace
 \texttt{amount\_\allowbreak{}rule} & 4 & shortfall & assumed & No estimate was located of what households borrow against a shortfall. & exact shortfall / $+25\%$ / plus one tick of committed expenditure \\
 \addlinespace
-\texttt{shortfall\_\allowbreak{}bnpl} & 5 & on & assumed & Whether \ac{BNPL} may relieve a shortfall. On in the baseline; off sends every shortfall to the traditional lender. & off as an effect-robustness arm (Table~\ref{tab:effect}) \\
+\texttt{shortfall\_\allowbreak{}bnpl} & 5 & on & assumed & Whether \ac{BNPL} may relieve a shortfall. On in the benchmark; off sends every shortfall to the traditional lender, so \ac{BNPL} finances only want-driven purchases. & off as an effect-robustness arm (Table~\ref{tab:effect}) \\
 \addlinespace
-\texttt{committed\_\allowbreak{}shortfall\_\allowbreak{}funded} & 7 & off & assumed & Whether credit raised in a tick with a committed-expenditure shortfall pays that shortfall first. Off in the baseline, where it goes to debt service, discretionary spending and savings. & on as an effect-robustness arm (Table~\ref{tab:effect}) \\
+\texttt{committed\_\allowbreak{}shortfall\_\allowbreak{}funded} & 7 & off & assumed & Whether credit raised in a tick with a committed-expenditure shortfall pays that shortfall first. Off by default, when the credit goes to debt service, then discretionary spending, then savings. & on as an effect-robustness arm (Table~\ref{tab:effect}) \\
 \addlinespace
 \texttt{shortfall\_\allowbreak{}bnpl\_\allowbreak{}capped} & 5 & on & assumed & Limits the \ac{BNPL} share of a shortfall request to $\kappa$ times the household's monthly discretionary budget, the quantity that sizes a want-driven purchase. & capped / uncapped, crossed with the three amount rules \\
 \addlinespace
@@ -75,13 +76,13 @@ and deflated once (Appendix~\ref{app:variables}, Part~D.12).} \\
 \addlinespace
 \texttt{k\_\allowbreak{}default} & 7 & 7 & sourced & Seven ticks are 98 days, the first tick boundary past the 90-day impairment convention. & four ticks (56 days) \\
 \addlinespace
-\texttt{bnpl\_\allowbreak{}bureau\_\allowbreak{}visible} & 10/15 & off & sourced & \ac{BNPL} is not reported to the bureau in the benchmark \cite{nortonrose_bnpl_sa, transunion_cps_sa_2025}. & on / off (Section~\ref{sec:scenarios}) \\
+\texttt{bnpl\_\allowbreak{}bureau\_\allowbreak{}visible} & 10/15 & off & sourced & \ac{BNPL} was not reported to the bureau before the 2026 arrangements \cite{nortonrose_bnpl_sa, transunion_cps_sa_2025}; off is the benchmark. & on / off (Section~\ref{sec:scenarios}) \\
 \addlinespace
 \texttt{bnpl\_\allowbreak{}enabled} & design & off & sourced & The 2017 baseline has no \ac{BNPL}; the experiments enable it. & on / off \\
 \addlinespace
-\texttt{bnpl\_\allowbreak{}access\_\allowbreak{}rate} & 12 & 1 & derived & Share of banked households that are eligible for \ac{BNPL}. Banked households are 82.8\% of the population. & 0--1.0 in seven steps \\
+\texttt{bnpl\_\allowbreak{}access\_\allowbreak{}rate} & 12 & 1 & derived & Share of banked households that are eligible for \ac{BNPL}. Banked households are 82.8\% of the population. & 0--1.0 at seven levels \\
 \addlinespace
-\texttt{n\_\allowbreak{}platforms} & 13 & 4 & sourced & PayJustNow, Payflex, Mobicred and TymeBank were active in South Africa. & 1--6 \\
+\texttt{n\_\allowbreak{}platforms} & 13 & 4 & assumed & Several providers operate in South Africa, among them PayJustNow and Payflex \cite{payjustnow_terms, payflex_terms}; four is a stylised count. & 1--6 \\
 \addlinespace
 \texttt{bnpl\_\allowbreak{}order\_\allowbreak{}cap} & 12 & 9{,}926.83 & assumed & A per-order cap of R15{,}000 at 2026 prices, deflated to 2017 Rands. Payflex's terms state no maximum order value \cite{payflex_terms}. & -- \\
 \addlinespace
@@ -101,7 +102,7 @@ and deflated once (Appendix~\ref{app:variables}, Part~D.12).} \\
 \addlinespace
 \texttt{stacking\_\allowbreak{}cap} & 15 & none & assumed & Cap on platforms owed: a household that owes this many platforms or more is refused every new agreement. Hypothetical; no jurisdiction imposes one. & 1--3 (Appendix~\ref{app:levers}) \\
 \addlinespace
-\texttt{platform\_\allowbreak{}routing} & 13 & random & assumed & Platform order for a \ac{BNPL} request: random for every request, or platforms already owed first. No evidence on provider choice. & loyal routing as an effect-robustness arm (Table~\ref{tab:effect}) \\
+\texttt{platform\_\allowbreak{}routing} & 13 & random & assumed & Platform order for a \ac{BNPL} request: random for every request, or platforms already owed first. No evidence on how South African households choose providers was located. & loyal routing as an effect-robustness arm (Table~\ref{tab:effect}) \\
 \addlinespace
 \texttt{activation} & 17 & random & sourced & Random order, redrawn every tick \cite{comer2013activation, alizadeh2015activation}. & fixed order as a robustness arm \\
 \end{longtable}
