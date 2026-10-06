@@ -1,17 +1,16 @@
 \section{Results}
 \label{sec:results}
 
-This section answers RQ2. Every arm in this section has twenty replications at the income-shock
+This section answers RQ2. Except in the Sobol design, every arm in this section has twenty replications at the income-shock
 probability and payment friction fitted in Section~\ref{sec:calibration}; no \ac{BNPL}-side
 parameter is re-tuned. Differences in the text carry one standard error, paired by seed where
 the two arms share seeds, and we describe a difference as detectable only when it exceeds two.
-A standard error is about 0.1 percentage points, so a difference must exceed about 0.2 points
+A standard error of population default is about 0.1 percentage points, so a difference must exceed about 0.2 points
 to count as detectable, and a true change of that size would be missed about half the time.
-Figure error bars are 95\% confidence intervals of the
-arm mean. Table notes give denominators, seeds and measurement periods.
+Figure error bars are 95\% confidence intervals. Table notes give denominators, seeds and measurement periods.
 
-We report peer influence at $\beta=0$, the control, and at $\beta=1$. Because $\beta$ has no
-empirical estimate, $\beta=1$ is an illustrative setting.
+We report peer influence mainly at $\beta=0$, the control, and at $\beta=1$, an illustrative
+setting because $\beta$ has no empirical estimate.
 
 \subsection{Baseline and the BNPL Injection}
 \label{sec:results-injection}
@@ -29,8 +28,7 @@ $+0.15 \pm 0.07$ (Table~\ref{tab:effect}), $+0.14 \pm 0.11$ and $+0.17 \pm 0.10$
 (Table~\ref{tab:access}). Of the four estimates, only the one in Table~\ref{tab:effect} exceeds
 two standard errors. The blocks use different seeds, so we pool them, weighting each estimate
 by its precision, and obtain $+0.12 \pm 0.05$ points. The pooled estimate exceeds two standard
-errors, but at about a tenth of a point the effect is smaller than any single comparison in
-this thesis can detect.
+errors; at about a tenth of a point, a single twenty-replicate comparison would usually miss it.
 
 With peer influence the effect is larger. At $\beta=1$ default rises by $0.61 \pm 0.11$
 points, and the two other seed blocks that include this comparison give $0.60 \pm 0.11$ and
@@ -53,13 +51,13 @@ those whose savings were depleted.
 
 At $\beta=0$ \ac{BNPL} partly replaces traditional credit. New traditional lending falls from
 R6.12 million to R5.43 million, which is consistent with the lender-choice rule sending an
-eligible shortfall to \ac{BNPL} first (Submodel~5). At $\beta=1$ new traditional lending does
-not fall. The traditional lender refuses about as many applications as before: the change at
-$\beta=0$ is $+1 \pm 9$ applications on these seeds and $-16 \pm 7$ on the seeds of
-Table~\ref{tab:effect}. The smaller traditional book also accounts for the Pattern~1 result of
-Section~\ref{sec:data-validation}. Traditional arrears rise, but the interest charged on
-traditional debt falls by $1.5 \pm 0.4$\% at $\beta=0$ (Table~\ref{tab:bnpl-on-checks}),
-because interest is charged on a smaller outstanding balance. This aggregate measure is not
+eligible shortfall to \ac{BNPL} first (Submodel~5). Refusals do not rise, so lending falls
+without the lender turning more households away: the change in refusals at $\beta=0$ is
+$+1 \pm 9$ applications on these seeds and a detectable $-16 \pm 7$ on the seeds of
+Table~\ref{tab:effect}. At $\beta=1$ new traditional lending does not fall. The smaller
+traditional book also accounts for the Pattern~1 result of Section~\ref{sec:data-validation}.
+Traditional arrears rise, but less traditional debt is outstanding, so the interest charged
+on it falls by $1.5 \pm 0.4$\% at $\beta=0$ (Table~\ref{tab:bnpl-on-checks}). This aggregate measure is not
 directly comparable with the higher credit-card interest that deHaan et al.\ observe among
 individual adopters \cite{dehaan2024bnpl}.
 
@@ -89,16 +87,14 @@ $\beta=1$ it rises from 46.8\% to 59.2\%. With four platforms, 52.0\% of final-t
 have balances on two or more platforms at $\beta=0$, and 85.1\% at $\beta=1$
 (Table~\ref{tab:baseline-arms}). These shares follow from the routing rule of
 Section~\ref{sec:stacking}, under which a second request reaches a different platform first
-with probability $3/4$ when four platforms are available and $5/6$ when six are. The shares
-therefore measure how often agreements overlap.
+with probability $3/4$ when four platforms are available and $5/6$ when six are.
 
 Cumulative \ac{BNPL} volume rises when a second platform is added, from R5.14 million to
 R6.16 million at $\beta=0$, and changes little from two platforms to six. This is consistent
 with a second platform relieving limits that bind with one, and with further platforms adding
 capacity that budget-based demand does not use.
 
-Default does not change detectably with platform count at any value of $\beta$. Six platforms
-less one gives $+0.02 \pm 0.09$ points at $\beta=0$ and $+0.01 \pm 0.08$ at $\beta=1$, and
+Default does not change detectably with platform count at any value of $\beta$. Going from one platform to six gives $+0.02 \pm 0.09$ points at $\beta=0$ and $+0.01 \pm 0.08$ at $\beta=1$, and
 between $-0.09 \pm 0.07$ and $+0.14 \pm 0.13$ at the other three values
 (Table~\ref{tab:stacking-full}). No contrast between one platform and a larger number exceeds
 two standard errors.
@@ -123,29 +119,29 @@ invisibility.
 
 Default rises with access where peer influence is present (Figure~\ref{fig:access-default};
 Table~\ref{tab:access}). At $\beta=0$, moving from zero to full access changes default by
-$+0.14 \pm 0.11$ points, which is not detectable. The change is $0.27 \pm 0.11$ points at
-$\beta=0.5$, $0.60 \pm 0.11$ at $\beta=1$, $0.78 \pm 0.09$ at $\beta=2$ and $0.95 \pm 0.09$
-at $\beta=3$.
+$+0.14 \pm 0.11$ points, which is not detectable. The rise grows with $\beta$, to
+$0.60 \pm 0.11$ points at $\beta=1$ and $0.95 \pm 0.09$ at $\beta=3$.
 
 The experiment cannot distinguish a straight line from a curved response. Steps between adjacent access
 levels range from $-0.09$ to $+0.33$ points with standard errors of 0.07 to 0.14, and six of
-the thirty exceed two standard errors. Straight-line fits to the arm means have $R^2$ between
-0.68 and 0.94. The largest step is $0.33 \pm 0.09$ points, between access of 0.85 and full
+the thirty exceed two standard errors. Where the rise is detectable, straight-line fits to the arm means
+have $R^2$ between 0.68 and 0.94. The largest step is $0.33 \pm 0.09$ points, between access of 0.85 and full
 access at $\beta=3$.
 
 The heterogeneous-threshold rule raises holding far more than the control does, but it does
 not raise default detectably more. At
 $\gamma=0.3$ the full-access share of households holding \ac{BNPL} rises by between 40.7 and
 51.0 points, against 17.6 in the $\gamma=0$ control. Holding is close to linear in access
-($R^2 \geq 0.998$), so no adoption cascade occurs on this grid. Default rises by between
-$0.22 \pm 0.09$ and $0.30 \pm 0.10$ points, against $0.17 \pm 0.10$ in the control. The rise
+($R^2 \geq 0.998$), so no adoption cascade occurs on this grid. The rise in default
 under the rule exceeds the rise in the control by between $0.05 \pm 0.08$ and
 $0.14 \pm 0.13$ points, and none of these differences is detectable. Raising the mean
 threshold from 0.15 to 0.45 lowers full-access holding from 50.8\% to 28.2\% and changes
 default by $-0.17 \pm 0.11$ points, which is not detectable.
 
 \label{sec:no-cascade}
-Neither rule shows a tipping point, but the test is limited. The grid has seven access levels, so a
+Neither rule shows a tipping point. The lowest $R^2$ values for default, 0.57 and 0.68, belong
+to the two smallest detectable rises, where replicate noise is large beside the rise, and
+holding is linear in access. The test is limited, however. The grid has seven access levels, so a
 threshold narrower than their spacing could go undetected. No channel in the model carries one
 household's default to another household's income or to a lender's supply of credit
 (Table~\ref{tab:design-concepts}), so contagion through those channels lies outside the test.
@@ -174,10 +170,10 @@ Q4 exceeds the rise in Q1 by $1.14 \pm 0.38$ points. In the $\beta=0$ arm the sh
 \ac{BNPL} at the final tick varies little across quintiles, from 15.6\% to 19.4\%, while the
 mean want-driven purchase rises from R103 in Q1 to R1{,}858 in Q5, as the budget-based sizing
 rule implies. Larger purchases may explain why default rises more in Q4 than in Q1, but the
-experiment does not test this, and the rise in Q5 is not detectable.
+experiment does not test this, and Q5, with the largest purchases, shows no detectable rise.
 
 The per-platform limit binds on 24.8\% of the platform requests that Q1 households make and on
-13.6\% of those that Q5 households make, and it truncates or refuses them. Raising $\lambda$
+13.6\% of those that Q5 households make. Raising $\lambda$
 tenfold, from 0.10 to 1.0 months of income, changes population default by $+0.10 \pm 0.09$
 points at $\beta=1$ (Table~\ref{tab:robustness-appendix}). Binding limits constrain low-income
 households' borrowing without a detectable effect on population default.
@@ -192,8 +188,8 @@ report the level of default in one-at-a-time sensitivity arms at $\beta=1$, four
 full access. Each arm is compared with a reference arm at the reference value on the same seed
 set.
 
-The largest influence on the default level is the rule for how much a household borrows when
-short of cash (Submodel~4). Relative to borrowing the exact shortfall, adding 25\% lowers
+Among the behavioural rules, the largest influence on the default level is how much a
+household borrows when short of cash (Submodel~4). Relative to borrowing the exact shortfall, adding 25\% lowers
 default by $0.28 \pm 0.11$ points, and adding one tick of committed expenditure lowers it by
 $1.02 \pm 0.13$. A plausible reason is that borrowing beyond the immediate shortfall leaves a surplus
 in savings that absorbs later shortfalls, but the experiment does not isolate this channel.
@@ -204,15 +200,13 @@ default detectably under any of the three rules.
 Three other assumptions move the default level. Shortening the default horizon from 98 to 56
 days raises default by $0.84 \pm 0.11$ points. Varying $\kappa$ from 0.07 to 0.28, about half
 to twice its derived value, moves default from 13.69\% to 14.34\%. Sizing purchases on income
-in place of discretionary spending adds $0.68 \pm 0.11$ points. The remaining arms change
-default by at most 0.35 points and none exceeds two standard errors
-(Table~\ref{tab:robustness-appendix}). Activation order and population size test the
-simulation and do not detectably change default.
+in place of discretionary spending adds $0.68 \pm 0.11$ points. Apart from the single-tick shock, the remaining arms, including the activation-order and
+population-size checks, change default by at most 0.35 points and none exceeds two standard
+errors (Table~\ref{tab:robustness-appendix}).
 
 Shock persistence matters more than any of these. Replacing the persistent income shock with a
 single-tick loss lowers default from 14.05\% to 4.81\%, and under that rule no shock
-probability in the tested range reproduces the \ac{CCMR} 90+ band. Sustained distress in the
-model depends on shocks that outlast the household's buffer.
+probability in the tested range reproduces the \ac{CCMR} 90+ band.
 
 A Sobol decomposition over six parameters (Table~\ref{tab:sobol}) attributes the variance of
 the default level almost entirely to the income-shock probability, with a first-order index of
@@ -245,7 +239,7 @@ beyond the shortfall and the shortfall cap is removed. Purchase size and the bor
 rule move it most. The effect is $0.91 \pm 0.07$ points at $\kappa=0.28$ and
 $1.22 \pm 0.10$ when purchases are sized on income. Under the single-tick shock the effect is
 $0.02 \pm 0.01$ points, with default without \ac{BNPL} at 4.82\%. Without
-persistent income shocks, \ac{BNPL} barely adds to default.
+persistent income shocks the effect is not detectable.
 
 At $\beta=0$ the effect ranges from $-0.11 \pm 0.08$ to $+0.52 \pm 0.09$ points. It exceeds two
 standard errors under five of the seventeen settings and is detectably negative under none.
@@ -262,7 +256,8 @@ Households come to owe several platforms at once when platforms cannot observe o
 and the share that does so rises with platform count and with peer influence. With four
 platforms, 52.0\% of final-tick holders owe two or more at $\beta=0$ and 85.1\% at $\beta=1$.
 The routing rule produces these shares, so they say nothing about how households choose
-providers. Enabling \ac{BNPL} raises default by $0.12 \pm 0.05$ points without peer influence
-and by $0.61 \pm 0.11$ at $\beta=1$. Default does not respond detectably to platform count. It
+providers. Enabling \ac{BNPL} raises default by $0.12 \pm 0.05$ points without peer influence, a
+result sensitive to the borrowing rules, and by $0.61 \pm 0.11$ at $\beta=1$, where stacking
+far exceeds the \ac{CFPB} evidence. Default does not respond detectably to platform count. It
 rises with peer influence and, where peer influence is present, with access, and these are
 the arms in which households borrow most.
