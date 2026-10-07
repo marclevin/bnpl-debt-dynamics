@@ -1,20 +1,16 @@
 # DECISIONS — every choice made, and why
 
-**One of two working documents.** [`DECISIONS.md`](DECISIONS.md) is *what was chosen and why*.
-[`DEFECTS.md`](DEFECTS.md) is *what is wrong or was wrong*. Consolidated 2026-08-13 from nine
-overlapping files. `PLAN.md` and `THESIS_GUIDE.md` were removed 2026-09-29; last in commit
-`647b1eb`.
+**Design history.** What was chosen for each model rule and the data layer, why, and what was
+rejected. Open and closed issues are in [`DEFECTS.md`](DEFECTS.md); dated changes in
+[`HISTORY.md`](HISTORY.md); the project map in [`../README.md`](../README.md). Code comments cite
+the D-numbers below.
 
-**Read this as a design history.** Entries are dated and earlier text is kept where it was
-superseded, with a marked note. The thesis text (`thesis/chapters/*.tex`) is the authority for
-what the model does and claims, and the generated tables and `results/summary/results_numbers.json`
-for numbers. Any figure in this file older than 2026-09-29 predates the corrections and rerun of
-that date (`results/corrections_2026-09-29/`) and must not be quoted. References to numbered
-sections of `OVERVIEW.md` (for example §1a, §7) point at the version before its 2026-10-06
-rewrite; that version is in git history. *Updated in place 2026-10-06.*
-
-Project overview: [`../OVERVIEW.md`](../OVERVIEW.md).
-Data → agent mapping: [`../household_agent.md`](../household_agent.md).
+Entries are dated, and superseded text is kept with a marked note. The thesis text is the
+authority for what the model does and claims, and the generated tables and
+`results/summary/results_numbers.json` for numbers. Any figure here older than 2026-09-29
+predates the corrections of that date (`HISTORY.md`) and must not be quoted. References to
+"OVERVIEW §1a" or "§7" point at the project overview as it was before 2026-10-06 (git history:
+`git show 1d1067f:OVERVIEW.md`); the data-to-agent mapping is Table 1 of the thesis.
 
 ---
 
@@ -376,7 +372,7 @@ ordered sequence; **the order itself is a modelling decision.**
   `1415625`); an explicit alternative switch that reproduced the old arithmetic was run once and
   then removed at Marc's decision (commit `4ef473c`). The model has one rule: the household asks
   the traditional lender for the amount it still lacks, and is distressed only if refused. That
-  it does so is an assumption. See `results/corrections_2026-09-29/CORRECTIONS.md`.
+  it does so is an assumption. See `HISTORY.md` (2026-09-29).
 - *Why not cost-ranked:* BNPL is nominally interest-free, so cost-ranking selects it trivially and
   attributes the choice to price. The evidence attributes it to convenience and social norm
   `[ackert2025bnpl]`, which is a different mechanism with different intervention implications (RQ3).
@@ -438,7 +434,7 @@ ordered sequence; **the order itself is a modelling decision.**
   cash; no such purchase is modelled. `shortfall_bnpl = False` sends every shortfall to the
   traditional lender, so BNPL is used only for want-driven purchases. Arm `eff_no_shortfall_bnpl_*`
   in the effect suite, seeds 70,000 to 70,019, baseline not recalibrated
-  (`results/variants_2026-10-06/README.md`). **Result:** the BNPL effect on default at
+  (`HISTORY.md`, 2026-10-06). **Result:** the BNPL effect on default at
   `beta = 1` is **0.47 +- 0.11** points against a reference of 0.60 +- 0.12, still detectable, so
   most of the effect runs through want-driven borrowing; at `beta = 0` it is +0.06 +- 0.10, not
   detectable (`tab:effect`; Section 4.5).

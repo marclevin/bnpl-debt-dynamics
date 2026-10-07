@@ -4,8 +4,8 @@ Counted: running prose, headings, inline maths (one token each), footnotes.
 Not counted: comments, tables, figures, TikZ, algorithm floats, display maths, citations,
 labels and cross-reference commands.
 
-    ./env/python.exe scratchpad/wc_prose.py            # every body file in main.tex order
-    ./env/python.exe scratchpad/wc_prose.py FILE ...   # named files
+    python3 notebooks/scripts/wc_prose.py            # every body file in main.tex order
+    python3 notebooks/scripts/wc_prose.py FILE ...   # named files
 """
 
 from __future__ import annotations
@@ -14,7 +14,7 @@ import re
 import sys
 from pathlib import Path
 
-CHAPTERS = Path(__file__).resolve().parents[1] / "thesis" / "chapters"
+CHAPTERS = Path(__file__).resolve().parents[2] / "thesis" / "chapters"
 FLOATS = "table|table\\*|figure|figure\\*|longtable|tabular|tabularx|tikzpicture|algorithm|algorithmic|equation|equation\\*|align|align\\*"
 
 

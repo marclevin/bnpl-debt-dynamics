@@ -1,6 +1,8 @@
 """How much does the DEFINITION of the hypothetical cap matter?
 
-    PYTHONPATH=. .venv/bin/python results/corrections_2026-09-29/cap_definitions.py
+    PYTHONPATH=. .venv/bin/python notebooks/scripts/check_cap_definitions.py
+
+Writes results/summary/cap_definitions.md, cited by the agreements-cap note in Appendix C.
 
 The model implements definition (a), following the decision register. Definitions (b) and
 (c) are NOT part of the model: they are patched in here, for this diagnostic only, to show
@@ -103,7 +105,7 @@ if __name__ == "__main__":
     text = out.to_markdown(index=False)
     print(text)
     from pathlib import Path
-    Path(__file__).with_name("cap_definitions.md").write_text(
+    (Path(__file__).resolve().parents[2] / "results" / "summary" / "cap_definitions.md").write_text(
         "# The hypothetical cap under three definitions\n\n"
         "Diagnostic only. The model implements definition (a). Paired by seed against a no-cap arm "
         "on the same seeds (43,000-43,019), one standard error. Corrected code, fitted parameters.\n\n"

@@ -1,15 +1,13 @@
 # DEFECTS: current register
 
 **Purpose.** What is still wrong with the thesis or the model, and how each earlier defect was
-closed. [`DECISIONS.md`](DECISIONS.md) records what was chosen and why; this file records what is
-or was wrong. Status as at **2026-10-06**, after the writing and substance audit (commits
-`abda7e9`, `dfeabbf`) and the robustness arms of commit `1d1067f`.
+closed. [`DECISIONS.md`](DECISIONS.md) records what was chosen and why;
+[`HISTORY.md`](HISTORY.md) what changed when. This file is the single list of open items. Status as at **2026-10-07**.
 
 **History.** This file replaces a 1,550-line log kept from 2026-08-05 to 2026-09-29, whose entry
 headings had stopped tracking status. The full log, with every measurement and the reasoning
 behind each fix, is in git history: `git show 3b79e3c:scratchpad/DEFECTS.md`. The model
-corrections of 2026-09-29 are recorded separately in
-`results/corrections_2026-09-29/CORRECTIONS.md`.
+corrections of 2026-09-29 are in `HISTORY.md`.
 
 **Method.** Every status below was checked against the current thesis source
 (`thesis/main.tex`, `thesis/chapters/*.tex`), the generated tables, the code and the data
@@ -32,14 +30,17 @@ date. The citation style (`plainurl`, numeric) was never checked against the dep
 (was C6). **Closes when** the template is confirmed, the declaration text replaced, the title
 page and class adjusted, the date fixed and the citation style confirmed or changed.
 
-### B9 · The novelty claim has no search record · `MINOR` · Marc
+### B40 · Unverifiable or typed-in figures · `MINOR` · agent
 
-The claim is now narrow: "We found no comparable South African study"
-(`01_introduction.tex`, line 47). The TODO that asked for a systematic search is gone, but no
-record of the search (databases, search strings, dates) exists anywhere in the repo, and an
-examiner may ask how the claim was established. The market-size TODO (was B10) is gone and no
-market-size figure is cited. **Closes when** Marc keeps a dated note of the search, for the viva,
-or narrows the sentence further.
+From the 2026-10-07 review. (1) The fine-grid calibration runs (1.5% gives 13.93%) exist only
+as a summary in `calibration.json`; `calibrate.py` does not save stage-4 runs. (2) "Specified
+before the run" claims (threshold rule, Pattern 3 statistic, mean-purchase comparison) can be
+traced only to 2026-08-13, where git history starts. (3) The data-layer figures 12.6% (median
+non-food share of credit payments) and 11.2% (Appendix C) are in no `data/processed` JSON,
+presumably computed in `notebooks/p4_validation.ipynb`. (4) Several correct prose numbers are
+typed rather than generated: the threshold-minus-control rises, want-off refusals and lending,
+effect-block refusals, the single-tick no-BNPL default and R10,400. **Closes when** (3) and (4)
+are written to JSON and covered by `check_results_tables.py`; (1) and (2) can only be disclosed.
 
 ## Open: disclosed in the thesis, no further action planned
 
@@ -101,12 +102,21 @@ quarters of its value in cash, as though the household financed a purchase it wo
 have paid for in cash; no purchase is modelled. (2) Credit raised against a committed
 (food and rent) shortfall is not spent on food and rent; it goes to debt service, discretionary
 spending and savings, and the shortfall is still recorded as distress. Marc kept both rules as
-the baseline on 2026-09-29. Tested on 2026-10-06 (`results/variants_2026-10-06/README.md`,
+the baseline on 2026-09-29. Tested on 2026-10-06 (`HISTORY.md`, 2026-10-06;
 `tab:effect`): with no BNPL on the shortfall path the beta = 1 effect is 0.47 +- 0.11, and with
 credit paying the committed shortfall first it is 0.68 +- 0.11, against a reference of
 0.60 +- 0.12; at beta = 0 both are +0.06 and not detectable. Disclosed in Sections 2.3 and 2.4
 and Appendix C. No further action unless the baseline rule is changed, which would need a
 recalibration.
+
+### B41 · Experiments an examiner may ask for · `MAJOR` · Marc · accepted, not run
+
+From the 2026-10-07 review; Marc decided on 2026-10-07 not to run them. (a) The bureau switch
+under the "+25%" and "credit pays committed shortfall first" rules, or over 104 ticks;
+(b) following refused against granted households; (c) a four-platform arm with a shared
+aggregate limit, which would separate platforms not seeing one another from extra capacity;
+(d) refitting the shock rate on another window and the effects at the QLFS upper bound.
+(a) and (c) are the likeliest viva questions. The thesis states each gap (Sections 4.2, 5 and 6).
 
 ### B7 · Behavioural parameters are imported from the United States · `MINOR` · Marc
 
@@ -129,6 +139,9 @@ beta = 1 effect between 0.54 and 0.65. No local source located.
 | B3 | Three of four validation targets foreign or off-vintage | Patterns 1, 3 and 4 demoted to plausibility comparisons (Section 3.5) |
 | B4 | Pattern 4 not operationalised | Order-of-magnitude comparison, construct difference stated (`tab:patterns`) |
 | B6 | Arrears bands nested and appeared to sum | Full band table with aggregate rows marked (`tab:ccmr`) |
+| B9 | Novelty claim had no search record | Searched 2026-10-07 (record below); sentence narrowed to "no South African study of how BNPL affects household distress and no agent-based model of South African household credit" (Section 1.1) |
+| B42 | Default level had no external comparison | NCR Credit Bureau Monitor, March 2017, added to Section 3.5 (`ncr_cbm_2017`): 21.7% of credit-active consumers 3+ months in arrears, 39.3% impaired. Individuals at one date, so the level is still described as not validated |
+| B43 | RQ1 wording ("external comparisons") and the abstract at about 265 words | Accepted by Marc, 2026-10-07 |
 | B10 | Market-size figures unusable | No figure cited; TODO removed |
 | B11 | Pattern 4 rests on the weakest variable | Pattern 4 is a plausibility check only; savings proxy named in Section 3.2 |
 | B12 | Zero-capacity debtors not reported | Appendix D.9 now reports them: 53 indebted households, 27 agents after resampling (2026-10-06) |
@@ -155,7 +168,7 @@ beta = 1 effect between 0.54 and 0.65. No local source located.
 | B35 | Two activation arms were one | Duplicate removed; one fixed-order check claimed |
 | B36 | R15,000 order cap attributed to Payflex | Recorded as an assumption in code, register and Section 3.3; `payflex_limits` repointed |
 | B38 | `p3_resample_summary.json` gives 1.38 pp, `data_figure_numbers.json` 1.27 pp | Checked 2026-10-06: not stale. 1.38 is the largest gap from 20%; 1.27 is the largest gap from the weighted source, the statistic in `tab:validation` (1.3pp). Key names differ (`_dev_` and `_gap_`) |
-| 2026-09-29 | Six implementation defects (interest charged twice, arrears double-counted, cleared debt kept its instalment, opening-tick BNPL collection, checkout quarter requested from no one, late-fee cap) | Fixed and rerun; `results/corrections_2026-09-29/CORRECTIONS.md` |
+| 2026-09-29 | Six implementation defects (interest charged twice, arrears double-counted, cleared debt kept its instalment, opening-tick BNPL collection, checkout quarter requested from no one, late-fee cap) | Fixed and rerun; `HISTORY.md` (2026-09-29) |
 | C1 | `\ac{FCA}` undefined | In the acronym list |
 | C2 | UK statute read as South African | Section 66A no longer cited in the thesis |
 | C3 | `% VERIFY` on Hamill and Woolard | Published Hamill article and Woolard report details in `main.bib` |
@@ -171,6 +184,35 @@ beta = 1 effect between 0.54 and 0.65. No local source located.
 | D6 | No figures or tables | Generated tables and figures throughout |
 | E1 to E5 | Writing register | 2026-08-05 pass and the writing audits of 2026-10-06 (`abda7e9`, `dfeabbf`) |
 | F1 to F5 | Length and balance | Restructure; body 9,727 words against the 10,000 cap |
-| G1 | `OVERVIEW.md` date stale | Rewritten 2026-10-06 (uncommitted when this register was written) |
+| G1 | `OVERVIEW.md` date stale | Replaced by `README.md`, which carries no dated status (2026-10-07) |
 | G2 | Caveats in JSON, not prose | CCMR unit caveat in Section 3.5 and `tab:ccmr` |
 | G3 | Empty `notebooks/context/` | Removed |
+
+---
+
+## Record: novelty search for B9 (2026-10-07)
+
+Run by a search agent; not a systematic review. **Sources:** OpenAlex API (indexes SSRN, RePEc
+and South African institutional repositories) with title/abstract phrase filters; web search,
+including site-restricted queries on OpenUCT, SUNScholar, UPSpace, WIReDSpace, resbank.co.za
+and econrsa.org. Google Scholar, the SSRN and IDEAS search pages and the repositories' own
+search pages could not be queried directly.
+
+**Queries (OpenAlex):** "buy now pay later" AND "South Africa"; BNPL AND "South Africa";
+(BNPL OR "buy now pay later") AND (Africa OR Nigeria OR Kenya OR Ghana); "agent-based" AND
+"South Africa" AND (debt OR credit OR indebtedness). **Web:** BNPL South Africa with financial
+distress, indebtedness, default, thesis, dissertation, working paper, SSRN, RePEc, financial
+well-being, Gen Z; SARB and ERSA working papers on household debt and arrears; agent-based
+models of South African household credit.
+
+**Result:** no South African study of BNPL's effect on household distress, arrears or default,
+and no agent-based or simulation model of South African household credit. Adjacent work:
+Sebola (2025), Wits Master of Management report on SMME adoption of BNPL; Ssebagala (2015, UCT
+PhD; CSSR WP 368, 2016) and Daniels (2001, DPRU) on household over-indebtedness, without BNPL;
+Mwase and Alhassan (2017, UCT GSB) on public-servant over-indebtedness; Cornelli, Gambacorta and
+Pancotto (2023, BIS) cross-country BNPL, South Africa not covered; adoption studies in Tanzania,
+Nigeria and Egypt; legal commentary (Webber Wentzel, 2025).
+
+**Check before submission:** a GIBS MBA report by M. Pietersen, "Buy Now Pay Later, Financial
+Well-Being & Overall Well-Being", seen only as a LinkedIn snippet and not found on UPSpace. If
+it exists and measures distress, the sentence in Section 1.1 needs to cite it.

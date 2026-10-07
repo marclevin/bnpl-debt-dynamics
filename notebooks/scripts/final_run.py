@@ -1,6 +1,6 @@
-"""Final-run driver: the three commands of OVERVIEW step 4, in order, stopping on failure.
+"""Final-run driver: the three experiment commands of the README, in order, stopping on failure.
 
-    PYTHONPATH=. .venv/bin/python scratchpad/final_run.py [--skip-sobol]
+    PYTHONPATH=. .venv/bin/python notebooks/scripts/final_run.py [--skip-sobol]
 
 Everything the three steps print goes to results/final_run.log, which ends with one of
 two sentinel lines: `FINAL RUN COMPLETE` or `FINAL RUN FAILED at <step>`. The log opens
@@ -14,7 +14,7 @@ import time
 from datetime import datetime
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 LOG = ROOT / "results" / "final_run.log"
 STEPS = [
     ["-m", "simulation.experiments", "--which", "all", "--reps", "20"],

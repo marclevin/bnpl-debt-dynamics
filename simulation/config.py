@@ -11,7 +11,7 @@ the point of the register:
     DERIVED     the value is computed from the data, not chosen
     ASSUMPTION  no anchor exists; mandatory sensitivity analysis
 
-Decision rules: ../scratchpad/DECISIONS.md
+Decision rules: ../docs/DECISIONS.md
 """
 
 from __future__ import annotations
