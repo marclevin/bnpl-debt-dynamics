@@ -7,6 +7,9 @@ parameter is re-tuned. Differences in the text carry one standard error, paired 
 the two arms share seeds, and we describe a difference as detectable only when it exceeds two.
 The standard error of a difference in population default is about 0.1 percentage points, so a difference must exceed about 0.2 points
 to count as detectable, and a true change of that size would be missed about half the time.
+This section judges many contrasts at the two-standard-error threshold, so about one in
+twenty would exceed it by chance alone; an isolated detectable difference therefore carries
+less weight than an effect that repeats across seed blocks and settings.
 Figure error bars are 95\% confidence intervals. Table notes give denominators, seeds and measurement periods.
 
 We report mainly $\beta=0$, the control without peer influence, and $\beta=1$, an illustrative
@@ -255,7 +258,9 @@ Households come to owe several platforms at once when platforms cannot observe o
 and the share that does so rises with platform count and, under random routing, with peer influence. With four
 platforms, 52.0\% of final-tick holders owe two or more at $\beta=0$ and 85.1\% at $\beta=1$
 when households choose platforms at random, and 36.6\% and 22.0\% when they return to
-platforms they already owe. These shares depend on the routing rule; default does not. Enabling \ac{BNPL} raises default by $0.12 \pm 0.05$ points without peer influence, a
+platforms they already owe; the routing arms run on their own seed block, where random
+routing gives 52.6\% and 85.2\% (Section~\ref{sec:results-stacking}). These shares depend
+on the routing rule; default does not. Enabling \ac{BNPL} raises default by $0.12 \pm 0.05$ points without peer influence, a
 result sensitive to the borrowing rules, and by $0.60 \pm 0.07$ at $\beta=1$, where stacking
 far exceeds the \ac{CFPB} evidence. Default does not respond detectably to platform count. It
 rises with peer influence and, where peer influence is present, with access: the arms in which
