@@ -1,7 +1,7 @@
 # Project overview
 
 **Thesis:** *Buy Now, Pay Later and Household Credit Distress in South Africa: An Agent-Based
-Model* (Masters mini-dissertation, University of Cape Town). Last updated **2026-10-06**.
+Model* (Masters mini-dissertation, University of Cape Town). Last updated **2026-10-07**.
 
 This file says where the project stands and where everything lives. The thesis text
 (`thesis/chapters/*.tex`) is the authority for what the thesis claims; the generated tables
@@ -15,11 +15,13 @@ The model, every experiment and the thesis are complete. What remains before sub
 
 - **Front matter** (`thesis/main.tex`): the UCT declaration wording and title page are
   provisional until the departmental template is confirmed, and `\date{\today}` must be fixed.
-- **Open items** in [`scratchpad/DEFECTS.md`](scratchpad/DEFECTS.md).
+- **Open items** in [`scratchpad/DEFECTS.md`](scratchpad/DEFECTS.md), and the questions in
+  section 6 of the lead-editor review log
+  [`scratchpad/review_2026-10-07/REVIEW_LOG.md`](scratchpad/review_2026-10-07/REVIEW_LOG.md).
 
-Body prose is **9,689 words** against the 10,000-word cap (abstract, appendices, tables,
+Body prose is **9,897 words** against the 10,000-word cap (abstract, appendices, tables,
 figures, algorithm floats and bibliography excluded); count with `python3 scratchpad/wc_prose.py`.
-The abstract is 225 words. The thesis compiles to 115 pages with no undefined references.
+The abstract is about 265 words. The thesis compiles to 117 pages with no undefined references.
 
 ## The research questions
 
@@ -70,13 +72,14 @@ Differences carry one standard error; "detectable" means beyond two.
   more platforms under random routing and 36.6% when households return to platforms they
   already owe; default does not change detectably with the routing rule or the platform count.
   Enabling BNPL raises default by +0.12 ± 0.05pp without peer influence (pooled over four seed
-  blocks) and +0.61 ± 0.11pp at the illustrative `beta = 1`, where volume is ten times higher.
+  blocks) and +0.60 ± 0.07pp at the illustrative `beta = 1` (pooled over three), where volume is
+  ten times higher; the two settings bracket the provider's volume.
   The effect is detectable under 19 of 20 robustness settings at `beta = 1` and 5 of 20 at
   `beta = 0`. At `beta = 1` traditional lending does not fall because applications rise
   (+801 ± 65) while the mean loan shrinks.
 - **RQ3** (100 replicates per arm). Bureau visibility raises default by +0.22 ± 0.04pp
   (`beta = 0`) and +0.15 ± 0.04pp (`beta = 1`) through more refusals by the traditional lender,
-  mostly in Q1; in the model a refused household has no other source of credit. Screening alone
+  largest in Q1; in the model a refused household has no other source of credit. Screening alone
   changes default by +0.02 ± 0.05 and +0.02 ± 0.06; added to bureau visibility at `beta = 0` it
   roughly halves the visibility effect.
 
@@ -111,4 +114,6 @@ About 25 minutes on a 16-core machine. Full commands, seeds and versions are in
     PYTHONPATH=. .venv/bin/python notebooks/scripts/build_results_figures.py
     PYTHONPATH=. .venv/bin/python notebooks/scripts/generate_param_register.py
     PYTHONPATH=. .venv/bin/python notebooks/scripts/check_results_tables.py
+    PYTHONPATH=. .venv/bin/python notebooks/scripts/check_defaulter_credit.py
+    PYTHONPATH=. .venv/bin/python notebooks/scripts/check_single_tick_calibration.py
     cd thesis && latexmk -pdf main.tex

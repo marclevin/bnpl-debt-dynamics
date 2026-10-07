@@ -79,17 +79,18 @@ not been submitted for any other degree or examination at any other university.
 \addcontentsline{toc}{section}{Abstract}
 
 % Every number is read from a generated table or results/summary/results_numbers.json:
-% 14.2% from tab:ccmr; 37% and 52% from Section 4.2 (stack_holders_loyal_beta0, tab:baseline-arms);
-% 0.1 and 0.6 points from Section 4.1; 0.15 to 0.22 points from tab:switches.
+% 14.2% from tab:ccmr; 37% and 53% from Section 4.2 (stack_holders_loyal_beta0 and
+% stack_holders_random_beta0, the same seed block); 0.1 and 0.6 points from Section 4.1;
+% 0.15 to 0.22 points from tab:switches.
 In 2017, before \ac{BNPL} spread in South Africa, 14.2\% of unsecured and credit-facility accounts were more than 90 days in arrears, and credit bureaus did not record \ac{BNPL}.
 Industry arrangements reported in 2026 are expected to add it to bureau records from 2027.
 We build an agent-based model of 5{,}000 households from \ac{NIDS} and \ac{FinScope} microdata, fit two parameters to the 2017 arrears profile with \ac{BNPL} disabled, and then enable \ac{BNPL} with platforms that cannot see one another and a bureau that cannot see them.
-The model passes three of four external population checks but understates \ac{BNPL} purchase size and volume.
-Without peer influence, 37\% to 52\% of \ac{BNPL} holders owe two or more of four platforms, depending on how they choose among platforms; default responds detectably to neither that choice nor the number of platforms.
-Enabling \ac{BNPL} raises default by about 0.1 percentage points without peer influence and 0.6 points with illustrative peer influence, and both figures depend on assumed borrowing rules.
-The model has no credit score, so we test reporting only through the traditional lender's affordability assessment.
-Adding \ac{BNPL} obligations to that assessment raises refusals by about a sixth and default by 0.15 to 0.22 points, mostly in the lowest income quintile; in the model a refused household has no other source of credit.
-Mandatory affordability screening reduces \ac{BNPL} borrowing but does not change default detectably.
+A household defaults after 98 days of unmet food, rent or debt payments.
+The population passes three of four broad external checks, but the model misses the intermediate arrears bands, the income profile of debt and \ac{BNPL} purchase size, so we read its results as comparisons between arms.
+Without peer influence, 37\% to 53\% of \ac{BNPL} holders owe two or more of four platforms depending on the assumed rule for choosing platforms; default changes detectably with neither that rule nor the number of platforms.
+Enabling \ac{BNPL} raises default by about 0.1 percentage points without peer influence and 0.6 points with illustrative peer influence, settings that bracket observed \ac{BNPL} volume; both figures depend on assumed borrowing rules.
+The model has no credit score, so we test reporting only through the traditional lender's affordability assessment: adding \ac{BNPL} obligations to it raises refusals by about a sixth and default by 0.15 to 0.22 points, with the largest rise in the lowest income quintile; in the model a refused household has no other source of credit.
+Mandatory affordability screening slightly reduces \ac{BNPL} borrowing but does not change default detectably.
 
 \section*{Data and Code}
 \addcontentsline{toc}{section}{Data and Code}

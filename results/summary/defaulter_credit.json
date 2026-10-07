@@ -1,0 +1,20 @@
+{
+  "no BNPL": {
+    "default_rate": 0.13308,
+    "owe_any_credit": 0.9048692515779982,
+    "owe_traditional": 0.9048692515779982,
+    "held_traditional_at_start": 0.539224526600541
+  },
+  "BNPL beta=0": {
+    "default_rate": 0.13341,
+    "owe_any_credit": 0.9840341803463009,
+    "owe_traditional": 0.9045798665767184,
+    "held_traditional_at_start": 0.5395397646353347
+  },
+  "BNPL beta=1": {
+    "default_rate": 0.13919,
+    "owe_any_credit": 0.9857029959048782,
+    "owe_traditional": 0.9078956821610747,
+    "held_traditional_at_start": 0.5387599683885337
+  }
+}

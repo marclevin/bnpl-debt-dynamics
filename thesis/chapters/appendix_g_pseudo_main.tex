@@ -16,7 +16,7 @@ Submodel~11 independent of activation order. Algorithm~\ref{alg:main} dispatches
     \State Record the observables of Table~\ref{tab:design-concepts}
     \State Update the peer signal for tick $t+1$: execute Algorithm~\ref{alg:peer}
 \EndFor
-\State Discard the first $T_0$ ticks; summarise the run
+\State Summarise: average per-tick observables over ticks $T_0$ to $T$; count default, lender counters and ``ever'' measures over all ticks
 \end{algorithmic}
 \end{algorithm}
 

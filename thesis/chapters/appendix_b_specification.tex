@@ -59,12 +59,14 @@ Four groups of entries carry standing flags:
     \item \textbf{The uncited rules.} The shortfall borrowing amount (Submodel~4), \ac{BNPL} relief
     of a shortfall and its cap (Submodel~5), the minimum-payment fraction (Submodel~6), the use of
     credit raised against a committed shortfall (Submodel~7) and platform routing (Submodel~13)
-    have no literature anchor. Each is varied in at least one arm. Two assumed values are not
-    varied: purchase-size dispersion and the order cap, which binds on 0.3\% of platform requests
-    at $\beta=0$.
+    have no literature anchor. Each is varied in at least one arm. Three assumptions are not
+    varied: purchase-size dispersion, the order cap, which binds on 0.3\% of platform requests
+    at $\beta=0$, and the payment of \ac{BNPL} instalments before traditional debt
+    (Section~\ref{sec:sequence}).
     \item \textbf{The uncalibrated peer coefficients.} $q_{\text{base}}$, $\beta$ and the
     threshold parameters of Submodel~11 have no South African estimate. The
-    $\beta = 0$ and $\gamma = 0$ control arms are reported beside every peer-influence result.
+    $\beta = 0$ and $\gamma = 0$ control arms are reported beside every peer-influence result;
+    the level-sensitivity arms run at $\beta = 1$ only.
     \item \textbf{The rolling limit.} No South African provider publishes a limit. $\lambda = 0.10$
     is set so that four platform limits sum to about Woolard's illustrative \pounds1{,}000 of
     credit amassed across several lenders \cite{woolard2021}, 39\% of United Kingdom median

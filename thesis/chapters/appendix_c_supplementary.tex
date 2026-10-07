@@ -54,9 +54,9 @@ indexes them.
 \begin{longtable}{L{3.1cm}L{6.2cm}L{4.1cm}}
 \caption{Index of limitations}
 \label{tab:further-caveats} \\
-\multicolumn{3}{p{13.4cm}}{\footnotesize Every limitation the thesis records. The first ten
+\multicolumn{3}{p{13.4cm}}{\footnotesize Every limitation the thesis records. The first twelve
 bound a central claim and are argued in the body at the location given in the right-hand column,
-with the claim each bounds; they are only indexed here. The remaining eleven do not bound a central
+with the claim each bounds; they are only indexed here. The remaining ten do not bound a central
 claim, and the right-hand column states what each bounds. Section and table references
 are to the body.} \\
 \toprule
@@ -70,7 +70,9 @@ are to the body.} \\
 \bottomrule
 \endfoot
 \multicolumn{3}{l}{\emph{Bounding a central claim, argued in the body}} \\
-The baseline is calibrated, not validated & Two parameters are fitted to two \ac{CCMR} bands; agreement on those bands is not evidence, and the fitted shock rate is about 1.4 times the upper bound of the labour-force separation rate possibly because one channel does the work of several. The fitted 90+ share is the time average of a share that rises to 19.9\% by the final tick, because no account is written off & Section~\ref{sec:lim-calibration}; bounds every baseline agreement \\
+Default is a model construct & A household defaults after seven consecutive ticks of unmet committed expenditure or debt service; a household without debt can default, although 90.5\% of baseline defaulters owe traditional debt when they do. No external figure measures the construct & Sections~\ref{sec:sequence} and~\ref{sec:data-validation}; bounds the level of default \\
+\addlinespace
+The baseline is calibrated, not validated & Two parameters are fitted to two \ac{CCMR} bands; agreement on those bands is not evidence, and the fitted shock rate is about 1.4 times the upper bound of the labour-force separation rate possibly because one channel does the work of several. The fitted 90+ share is the time average of a share that rises to 19.9\% by the final tick, because every household starts current and no account is written off, so the fitted shock rate depends on the measurement window & Section~\ref{sec:lim-calibration}; bounds every baseline agreement and the level of default \\
 \addlinespace
 The validation targets are uneven & Only Pattern~2 is South African and vintage-matched, and it is account-level; Pattern~1 is partly designed in; Patterns~3 and 4 are foreign or off-vintage & Section~\ref{sec:lim-validation}; bounds the RQ1 claim \\
 \addlinespace
@@ -78,9 +80,9 @@ Behavioural parameters are imported & The minimum-payer share, the friction moti
 \addlinespace
 Borrowing rules lack direct estimates & The shortfall amount, its \ac{BNPL} cap and the request that the household makes to the traditional lender for the remainder lack direct empirical estimates & Section~\ref{sec:amount}; bounds the default level and the size of the \ac{BNPL} effect (Table~\ref{tab:effect}) \\
 \addlinespace
-Platform choice is assumed & Households send each request to the platforms in a random order; no evidence on how South African households choose among providers was located. When they try platforms they already owe first, the four-platform share of holders owing two or more falls from 52.0\% to 36.6\% at $\beta = 0$ and from 85.1\% to 22.0\% at $\beta = 1$, and default does not change detectably & Sections~\ref{sec:stacking} and~\ref{sec:results-stacking}; bounds every stacking share, not the default results \\
+Platform choice is assumed & Households send each request to the platforms in a random order; no evidence on how South African households choose among providers was located. Under loyal routing, on the same seeds, the four-platform share of holders owing two or more falls from 52.6\% to 36.6\% at $\beta = 0$ and from 85.2\% to 22.0\% at $\beta = 1$, and default does not change detectably & Sections~\ref{sec:stacking} and~\ref{sec:results-stacking}; bounds every stacking share; default differences of about 0.2 to 0.25 points cannot be excluded \\
 \addlinespace
-Platform count moves capacity & Each platform brings its own limit, so platform count and total credit capacity move together & Section~\ref{sec:results-stacking}; bounds the RQ2 finding on platform count \\
+Platform count moves capacity & Each platform brings its own limit, so platform count and total credit capacity move together, and no arm gives platforms a shared view of exposure & Section~\ref{sec:results-stacking}; bounds the RQ2 findings on platform count and on platforms not seeing one another \\
 \addlinespace
 Differences below about 0.2 points are not detectable & With twenty replications a difference in default has a standard error of about 0.1 points. A true difference of 0.2 points would be missed about half the time, and smaller effects cannot be distinguished from none. The four scenario arms of Section~\ref{sec:scenarios} have one hundred replications and a standard error of about 0.05 points & Sections~\ref{sec:results} and~\ref{sec:scenarios}; bounds every statement that a difference is not detectable \\
 \addlinespace
@@ -88,7 +90,11 @@ Default contagion is excluded & No channel carries household default to other ho
 \addlinespace
 The scoring channel is not modelled & The reporting arrangements act through bureau scores as well as affordability arithmetic; the model has no score & Section~\ref{sec:asymmetry}; bounds the RQ3 answer to the affordability channel \\
 \addlinespace
-Refused households have no fallback & A household the traditional lender refuses has no other source of credit, and the later cost of a granted loan counts only within the two-year horizon & Section~\ref{sec:scenarios}; bounds the RQ3 rise in default under bureau visibility \\
+Refused households have no fallback & A household the traditional lender refuses has no other source of credit, and the later cost of a granted loan counts only within the two-year horizon. The switches were not run under the alternative borrowing rules & Section~\ref{sec:scenarios}; bounds the RQ3 rise in default under bureau visibility \\
+\addlinespace
+Income at the gate & Both affordability tests use the household's surveyed income, which the
+model does not reduce while a member is unemployed, so a household in a spell of unemployment is
+granted credit that a lender seeing its current income would refuse & Section~\ref{sec:asymmetry}; bounds the RQ3 results, including the null effect of screening on default \\
 \addlinespace
 \multicolumn{3}{l}{\emph{Other limitations, recorded here}} \\
 \ac{FinScope} vintage & No 2017 wave exists, so the 2019 wave supplies the six
@@ -125,15 +131,11 @@ Regulation 23A unit & The regulation prescribes a minimum-expense norm for an in
 and the model applies it to household income & For multi-earner households the gate is more
 permissive than in practice \\
 \addlinespace
-Income at the gate & Both affordability tests use the household's surveyed income, which the
-model does not reduce while a member is unemployed & A household in a spell of unemployment is
-granted credit that a lender seeing its current income would refuse \\
-\addlinespace
 Committed shortfalls are not repaid & A committed-expenditure shortfall is recorded as distress
 and is not carried forward. Credit raised against it is spent on debt service and discretionary
-spending, or saved (Section~\ref{sec:sequence}) & Little: when credit pays the shortfall first,
+spending, or saved (Section~\ref{sec:sequence}) & Little for the \ac{BNPL} effect: when credit pays the shortfall first,
 default without \ac{BNPL} rises by 0.01 points and the \ac{BNPL} effect at $\beta = 1$ is
-$0.68 \pm 0.11$ points, against $0.60 \pm 0.12$ (Table~\ref{tab:effect}) \\
+$0.68 \pm 0.11$ points, against $0.60 \pm 0.12$ (Table~\ref{tab:effect}). Not tested for the scenario switches \\
 \addlinespace
 Resample distortion & Weighted resampling raises the per-capita income Gini from 0.6514 to 0.6668,
 a 0.015 shift against a 0.02 tolerance. Measured, not corrected & May overstate distress among the lowest-income agents \\
@@ -182,7 +184,9 @@ by $-0.11 \pm 0.07$ points. A cap on platforms that still allows further agreeme
 platforms already in use removes 1\% of volume and changes default by $-0.04 \pm 0.08$
 points. Neither of the last two changes is detectable. Only the cap as modelled changes default
 detectably, although the agreements cap removes as much volume, so the results do not establish
-lost volume as the cause of the fall.
+lost volume as the cause of the fall. Neither lever was run under the alternative borrowing
+rules of Table~\ref{tab:effect}, and the model has no measure of what a household loses when a
+purchase or a shortfall loan is refused.
 
 \input{chapters/generated/tab_cooloff}
 

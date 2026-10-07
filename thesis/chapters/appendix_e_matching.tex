@@ -105,3 +105,46 @@ from both instruments, is recorded in Appendix~\ref{app:rationale}. It would rel
 cost of its own validation burden and the risk of fitting the idiosyncrasies of two surveys
 rather than the population behind them; the cell match reproduces cell marginals and keeps each
 donor's product combination, the two things the model consumes.
+
+\subsection*{E.5 Fidelity of the match and the resample}
+
+Table~\ref{tab:imputation_errors} and Figure~\ref{fig:inclusion-fidelity} compare the imputed
+indicators with their \ac{FinScope} targets, nationally and by quintile.
+Figure~\ref{fig:pop-fidelity} compares the 5{,}000-agent resample with its source
+(Section~\ref{sec:resample}).
+
+\begin{table}[H]
+\centering
+\caption{National rates for the six imputed indicators}
+\label{tab:imputation_errors}
+\tabnote{This table compares the national rate of each imputed indicator in three populations: the \ac{FinScope} 2019 target, weighted by its survey weight; the 10{,}841-household synthetic population after matching, weighted by \ac{NIDS} survey weight; and the unweighted 5{,}000-agent resample used in the simulation. The difference column is synthetic less \ac{FinScope}, in percentage points, computed before rounding; the tolerance is 3 percentage points (Table~\ref{tab:validation}). Because the match draws donors within the same quintile-by-province cell in proportion to weight, agreement here is expected by construction: it tests the implementation, not the population's external validity (Section E.2).}
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Imputed indicator} & \textbf{FinScope 2019} & \textbf{Synthetic} & \textbf{Agents} & \textbf{Difference} \\
+ & \textbf{(\%)} & \textbf{(\%)} & \textbf{(\%)} & \textbf{(pp)} \\
+\midrule
+Banked status    & 82.4 & 82.8 & 82.8 & 0.4 \\
+Store card       & 20.8 & 22.6 & 21.8 & 1.8 \\
+Revolving credit &  3.7 &  4.1 &  3.8 & 0.5 \\
+Hire purchase    &  6.5 &  6.9 &  6.5 & 0.5 \\
+Short-term loan  &  2.7 &  3.4 &  3.3 & 0.6 \\
+Personal loan    &  2.1 &  2.3 &  2.3 & 0.2 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_inclusion_fidelity.png}
+\caption{Fidelity of the imputed indicators}
+\label{fig:inclusion-fidelity}
+\tabnote{Panel (a) compares the national rate of each of the six imputed indicators across the \ac{FinScope} 2019 target, the weighted synthetic population and the unweighted 5{,}000-agent population, as in Table~\ref{tab:imputation_errors}. Panel (b) shows the synthetic-less-\ac{FinScope} gap for each indicator within each per-capita income quintile, thirty cells in all; the largest single deviation is 2.3 percentage points against a tolerance of 5. Quintiles are the weighted \ac{NIDS} bounds of Appendix~\ref{app:variables}.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_population_fidelity.png}
+\caption{Distributional fidelity of the agent population}
+\label{fig:pop-fidelity}
+\tabnote{Each panel compares the unweighted 5{,}000-agent resample, drawn with replacement in proportion to \ac{NIDS} survey weight (seed 20260818) from 3{,}221 unique source records, against the weighted 10{,}841-household source it is drawn from. Panels (a) and (b) cover the per-capita income distribution and its concentration; panels (c) to (f) cover income quintile, household size, province and primary income source, the categorical attributes that gate behaviour and define the reference groups in the simulation. The Kolmogorov--Smirnov distance in (a) is 0.016, the largest categorical deviation across the 24 sub-categories is 1.4 percentage points, and the Gini rises by 0.015, from 0.6514 to 0.6668.}
+\end{figure}

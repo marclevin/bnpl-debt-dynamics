@@ -1,12 +1,8 @@
 \section{Calibration and Empirical Grounding}
 \label{sec:calibration}
 
-This section answers RQ1. We construct the population from South African survey data, assign debt-service
-and product parameters, fit two parameters to the baseline arrears profile, and
-then check what the model reproduces beyond those targets.
-
-Table~\ref{tab:param-taxonomy} classifies the inputs by provenance, and
-Appendix~\ref{app:specification} gives the full register.
+This section answers RQ1. Table~\ref{tab:param-taxonomy} classifies the inputs by
+provenance, and Appendix~\ref{app:specification} gives the full register.
 
 \begin{table}[H]
 \centering
@@ -30,35 +26,65 @@ Swept & Peer coefficients $q_{\text{base}}$, $\beta$ and the threshold parameter
 \end{tabular}
 \end{table}
 
-\subsection{Simulation Parameters}
+\subsection{Runs, Replications and Inference}
 \label{sec:sim-params}
 
-Each run follows 5{,}000 households for 52 fortnightly ticks, two years.
-Arrears, savings and volume measures exclude a 12-tick burn-in; default is counted
-from the first tick (Section~\ref{sec:sequence}). Each configuration has
-twenty replications, using seeds $s_0+i$ with a fixed starting seed for each
-group of arms; the variance decomposition of Section~\ref{sec:results-robustness}
-has two per design point. The four scenario arms of Section~\ref{sec:scenarios}
-have one hundred, because the differences between them are smaller than twenty
-replications resolve. Arms within a group share seeds and population size, and we
-difference them seed by seed; because arms diverge once their random draws differ,
-this pairing reduces the standard error little. The scenario arms, the cap arms, the
-threshold-mean arms and each group of sensitivity arms have their own seed blocks,
-given in the table notes, and we treat differences across blocks or population sizes
-as independent. Thresholds use a separate random stream, so control arms reproduce
-exactly across threshold dispersion. Reported dispersion is simulation variance only
-and excludes uncertainty in the data and assumptions.
+Each run follows 5{,}000 households for 52 fortnightly ticks (two years). Arrears, savings,
+interest and volume measures exclude a 12-tick burn-in. Default, the traditional lender's
+counts of loans and refusals, purchase sizes and the ``ever'' measures are counted from
+the first tick (Section~\ref{sec:sequence}).
+
+Table~\ref{tab:experiments} lists the experiments. Each configuration has twenty
+replications, except the four scenario arms, which have one hundred because twenty cannot
+resolve the differences between them, and the variance decomposition, which has two per
+design point. Replication $i$ uses seed $s_0+i$, with one starting seed $s_0$ for each
+group of arms. Arms in a group share seeds and population size and are differenced seed by
+seed. Pairing reduces the standard error only slightly, because arms diverge once their
+random draws differ. We treat differences across seed blocks or population sizes as
+independent. Thresholds use a separate random stream, so control arms reproduce exactly
+across threshold dispersion.
+
+Differences in the text carry one standard error, and we call a difference detectable when
+it exceeds two standard errors. With twenty replications the standard error of a
+difference in population default is about 0.1 percentage points, so a true change of 0.2
+points would be missed about half the time; with one hundred it is about 0.05 points. We
+judge many contrasts this way, so about one in twenty would pass by chance, and an
+isolated detectable difference carries less weight than one that repeats across seed
+blocks and settings. Reported dispersion is simulation variance only and excludes
+uncertainty in the data and assumptions. Figure error bars are 95\% confidence intervals.
+
+\begin{table}[H]
+\centering
+\caption{Experiments}
+\label{tab:experiments}
+\tabnote{Every experiment uses the fitted shock probability (0.016) and payment friction (0.09), four platforms, access at the banked ceiling and $\beta=0$ unless the row varies them. The access rate is the share of banked households (82.8\% of all households) allowed to use \ac{BNPL}. Seeds give the first seed of each block; replicate $i$ uses that seed plus $i$.}
+\begingroup\setlength{\tabcolsep}{4pt}\footnotesize
+\begin{tabular}{L{3.0cm}L{4.2cm}L{1.3cm}rL{1.5cm}L{2.0cm}}
+\toprule
+\textbf{Experiment} & \textbf{What varies} & \textbf{$\beta$} & \textbf{Reps} & \textbf{Seeds} & \textbf{Reported in} \\
+\midrule
+Baseline and injection & \ac{BNPL} off and on & 0, 1 & 20 & 10{,}000 & Table~\ref{tab:baseline-arms} \\
+Platform count & 1--6 platforms & 0, 0.5, 1, 2, 3 & 20 & 20{,}000 & Table~\ref{tab:stacking} \\
+Access, linear peer rule & access rate 0--1, seven levels & 0, 0.5, 1, 2, 3 & 20 & 30{,}000 & Table~\ref{tab:access} \\
+Access, threshold rule & access rate $\times$ $\sigma_\theta$ (five values) $\times$ $\gamma \in \{0, 0.3\}$; $\mu_\theta$ 0.15--0.45 & -- & 20 & 60{,}000; 61{,}000 & Table~\ref{tab:access} \\
+Level sensitivity & one rule or parameter at a time & 1 & 20 & 50{,}000--59{,}000 & Tables~\ref{tab:robustness}, \ref{tab:robustness-appendix} \\
+Effect robustness & each setting with \ac{BNPL} off and on, including the routing and shortfall-path rules & 0, 1 & 20 & 70{,}000 & Table~\ref{tab:effect} \\
+Variance decomposition & six parameters, Saltelli design & 0--3 & 2 & 100{,}000 & Table~\ref{tab:sobol} \\
+Scenarios & bureau visibility $\times$ mandatory screening & 0, 1 & 100 & 80{,}000 & Tables~\ref{tab:scenarios}, \ref{tab:switches} \\
+Further levers & cooling-off 0--4 ticks; platform cap 1--3 & 0, 1 & 20 & 40{,}000; 43{,}000 & Tables~\ref{tab:cooloff}, \ref{tab:cap} \\
+\bottomrule
+\end{tabular}
+\endgroup
+\end{table}
 
 \subsection{The Household Population}
 \label{sec:population}
 
-Monetary values are in 2017 South African Rands (R),
-the year of the primary survey.
-
 \subsubsection*{Primary Dataset: NIDS Wave 5}
 \label{sec:backbone}
 
-The starting point is \ac{NIDS} Wave 5 \cite{nids_w5_2018}. Filtering the
+The starting point is \ac{NIDS} Wave 5 \cite{nids_w5_2018}, and monetary values are in
+2017 Rands (R). Filtering the
 13{,}719 records for reported income, valid household size and positive sampling
 weights leaves 10{,}841 households. All 2{,}878 excluded records have zero or
 missing weights. Applying the survey weights gives
@@ -74,16 +100,15 @@ percentile. Outstanding financial debt supplies the traditional balance.
 
 Imputed rent is excluded because it is not a cash payment. Asset, debt and rent
 fields are recorded only for holders, so missing values are set to zero;
-Section~\ref{sec:data-validation} tests the aggregate consequence. Households are grouped into per-capita income
-quintiles. Appendix~\ref{app:variables} records the fields, formulas and
-missing-data treatment, including the servicing calculation introduced in
-Section~\ref{sec:servicing}.
+Section~\ref{sec:data-validation} tests the aggregate consequence. Households are grouped
+into per-capita income quintiles. Appendix~\ref{app:variables} records the fields, formulas
+and missing-data treatment.
 
 \subsubsection*{Imputing Financial Inclusion: FinScope 2019}
 \label{sec:match}
 
-The model also needs banking status and a consistent set of credit-product
-indicators. We impute these from the 2019 \ac{FinScope} \cite{finscope2019}.
+We impute banking status and credit-product indicators from the 2019 \ac{FinScope}
+\cite{finscope2019}.
 Banked status determines eligibility for \ac{BNPL}, so the imputed banked share
 of 82.8\% caps holding in the constructed population. Five further flags identify store cards, revolving
 credit, hire purchase, short-term loans and personal loans. These determine the
@@ -98,9 +123,8 @@ so no draw requires a coarser match.
 All six flags come from the same donor. This preserves combinations
 observed in \ac{FinScope} and reproduces its weighted within-cell distribution
 in expectation. \ac{FinScope} records one adult's holdings, so flags understate
-holding in households with several adults. The match does not recover relationships with
-recipient characteristics omitted from it, such as urban or rural location; within a cell, flags
-are assigned without regard to them. Using 2019 banking data may also
+holding in households with several adults. Within a cell, flags are assigned without regard
+to characteristics outside the match, such as urban or rural location. Using 2019 banking data may also
 overstate access in 2017. Appendix~\ref{app:matching} explains these assumptions
 and reports donor reuse.
 
@@ -155,36 +179,9 @@ and reports donor reuse.
 \end{figure}
 
 National imputed rates differ from their targets by at most 1.8 percentage
-points (Table~\ref{tab:imputation_errors}). The largest gap across the thirty
-quintile-by-indicator cells is 2.3 points (Figure~\ref{fig:inclusion-fidelity}).
-
-\begin{table}[H]
-\centering
-\caption{National rates for the six imputed indicators}
-\label{tab:imputation_errors}
-\tabnote{This table compares the national rate of each imputed indicator in three populations: the \ac{FinScope} 2019 target, weighted by its survey weight; the 10{,}841-household synthetic population after matching, weighted by \ac{NIDS} survey weight; and the unweighted 5{,}000-agent resample used in the simulation. The difference column is synthetic less \ac{FinScope}, in percentage points, computed before rounding; the tolerance is 3 percentage points (Table~\ref{tab:validation}). Because the match draws donors within the same quintile-by-province cell in proportion to weight, agreement here is expected by construction: it tests the implementation, not the population's external validity (Appendix~\ref{app:matching}).}
-\begin{tabular}{lrrrr}
-\toprule
-\textbf{Imputed indicator} & \textbf{FinScope 2019} & \textbf{Synthetic} & \textbf{Agents} & \textbf{Difference} \\
- & \textbf{(\%)} & \textbf{(\%)} & \textbf{(\%)} & \textbf{(pp)} \\
-\midrule
-Banked status    & 82.4 & 82.8 & 82.8 & 0.4 \\
-Store card       & 20.8 & 22.6 & 21.8 & 1.8 \\
-Revolving credit &  3.7 &  4.1 &  3.8 & 0.5 \\
-Hire purchase    &  6.5 &  6.9 &  6.5 & 0.5 \\
-Short-term loan  &  2.7 &  3.4 &  3.3 & 0.6 \\
-Personal loan    &  2.1 &  2.3 &  2.3 & 0.2 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{figures/fig_inclusion_fidelity.png}
-\caption{Fidelity of the imputed indicators}
-\label{fig:inclusion-fidelity}
-\tabnote{Panel (a) compares the national rate of each of the six imputed indicators across the \ac{FinScope} 2019 target, the weighted synthetic population and the unweighted 5{,}000-agent population, as in Table~\ref{tab:imputation_errors}. Panel (b) shows the synthetic-less-\ac{FinScope} gap for each indicator within each per-capita income quintile, thirty cells in all; the largest single deviation is 2.3 percentage points against a tolerance of 5. Quintiles are the weighted \ac{NIDS} bounds of Appendix~\ref{app:variables}.}
-\end{figure}
+points, and the largest gap across the thirty quintile-by-indicator cells is 2.3 points
+(Appendix~\ref{app:matching}, Table~\ref{tab:imputation_errors} and
+Figure~\ref{fig:inclusion-fidelity}).
 
 \subsubsection*{Population Resampling}
 \label{sec:resample}
@@ -192,16 +189,8 @@ Personal loan    &  2.1 &  2.3 &  2.3 & 0.2 \\
 We sample $N=5{,}000$ agents with replacement from the 10{,}841 households,
 using probabilities proportional to survey weights (seed: 20260818). Simulation
 statistics can then be calculated without applying weights again.
-Figure~\ref{fig:pop-fidelity} compares the resample with its source; the per-capita income Gini
+Figure~\ref{fig:pop-fidelity} in Appendix~\ref{app:matching} compares the resample with its source; the per-capita income Gini
 rises by 0.015, from 0.6514 to 0.6668.
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{figures/fig_population_fidelity.png}
-\caption{Distributional fidelity of the agent population}
-\label{fig:pop-fidelity}
-\tabnote{Each panel compares the unweighted 5{,}000-agent resample, drawn with replacement in proportion to \ac{NIDS} survey weight (seed 20260818) from 3{,}221 unique source records, against the weighted 10{,}841-household source it is drawn from. Panels (a) and (b) cover the per-capita income distribution and its concentration; panels (c) to (f) cover income quintile, household size, province and primary income source, the categorical attributes that gate behaviour and define the reference groups in the simulation. The Kolmogorov--Smirnov distance in (a) is 0.016, the largest categorical deviation across the 24 sub-categories is 1.4 percentage points, and the Gini rises by 0.015, from 0.6514 to 0.6668.}
-\end{figure}
 
 \subsection{Debt-Service and Product Parameters}
 \label{sec:servicing}
@@ -214,11 +203,10 @@ Balances are amortised at the applicable 2017 statutory maximum \ac{APR}
 The resulting payment is capped at the Regulation 23A residual-income ceiling
 \cite{sa_ncr_affordability_2015}.
 
-The statutory rates are proxies. Realised product rates were not available in
-the \ac{CCMR} \cite{ncr_ccmr_2017} or the other 2017 sources consulted.
-Because realised rates cannot exceed the ceilings, this choice biases
-calculated payments upward. Product allocation, horizons and the cap are also
-approximations, but constructed service exceeds the survey range
+Realised product rates were not available in the \ac{CCMR} \cite{ncr_ccmr_2017} or the
+other 2017 sources consulted. Realised rates cannot exceed the statutory ceilings, so using
+the ceilings biases calculated payments upward. Product allocation, horizons and the cap are
+also approximations, but constructed service exceeds the survey range
 (Section~\ref{sec:data-validation}), so the net error is probably upward.
 
 \begin{table}[tbp]
@@ -246,11 +234,11 @@ Unflagged balance & 28\% & 25 & Fallback for the 74.0\% of donors flagging no sp
 \end{table}
 
 The cap binds for only 3.8\% of debtors but removes 22.8\% of calculated
-service (Appendix~\ref{app:var-servicing}). The non-food aggregate already
-includes clothing-account, hire-purchase and vehicle payments, a median 12.6\% of
-non-food outlay among the households reporting them, so adding reconstructed service
-partly counts that flow twice. This overstates compressible outlay and understates
-service as a share of it; the net effect on default is unsigned.
+service (Appendix~\ref{app:var-servicing}). The non-food aggregate already includes
+clothing-account, hire-purchase and vehicle payments, a median 12.6\% of non-food outlay
+among the households reporting them, so reconstructed service partly double-counts them.
+Compressible outlay is therefore overstated, and the direction of the net effect on default
+is unknown.
 
 The \ac{BNPL} contract and late fees come from published provider
 terms \cite{payflex_terms, payjustnow_terms}, deflated to 2017 Rands. The order cap
@@ -265,6 +253,7 @@ No usable South African provider estimate was located for the rolling limit.
 We therefore treat $\lambda$ as an assumption, informed by Woolard's illustrative
 stacked exposure \cite{woolard2021}, and sweep it from 0.10 to 1.0 (Submodel~12).
 
+\subsubsection*{Transferred Behavioural Evidence}
 \label{sec:lim-transfer}
 The behavioural evidence discussed in Section~\ref{sec:lit-behavioural}
 comes from United States borrowers. It supplies the minimum-payer share of
@@ -280,23 +269,31 @@ distribution was available to calibrate it.
 We fit two parameters to two parts of the 2017-Q1 \ac{CCMR} arrears
 distribution (Table~\ref{tab:ccmr}; Pattern~2 in Table~\ref{tab:patterns}).
 With \ac{BNPL} disabled, the income-shock probability is fitted to the 90+ day share
-and payment friction to the 1--30 day share. They primarily affect different
+and payment friction to the 1--30 day share. They mainly affect different
 parts of the distribution: persistent shocks generate long arrears, while
-friction produces brief payment delays. The selected values are 1.6\% and
-9\% per tick. The shock probability is chosen from a grid with steps of
-0.8 percentage points. A check in steps of 0.1 points places the target between
-1.5\%, which gives a 90+ share of 13.93\%, and the selected 1.6\%, which gives
-14.48\% (Table~\ref{tab:arrears-fit}). Both values remain fixed when \ac{BNPL} is
-introduced. The fitted shock probability is about 1.4 times the upper end of the
-observed separation-rate range, 0.54--1.17\% per tick, so we interpret it as a
-reduced-form hazard of income loss and other distress, such as illness, unexpected
-bills or family changes.
+friction produces brief payment delays. The fit is sequential, each step choosing the
+value with the smallest absolute error over twenty replications (seeds 1{,}000--1{,}019).
+The shock probability is chosen from a grid in steps of 0.8 percentage points with
+friction off; friction is then chosen from $\{0, 0.02, 0.04, 0.06, 0.09, 0.12, 0.16\}$ at
+that probability; and the shock probability is re-chosen at the selected friction. The
+selected values are 1.6\% and 9\% per tick. A finer check in steps of 0.1 points places
+the target between 1.5\%, which gives a 90+ share of 13.93\%, and the selected 1.6\%,
+which gives 14.48\% (Table~\ref{tab:arrears-fit}). Both values remain fixed when
+\ac{BNPL} is introduced.
+
+The fitted shock probability is about 1.4 times the upper end of the observed
+separation-rate range, 0.54--1.17\% per tick. The shock may absorb other income
+losses that the model omits, but only in wage-dominant households, the only ones it
+reaches. The fit also depends on the measurement window. Every household starts current,
+and no account is written off, so the 90+ share rises through the run
+(Section~\ref{sec:data-validation}); a longer run or a different window would select a
+different value.
 
 \begin{table}[H]
 \centering
 \caption{2017-Q1 \ac{CCMR} arrears profile}
 \label{tab:ccmr}
-\tabnote{The calibration target: the distribution of accounts by days in arrears for unsecured credit and credit facilities combined, first quarter of 2017, from Tables 21 and 23 of the \ac{CCMR} \cite{ncr_ccmr_2017}. The unit is the account, not the household, so the model's household-level arrears distribution over the credit-active subpopulation is compared with it for shape and scale rather than point for point. Each aggregate row sums the bands beyond its threshold.}
+\tabnote{The calibration target: the distribution of accounts by days in arrears for unsecured credit and credit facilities combined, first quarter of 2017, from Tables 21 and 23 of the \ac{CCMR} \cite{ncr_ccmr_2017}. The unit is the account, not the household, so the model's household-level arrears distribution over the credit-active subpopulation is compared with it for shape and scale only. Each aggregate row sums the bands beyond its threshold.}
 \begin{tabular}{lr}
 \toprule
 \textbf{Age band} & \textbf{Share of accounts (\%)} \\
@@ -314,20 +311,20 @@ Current                  & 71.63 \\
 \end{tabular}
 \end{table}
 
-Other inputs retain their assigned values except where varied.
-Neither $q_{\text{base}}$ nor $\beta$ has a direct empirical estimate, so the
-adoption rate is not identified. Only indirect comparisons are available: the
-banking ceiling, the \ac{CFPB} stacking shares, and TransUnion's finding that
-57\% of surveyed consumers hold a \ac{BNPL} product \cite{transunion_cir_sa_2026},
-against 70.0\% of households that ever hold a balance at $\beta=0$.
+Neither $q_{\text{base}}$ nor $\beta$ has a direct empirical estimate, so the adoption
+rate is not identified. Only indirect comparisons are available: the banking ceiling, the
+\ac{CFPB} stacking shares, the provider's volume (Section~\ref{sec:data-validation}), and
+TransUnion's finding that 57\% of surveyed consumers hold a \ac{BNPL} product
+\cite{transunion_cir_sa_2026}, against 70.0\% of households that ever hold a balance at
+$\beta=0$.
 
 \subsection{Validation}
 \label{sec:data-validation}
 
-Construction checks test whether the population preserves the properties of
-its sources, and calibration checks test the fit to the two targets. External
-comparisons, against quantities neither fitted nor imposed, test more than the
-construction, but only as far as they measure comparable populations and outcomes. Table~\ref{tab:patterns} lists the four patterns used.
+Construction checks test whether the population preserves its sources, and calibration
+checks test the fit to the two targets. External comparisons test the model against
+quantities it was neither fitted to nor built from, and are only as informative as those
+quantities are comparable. Table~\ref{tab:patterns} lists the four patterns used.
 
 \label{sec:lim-validation}
 Only Pattern~2 is both South African and matched to the model's base year.
@@ -337,13 +334,10 @@ household. Arrears shares are calculated over credit-active households
 separately. This improves the comparison but does not remove the unit mismatch,
 which also limits interpretation of the fitted income-shock probability.
 
-Pattern~1 is not independent of model development. Want-driven borrowing
-was introduced partly because shortfall-only borrowing did not reproduce
-the complementarity, so Pattern~1 serves as a diagnostic of the resulting
-behaviour. Pattern~3 compares against a United Kingdom model. Pattern~4
-compares zero savings with expected missed payments in a 2025 survey, which
-are different outcomes. Patterns 1, 3 and 4 are therefore plausibility
-comparisons.
+Patterns 1, 3 and 4 are plausibility comparisons. Want-driven borrowing was introduced
+partly because shortfall-only borrowing did not reproduce Pattern~1, Pattern~3 comes from a
+United Kingdom model, and Pattern~4 compares zero savings with expected missed payments,
+a different outcome.
 
 \begin{table}[H]
 \centering
@@ -373,24 +367,25 @@ too heavily in brief and persistent arrears. Because households start current
 and no account is written off, the 90+ band accumulates every uncured account: at
 the fitted values it averages 14.48\% after burn-in but reaches 19.9\% at the final
 tick. The fit therefore matches the time average of a rising stock, and matching
-the two targets does not establish that arrears transitions are well represented.
+the two targets does not establish that arrears transitions are well represented. No
+external figure measures the model's default construct, so the level of default, 13.3\%
+of households over two years, is not validated.
 
 \input{chapters/generated/tab_arrears_fit}
 
 Three external comparisons fall within the chosen tolerances: household size,
 income inequality and aggregate debt (Table~\ref{tab:validation}).
 Constructed servicing falls outside its tolerance, at 12.8\% of monthly outlay
-against the \ac{FinScope} range of 6.1--9.8\%. That measure was not used to
-fit servicing, although the survey supplies other construction inputs.
-The remaining fourteen checks comprise thirteen construction checks and one
-diagnostic on how often the Regulation 23A cap binds. Passing them demonstrates
-the internal consistency of the construction only.
+against the \ac{FinScope} range of 6.1--9.8\%. \ac{FinScope} supplies other construction
+inputs, but this measure was not used to fit servicing. The remaining fourteen checks,
+thirteen construction checks and one diagnostic on how often the Regulation 23A cap binds,
+test only the internal consistency of the construction.
 
 \begin{table}[H]
 \centering
 \caption{Data-layer validation scorecard}
 \label{tab:validation}
-\tabnote{Eighteen checks on the constructed population, grouped by what they test. Groups A, B and E contain thirteen construction checks on consistency, imputed marginals and resampling. The household-size row in Group A is an external comparison with the Community Survey. Group C compares with quantities that no construction step targeted. Group D bounds the debt-service construction: the first row is the share of debtors for whom the Regulation 23A cap binds, the second the servicing share of monthly outlay among indebted households, against \ac{FinScope}'s self-reported range among holders of a modelled product. Tolerances with a source: the household-size band is the 2016 Community Survey \cite{statssa_cs_2016}, the Gini interval is bounded below by the World Bank consumption-based estimate of 63.0 for 2014 as published until February 2026 (the April 2026 release revises it to 59.6 and adds 54.1 for 2022) \cite{worldbank_gini_zaf}, and the Group D range is \ac{FinScope}'s \cite{finscope2019}; the remainder are ours. Values are survey-weighted except in Group E, which compares the unweighted agents with the weighted source.}
+\tabnote{Eighteen checks on the constructed population, grouped by what they test. Groups A, B and E contain thirteen construction checks on consistency, imputed marginals and resampling. The household-size row in Group A is an external comparison with the Community Survey. Group C compares with quantities that no construction step targeted. Group D bounds the debt-service construction: the first row is the share of debtors for whom the Regulation 23A cap binds, the second the servicing share of monthly outlay among indebted households, against \ac{FinScope}'s self-reported range among holders of a modelled product. Tolerances with a source: the household-size band is the 2016 Community Survey \cite{statssa_cs_2016}, the Gini interval is bounded below by the World Bank consumption-based estimate of 63.0 for 2014 as published until February 2026 (the April 2026 release revises it to 59.6 and adds 54.1 for 2022) \cite{worldbank_gini_zaf} and above by Statistics South Africa's per-capita income Gini of 0.70 for 2009 \cite{statssa2019inequality}, and the Group D range is \ac{FinScope}'s \cite{finscope2019}; the remainder are ours. Values are survey-weighted except in Group E, which compares the unweighted agents with the weighted source.}
 \begin{tabular}{L{4.9cm}L{3.6cm}rrc}
 \toprule
 \textbf{Check} & \textbf{Metric} & \textbf{Value} & \textbf{Tolerance} & \\
@@ -421,22 +416,17 @@ E. Resample Gini & $|$agents $-$ source$|$ & 0.015 & $\leq$0.02 & \checkmark \\
 \end{tabular}
 \end{table}
 
-These external tolerances are broad. The income Gini of 0.651 lies in the
-0.630--0.700 interval, whose lower bound is the World Bank's consumption-based Gini
-for 2014 \cite{worldbank_gini_zaf} and whose upper bound is Statistics South
-Africa's per-capita income Gini for 2009 \cite{statssa2019inequality}. The closest
-income measures, 0.67 for 2015 and 0.66 from the 2014 wave of \ac{NIDS}
-\cite{statssa2019inequality, hundenborn2018drivers}, lie 0.01 to 0.02 above the model. Synthetic debt of
+These external tolerances are broad. The income Gini of 0.651 lies 0.01 to 0.02 below the
+closest income measures, 0.67 for 2015 and 0.66 from the 2014 wave of \ac{NIDS}
+\cite{statssa2019inequality, hundenborn2018drivers}. Synthetic debt of
 R191.4 billion is 49\% of the corresponding R392.0 billion
 \ac{CCMR} book \cite{ncr_ccmr_2017}. Underreporting may contribute to
 this gap. Imputing missing balances at holder means would instead produce 111\%
 of the administrative book, so the comparison depends on the missing-data
 treatment.
 
-Mean household size passes its tolerance but, at 3.03, is below the
-Community Survey estimate of 3.3 \cite{statssa_cs_2016}, and the weighted
-population contains roughly 10\% more households: 18.67 million against
-16.9 million.
+Mean household size, 3.03, is below the Community Survey estimate of 3.3
+\cite{statssa_cs_2016}, and the weighted population contains roughly 10\% more households.
 
 Some households begin in a vulnerable position. Among the 5{,}000 agents,
 income does not cover committed expenditure for 3.6\%, or committed expenditure
@@ -444,54 +434,53 @@ plus scheduled service for 5.1\%, and 45.2\% have zero liquid savings. These gro
 overlap, and none is a count of initial distress, which the tick sequence determines
 (Section~\ref{sec:sequence}).
 
-Table~\ref{tab:bnpl-on-checks} reports the unfitted comparisons after
-\ac{BNPL} is enabled. At the final tick, 52.0\% of holders have balances on two
-or more platforms. The over-the-horizon measure, 36.8\% of
-households that ever held a balance, is closer in definition to the \ac{CFPB}'s measure: the share of
-United States \ac{BNPL} borrowers with simultaneous loans at two or more firms
-during a year, 32\% in 2021 and 33\% in 2022. The markets and observation
-periods differ.
+Table~\ref{tab:bnpl-on-checks} reports the unfitted comparisons after \ac{BNPL} is
+enabled, using the arms of Table~\ref{tab:baseline-arms}. At the final tick, 52.0\% of
+holders have balances on two or more platforms. The share of households that ever held a
+balance and at some tick owed two or more platforms, 36.8\%, is closer in definition to
+the \ac{CFPB}'s measure: the share of United States \ac{BNPL} borrowers with simultaneous
+loans at two or more firms during a year, 32\% in 2021 and 33\% in 2022. The markets and
+observation periods differ, and the routing assumption largely sets both model shares
+(Section~\ref{sec:results-stacking}), so the agreement is weak evidence.
 
 \input{chapters/generated/tab_bnpl_on_checks}
 
-The model fails the purchase-size and volume checks. The mean want-driven
-purchase is R633 against a target of R992, 36.2\% below it under a tolerance of
-35\%, and four of twenty replications fall inside the band. At $\beta=1$ the
-mean is R610 and no replication falls inside. Annual volume is R1{,}010 per
-eligible household against a lower bound of R1{,}333, and R1{,}196 per ever-holder
-against the R4{,}261 bound for active customers. The model's \ac{BNPL} market
-therefore has smaller purchases and less volume per user than the provider
-disclosure.
+The model fails the purchase-size and volume checks. The mean want-driven purchase is
+R633 against a target of R992, just outside the 35\% tolerance, and four of twenty
+replications fall inside the band; at $\beta=1$ none does. Without peer influence, annual
+volume falls below the provider band both per eligible household and per ever-holder. At
+$\beta=1$ volume is ten times higher, about R10{,}400 per eligible household, well above
+the band's upper end of R4{,}261. The two peer-influence settings therefore bracket the
+provider's volume.
+% R10,400 = vol_per_eligible_year x volume_beta1 / volume_beta0 (results_numbers.json).
 
-Pattern~1 holds on the arrears measure and fails on the interest measure.
-Enabling \ac{BNPL} raises the traditional arrears rate by $0.23 \pm 0.07$ points at
-$\beta=0$ and $0.57 \pm 0.07$ at $\beta=1$. The interest charged on traditional debt
-falls by $1.5 \pm 0.4$\% at $\beta=0$, which the condition in
-Table~\ref{tab:patterns} counts as falsifying, and does not change detectably at
-$\beta=1$. The fall reflects a smaller traditional book
-(Section~\ref{sec:results-injection}), so this measure tracks the debt stock more
-than servicing stress. We record the failure as specified rather than amend the
-condition after the result. Aggregate interest falls whenever the book shrinks, so
-it was a poor proxy for servicing stress; the arrears measure tests the same
-mechanism and rises. On that reading, reached after the result, the lender-choice
-hierarchy stands and the interest condition was mis-specified.
-Pattern~3 is not reproduced: the aggregate debt-to-income ratio is highest in
-Q1, at 0.77 months of income, with Q4 second at 0.69. Pattern~4 is of the same
-order, 25.7\% against 36\%. That share is a post-burn-in mean. It
-lies below the 45.2\% at initialisation because the model saves any cash left
-after discretionary spending, and about three-quarters of the agents that
-start without savings have income above their committed, discretionary and
-scheduled-service outlays.
+Pattern~1 holds on the arrears measure and fails on the interest measure. Enabling
+\ac{BNPL} raises the traditional arrears rate by $0.23 \pm 0.07$ points at $\beta=0$ and
+$0.57 \pm 0.07$ at $\beta=1$. The interest charged on traditional debt falls by
+$1.5 \pm 0.4$\% at $\beta=0$, which the condition in Table~\ref{tab:patterns} counts as
+falsifying, and does not change detectably at $\beta=1$. As specified, the interest
+measure therefore falsifies the lender-choice rule. Neither measure discriminates well,
+however. Aggregate interest falls whenever the traditional book shrinks, as it does here
+(Section~\ref{sec:results-injection}), so it tracks the debt stock more than servicing
+stress. Households pay \ac{BNPL} instalments before traditional debt
+(Section~\ref{sec:sequence}), so any \ac{BNPL} obligation tends to raise traditional
+arrears, whatever the lender-choice rule.
 
-RQ1 is therefore answered only in part. The model approximates the fitted
-bands, and the population meets three broad external checks, although these test
-the input data more than the model's behaviour. Among the behavioural comparisons,
-the arrears measure of Pattern~1, Pattern~4 and the ever-stacked share agree in
-direction or order of magnitude. The model misses the intermediate
-arrears bands, the servicing share, the purchase-size and volume bands, Pattern~3
-and the interest measure of Pattern~1. These results give limited
-confidence in the empirical accuracy of the model's outcome levels. A
-misspecified balance sheet can distort a comparison between arms as well as a
-level. Section~\ref{sec:results-effect} tests the \ac{BNPL} effect under alternative
-borrowing, repayment and purchase-size rules, but no arm varies the servicing
+Pattern~3 is not reproduced: the aggregate debt-to-income ratio is highest in Q1, at 0.77
+months of income, with Q4 second at 0.69. Pattern~4 is of the same order, 25.7\% against
+36\%. That share is a post-burn-in mean. It lies below the 45.2\% at initialisation
+because the model saves any cash left after discretionary spending, and about
+three-quarters of the agents that start without savings have income above their
+committed, discretionary and scheduled-service outlays.
+
+RQ1 is therefore answered only in part. The model approximates the fitted bands, and the
+population meets three broad external checks, although these test the input data more
+than the model's behaviour. Of the behavioural comparisons, only Pattern~4 agrees in order
+of magnitude without qualification. The model misses the intermediate arrears bands, the
+servicing share, the purchase-size band, the volume band without peer influence,
+Pattern~3 and the interest measure of Pattern~1, and the level of default is not
+validated. We therefore place limited confidence in the
+model's outcome levels. A misspecified balance sheet can distort a comparison between arms
+as well as a level. Section~\ref{sec:results-effect} tests the \ac{BNPL} effect under
+alternative borrowing, repayment and purchase-size rules, but no arm varies the servicing
 construction or the debt stock.

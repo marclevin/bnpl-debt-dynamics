@@ -126,8 +126,9 @@ def tab_baseline_arms(rq0: pd.DataFrame) -> None:
         f"in each arm). The default rate is the share of all households in default at the final tick; "
         f"the 90+ day share is over credit-active households, averaged over post-burn-in ticks; "
         f"the traditional arrears rate is the share of all households with a traditional instalment "
-        f"in arrears, averaged over post-burn-in ticks; interest, lending and volume are sums over "
-        f"the post-burn-in horizon in 2017 Rands. ``Holders'' are households with a positive "
+        f"in arrears, averaged over post-burn-in ticks; interest and volume are sums over "
+        f"the post-burn-in horizon in 2017 Rands, while lending granted and refused applications "
+        f"are counted over the whole run, burn-in included. ``Holders'' are households with a positive "
         f"\\ac{{BNPL}} balance at the final tick; ``ever'' quantities are over every tick of the run, "
         f"burn-in included. Default is absorbing, so the final-tick rate is the share of households "
         f"that defaulted at any tick of the run. "
@@ -432,7 +433,8 @@ def tab_bnpl_on_checks(rq0: pd.DataFrame) -> None:
         f"are the post-burn-in cumulative volume divided by the number of eligible (banked) households "
         f"or of households that ever held a balance, annualised over the {yrs:.2f}-year post-burn-in "
         f"horizon; the band is the 2017-Rand provider disclosure whose customer denominator is not "
-        f"stated \\cite{{weaver2025iar}}. The mean-purchase comparison population (all want-driven purchases), "
+        f"stated \\cite{{weaver2025iar}}. The mean purchase is over every want-driven purchase in the "
+        f"run, burn-in included. The mean-purchase comparison population (all want-driven purchases), "
         f"statistic, target and tolerance were specified before the run; the Q3--Q5 and Q4--Q5 "
         f"means explain the gap and are not alternative comparison populations. Pattern 1 compares "
         f"arms that share seeds, so its differences are paired by seed and carry one standard error; "
@@ -680,7 +682,7 @@ def tab_access(rq2: pd.DataFrame, rq2t: pd.DataFrame) -> None:
         "as a share of the change; a tipping point would show a low $R^2$ and a large residual. "
         "Where the change is within two standard errors there is no response to fit and the two "
         "cells are left empty. The holding column gives the same diagnostic for the share holding "
-        "\\ac{BNPL} at the final tick. Linear-coupling cells have seeds "
+        "\\ac{BNPL} at the final tick; it is computed for the threshold rule only. Linear-coupling cells have seeds "
         "30{,}000--30{,}019, threshold cells 60{,}000--60{,}019 and the $\\mu_\\theta$ arms "
         "61{,}000--61{,}019; 20 replicates each; " + SHOCK + ". The $\\gamma = 0$ control is identical "
         "at every $\\sigma_\\theta$ because thresholds are then never consulted.",
@@ -717,7 +719,7 @@ def tab_robustness(rob: pd.DataFrame) -> None:
     rows.append(group_row("The same rules with the cap removed (paired with the row above by seed)", 3))
     for key, name in rules:
         rows.append(row(name + ", uncapped", f"rob_amount_{key}_uncapped", f"rob_amount_{key}", paired=True))
-    rows.append(group_row("Default horizon $k$ (Submodel 7)", 3))
+    rows.append(group_row("Default threshold $k$ (Submodel 7)", 3))
     rows.append(row("$k = 7$ ticks, 98 days", "rob_k7"))
     rows.append(row("$k = 4$ ticks, 56 days", "rob_k4", "rob_k7"))
     rows.append(group_row("Purchase size $\\kappa$ (Submodel 4)", 3))
@@ -751,7 +753,7 @@ def tab_robustness(rob: pd.DataFrame) -> None:
         "Sensitivity of the default rate: principal arms",
         f"Population default rate at $\\beta = 1$, four platforms and full access, for the principal "
         f"sensitivity arms. Each group has its own reference arm at the default "
-        f"value, run on its own seed set (amount rules 50{{,}}000--50{{,}}019, horizon 54{{,}}000--, "
+        f"value, run on its own seed set (amount rules 50{{,}}000--50{{,}}019, default threshold 54{{,}}000--, "
         f"$\\kappa$ 57{{,}}000--, base 59{{,}}000--), so references differ from one another by seed "
         f"noise only. {REPL}. The difference column is arm less reference. Arms within a group share "
         f"seeds, so the difference is paired by seed and carries one standard error. "
@@ -809,8 +811,10 @@ def tab_robustness(rob: pd.DataFrame) -> None:
         f"single-tick shock 58{{,}}000--, compared with the exact-shortfall reference on 50{{,}}000--). {REPL}; differences are arm less reference, paired by "
         f"seed with one standard error, except $\\ddagger$, where the two arms use different seed "
         f"blocks or population sizes and the standard error is unpaired. The single-tick shock arm "
-        f"recovers the original one-tick income-loss rule, "
-        f"which no shock probability in range could calibrate to the \\ac{{CCMR}} 90+ band.",
+        f"recovers the original one-tick income-loss rule, under which the 90+ share of "
+        f"credit-active households stays between 7.3\\% and 7.6\\% at every shock probability on "
+        f"the calibration grid (0.008--0.064, friction 0.09; seeds 1{{,}}000--1{{,}}019), about half the "
+        f"\\ac{{CCMR}} target.",
         "L{7.2cm}rr",
         r"\textbf{Arm} & \textbf{Default (\%)} & \textbf{Difference (pp)}",
         rows,
@@ -969,7 +973,7 @@ EFFECT_ROWS = [
         ("amount125_uncapped", "shortfall $+25\\%$, cap removed", "amount125"),
         ("amountcommitted_uncapped", "shortfall $+$ committed, cap removed", "amountcommitted"),
     ]),
-    ("Default horizon (Submodel 7)", [("k4", "$k = 4$ ticks, 56 days", "k4")]),
+    ("Default threshold (Submodel 7)", [("k4", "$k = 4$ ticks, 56 days", "k4")]),
     ("Minimum payments (Submodel 6)", [
         ("minpay0.025", "minimum-payment fraction 0.025", "minpay0.025"),
         ("minpay0.1", "minimum-payment fraction 0.10", "minpay0.1"),
@@ -1006,7 +1010,9 @@ def tab_effect(eff: pd.DataFrame) -> None:
             d0, s0 = paired_diff(a(f"eff_{key}_b0.0"), off, "default_rate_final")
             d1, s1 = paired_diff(a(f"eff_{key}_b1.0"), off, "default_rate_final")
             effects0[key], effects1[key] = (d0, s0), (d1, s1)
-            rows.append(f"{name} & {cell(off.default_rate_final)} & {pm(d0, s0)} & {pm(d1, s1)} \\\\")
+            # Three decimals where two would round a 1.1-SE effect to an apparent 2 SE.
+            dd = 3 if key == "shock_single_tick" else 2
+            rows.append(f"{name} & {cell(off.default_rate_final)} & {pm(d0, s0, dd)} & {pm(d1, s1, dd)} \\\\")
     rows.append(group_row("Want-driven path switched off ($q_{\\text{base}} = 0$, $\\beta = 0$)", 4))
     ref_off = a("eff_ref_off")
     dw, sw = paired_diff(a("eff_want_off_b0.0"), ref_off, "default_rate_final")
