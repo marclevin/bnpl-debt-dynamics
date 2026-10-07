@@ -82,8 +82,8 @@ too generous for 2017. The magnitude is unknown, and the categorical flags canno
 \item[P6. Group B validation is a construction check.] Because the draw is weight-proportional
 within the cell, agreement with the \ac{FinScope} cell marginals is expected by construction.
 The seven Group B checks in Table~\ref{tab:validation} therefore verify the implementation and
-say nothing about the population's external validity; Section~\ref{sec:data-validation} counts
-them accordingly.
+say nothing about the population's external validity; Section~\ref{sec:data-validation} does not
+count them as validation.
 \item[P7. The joint distribution is never externally validated.] Only marginals are checked. No
 independent South African benchmark was located for the joint distribution of credit-product
 holding. Copying observed combinations supports plausibility but does not verify the resulting
@@ -148,3 +148,39 @@ Personal loan    &  2.1 &  2.3 &  2.3 & 0.2 \\
 \label{fig:pop-fidelity}
 \tabnote{Each panel compares the unweighted 5{,}000-agent resample, drawn with replacement in proportion to \ac{NIDS} survey weight (seed 20260818) from 3{,}221 unique source records, against the weighted 10{,}841-household source it is drawn from. Panels (a) and (b) cover the per-capita income distribution and its concentration; panels (c) to (f) cover income quintile, household size, province and primary income source, the categorical attributes that gate behaviour and define the reference groups in the simulation. The Kolmogorov--Smirnov distance in (a) is 0.016, the largest categorical deviation across the 24 sub-categories is 1.4 percentage points, and the Gini rises by 0.015, from 0.6514 to 0.6668.}
 \end{figure}
+
+\subsection*{E.6 Construction checks}
+
+Table~\ref{tab:validation} lists the checks that the constructed population reproduces its
+sources. The Regulation 23A cap binds for 3.8\% of debtors but removes 22.8\% of calculated
+service (Appendix~\ref{app:var-servicing}).
+
+\begin{table}[H]
+\centering
+\caption{Construction checks on the population}
+\label{tab:validation}
+\tabnote{Checks that the constructed population reproduces its own sources. Group A tests consistency, Group B the imputed flags against \ac{FinScope}, Group C the debt-service cap and Group D the resample against its weighted source. Agreement in Group B is expected by construction (P6). Tolerances are ours. These checks test the implementation, not external validity; the external comparisons are in Table~\ref{tab:pop-external}.}
+\begin{tabular}{L{4.9cm}L{3.6cm}rrc}
+\toprule
+\textbf{Check} & \textbf{Metric} & \textbf{Value} & \textbf{Tolerance} & \\
+\midrule
+A. Quintile shares $\approx 20\%$ & max $|$share $-0.20|$ & 0.4pp & $\pm$2pp & \checkmark \\
+A. No impossible values & negative values & 0 & exact & \checkmark \\
+\addlinespace
+B. Banked (national) & vs FinScope & 0.4pp & $\pm$3pp & \checkmark \\
+B. Store card & vs FinScope & 1.8pp & $\pm$3pp & \checkmark \\
+B. Revolving credit & vs FinScope & 0.5pp & $\pm$3pp & \checkmark \\
+B. Hire purchase & vs FinScope & 0.5pp & $\pm$3pp & \checkmark \\
+B. Short-term loan & vs FinScope & 0.6pp & $\pm$3pp & \checkmark \\
+B. Personal loan & vs FinScope & 0.2pp & $\pm$3pp & \checkmark \\
+B. By-quintile flags & max over q$\times$flag & 2.3pp & $\pm$5pp & \checkmark \\
+\addlinespace
+C. Regulation 23A cap & debtors on whom it binds & 3.8\% & $\leq$10\% & \checkmark \\
+\addlinespace
+D. Resample quintile shares & max $|$unwtd $-$ wtd$|$ & 1.3pp & $\pm$2pp & \checkmark \\
+D. Resample flag rates & max $|$unwtd $-$ wtd$|$ & 0.8pp & $\pm$3pp & \checkmark \\
+D. Resample income ECDF & KS max gap & 0.016 & $\leq$0.05 & \checkmark \\
+D. Resample Gini & $|$agents $-$ source$|$ & 0.015 & $\leq$0.02 & \checkmark \\
+\bottomrule
+\end{tabular}
+\end{table}

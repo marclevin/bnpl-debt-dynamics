@@ -4,18 +4,18 @@
 \centering
 \caption{Outcomes by income quintile}
 \label{tab:distribution}
-\tabnote{Each row is one per-capita income quintile of the 5{,}000-household population (the weighted \ac{NIDS} bounds of Appendix~\ref{app:variables}; quintile sizes 1{,}017, 987, 1{,}069, 937 and 990 households). Default is the share of the quintile's households in default at the final tick, in the no-\ac{BNPL} baseline and in the $\beta = 0$ arm of Table~\ref{tab:baseline-arms}; holding and traditional arrears are final-tick shares of the quintile's households in the $\beta = 0$ arm, in per cent; debt-to-income is the aggregate ratio (total debt over total monthly income in the quintile) in the baseline; limit binding is the share of the platform requests made by the quintile's households that the rolling per-platform limit truncates or refuses, in per cent; the mean purchase is over the quintile's want-driven originations, in 2017 Rands. The default columns are means over 20 replicates, replicate standard deviation in brackets; the five right-hand columns are replicate means, with standard deviations of at most 2.6 points for the three shares, 0.04 for the ratio and R40 for the purchase. Every run uses the fitted shock probability 0.016 and payment friction 0.09, four platforms, and access at the banked ceiling unless stated. Default with \ac{BNPL} at $\beta = 0$ less default without: Q1 $-0.23 \pm 0.15$pp; Q2 $+0.11 \pm 0.27$pp; Q3 $+0.13 \pm 0.20$pp; Q4 $+0.22 \pm 0.29$pp; Q5 $-0.05 \pm 0.20$pp. At $\beta = 1$: Q1 $+0.03 \pm 0.22$pp; Q2 $+0.56 \pm 0.25$pp; Q3 $+0.83 \pm 0.27$pp; Q4 $+1.17 \pm 0.32$pp; Q5 $+0.49 \pm 0.27$pp. The arms share seeds, so each difference is paired by seed and carries one standard error.}
-\begingroup\setlength{\tabcolsep}{3pt}\scriptsize
-\begin{tabular}{c rr r r r r r}
+\tabnote{Per-capita income quintiles of 1{,}017, 987, 1{,}069, 937 and 990 households; seeds 10{,}000--10{,}019. Change: default with \ac{BNPL} less default without. Holding: share holding \ac{BNPL} at the final tick. Debt/income: the quintile's total debt over its total monthly income. Limit binds: share of the quintile's platform requests that a platform's limit for that household reduced or refused. Purchase: mean want-driven purchase, in 2017 Rands.}
+\begingroup\setlength{\tabcolsep}{3pt}\footnotesize
+\begin{tabular}{c R{1.4cm} R{2.3cm} R{2.3cm} R{1.4cm} R{1.3cm} R{1.4cm} R{1.4cm}}
 \toprule
-& \multicolumn{2}{c}{Default rate (\%)} & & & & & \\ \cmidrule(lr){2-3}
-\textbf{Quintile} & \textbf{No \ac{BNPL}} & \textbf{$\beta=0$} & \textbf{Holding} & \textbf{Arrears} & \textbf{Debt/inc.} & \textbf{Limit binds} & \textbf{Purchase (R)} \\
+& \textbf{Default (\%)} & \multicolumn{2}{c}{\textbf{Change in default (pp)}} & \textbf{Holding (\%)} & \textbf{Debt/ income} & \textbf{Limit binds (\%)} & \textbf{Purchase (R)} \\ \cmidrule(lr){3-4}
+\textbf{Quintile} & No \ac{BNPL} & $\beta=0$ & $\beta=1$ & $\beta=0$ & No \ac{BNPL} & $\beta=0$ & $\beta=0$ \\
 \midrule
-Q1 & 17.83 (0.64) & 17.61 (0.48) & 18.6 & 11.7 & 0.77 & 24.8 & 103 \\
-Q2 & 10.84 (0.64) & 10.94 (0.97) & 15.6 & 12.7 & 0.36 & 23.3 & 157 \\
-Q3 & 12.12 (0.88) & 12.25 (0.61) & 17.0 & 13.1 & 0.36 & 13.9 & 253 \\
-Q4 & 15.75 (1.04) & 15.97 (1.33) & 19.4 & 15.1 & 0.69 & 13.8 & 411 \\
-Q5 & 10.10 (0.73) & 10.05 (0.63) & 17.4 & 10.7 & 0.28 & 13.6 & 1{,}858 \\
+Q1 & 17.83 & $-0.23 \pm 0.15$ & $+0.03 \pm 0.22$ & 18.6 & 0.77 & 24.8 & 103 \\
+Q2 & 10.84 & $+0.11 \pm 0.27$ & $\boldsymbol{+0.56 \pm 0.25}$ & 15.6 & 0.36 & 23.3 & 157 \\
+Q3 & 12.12 & $+0.13 \pm 0.20$ & $\boldsymbol{+0.83 \pm 0.27}$ & 17.0 & 0.36 & 13.9 & 253 \\
+Q4 & 15.75 & $+0.22 \pm 0.29$ & $\boldsymbol{+1.17 \pm 0.32}$ & 19.4 & 0.69 & 13.8 & 411 \\
+Q5 & 10.10 & $-0.05 \pm 0.20$ & $+0.49 \pm 0.27$ & 17.4 & 0.28 & 13.6 & 1{,}858 \\
 \bottomrule
 \end{tabular}
 \endgroup

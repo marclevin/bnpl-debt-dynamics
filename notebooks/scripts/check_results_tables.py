@@ -37,6 +37,11 @@ def cell(x: pd.Series, d: int = 2, scale: float = 100.0) -> str:
     return f"{x.mean() * scale:.{d}f} ({x.std(ddof=1) * scale:.{d}f})"
 
 
+def core(x: str) -> str:
+    """A difference without its math delimiters, so bold and plain cells both match."""
+    return x.strip("$")
+
+
 def pm(a: pd.Series, b: pd.Series, d: int = 2) -> str:
     diff = (a.mean() - b.mean()) * 100
     se = math.sqrt(a.var(ddof=1) / len(a) + b.var(ddof=1) / len(b)) * 100
@@ -65,8 +70,8 @@ def main() -> None:
     n4b0 = rq1[(rq1.n_platforms == 4) & (rq1.beta == 0.0)]
     n1b1 = rq1[(rq1.n_platforms == 1) & (rq1.beta == 1.0)]
     n6b1 = rq1[(rq1.n_platforms == 6) & (rq1.beta == 1.0)]
-    expect("stacking", t, f"4 & {n4b0.stacking_2plus_final.mean() * 100:.1f} &")
-    expect("stacking", t, cell(n1b1.default_rate_final))
+    expect("stacking", t, f"4 & {(n4b0.stacking_2plus_final / n4b0.bnpl_adoption_final).mean() * 100:.1f} &")
+    expect("stacking", t, f"& {n1b1.default_rate_final.mean() * 100:.2f} \\\\")
     expect("stacking", t, pmp(n6b1, n1b1, "default_rate_final"))
 
     t = frag("tab_stacking_full")
@@ -77,9 +82,9 @@ def main() -> None:
 
     t = frag("tab_bnpl_on_checks")
     mp = b0.bnpl_purchase_mean_realised.mean()
-    expect("bnpl_on_checks", t, "R" + f"{mp:,.2f}".replace(",", "{,}"))
+    expect("bnpl_on_checks", t, "R" + f"{mp:,.0f}".replace(",", "{,}") + " &")
     expect("bnpl_on_checks", t, f"{off.zero_savings_rate_mean.mean() * 100:.1f}\\%")
-    expect("bnpl_on_checks", t, pmp(b0, off, "trad_arrears_rate_mean"))
+    expect("bnpl_on_checks", t, core(pmp(b0, off, "trad_arrears_rate_mean")))
 
     t = frag("tab_scenarios")
     rq3s = pd.read_parquet(RAW / "rq3s.parquet")
@@ -88,13 +93,12 @@ def main() -> None:
     aff1 = rq3s[rq3s.label == "rq3s_afford_b1.0"]
     ben0 = rq3[rq3.label == "rq3_kcool0_b0.0"]
     assert len(bur0) == len(sben0) == len(aff1) == 100, "scenario arms need 100 replicates"
-    expect("scenarios", t, cell(bur0.default_rate_final))
-    expect("scenarios", t, cell(aff1.bnpl_volume_cumulative, 2, 1e-6))
-    expect("scenarios", t, pmp(bur0, sben0, "default_rate_final"))
-    expect("scenarios", t, cell(aff1.default_rate_final_Q1))
+    expect("scenarios", t, f"& {sben0.default_rate_final.mean() * 100:.2f} &")
+    expect("scenarios", t, core(pmp(bur0, sben0, "default_rate_final")))
+    expect("scenarios", t, core(pmp(aff1, rq3s[rq3s.label == "rq3s_bench_b1.0"], "default_rate_final_Q1")))
 
     t = frag("tab_distribution")
-    expect("distribution", t, cell(b0.default_rate_final_Q1))
+    expect("distribution", t, core(pmp(rq0[rq0.label == "bnpl_on_beta1"], off, "default_rate_final_Q4")))
     expect("distribution", t, f"& {b0.bnpl_rolling_bind_Q5.mean() * 100:.1f} &")
     expect("distribution", t, f"& {b0.bnpl_purchase_mean_realised_Q3.mean():.0f} \\\\")
 
@@ -111,9 +115,9 @@ def main() -> None:
         xs = np.asarray(g.index, dtype=float)
         slope, icpt = np.polyfit(xs, g.values, 1)
         r2 = 1 - ((g.values - (slope * xs + icpt)) ** 2).sum() / ((g.values - g.values.mean()) ** 2).sum()
-        expect("access", t, f"{r2:.3f}")
-    mu = rq2t[rq2t.label == "rq2t_mu0.45"]
-    expect("access", t, cell(mu.bnpl_adoption_final, 1))
+        expect("access", t, f"& {r2:.2f} \\\\")
+    h = rq2[rq2.beta == 1.0].groupby("bnpl_access_rate").bnpl_adoption_final.mean().sort_index()
+    expect("access", t, f"& {(h.iloc[-1] - h.iloc[0]) * 100:+.1f} &")
 
     t = frag("tab_robustness")
     expect("robustness", t, cell(rob[rob.label == "rob_k4"].default_rate_final))
@@ -149,11 +153,10 @@ def main() -> None:
     expect("cap", t, pm(c1.default_rate_final, ben0.default_rate_final))
     expect("cap", t, f"& {c1.bnpl_adoption_final.mean() * 100:.1f} &")
 
-    t = frag("tab_switches")
+    t = frag("tab_scenarios")
     both0 = rq3s[rq3s.label == "rq3s_both_b0.0"]
-    expect("switches", t, cell(both0.default_rate_final))
-    expect("switches", t, pmp(both0, sben0, "default_rate_final"))
-    expect("switches", t, pmp(bur0, sben0, "default_rate_final"))
+    expect("scenarios", t, core(pmp(both0, sben0, "default_rate_final")))
+    expect("scenarios", t, core(pmp(both0, sben0, "active_90_plus_mean")))
 
     t = frag("tab_effect")
     eff = pd.read_parquet(RAW / "effect.parquet")
@@ -162,9 +165,9 @@ def main() -> None:
         on = eff[eff.label == on_label].set_index("seed").default_rate_final
         off_ = eff[eff.label == off_label].set_index("seed").default_rate_final
         d = (on - off_.reindex(on.index)) * 100
-        return f"${d.mean():+.2f} \\pm {d.std(ddof=1) / math.sqrt(len(d)):.2f}$"
+        return f"{d.mean():+.2f} \\pm {d.std(ddof=1) / math.sqrt(len(d)):.2f}"
 
-    expect("effect", t, cell(eff[eff.label == "eff_ref_off"].default_rate_final))
+    expect("effect", t, f"& {eff[eff.label == 'eff_ref_off'].default_rate_final.mean() * 100:.2f} &")
     expect("effect", t, paired("eff_amountcommitted_b0.0", "eff_amountcommitted_off"))
     expect("effect", t, paired("eff_want_off_b0.0", "eff_ref_off"))
 

@@ -2,26 +2,24 @@
 % do not edit by hand; re-run the script instead.
 \begin{table}[H]
 \centering
-\caption{Unfitted checks on the \ac{BNPL}-on model}
+\caption{Comparisons with external evidence}
 \label{tab:bnpl-on-checks}
-\tabnote{Every comparison here is against a quantity no parameter was fitted to. Model values are means over 20 replicates, replicate standard deviation in brackets from the $\beta = 0$ arm of Table~\ref{tab:baseline-arms} unless the $\beta = 1$ arm is named; Patterns 3 and 4 use the no-\ac{BNPL} baseline. The \ac{CFPB} share is of borrowers who held simultaneous loans at more than one firm, 32\% in 2021 and 33\% in 2022 \cite{cfpb2025bnpl}. Volumes are the post-burn-in cumulative volume divided by the number of eligible (banked) households or of households that ever held a balance, annualised over the 1.53-year post-burn-in horizon; the band is the 2017-Rand provider disclosure whose customer denominator is not stated \cite{weaver2025iar}. The mean purchase is over every want-driven purchase in the run, burn-in included. The mean-purchase comparison population (all want-driven purchases), statistic, target and tolerance were specified before the run; the Q3--Q5 and Q4--Q5 means explain the gap and are not alternative comparison populations. Pattern 1 compares arms that share seeds, so its differences are paired by seed and carry one standard error; a reading of rise or fall requires a difference beyond two standard errors.}
+\tabnote{No parameter was fitted to these quantities. Model values are from the $\beta = 0$ arm of Table~\ref{tab:baseline-arms}; Pattern~1 shows the change from the no-\ac{BNPL} arm at $\beta = 0$ and $\beta = 1$, and Patterns 3 and 4 use the no-\ac{BNPL} arm. Debt-to-income is total debt over total monthly income in each quintile. The volume band runs from the provider's volume per signed-up customer to its volume per active customer, in 2017 Rands; the purchase target divides its gross merchandise value by its transaction count. Pattern~2, the calibration target, is in Table~\ref{tab:arrears-fit}.}
 \begingroup\setlength{\tabcolsep}{3pt}\footnotesize
-\begin{tabular}{L{3.6cm}L{2.9cm}L{3.2cm}L{4.1cm}}
+\begin{tabular}{L{4.6cm}L{2.7cm}L{3.0cm}L{3.3cm}}
 \toprule
-\textbf{Check} & \textbf{Model} & \textbf{Comparison} & \textbf{Reading} \\
+\textbf{Comparison} & \textbf{Expected} & \textbf{Model} & \textbf{Result} \\
 \midrule
-\multicolumn{4}{l}{\emph{Stacking (Submodel 13)}} \\
-Holders with balances on two or more platforms, final tick & 52.0\% & 32\% of borrowers held simultaneous loans at more than one firm (2021) & order of magnitude; ever-stacked share of households that ever held a balance 36.8\% \\
-\multicolumn{4}{l}{\emph{Volume (Submodel 4)}} \\
-Annual \ac{BNPL} volume per eligible household & R1{,}010 & R1{,}333--R4{,}261 (per signed-up and per active customer) & below the band; eligible households compare with the lower bound \\
-Annual \ac{BNPL} volume per household that ever held a balance & R1{,}196 & as above & below the band; these households compare with the upper bound \\
-Mean want-driven purchase, $\beta = 0$ & R633.16 & R992 $\pm$ 35\% (R645--R1{,}339) & 36.18\% low: outside the band; 4 of 20 replicates inside; Q3--Q5 mean R890, Q4--Q5 R1{,}186 \\
-Mean want-driven purchase, $\beta = 1$ & R610.19 & as above & 38.50\% low: outside the band; 0 of 20 inside \\
-\multicolumn{4}{l}{\emph{Patterns (Table~\ref{tab:patterns})}} \\
-Pattern 1: traditional arrears rate, on less off & $+0.23 \pm 0.07$pp; $+0.57 \pm 0.07$pp & rise & rises \\
-Pattern 1: traditional interest charged, on over off & $-1.5 \pm 0.4\%$; $-0.3 \pm 0.5\%$ & rise & falls at $\beta = 0$, no detectable change at $\beta = 1$: the pattern is not reproduced on this measure \\
-Pattern 3: aggregate debt-to-income peak, no \ac{BNPL} & Q1 (0.77); Q4 second (0.69) & middle-income peak & the highest ratio is in Q1: not reproduced; the mean of ratios peaks in Q1 \\
-Pattern 4: zero liquid savings & 25.7\% (no \ac{BNPL}); 25.9\% ($\beta = 0$) & 36\% expected to miss a payment & same order \\
+\multicolumn{4}{l}{\emph{Behavioural patterns}} \\
+1. Traditional arrears rise \cite{dehaan2024bnpl} & Rise & $\boldsymbol{+0.23 \pm 0.07}$; $\boldsymbol{+0.57 \pm 0.07}$ pp & Rises \\
+1. Traditional interest rises \cite{dehaan2024bnpl} & Rise & $\boldsymbol{-1.5 \pm 0.4}$; $-0.3 \pm 0.5$\% & Falls ($\beta=0$); no change ($\beta=1$) \\
+3. Debt-to-income peaks mid-distribution \cite{hamill2023creditcard} & Peak in Q2--Q4 & Q1 0.77; Q4 0.69 & Not reproduced: peak in Q1, Q4 second \\
+4. Households without savings \cite{transunion_cps_sa_2025} & 36\% expect to miss a payment & 25.7\% & Same order \\
+\multicolumn{4}{l}{\emph{\ac{BNPL} market}} \\
+Owing two or more providers \cite{cfpb2025bnpl} & 32--33\% of borrowers & 36.8\% of ever-holders & Close; different market \\
+Annual volume per eligible household \cite{weaver2025iar} & R1{,}333--R4{,}261 & R1{,}010 & Below \\
+Annual volume per ever-holder \cite{weaver2025iar} & R1{,}333--R4{,}261 & R1{,}196 & Below \\
+Mean purchase \cite{weaver2025iar} & R992 ($\pm$35\%) & R633 & Below: 36\% low \\
 \bottomrule
 \end{tabular}
 \endgroup

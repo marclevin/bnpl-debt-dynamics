@@ -2,28 +2,32 @@
 % do not edit by hand; re-run the script instead.
 \begin{table}[H]
 \centering
-\caption{The 2017 baseline and the \ac{BNPL} injection}
+\caption{The baseline and the \ac{BNPL} injection}
 \label{tab:baseline-arms}
-\tabnote{The calibrated baseline with \ac{BNPL} disabled, and the same population with \ac{BNPL} enabled at four platforms and access at the banked ceiling, without ($\beta = 0$) and with ($\beta = 1$) peer influence. Means over 20 replicates, replicate standard deviation in brackets (seeds 10{,}000--10{,}019 in each arm). The default rate is the share of all households in default at the final tick; the 90+ day share is over credit-active households, averaged over post-burn-in ticks; the traditional arrears rate is the share of all households with a traditional instalment in arrears, averaged over post-burn-in ticks; interest and volume are sums over the post-burn-in horizon in 2017 Rands, while lending granted and refused applications are counted over the whole run, burn-in included. ``Holders'' are households with a positive \ac{BNPL} balance at the final tick; ``ever'' quantities are over every tick of the run, burn-in included. Default is absorbing, so the final-tick rate is the share of households that defaulted at any tick of the run. Default with \ac{BNPL} less default without: $+0.03 \pm 0.09$pp at $\beta = 0$ and $+0.61 \pm 0.11$pp at $\beta = 1$; the arms share seeds, so each difference is paired by seed and carries one standard error.}
+\tabnote{Seeds 10{,}000--10{,}019 in every arm. Holders: households owing a \ac{BNPL} balance at the final tick. Ever: at any tick of the two-year run. Arrears, interest, savings and volume cover the post-burn-in ticks; default, lending and refusals cover the whole run.}
 \begingroup\setlength{\tabcolsep}{4pt}\footnotesize
-\begin{tabular}{L{6.4cm}rrr}
+\begin{tabular}{L{5.6cm}rrr}
 \toprule
 \textbf{Outcome} & \textbf{No \ac{BNPL}} & \textbf{\ac{BNPL}, $\beta=0$} & \textbf{\ac{BNPL}, $\beta=1$} \\
 \midrule
-Population default rate (\%) & 13.31 (0.32) & 13.34 (0.35) & 13.92 (0.28) \\
-90+ day arrears, credit-active households (\%) & 14.20 (0.41) & 14.40 (0.43) & 14.60 (0.29) \\
-Traditional arrears rate, all households (\%) & 10.64 (0.22) & 10.87 (0.22) & 11.21 (0.16) \\
-Traditional interest charged (R m) & 13.01 (0.28) & 12.81 (0.17) & 12.97 (0.25) \\
-New traditional lending granted (R m) & 6.12 (0.39) & 5.43 (0.32) & 6.11 (0.39) \\
-Applications refused at the gate (count) & 1195 (28) & 1196 (24) & 1205 (24) \\
-Zero liquid savings (\% of households) & 25.7 (0.2) & 25.9 (0.2) & 28.8 (0.2) \\
-Holding \ac{BNPL}, end of horizon (\%) & 0.00 (0.00) & 17.55 (0.44) & 66.80 (0.40) \\
-Ever held a \ac{BNPL} balance (\%) & 0.00 (0.00) & 69.97 (0.42) & 75.54 (0.15) \\
-Balances on two or more platforms, end of horizon (\% of households) & 0.00 (0.00) & 9.12 (0.21) & 56.87 (0.57) \\
-Balances on two or more platforms, end of horizon (\% of holders) & -- & 52.0 (0.7) & 85.1 (0.5) \\
-Ever held balances on two or more platforms (\% of households) & 0.00 (0.00) & 25.78 (0.45) & 74.44 (0.17) \\
-Ever held balances on two or more platforms (\% of those that ever held \ac{BNPL}) & 0.0 (0.0) & 36.8 (0.6) & 98.6 (0.2) \\
-Cumulative \ac{BNPL} volume (R m) & 0.00 (0.00) & 6.42 (0.22) & 65.88 (0.91) \\
+\multicolumn{4}{l}{\emph{Distress}} \\
+Default rate (\%) & 13.31 (0.32) & 13.34 (0.35) & 13.92 (0.28) \\
+90+ day arrears, credit-active (\%) & 14.20 (0.41) & 14.40 (0.43) & 14.60 (0.29) \\
+Traditional arrears, all households (\%) & 10.64 (0.22) & 10.87 (0.22) & 11.21 (0.16) \\
+No liquid savings (\% of households) & 25.7 (0.2) & 25.9 (0.2) & 28.8 (0.2) \\
+\multicolumn{4}{l}{\emph{Traditional credit}} \\
+Interest charged (R m) & 13.01 (0.28) & 12.81 (0.17) & 12.97 (0.25) \\
+New lending (R m) & 6.12 (0.39) & 5.43 (0.32) & 6.11 (0.39) \\
+Refused applications & 1195 (28) & 1196 (24) & 1205 (24) \\
+\multicolumn{4}{l}{\emph{\ac{BNPL} use}} \\
+Holding at the final tick (\%) & 0.00 (0.00) & 17.55 (0.44) & 66.80 (0.40) \\
+Ever held (\%) & 0.00 (0.00) & 69.97 (0.42) & 75.54 (0.15) \\
+Volume (R m) & 0.00 (0.00) & 6.42 (0.22) & 65.88 (0.91) \\
+\multicolumn{4}{l}{\emph{Owing two or more platforms at once}} \\
+Holders at the final tick (\%) & -- & 52.0 (0.7) & 85.1 (0.5) \\
+Ever-holders, at any tick (\%) & 0.0 (0.0) & 36.8 (0.6) & 98.6 (0.2) \\
+\midrule
+Default, change from no \ac{BNPL} (pp) & -- & $+0.03 \pm 0.09$ & $\boldsymbol{+0.61 \pm 0.11}$ \\
 \bottomrule
 \end{tabular}
 \endgroup

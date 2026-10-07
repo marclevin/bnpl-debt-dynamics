@@ -2,21 +2,23 @@
 % do not edit by hand; re-run the script instead.
 \begin{table}[H]
 \centering
-\caption{Baseline arrears profile against the \ac{CCMR}}
+\caption{Baseline arrears profile: model and \ac{CCMR}}
 \label{tab:arrears-fit}
-\tabnote{Baseline calibration results, with \ac{BNPL} disabled. Shares are over credit-active households and are compared with the account-level \ac{CCMR} target, in per cent. Means cover twenty replicates (seeds 1{,}000--1{,}019) at income-shock probability 0.016 and payment friction 0.09; the 90+ share has a replicate standard deviation of 0.40 percentage points. The shock probability is fitted on a grid with steps of 0.008: the neighbouring values 0.008 and 0.024 give 90+ shares of 11.31\% and 17.10\%. A check on the same seeds in steps of 0.001 gives 13.93\% at 0.015, so the target lies between that value and the selected one. ``Fitted'' identifies the two target bands. Unfitted bands belong to the same distribution and are not independent observations. The cumulative 60+ row includes the fitted 90+ band.}
-\begingroup\setlength{\tabcolsep}{4pt}\normalsize
+\tabnote{\ac{CCMR}: share of unsecured and credit-facility accounts by days in arrears, first quarter of 2017 \cite{ncr_ccmr_2017}. Model: share of credit-active households (those owing traditional debt or arrears), \ac{BNPL} disabled, averaged over the post-burn-in ticks; seeds 1{,}000--1{,}019. Fitted: the two bands that the income-shock probability and payment friction were chosen to match, so agreement there is by construction. The other bands were not targeted.}
+\begingroup\setlength{\tabcolsep}{4pt}\small
 \begin{tabular}{lrrl}
 \toprule
-\textbf{Age band} & \textbf{\ac{CCMR}} & \textbf{Model} & \textbf{Status} \\
+\textbf{Days in arrears} & \textbf{\ac{CCMR} (\%)} & \textbf{Model (\%)} &  \\
 \midrule
-Current & 71.63 & 75.38 & unfitted \\
+Current & 71.63 & 75.38 & \\
 1--30 days & 8.24 & 8.19 & fitted \\
-31--60 days & 3.59 & 0.97 & unfitted \\
-61--90 days & 2.32 & 0.99 & unfitted \\
-90+ days & 14.21 & 14.48 & fitted \\
+31--60 days & 3.59 & 0.97 & \\
+61--90 days & 2.32 & 0.99 & \\
+91--120 days & 1.76 & 1.01 & \\
+120+ days & 12.45 & 13.46 & \\
 \midrule
-\emph{60+ days} & \emph{16.54} & \emph{15.46} & \emph{partly fitted} \\
+90+ days & 14.21 & 14.48 & fitted \\
+60+ days & 16.54 & 15.46 & \\
 \bottomrule
 \end{tabular}
 \endgroup

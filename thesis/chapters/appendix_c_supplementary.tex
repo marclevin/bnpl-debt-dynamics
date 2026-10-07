@@ -1,10 +1,24 @@
 \section{Supplementary Specification and Results}
 \label{app:supplementary}
 
-This appendix holds material kept out of the body for length: specification detail that
-Table~\ref{tab:submodels} states in summary, the index of every limitation the thesis records,
+This appendix holds material kept out of the body for length: the calibration procedure,
+specification detail that Table~\ref{tab:submodels} states in summary, the index of every limitation the thesis records,
 the two levers of Section~\ref{sec:scenarios}, and the sensitivity analyses
 that Section~\ref{sec:results-robustness} reports only in summary.
+
+\subsection{Calibration Procedure}
+\label{app:calibration}
+
+The fit of Section~\ref{sec:lim-calibration} is sequential, with \ac{BNPL} disabled and twenty
+replicates (seeds 1{,}000--1{,}019) at each grid point. The shock probability is first chosen
+from a grid in steps of 0.008 with friction off. Friction is then chosen from
+$\{0, 0.02, 0.04, 0.06, 0.09, 0.12, 0.16\}$ at that probability, and the shock probability is
+chosen again at the selected friction. Each step takes the value with the smallest absolute
+error against its target band. The selected values are 0.016 and 0.09. The neighbouring grid
+values of the shock probability, 0.008 and 0.024, give 90+ shares of 11.31\% and 17.10\%. A
+finer check in steps of 0.001 on the same seeds gives 13.93\% at 0.015 and 14.48\% at 0.016,
+so the target of 14.21\% lies between them. The 90+ share has a replicate standard deviation
+of 0.40 points at the fitted values.
 
 \subsection{Submodel 9: The Credit-Granting Gate}
 \label{app:gate}
@@ -197,7 +211,7 @@ purchase or a shortfall loan is refused.
 \includegraphics[width=\textwidth]{figures/fig_scenarios_appendix.png}
 \caption{Every lever against the benchmark, with and without peer influence}
 \label{fig:scenarios-appendix}
-\tabnote{The change in the population default rate at the final tick under every implemented lever, at $\beta = 0$ (left) and $\beta = 1$ (right): the two switches of Section~\ref{sec:scenarios} and their combination, the cooling-off window of one to four ticks and the cap of one to three platforms owed. Points are differences in the default rate, lever less benchmark at the same $\beta$, with 95\% confidence intervals; the dashed line marks no change. The switches have 100 replicates and are compared with the benchmark of Table~\ref{tab:switches}; the window and the cap have 20 and are compared with the benchmark of Table~\ref{tab:cooloff}. Values and differences with standard errors are in Tables~\ref{tab:switches}, \ref{tab:cooloff} and~\ref{tab:cap}.}
+\tabnote{The change in the population default rate at the final tick under every implemented lever, at $\beta = 0$ (left) and $\beta = 1$ (right): the two switches of Section~\ref{sec:scenarios} and their combination, the cooling-off window of one to four ticks and the cap of one to three platforms owed. Points are differences in the default rate, lever less benchmark at the same $\beta$, with 95\% confidence intervals; the dashed line marks no change. The switches have 100 replicates and are compared with the benchmark of Table~\ref{tab:scenarios}; the window and the cap have 20 and are compared with the benchmark of Table~\ref{tab:cooloff}. Values and differences with standard errors are in Tables~\ref{tab:scenarios}, \ref{tab:cooloff} and~\ref{tab:cap}.}
 \end{figure}
 
 \subsection{Supplementary Sensitivity Results}

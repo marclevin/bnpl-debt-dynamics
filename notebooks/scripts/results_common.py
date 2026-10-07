@@ -4,7 +4,7 @@ Every number in Sections 4 and 5, the Conclusion and the Abstract is generated b
 build_results_tables.py or build_results_figures.py from results/raw; nothing is typed.
 This module holds what both scripts need so the two cannot disagree on a convention.
 
-Conventions (stated in every table note):
+Conventions (stated once in Section 3.1 of the thesis; a table note states only departures):
   * means over the replicates of an arm (20, or 100 for the scenario arms of Section 5),
     with the replicate standard deviation;
   * a difference between two arms that SHARE seeds is taken seed by seed and carries
@@ -128,6 +128,12 @@ def cell(x: pd.Series, d: int = 2, scale: float = 100.0) -> str:
 
 def pm(d: float, se: float, dd: int = 2, scale: float = 100.0, unit: str = "") -> str:
     return f"${d * scale:+.{dd}f} \\pm {se * scale:.{dd}f}${unit}"
+
+
+def pmb(d: float, se: float, dd: int = 2, scale: float = 100.0) -> str:
+    """As `pm`, in bold where the difference exceeds two standard errors (Section 3.1)."""
+    body = f"{d * scale:+.{dd}f} \\pm {se * scale:.{dd}f}"
+    return f"$\\boldsymbol{{{body}}}$" if detectable(d, se) else f"${body}$"
 
 
 def rand(x: float, d: int = 0) -> str:

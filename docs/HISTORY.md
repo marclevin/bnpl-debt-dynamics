@@ -11,6 +11,24 @@ Earlier history (model build, 2026-08-05 to 2026-09-28) is in the closed rows of
 
 ---
 
+## 2026-10-07: presentation and interpretation revision (branch `revision-oct-feedback`)
+
+No model code, parameter or simulation output changed; every number is regenerated from the same
+`results/raw/`. Tables were restructured in `build_results_tables.py`: the CCMR target, the fit
+and the baseline arrears figure became one table (`tab:arrears-fit`); the pattern definitions
+were merged into the external comparisons (`tab:bnpl-on-checks`); the two scenario tables
+became one (`tab:scenarios`); quintile effects moved from the note into `tab:distribution`; the
+effect table gained the realised mean purchase. Shared conventions are stated once in Section
+3.1, and differences beyond two standard errors are bold. Population construction checks moved
+to Appendix E; the body keeps only external comparisons. The interpretation was narrowed and
+sharpened: default follows the amount borrowed through BNPL rather than breadth of use or
+stacking; purchase size is the main driver of the size of the effect at beta = 1; bureau
+visibility raises default through refusals. New derived numbers: `want_per_everholder_*`,
+`thr_volume_ratio_*`, `access_volume_ratio_beta0.5`, `access_holding_rise_*`,
+`eff_*_purchase_b0/b1`.
+
+---
+
 ## 2026-09-29: implementation defects corrected and every suite rerun
 
 State before: tag `pre-correction-2026-09-29` (commit `5694751`). Six implementation defects

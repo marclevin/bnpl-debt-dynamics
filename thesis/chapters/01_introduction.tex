@@ -31,10 +31,7 @@ reportedly began submitting records in 2026 while the format was being finalised
 \cite{dcasa_bnpl_2026}, and records are reportedly expected on consumer profiles from
 February 2027 \cite{businessday_bnpl_2026}; no statutory commencement date has been
 confirmed. The \ac{FINASA} reports one bureau's preliminary estimate that scores could fall
-for roughly a quarter of credit-active consumers \cite{finasa_bnpl_2026}. How far would
-making \ac{BNPL} visible to lenders change household distress? Our model has no credit
-score, so it tests reporting only through the traditional lender's affordability
-assessment, which we call the affordability channel (Section~\ref{sec:asymmetry}).
+for roughly a quarter of credit-active consumers \cite{finasa_bnpl_2026}.
 
 Evidence from the United States links \ac{BNPL} use to financial strain. Using banking
 records for 10.6 million consumers, deHaan et al.\ \cite{dehaan2024bnpl} find higher
@@ -43,26 +40,27 @@ larger increases among liquidity-constrained consumers. The \ac{CFPB} \cite{cfpb
 documents borrowers who hold several loans at once, including loans from different
 providers. We found no South African study of how \ac{BNPL} affects household distress and
 no agent-based model of South African household credit, and the local reporting
-arrangements are too recent to have been evaluated.
+arrangements are too recent to have been evaluated. It is therefore not known how much an
+unreported, lightly screened \ac{BNPL} channel adds to distress in a population with South
+African balance sheets, or what making it visible to lenders would change.
 
-This thesis examines concurrent, unreported \ac{BNPL} obligations using an \ac{ABM} of
-5{,}000 households built from South African survey microdata. We fit a traditional-credit
-baseline to the 2017 arrears profile with \ac{BNPL} disabled, then introduce \ac{BNPL}
-into the same environment and compare outcomes over a simulated two-year horizon. Further
-experiments vary the number of platforms, access to \ac{BNPL}, peer influence, bureau
-visibility and affordability screening. In the model, new obligations interact with
-existing debt, cash buffers and income shocks, and the experiments measure effects within
-it. They do not estimate the historical effect of \ac{BNPL} in South
-Africa or forecast default under the new reporting arrangements.
+We study these questions with an \ac{ABM} of 5{,}000 households built from South African
+survey microdata. Every fortnight each household receives income, pays for food and rent,
+borrows if it is short of cash and repays its debts. A traditional lender applies the
+Regulation 23A test to the obligations the credit bureau records, while \ac{BNPL} platforms
+apply a light screen and cannot see one another's balances. We fit a traditional-credit
+baseline to the 2017 arrears profile with \ac{BNPL} disabled, then enable \ac{BNPL} in the
+same population and compare outcomes over two years. Further experiments vary the number of
+platforms, access to \ac{BNPL}, peer influence on adoption, bureau visibility and
+affordability screening. The model has no credit score, so it represents reporting only
+through the traditional lender's affordability test.
 
-In the model, enabling \ac{BNPL} raises default by about 0.1 percentage points without
-peer influence and 0.6 points with it, growing as peer influence makes households
-borrow more often. Owing several platforms at once is common,
-but how common depends on an assumed rule for choosing platforms, and default does not
-change detectably with it. Making \ac{BNPL} visible to the traditional lender raises
-default, because the lender refuses more applications and a refused household has nowhere
-else to borrow. Screening \ac{BNPL} requests reduces borrowing slightly and does not change
-default detectably.
+The experiments measure differences between arms of the model. They do not estimate the
+historical effect of \ac{BNPL} in South Africa or forecast default under the new reporting
+arrangements. The contribution is a household model in which lenders differ in what they
+observe, so that the reporting gap can be switched on and off, and a set of experiments
+that identify which mechanisms and which assumptions the effect of \ac{BNPL} on default
+depends on.
 
 \subsection{Research Questions}
 \label{sec:rqs}
@@ -133,7 +131,7 @@ spending among both constrained and unconstrained users, beyond what intertempor
 substitution explains. Together with the financial-distress findings of deHaan et al.\
 \cite{dehaan2024bnpl}, this suggests that additional \ac{BNPL} obligations
 increase stress on traditional debt. We compare the model with this through traditional
-arrears and interest charges (Pattern~1, Table~\ref{tab:patterns}).
+arrears and interest charges (Pattern~1, Table~\ref{tab:bnpl-on-checks}).
 
 Hayashi and Routh
 \cite{hayashi2025constraints} find that \ac{BNPL} users are more financially

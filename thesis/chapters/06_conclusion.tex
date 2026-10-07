@@ -4,51 +4,84 @@
 % Numbers are read from the generated tables of Sections 3.5, 4 and 5 or from
 % results/summary/results_numbers.json.
 
-This thesis asked how adding a \ac{BNPL} channel changes credit distress in a model of South African households already in credit distress, and how bureau visibility and affordability screening affect the outcome.
-In the model, enabling \ac{BNPL} raises default by about 0.1 percentage points without peer influence and 0.6 points with illustrative peer influence.
-Making \ac{BNPL} visible to the traditional lender raises default by 0.15 to 0.22 points through more refusals, and screening \ac{BNPL} requests does not change default detectably.
-Across the experiments, the \ac{BNPL} effect on default grows with peer-driven \ac{BNPL} borrowing, and neither the routing rule nor the number of platforms changes default detectably.
-These are results of a counterfactual under 2017 conditions, not estimates of what happened.
+This thesis asked how adding a \ac{BNPL} channel changes credit distress in a model of South
+African households, and how bureau visibility and affordability screening affect the outcome.
+The answers are comparisons within the model under 2017 conditions. They are not estimates of
+what happened or forecasts of what the reporting arrangements will do.
 
-For RQ1, the model approximates the two arrears bands to which it was fitted and passes three of four broad external checks on the population.
-It misses six comparisons, including the intermediate arrears bands and \ac{BNPL} purchase size (Section~\ref{sec:data-validation}), and no external figure measures its level of default, so it is better suited to comparing arms than to predicting levels.
+\textbf{RQ1.} The population built from survey microdata matches external figures for
+household size and income inequality and is of the right order for household debt, which
+supports the inputs. The fitted baseline reproduces the two arrears bands it was fitted to but
+not the bands between them, its debt service is above what households report, and its default
+rate has no external counterpart. Some gaps reflect missing South African data, above all on
+\ac{BNPL} purchase size, purchase frequency and adoption; the arrears profile and debt service
+are limits of the model and its construction. The model is a stylised tool for comparing arms,
+not a forecasting model, and its levels carry little weight.
 
-For RQ2, households come to owe several platforms at once: without peer influence, about half of final-tick holders do so under random routing and just over a third under loyal routing.
-The share depends on the routing rule, but default does not change detectably with that rule or with the number of platforms (Section~\ref{sec:results-stacking}).
-No arm gives platforms a shared view of exposure, so the experiments do not isolate the effect of platforms not seeing one another.
-Enabling \ac{BNPL} raises default by $0.12 \pm 0.05$ points without peer influence and $0.60 \pm 0.07$ points at $\beta = 1$, where households borrow ten times as much (Section~\ref{sec:results-injection}).
-The two settings bracket the provider's volume, and the effect grows with peer-driven borrowing, so the $\beta = 0$ figure may understate the effect at the market's volume.
-Without peer influence the effect is detectable under only five of twenty settings (Table~\ref{tab:effect}).
-With peer influence, default rises with access, but the experiment cannot establish the shape of the rise (Table~\ref{tab:access}); at $\beta = 1$ the effect is detectable in Q2 to Q4, not in the poorest quintile (Table~\ref{tab:distribution}).
+\textbf{RQ2.} When platforms cannot see one another, households come to owe several at once.
+Without peer influence about half of the households holding \ac{BNPL} at the end of the run
+owe two or more platforms, and when households borrow repeatedly almost every user does so at
+some point. The share depends mostly on the assumed rule for choosing platforms. Enabling
+\ac{BNPL} raises default by $0.12 \pm 0.05$ points without peer influence and by
+$0.60 \pm 0.07$ points at $\beta=1$, where households borrow ten times as much. Default does
+not change detectably with the routing rule or the number of platforms, and a threshold rule
+that greatly widens use raises default little. At $\beta=1$ the rise is concentrated in the
+middle quintiles and absent in the poorest.
 
-For RQ3, bureau visibility raises the traditional lender's refusals by about a sixth and default by $0.22 \pm 0.04$ points without peer influence and $0.15 \pm 0.04$ at $\beta = 1$, with the largest rise in the lowest income quintile (Table~\ref{tab:switches}).
-Mandatory screening slightly lowers \ac{BNPL} holding and volume and does not change default detectably, although an effect of about a tenth of a point either way cannot be ruled out.
-Added to bureau visibility without peer influence, it roughly halves the effect of visibility.
-Peer influence does not detectably alter the effect of either switch.
+\textbf{RQ3.} Making \ac{BNPL} visible to the traditional lender raises its refusals by about
+a sixth and default by 0.15 to 0.22 points, most in the poorest quintile, because a refused
+household in the model has no other credit. Mandatory screening slightly reduces \ac{BNPL}
+borrowing and does not change default detectably. Neither measure lowers aggregate default
+under the model's rules.
 
-For the reporting arrangements, the results point to one risk: a lender that sees \ac{BNPL} obligations refuses more credit, and in the model the resulting rise in default is largest in the poorest quintile.
-The model cannot say whether that cost outweighs any later distress the refusals avoid, because refused households have no fallback and the run ends after two years.
+These answers support four findings, which are the thesis's main contribution.
 
-The thesis contributes a household model, built on \ac{NIDS} financial data with imputed \ac{FinScope} inclusion flags, in which the traditional lender and the \ac{BNPL} platforms differ in what they can observe, so that the bureau gap can be switched on and off.
-Its comparisons of access, adoption rules and lending restrictions can be reproduced from the submitted code.
+In the model, default follows how much households borrow through \ac{BNPL}, not how many use
+it or how many providers they owe. Wider adoption under the threshold rule and more stacking
+under random routing leave default almost unchanged, whereas more frequent purchases raise
+it. Concern about concurrent obligations should therefore extend to repeat borrowing and the
+size of instalments, and not stop at the number of providers.
+
+Purchase size sets the size of the effect when borrowing is frequent. At $\beta=1$ the effect
+ranges from 0.25 points with half the reference purchase size to 1.22 points with purchases
+sized on income, and the settings whose purchases match the provider figure give 0.9 to 1.2
+points, against 0.6 at the reference. Larger purchases mean larger fortnightly instalments,
+so this is a result about the mechanism as well as a sensitivity. Because the reference
+purchase size is below the provider figure, the reference effect at $\beta=1$ may be too
+small.
+
+How often households borrow drives both stacking and the effect on default. In the model that
+frequency comes from a peer rule with no South African estimate, so the results at $\beta=1$
+describe a market with heavy repeat borrowing, not the observed one. The two values of $\beta$
+bracket the provider's volume, and the effect lies between 0.1 and 0.6 points across them.
+
+Bureau visibility acts on households through the traditional lender's refusals. Whether it
+helps or harms them depends on what a refused household does next. The model cannot answer
+that, because it has no informal or alternative credit, and the rise in default it reports
+for the poorest quintile depends on that omission.
+
+These findings identify where better data would most improve the analysis: the distribution
+of \ac{BNPL} purchase sizes and the frequency of repeat purchases among South African users,
+how much households borrow when short of cash, how they choose among providers, and where
+refused households borrow instead, including from informal lenders. Each of these is an input
+on which a headline result depends, not a general caveat.
 
 \label{sec:lim-reading}
-Several limitations bound these conclusions.
-The outcome is a cash-flow default that the model defines and no external figure measures (Section~\ref{sec:sequence}).
-Its level rests on two parameters fitted to an account-level arrears share that rises through the run because nothing is written off, so the fitted shock rate depends on the measurement window (Section~\ref{sec:lim-calibration}).
-It also rests on a borrowing-amount rule with no empirical estimate, which moves default by up to 1.02 points (Table~\ref{tab:robustness}).
-Shock persistence matters most: replacing the persistent income shock with a single-tick loss lowers default from 14.05\% to 4.81\% and reduces the \ac{BNPL} effect at $\beta = 1$ to $0.018 \pm 0.015$ points (Tables~\ref{tab:robustness-appendix} and~\ref{tab:effect}).
-The bureau experiment excludes credit scores, pricing and lenders' responses, assesses surveyed rather than current income, and gives a refused household no other source of credit.
-The standard errors measure variation between replicates and exclude uncertainty in the inputs and in the model's structure.
+The conclusions have further limits. The outcome is a cash-flow default that the model defines
+and no external figure measures (Section~\ref{sec:sequence}). Its level rests on two
+parameters fitted to an account-level arrears share that rises through the run, so the fitted
+shock rate depends on the measurement window (Section~\ref{sec:lim-calibration}). It also rests
+on the persistence of income shocks: with single-tick shocks default falls from 14.05\% to
+4.81\% and the \ac{BNPL} effect disappears (Table~\ref{tab:effect}). The bureau experiment
+excludes credit scores, pricing and lenders' responses, and assesses surveyed rather than
+current income. The standard errors measure variation between replicates and exclude
+uncertainty in the inputs and the model's structure.
 
 \label{sec:future-work}
-\textbf{Borrowing for a shortfall.} Evidence on how much households borrow against a shortfall, and from which lender, would replace the assumed borrowing rules, under which the \ac{BNPL} effect at $\beta = 1$ ranges from $0.37 \pm 0.09$ to $1.27 \pm 0.11$ points (Section~\ref{sec:amount}; Table~\ref{tab:effect}).
-
-\textbf{Credit scoring and refused households.} A rule linking reported \ac{BNPL} behaviour to scores, pricing and refusals would test the channel that the reporting arrangements most directly open (Section~\ref{sec:asymmetry}).
-Giving refused households another source of credit, following them after refusal, and running past two years would show whether the rise in default under bureau visibility survives.
-
-\textbf{South African behavioural evidence.} Local estimates of minimum-payment behaviour, present bias, provider choice and the persistence of income shocks would replace the assumed and imported rules on which the outcome levels depend (Section~\ref{sec:lim-transfer}).
-
-\textbf{Feedback and contagion.} A lender that restricts credit after losses, or a link from aggregate default to employment, would let distress spread through channels now excluded (Table~\ref{tab:design-concepts}).
-
-Of these, evidence on shortfall borrowing would matter most: with purchase size, the borrowing rules move the size of the \ac{BNPL} effect more than any other behavioural assumption (Table~\ref{tab:effect}).
+Three extensions follow. A rule linking reported \ac{BNPL} behaviour to credit scores, pricing
+and refusals would test the channel that the reporting arrangements most directly open
+(Section~\ref{sec:asymmetry}). Giving refused households another source of credit, following
+them after refusal and running past two years would show whether the rise in default under
+bureau visibility survives. A lender that restricts credit after losses, or a link from
+aggregate default to employment, would let distress spread through channels the model now
+excludes (Table~\ref{tab:design-concepts}).
