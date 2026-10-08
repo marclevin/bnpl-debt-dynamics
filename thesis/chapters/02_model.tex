@@ -134,7 +134,7 @@ and the scheduled service on its traditional debt, which the bureau records. The
 assessment does not reduce income while a member is unemployed, although the income the
 household receives falls (Submodel~1), so a household in a spell of unemployment is
 assessed on income it is not receiving. In the benchmark the assessment excludes \ac{BNPL}
-commitments \cite{nortonrose_bnpl_sa, transunion_cps_sa_2025}, and the model omits
+commitments \cite{transunion_cps_sa_2025}, and the model omits
 informal borrowing, which South African households use \cite{finscope2019}. The lender
 therefore applies an affordability rule to an incomplete view of household obligations.
 
@@ -244,7 +244,7 @@ Table~\ref{tab:submodels} sets out the seventeen submodels.
 \addlinespace
 9. Credit gate & Regulation 23A residual-income test on household income; a request is granted in full or refused. A new loan is priced as unsecured credit (repurchase rate plus 21 points, 25 months) and added to the household's balance. & Statutory expense table & \cite{sa_ncr_affordability_2015} \\
 \addlinespace
-10. Information & The bureau records traditional debt and defaults. The traditional lender does not see \acs{BNPL}. & Bureau switch, off in the benchmark & \cite{nortonrose_bnpl_sa, transunion_cps_sa_2025} \\
+10. Information & The bureau records traditional debt and defaults. The traditional lender does not see \acs{BNPL}. & Bureau switch, off in the benchmark & \cite{transunion_cps_sa_2025} \\
 \addlinespace
 11. Peer influence & The probability of a want-driven purchase rises linearly with the lagged \acs{BNPL} share in the household's reference group (Equation~\ref{eq:peer}); a threshold rule is the alternative. & $q_{\text{base}} = 0.05$; $\beta = 0$, swept 0--3; threshold parameters swept & \cite{ackert2025bnpl, cardaci2018inequality, granovetter1978threshold} \\
 \addlinespace
@@ -280,7 +280,7 @@ amount in full under Submodel~9. A refused household leaves the remainder unpaid
 distressed in that tick.
 
 The shortfall path reflects evidence that \ac{BNPL} users are disproportionately
-liquidity-constrained \cite{hayashi2025constraints, dehaan2024bnpl}; we found no study
+liquidity-constrained \cite{hayashi2025constraints}; we found no study
 measuring how much of a shortfall they finance with it. Because \ac{BNPL} finances retail
 purchases and not general spending, the model caps the amount financed for a shortfall at
 the mean want-driven purchase. We found no empirical maximum, so the sensitivity analysis
@@ -303,8 +303,8 @@ rate. Household $i$'s purchase propensity is:
 
 Because $q_{\text{base}}$ is positive, borrowing can begin before anyone in the group has
 adopted. The coefficient $\beta$ determines how strongly the household responds
-to others' adoption. Evidence on social approval and consumption emulation
-supports the channel \cite{ackert2025bnpl, cardaci2018inequality} but does not
+to others' adoption. Experimental evidence on social approval \cite{ackert2025bnpl} and a model of
+consumption emulation \cite{cardaci2018inequality} support the channel but do not
 identify its strength, so both parameters are swept. The defaults are
 $q_{\text{base}}=0.05$ and $\beta=0$, the no-peer control.
 

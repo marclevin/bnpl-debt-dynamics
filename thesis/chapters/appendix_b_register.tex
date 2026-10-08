@@ -68,15 +68,15 @@ fee cap and the assumed order cap, are set at 2026 prices and deflated once (App
 \addlinespace
 \texttt{bnpl\_\allowbreak{}purchase\_\allowbreak{}cv} & 4 & 0.6 & assumed & Dispersion of purchase size around its mean, which is lognormal. No source. & -- \\
 \addlinespace
-\texttt{min\_\allowbreak{}payer\_\allowbreak{}share} & 6 & 0.29 & sourced & 29\% of United States card accounts pay at or near the minimum \cite{Keys2019}. & 0.20--0.40 \\
+\texttt{min\_\allowbreak{}payer\_\allowbreak{}share} & 6 & 0.29 & sourced & 29\% of United States card accounts regularly pay at or near the minimum \cite{Keys2019}. & 0.20--0.40 \\
 \addlinespace
-\texttt{payment\_\allowbreak{}friction} & 6 & 0.09 & fitted & Probability per tick of missing a traditional instalment that the household could pay \cite{Kuchler2021}. Fitted to the \ac{CCMR} 1--30 day band. & calibration grid \\
+\texttt{payment\_\allowbreak{}friction} & 6 & 0.09 & fitted & Probability per tick of missing a traditional instalment that the household could pay, motivated by evidence that borrowers depart from planned repayment \cite{Kuchler2021}. Fitted to the \ac{CCMR} 1--30 day band. & calibration grid \\
 \addlinespace
 \texttt{min\_\allowbreak{}payment\_\allowbreak{}frac} & 6 & 0.05 & assumed & Minimum payment as a share of the balance per month. The \ac{NCA} prescribes no formula. & 0.025--0.10 \\
 \addlinespace
 \texttt{k\_\allowbreak{}default} & 7 & 7 & sourced & Seven ticks are 98 days, the first tick boundary past the 90-day impairment convention. & four ticks (56 days) \\
 \addlinespace
-\texttt{bnpl\_\allowbreak{}bureau\_\allowbreak{}visible} & 10/15 & off & sourced & \ac{BNPL} was not reported to the bureau before the 2026 arrangements \cite{nortonrose_bnpl_sa, transunion_cps_sa_2025}; off is the benchmark. & on / off (Section~\ref{sec:scenarios}) \\
+\texttt{bnpl\_\allowbreak{}bureau\_\allowbreak{}visible} & 10/15 & off & sourced & \ac{BNPL} was not reported to the bureau before the 2026 arrangements \cite{transunion_cps_sa_2025}; off is the benchmark. & on / off (Section~\ref{sec:scenarios}) \\
 \addlinespace
 \texttt{bnpl\_\allowbreak{}enabled} & design & off & sourced & The 2017 baseline has no \ac{BNPL}; the experiments enable it. & on / off \\
 \addlinespace
@@ -98,7 +98,7 @@ fee cap and the assumed order cap, are set at 2026 prices and deflated once (App
 \addlinespace
 \texttt{bnpl\_\allowbreak{}affordability\_\allowbreak{}check} & 15 & off & sourced & Applies the Regulation 23A test to each \ac{BNPL} request, the analogue of the \ac{FCA}'s affordability check \cite{fca_ps26_1}. & on / off (Section~\ref{sec:scenarios}) \\
 \addlinespace
-\texttt{k\_\allowbreak{}cool} & 15 & 0 & sourced & Ticks for which want-driven purchases are blocked after a want-driven purchase. One tick is the fourteen-day right of withdrawal in the United Kingdom's rules \cite{fca_ps26_1}. & 0--4 ticks (Appendix~\ref{app:levers}) \\
+\texttt{k\_\allowbreak{}cool} & 15 & 0 & sourced & Ticks for which want-driven purchases are blocked after a want-driven purchase. One tick is the fourteen-day right of withdrawal under the United Kingdom's Consumer Credit Act, which applies to regulated deferred payment credit \cite{fca_ps26_1}. & 0--4 ticks (Appendix~\ref{app:levers}) \\
 \addlinespace
 \texttt{stacking\_\allowbreak{}cap} & 15 & none & assumed & Cap on platforms owed: a household that owes this many platforms or more is refused every new agreement. Hypothetical; no jurisdiction imposes one. & 1--3 (Appendix~\ref{app:levers}) \\
 \addlinespace

@@ -120,7 +120,8 @@
   volume  = {39},
   pages   = {209--220},
   year    = {2018},
-  annote    = {Central Bank of Chile. Emerging-market consumer-credit ABM;
+  doi     = {10.1016/j.jfs.2017.03.005},
+  annote    = {Central Bank of Chile. Emerging-market heterogeneous-agent model of consumer credit;
              households default when unable to finance minimum consumption;
              validated against observed default rates}
 }
@@ -193,7 +194,7 @@
   year        = {2025},
   month       = oct,
   url         = {https://newsroom.transunion.co.za/south-africans-show-determined-optimism-as-they-adapt-to-financial-pressures/},
-  note        = {Survey fielded 25 September to 9 October 2025; results summarised in the media release of 13 January 2026 at the URL given.},
+  note        = {Online survey of 992 adults, fielded 25 September to 9 October 2025; results summarised in the media release of 13 January 2026 at the URL given. Full report: \url{https://www.fanews.co.za/assets/Marilyn_2026/TransUnion13012026.pdf}.},
   lastchecked = {29 September 2026},
   annote        = {Fielded 25 September to 9 October 2025. 57\% of respondents hold a
                  \ac{BNPL} product and 36\% used one multiple times in the prior 12
@@ -204,8 +205,9 @@
                  instruction. \textbf{CORRECTED 2026-08-24:} an earlier note claimed 20\%
                  of consumers intend to apply for \ac{BNPL}; the press release's 20\%
                  is car loans (among the 36\% planning to apply: credit cards 30\%,
-                 personal loans 28\%, car loans 20\%), and \ac{BNPL} is not listed as
-                 an application category at all}
+                 personal loans 28\%, car loans 20\%). The full report does list
+                 \ac{BNPL} among the most sought-after products. The 57\% holding figure
+                 is from transunion\_cir\_sa\_2026}
 }
 
 @techreport{cfpb2025bnpl,
@@ -238,7 +240,7 @@
 @techreport{dimaggio2022bnpl,
   title       = {{Buy Now, Pay Later} Credit: User Characteristics and Effects on
                  Spending Patterns},
-  author      = {Di Maggio, Marco and Katz, Justin and Williams, Emily},
+  author      = {Di Maggio, Marco and Williams, Emily and Katz, Justin},
   institution = {National Bureau of Economic Research},
   type        = {Working Paper},
   number      = {30508},
@@ -305,7 +307,8 @@
   volume  = {2},
   number  = {1},
   pages   = {193--210},
-  year    = {2010}
+  year    = {2010},
+  doi     = {10.1257/app.2.1.193}
 }
 
 @article{Keys2019,
@@ -341,6 +344,7 @@
   volume    = {20},
   pages     = {183--188},
   year      = {2013},
+  doi       = {10.1016/j.procs.2013.09.258},
   annote      = {Replication showing statistically significant differences in emergent
                population behaviour across uniform, synchronous and random activation}
 }
@@ -388,14 +392,16 @@
 }
 
 @misc{payjustnow_terms,
-  title        = {Terms and Conditions, and How {PayJustNow} Works},
+  title        = {Terms and Conditions},
   author       = {{PayJustNow}},
   year         = {2026},
   howpublished = {{PayJustNow} website},
   url          = {https://payjustnow.com/terms-and-conditions/},
   lastchecked = {29 September 2026},
   annote         = {Pay in 3, interest free: first instalment at checkout, two further
-                  monthly instalments. Available balance rather than a credit limit}
+                  monthly instalments. Pay-in-3 description from https://payjustnow.com/how-it-works/. The terms
+                  provide for an individually assigned purchase limit and cap default
+                  charges at 25\% of the transaction}
 }
 
 @techreport{fca_ps26_1,
@@ -457,7 +463,7 @@
 }
 
 @misc{ons_income_fye2020,
-  title        = {Average household income, {UK}: financial year ending 2020},
+  title        = {Average household income, {UK}: financial year 2020},
   author       = {{Office for National Statistics}},
   year         = {2021},
   howpublished = {Statistical bulletin, released 21 January 2021, corrected 22 March 2022},
@@ -541,8 +547,10 @@
   title        = {{National Credit Regulations} including Affordability Assessment Regulations},
   author       = {{Republic of South Africa}},
   howpublished = {Government Notice R202, Government Gazette 38557, 13 March 2015},
-  annote         = {Regulation 23A(9) prescribes the minimum expense norms table and the
-                  residual (discretionary) income affordability test. The NCA prescribes
+  year         = {2015},
+  url          = {https://www.acts.co.za/national-credit/r489_23a__criteria_to_conduc.php},
+  annote         = {Regulation 23A(9) prescribes the minimum expense norms table and 23A(12)
+                  the residual (discretionary) income affordability test. The NCA prescribes
                   no debt-service-to-income ratio}
 }
 
@@ -552,6 +560,7 @@
   author       = {{Minister of Trade and Industry}},
   howpublished = {Government Notice R1080, Government Gazette 39379, 6 November 2015; in
                   force from 6 May 2016},
+  year         = {2015},
   url          = {https://www.gov.za/sites/default/files/gcis_document/201511/39379gon1080.pdf},
   lastchecked = {29 September 2026},
   annote         = {Table A, maximum prescribed interest rates: mortgages repo+12\%, credit
@@ -624,8 +633,7 @@
   title        = {What's the maximum {I} can spend with {Payflex}?},
   author       = {{Payflex}},
   year         = {2024},
-  howpublished = {Payflex website, frequently asked questions; archived copy},
-  month        = {10 November},
+  howpublished = {Payflex website, frequently asked questions; archived 10 November 2024},
   url          = {https://web.archive.org/web/20241110151634/https://payflex.co.za/helpie_faq/whats-the-maximum-i-can-spend-with-payflex/},
   lastchecked = {29 September 2026},
   annote         = {The whole answer reads: ``This depends on your individual Payflex
@@ -756,8 +764,8 @@
                  data/config/cpi\_deflator\_2017.json. Stats SA rebased at Dec 2016,
                  Dec 2021 and Dec 2024 = 100; the chain is built from annual RATES, which
                  are rebase-invariant, so no linking factors are required.
-                 \% VERIFY (narrowed): the 2018--2025 annual averages are from published
-                 releases rather than re-derived from Table B1, but are now constrained by
+                 The 2018--2025 annual averages are from successive P0141 releases
+                 rather than re-derived from Table B1, and are constrained by
                  two independent checks --- the 2024 rate against Stats SA's published
                  4,4\% statement, and the whole compounded chain against the published
                  June 2026 index, which it reproduces to within 0.8\%}
@@ -766,7 +774,8 @@
 @misc{statssa_ies_2023,
   title        = {{Income and Expenditure Survey} 2022/2023},
   author       = {{Statistics South Africa}},
-  year         = {2023},
+  year         = {2025},
+  doi          = {10.25828/z52z-re15},
   howpublished = {Household microdata, DataFirst zaf-statssa-ies-2022-2023-v1,
                   University of Cape Town},
   url          = {https://www.datafirst.uct.ac.za/dataportal/index.php/catalog/1116},
@@ -908,7 +917,7 @@
   annote       = {PRESS REPORT, not a primary instrument; also syndicated at
                  timeslive.co.za. Reports that the NCR has ordered BNPL providers to report
                  consumer payment behaviour to credit bureaus; that the NCR signed a
-                 memorandum of agreement with SACRRA and the Credit Bureau Association and
+                 memorandum of understanding with SACRRA and the Credit Bureau Association and
                  that a BNPL subcommittee is settling the submission format; and the NCR's
                  legal position that BNPL agreements are not credit agreements at inception
                  but may be incidental credit agreements under the NCA where default charges
@@ -923,6 +932,7 @@
                   ({BNPL}) Reporting and Regulation},
   author       = {{Fintech Association of South Africa}},
   howpublished = {{FINASA} statement, 30 April 2026},
+  year         = {2026},
   url          = {https://www.finasa.org.za/post/statement-from-fintech-association-of-south-africa-on-buy-now-pay-later-bnpl-reporting-and-regula},
   lastchecked = {29 September 2026},
   annote       = {Industry statement. Records that the NCR issued a formal instruction
