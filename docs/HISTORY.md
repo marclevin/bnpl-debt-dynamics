@@ -343,3 +343,11 @@ The findings of `docs/REFERENCE_AUDIT.md` (R1–R34) were verified independently
 ## 2026-10-12: RQ3 under the committed-relief rule
 
 New suite `rq3r` (`simulation/experiments.py`): the four scenario arms on the same seeds (80,000 to 80,099, 100 replicates), with a loan that pays food and rent clearing that tick's distress. Not recalibrated. Benchmark default is 5.7%. Bureau visibility raises it by 0.71 ± 0.02 points (β = 0) and 0.73 ± 0.02 (β = 1), most in Q1 (+1.15 ± 0.05). Screening changes it by at most 0.06 points, and both switches together by 0.56 points. The RQ3 direction holds and the rise is larger. The numbers are in `results_numbers.json` (`rq3r_*`), and Section 5 and the conclusion cite them.
+
+## 2026-10-12: writing audit and final abstract
+
+Four Fable agents audited the writing chapter by chapter. Their brief excluded new experiments. All four judged the prose to read as a human author's and ready for the supervisor. Their line edits were applied after review, and a fifth agent verified that no number or claim had changed by mistake. Two changes of substance came out of the audit:
+- The access result without peer influence (0.14 ± 0.11) is now described as not detectable, as the Section 3.1 convention requires.
+- Section 5's quintile sentence now says that only Q1 and Q5 rise detectably under bureau visibility.
+
+The labour-market drift is stated in 3.4 as an assumption of the baseline. The single-tick shock is described as removing persistence, not as a stable labour market. Body 9,845 words by the float-excluding count. Abstract 297 words as typeset.

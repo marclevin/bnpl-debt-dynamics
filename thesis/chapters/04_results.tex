@@ -24,7 +24,7 @@ points, pooled over three blocks. Both are small beside a baseline default rate 
 
 The larger effect comes with much more borrowing by about as many borrowers. Peer influence
 raises the share of households that ever hold \ac{BNPL} only from 70\% to 76\%, but volume
-rises tenfold, because those who use \ac{BNPL} buy with it again and again: a household that
+rises tenfold, because those who use \ac{BNPL} buy with it repeatedly: a household that
 ever holds a balance makes 34 want-driven purchases over the two years at $\beta=1$, against
 2.3 at $\beta=0$. The share of households with no liquid savings rises by $3.05 \pm 0.06$
 points at $\beta=1$ and by $0.15 \pm 0.06$ at $\beta=0$. These are population aggregates; they
@@ -48,8 +48,7 @@ effect comes mainly from want-driven borrowing.
 \subsection{Stacking Across Platforms}
 \label{sec:results-stacking}
 
-Owing several platforms at once is common whenever households borrow more than occasionally
-(Table~\ref{tab:stacking}; Figure~\ref{fig:stacking}). With four platforms and no peer
+Owing several platforms at once is common (Table~\ref{tab:stacking}; Figure~\ref{fig:stacking}). With four platforms and no peer
 influence, about half of the households holding \ac{BNPL} at the final tick owe two or more,
 and 37\% of ever-holders do so at some point, close to the \ac{CFPB}'s 32 to 33\%. At $\beta=1$
 almost every ever-holder does.
@@ -70,9 +69,8 @@ against one: $+0.02 \pm 0.09$ and $+0.01 \pm 0.08$). Differences of about 0.2 to
 cannot be excluded. Each platform brings
 its own limit, so platform count and total credit capacity move together, and no arm gives
 platforms a shared view of exposure. The sweep therefore cannot isolate the effect of
-platforms not seeing one another. Within the model, the routing rule and the number of
-platforms change how debt is spread across lenders without changing default detectably,
-although a cap on platforms owed lowers it at $\beta=1$ (Section~\ref{sec:results-answer}).
+platforms not seeing one another. The two assumptions change how debt is spread across lenders,
+although a cap on platforms owed lowers default at $\beta=1$ (Appendix~\ref{app:levers}).
 
 \input{chapters/generated/tab_stacking}
 
@@ -108,16 +106,16 @@ threshold from 0.15 to 0.45 lowers full-access holding from 51\% to 28\% without
 default detectably ($-0.17 \pm 0.11$ points). Holding is close to linear in access under this
 rule too, so no adoption cascade occurs on this grid.
 
-Holding at the final tick rises both with how many households use \ac{BNPL} and with how often
-they borrow. The share that ever holds it barely moves: at full access it is 70\% without peer
-influence and 74 to 76\% under either peer rule. The threshold rule and $\beta=0.5$ therefore
-mainly make the same households buy more often. Their volume is 2.6 to 4.9 times the
+Holding at the final tick rises with how often households borrow as well as with how many use
+\ac{BNPL}. The access sweeps vary how many: from zero to full access, default does not change
+detectably without peer influence ($0.14 \pm 0.11$ points) and rises by $0.60 \pm 0.11$ at
+$\beta=1$. The peer rules mainly vary how often: the share that ever holds \ac{BNPL} at full
+access is 70\% without peer influence and 74 to 76\% under either peer rule, so the threshold
+rule and $\beta=0.5$ mainly make the same households buy more often. Their volume is 2.6 to 4.9 times the
 control's, and default rises by at most 0.14 points more than in the control. At $\beta=1$
 volume is ten times the control's and the extra rise is 0.46 points. From $\beta=1$ to
 $\beta=3$ default rises by a further $0.35 \pm 0.08$ points while volume after burn-in rises by
-9\%, so volume does not account for all of it. The access sweeps vary how many households use
-\ac{BNPL}: from zero to full access, default rises by $0.14 \pm 0.11$ points without peer
-influence and by $0.60 \pm 0.11$ at $\beta=1$.
+9\%, so volume does not account for all of it.
 % Ever-held, volume ratios and rises: results/raw/rq2.parquet and rq2t.parquet, full access
 % against zero access on the same seeds (computed 2026-10-12).
 
@@ -140,7 +138,7 @@ highest debt-to-income ratios (Table~\ref{tab:distribution}). Without peer influ
 Q2, Q3 and Q4 and largest in Q4. In Q1 it is $+0.03 \pm 0.22$ points, which cannot exclude
 0.5 points, and in Q5 it falls short of two standard errors. The Q4
 effect exceeds the Q1 effect by $1.14 \pm 0.38$ points, a contrast between the largest and
-smallest of the five chosen after seeing them.
+smallest of the five effects, chosen after seeing them.
 
 The effect is therefore larger in the middle of the distribution than at the bottom. Because
 purchases are sized on discretionary budgets, the mean purchase rises from R103 in Q1 to
@@ -151,7 +149,7 @@ between quintiles.
 
 Platform limits bind more often on poorer households: in Q1 a limit reduces or refuses a
 quarter of platform requests, against about one in seven in Q5. Raising the limit tenfold
-changes default by $+0.10 \pm 0.09$ points (Table~\ref{tab:robustness-appendix}), so the limit
+changes population default by $+0.10 \pm 0.09$ points (Table~\ref{tab:robustness-appendix}), so the limit
 is not what keeps the effect small in Q1.
 
 \input{chapters/generated/tab_distribution}
@@ -160,7 +158,7 @@ is not what keeps the effect small in Q1.
 \label{sec:results-robustness}
 
 Simulation noise is small beside the assumptions. Default varies by about 0.3 points between
-replicates, results do not change detectably with population size or activation order
+replicates, and results do not change detectably with population size or activation order
 (Table~\ref{tab:robustness-appendix}). The
 model is not in a steady state: default accumulates and the 90+ share keeps rising because
 nothing is written off, so every result belongs to the two-year horizon.
@@ -188,9 +186,9 @@ default threshold to 56 days raises default by $0.84 \pm 0.11$ points.
 \label{sec:results-effect}
 
 Table~\ref{tab:effect} runs every setting with \ac{BNPL} off and on, on one shared seed block.
-At $\beta=1$ the effect is positive and detectable under nineteen of the twenty-one settings.
-The two exceptions are rules on which it depends, discussed below. Its size depends on the
-assumptions too, and purchase size moves it most.
+At $\beta=1$ the effect is positive and detectable under nineteen of the twenty-one settings;
+the two exceptions are the rules discussed at the end of this section. Its size depends on the assumptions,
+and purchase size moves it most.
 Halving $\kappa$ cuts the effect to $0.25 \pm 0.09$ points; doubling it raises the effect to
 $0.91 \pm 0.07$, and sizing purchases on income raises it to $1.22 \pm 0.10$. A larger
 purchase means larger fortnightly instalments, which leave less cash for food, rent and
@@ -217,13 +215,12 @@ and $\lambda=1.0$, are one result, because the limit seldom binds at either valu
 settings share a seed block and often a no-\ac{BNPL} arm, so these counts are not independent
 replicates.
 
-The effect disappears at both values of $\beta$ under the single-tick shock and when borrowing
-for food and rent that the loan pays in full is not distress ($+0.01 \pm 0.04$ and
-$+0.02 \pm 0.05$ points). Default without \ac{BNPL} then falls
-from 13.30\% to 5.77\%. A loan now clears that tick's distress, so households that lose income
-go on borrowing from the traditional lender, which assesses their surveyed income; it lends
-about three times as much. Neither arm is recalibrated.
-In the model, the effect of \ac{BNPL} therefore depends on income losses that persist and on
+Under the single-tick shock the effect disappears at both values of $\beta$. It also
+disappears when borrowing for food and rent that a loan pays in full is not counted as
+distress: $+0.01 \pm 0.04$ and $+0.02 \pm 0.05$ points, from a default rate without \ac{BNPL}
+of 5.77\% against 13.30\%. Under that rule a loan clears the tick's distress, so households
+that lose income keep borrowing from the traditional lender, which assesses surveyed income
+and lends about three times as much. Neither arm is recalibrated. The effect of \ac{BNPL} therefore depends on income losses that persist and on
 counting a household that borrows for food and rent as distressed.
 % Lending: trad_granted_value, eff_committed_relief_off against eff_ref_off, results/raw/effect.parquet
 % (R20.2 million against R6.2 million).
@@ -234,27 +231,26 @@ counting a household that borrows for food and rent as distressed.
 \label{sec:results-answer}
 
 With four platforms that cannot see one another, owing several at once is common: about half
-of final-tick holders do so without peer influence, and almost every user does at some point
-when households borrow repeatedly. How often depends mostly on the assumed routing rule and on
+of final-tick holders do so without peer influence, and almost every ever-holder does at some
+point when households borrow repeatedly. How often depends mostly on the assumed routing rule and on
 how often households borrow.
 
 Enabling \ac{BNPL} raises default by $0.12 \pm 0.05$ points without peer influence and by
-$0.60 \pm 0.07$ points at $\beta=1$. Default does not change detectably with the routing rule
-or the number of platforms. It rises with access only where peer influence makes households
+$0.60 \pm 0.07$ points at $\beta=1$; at $\beta=1$ the rise is detectable in Q2 to Q4 and
+smaller in Q1 than in Q4. Default does not change detectably with the routing rule or the
+number of platforms, although at $\beta=1$ a cap of two platforms owed lowers it by
+$0.24 \pm 0.08$ points more than a cap on agreements that removes as much volume
+(Appendix~\ref{app:levers}). It rises with access only where peer influence makes households
 borrow repeatedly, and under the threshold rule a much larger share of households holding
-\ac{BNPL} raises default little. Every full-access arm has 70 to 76\% of households using
-\ac{BNPL} at some point, so apart from the access sweeps the experiments vary how often users
+\ac{BNPL} raises default little. Every full-access arm has 70 to 76\% of households ever
+holding \ac{BNPL}, so apart from the access sweeps the experiments vary how often users
 borrow. Default rises with that frequency, and above $\beta=1$ it rises further while volume
-barely changes. At $\beta=1$ a cap of two
-platforms owed lowers default by $0.24 \pm 0.08$ points more than a cap on agreements that
-removes as much volume (Appendix~\ref{app:levers}), so the number of platforms owed matters in
-that comparison. At $\beta=1$ the rise is
-detectable in Q2 to Q4 and smaller in Q1 than in Q4.
+barely changes.
 
 The size of the effect depends most on purchase size and on how much households borrow
 against a shortfall, neither of which is measured for South Africa. At purchase sizes
 consistent with the provider figure, the effect is 0.9 to 1.2 points at $\beta=1$, where
 volume is about four times the provider's range, and not detectable at $\beta=0$, where
-volume lies within it. It also disappears if income losses last one tick or if borrowing
-for food and rent is not distress. No arm gives platforms a shared view of exposure; the
+volume lies within it. It also disappears if income losses last a single tick or if
+borrowing for food and rent is not counted as distress. No arm gives platforms a shared view of exposure; the
 nearest comparison, mandatory screening, is in Section~\ref{sec:scenarios}.

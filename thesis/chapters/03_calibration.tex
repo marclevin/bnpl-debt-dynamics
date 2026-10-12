@@ -194,9 +194,9 @@ the Regulation 23A residual-income ceiling \cite{sa_ncr_affordability_2015}
 Realised product rates were not available in the \ac{CCMR} \cite{ncr_ccmr_2017} or the
 other 2017 sources consulted. Realised rates cannot exceed the ceilings, so using the
 ceilings overstates payments. The product allocation, horizons and cap are approximations
-whose direction of error is unknown. The \ac{NIDS} non-food aggregate also already includes
+whose direction of error is unknown. The \ac{NIDS} non-food aggregate already includes
 clothing-account, hire-purchase and vehicle payments, so constructed service partly
-double-counts them and compressible spending is overstated; that error could move default
+double-counts them and discretionary spending is overstated; that error could move default
 either way. Section~\ref{sec:data-validation} finds constructed service above the range
 households report, consistent with a net overstatement.
 
@@ -250,16 +250,16 @@ probability of 1.6\% and friction of 9\% per tick, stay fixed in every experimen
 Table~\ref{tab:arrears-fit} reports the fit.
 
 The fitted shock probability is about 1.4 times the upper end of the observed job-separation
-rate, 0.54--1.17\% per tick \cite{statssa_lmd_2022}. Every earner is employed at the start, and
-with re-employment at 1.87\% per tick the share out of work rises through every run towards
-46\%: of those employed at the start, 16\% are out of work at tick 12 and 39\% at tick 52, and
-31\% would be at the observed upper bound. The baseline therefore describes a population losing
-wage income throughout the run.
+rate, 0.54--1.17\% per tick \cite{statssa_lmd_2022}. Every earner is employed at the start, no member who starts without
+work enters it, and re-employment runs at 1.87\% per tick, so the share out of work rises
+through every run towards 46\%: 16\% of the starting earners are out of work at tick 12 and
+39\% at tick 52, where the observed upper bound would give 31\%. Employment cannot recover as
+it does in a stable labour market. The baseline therefore assumes a population losing wage
+income throughout the run, and that persistent loss lets it match the 2017 arrears profile.
+The single-tick shock of Section~\ref{sec:results-robustness} holds the expected share out of
+work constant but gives spells no persistence, so neither arm is a stable labour market.
 % 16%, 39% and 31%: results/summary/defaulter_credit.json, "unemployment path" entries
 % (notebooks/scripts/check_defaulter_credit.py, seeds 10,000-10,019, BNPL off).
-The fit also depends on the measurement window: households start
-with no arrears and no account is written off, so the 90+ share rises through the run, and a
-longer run or a different window would select a different value.
 
 \input{chapters/generated/tab_arrears_fit}
 
@@ -269,8 +269,8 @@ adoption is not identified.
 \subsection{Validation}
 \label{sec:data-validation}
 
-We check the model in three ways. The two fitted arrears bands are calibration targets, so
-matching them is not evidence. Comparisons of the constructed population with external
+We check the model in two ways, after setting aside the two fitted arrears bands, which are
+calibration targets and so not evidence. Comparisons of the constructed population with external
 figures test the survey inputs. Comparisons of the model's behaviour test quantities it was
 neither fitted to nor built from, and are only as informative as those quantities are
 comparable. Checks that the population reproduces its own sources test the implementation;
@@ -279,12 +279,11 @@ they are in Appendix~\ref{app:matching} and are not counted as validation.
 \label{sec:lim-validation}
 Following pattern-oriented modelling \cite{grimm2020odd} and the validation literature
 \cite{windrum2007validation}, four
-empirical patterns guide the behavioural comparison. Pattern~2 is the 2017 arrears profile
-used for fitting. Pattern~1 is United States evidence that \ac{BNPL} adoption raises
+empirical patterns guide the behavioural comparison. Pattern~1 is United States evidence that \ac{BNPL} adoption raises
 card late fees and interest \cite{dehaan2024bnpl}, whose counterparts in the model are
 traditional arrears and interest; it is not independent of the design,
 because want-driven borrowing was added partly when shortfall-only borrowing failed to
-reproduce it. Pattern~3 is a middle-income peak in debt-to-income from a United Kingdom
+reproduce it. Pattern~2 is the 2017 arrears profile used for fitting. Pattern~3 is a middle-income peak in debt-to-income from a United Kingdom
 model \cite{hamill2023creditcard}. Pattern~4 sets the share of households without savings
 against the share of South African consumers who expect to miss a payment in an online survey
 \cite{transunion_cps_sa_2025}, a different outcome, so it can test only the order of
@@ -299,35 +298,33 @@ The baseline matches the two fitted bands and misses those between them
 (Table~\ref{tab:arrears-fit}). Each band from 31 to 120 days holds about 1\% of credit-active
 households, against 1.8 to 3.6\% in the \ac{CCMR}: households in the model tend either to
 cure quickly or to stay in arrears. Matching the targets therefore does not show that arrears
-develop as they do in the data. The 90+ band also accumulates every uncured account. At the
-fitted values it averages 14.48\% after burn-in but reaches 19.9\% at the final tick, so the
-fit matches the average of a rising stock.
+develop as they do in the data. The 90+ band also accumulates every uncured account, since none is
+written off. At the fitted values it averages 14.48\% after burn-in but reaches 19.9\% at the
+final tick, so the fit matches the average of a rising stock and a different window would
+select a different value.
 
-No external figure measures the model's default. Most defaulters owe credit, 90.5\% in the
+No external figure measures the model's default. The nearest are from the \ac{NCR}'s Credit
+Bureau Monitor: in March 2017, 21.7\% of credit-active consumers were three or more months in
+arrears, and 39.3\% had impaired records, which also include judgments and adverse listings
+\cite{ncr_cbm_2017}. These are of the same order as the model's 13.3\% of households over two
+years, but they count individuals at one date and include listings that stay on record for
+years, so the level of default is not validated. Most defaulters owe credit, 90.5\% in the
 baseline and 98.4\% with \ac{BNPL} at $\beta=0$, but default is mostly a failure to pay for
 food and rent: 90.9\% of baseline defaulters were short of them in every tick of the streak
 that ended in default, and 8.3\% defaulted on debt service alone. Two causes account for most
-of it: 66\% of baseline defaulters have an earner out of work when they default, and 27\% have
-had income below their food and rent from the start.
-% 90.5%, 98.4%, 90.9%, 8.3%, 66% and 27% below: results/summary/defaulter_credit.json
+defaults: 66\% of baseline defaulters have an earner out of work when they default, and 27\%
+have had income below their food and rent from the start.
+% 90.5%, 98.4%, 90.9%, 8.3%, 66% and 27%: results/summary/defaulter_credit.json
 % (notebooks/scripts/check_defaulter_credit.py).
-The nearest external figures are from the \ac{NCR}'s Credit Bureau Monitor: in March 2017,
-21.7\% of credit-active consumers were three or more months in arrears, and 39.3\% had
-impaired records, which also include judgments and adverse listings \cite{ncr_cbm_2017}.
-These are of the same order as the model's 13.3\% of households over two years, but they
-count individuals at one date and include listings that stay on record for years, so the
-level of default is not validated.
 
 \subsubsection*{The Constructed Population}
 
 Mean household size and the income Gini are close to independent estimates, and synthetic
 traditional debt is about half the corresponding \ac{CCMR} book
-(Table~\ref{tab:pop-external}). These comparisons test the survey data and our treatment of
-missing values, not the model's behaviour. The debt comparison depends on that treatment:
+(Table~\ref{tab:pop-external}). The debt comparison depends on the treatment of missing values:
 imputing missing balances at the mean for holders would give 111\% of the book, and
 underreporting may explain part of the gap. Debt service is the one clear failure. It lies
-above \ac{FinScope}'s range, as the construction in Section~\ref{sec:servicing} would lead
-one to expect.
+above \ac{FinScope}'s range, as the construction in Section~\ref{sec:servicing} predicts.
 
 \begin{table}[H]
 \centering
@@ -340,9 +337,9 @@ one to expect.
 \textbf{Quantity} & \textbf{Model} & \textbf{External figure} & \textbf{Comparison} \\
 \midrule
 Mean household size & 3.03 & 3.3 in 2016 \cite{statssa_cs_2016} & 8\% lower \\
-Per-capita income Gini & 0.651; 0.663 by person & 0.66 in 2014 \cite{hundenborn2018drivers}; 0.67 in 2015 \cite{statssa2019inequality} & Close; the benchmarks weight by person \\
+Per-capita income Gini & 0.651 & 0.66 in 2014 \cite{hundenborn2018drivers}; 0.67 in 2015 \cite{statssa2019inequality} & Close; 0.663 weighted by person, as both benchmarks are \\
 % 0.663: results/summary/reference_audit_checks.json (notebooks/scripts/check_reference_audit_figures.py).
-Traditional debt & R191.4 bn & R392.0 bn, matching \ac{CCMR} book \cite{ncr_ccmr_2017} & About half \\
+Traditional debt & R191.4 bn & R392.0 bn, corresponding \ac{CCMR} book \cite{ncr_ccmr_2017} & About half \\
 Debt service & 12.8\% & 6.1--9.8\%, derived from a \ac{FinScope} budget question, unweighted \cite{finscope2019} & Above the range \\
 \bottomrule
 \end{tabular}
@@ -372,15 +369,15 @@ The share of ever-holders who owe two platforms at once is close to the \ac{CFPB
 United States borrowers, but the routing assumption largely sets it
 (Section~\ref{sec:results-stacking}), so the agreement is weak evidence. Without peer
 influence, volume is below the provider's range and the mean purchase is 36\% below the
-provider-based figure. At $\beta=1$ volume is ten times higher, about R10{,}400 per eligible
-household, well above the range, so the two settings bracket the provider's volume. The
+provider-based figure. Purchases are sized on discretionary budgets, so they are small in the
+lower quintiles (Table~\ref{tab:distribution}). At $\beta=1$ volume is ten times higher, about
+R10{,}400 per eligible household, 2.4 times the top of the range, so the two settings bracket the provider's volume. The
 range is one provider's per customer \cite{weaver2025iar}, whereas the model's volume is per
 household across four platforms. Households with several users or providers bias the
 comparison one way and the provider's self-selected active customers the other, so it supports
 orders of magnitude only.
-% R10,400 = vol_per_eligible_year x volume_beta1 / volume_beta0 (results_numbers.json).
-Purchases are sized on discretionary budgets, so they are small in the lower quintiles
-(Table~\ref{tab:distribution}). Adoption has no direct target: 70.0\% of households ever
+% R10,400 = vol_per_eligible_year x volume_beta1 / volume_beta0 (results_numbers.json); 10,400/4,261 = 2.4.
+Adoption has no direct target: 70.0\% of households ever
 hold \ac{BNPL} at $\beta=0$, above TransUnion's 57\% of surveyed consumers who hold a
 \ac{BNPL} product \cite{transunion_cir_sa_2026}, although a share over two years and a share
 at one date are different measures.
@@ -396,9 +393,9 @@ statement about the level of distress.
 Other gaps reflect missing South African data more than visible misspecification. No source
 gives the size or frequency of South African \ac{BNPL} purchases by household, so purchase
 size and volume rest on one provider's disclosures and the adoption parameters have no
-estimate. Purchases that are too small and volume that is too low without peer influence are
-what too low a value of $\kappa$ would produce: at $\kappa=0.28$ both fall within the
-provider's ranges (Table~\ref{tab:effect}). The debt-stock gap partly reflects survey underreporting.
+estimate. Small purchases and low volume without peer influence are consistent with too low a value of
+$\kappa$: at $\kappa=0.28$ both fall within the
+provider's ranges (Table~\ref{tab:effect}). The debt-stock gap may partly reflect survey underreporting.
 
 Some misses are expected of a stylised model: Pattern~3 comes from another model of another
 country, and a model with one lender, no calendar and no write-offs cannot be expected to
@@ -411,8 +408,8 @@ Section~\ref{sec:results-effect} repeats the \ac{BNPL} comparison under alternat
 repayment and purchase-size rules; no arm varies the debt-service construction. We narrow the
 claims accordingly: the default rate is a model quantity, and the \ac{BNPL} effects are
 differences within the model. Statements
-about which quintiles are affected describe a population whose income profile of debt does
-not match the reference pattern.
+about which quintiles are affected describe a population whose debt-to-income profile across
+quintiles does not match the reference pattern.
 
 In answer to RQ1, the population built from survey microdata reproduces household size,
 income inequality and the order of magnitude of household debt, which supports the inputs

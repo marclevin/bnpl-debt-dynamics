@@ -130,14 +130,12 @@ Section~\ref{sec:background}.
 
 The traditional lender assesses an application on the household's surveyed gross income
 and the scheduled service on its traditional debt, which the bureau records. The
-assessment does not reduce income while a member is unemployed, although the income the
-household receives falls (Submodel~1), so a household in a spell of unemployment is
-assessed on income it is not receiving. In the benchmark the assessment excludes \ac{BNPL}
+assessment uses surveyed income even while a member is unemployed (Submodel~1), so a
+household in a spell of unemployment is assessed on income it is not receiving. In the benchmark the assessment excludes \ac{BNPL}
 commitments \cite{dcasa_bnpl_2026, finasa_bnpl_2026}. The model has no informal lender, and
 the informal loans that \ac{NIDS} records, 2.7\% of traditional debt, are carried as debt the
 bureau sees.
 % 2.7%: results/summary/reference_audit_checks.json (notebooks/scripts/check_reference_audit_figures.py).
-The lender therefore applies an affordability rule to an incomplete view of household obligations.
 
 A switch, $\mathbb{1}^{\text{bur}}$, controls whether \ac{BNPL} obligations enter this
 calculation. It is off in the benchmark; switching it on represents one channel of the
@@ -158,7 +156,7 @@ traditional service. Algorithms~\ref{alg:gate} and~\ref{alg:bnpl} give the detai
 The bureau switch acts only through the affordability calculation. The model has no credit
 score and no risk-based pricing, so it cannot represent score-based refusals. This omission
 may matter, given the preliminary score reductions reported by \ac{FINASA}
-\cite{finasa_bnpl_2026}; Section~\ref{sec:future-work} discusses it as an extension.
+\cite{finasa_bnpl_2026}; the final paragraph of Section~\ref{sec:conclusion} discusses it as an extension.
 
 \subsection{Within-Tick Sequence and State Changes}
 \label{sec:sequence}
@@ -171,8 +169,8 @@ Each household follows seven steps (Algorithm~\ref{alg:tick}):
 \begin{enumerate}
     \item Receive income, adjusted for employment shocks.
     \item Pay committed expenditure from income and savings.
-    \item Accrue interest and calculate traditional and \ac{BNPL} payments due, including arrears. Minimum-payers owe the larger of interest and the minimum balance fraction; scheduled-payers owe their contractual instalment.
-    \item Seek credit for a shortfall, using \ac{BNPL} first where eligible and traditional credit for the remainder. Assess distress before payment friction.
+    \item Accrue interest and calculate traditional and \ac{BNPL} payments due, including arrears. Minimum-payers owe the larger of interest and a fixed fraction of the balance; scheduled-payers owe their contractual instalment.
+    \item Seek credit for a shortfall, using \ac{BNPL} first where eligible and traditional credit for the remainder.
     \item Pay the \ac{BNPL} instalments that fall due, then traditional debt subject to payment friction.
     \item Spend remaining cash on discretionary consumption, up to the budget, and save the rest.
     \item Draw any want-driven \ac{BNPL} purchase and update balances, arrears, distress and default.
@@ -190,10 +188,10 @@ affordable instalment does not itself classify a household as unable to pay.
 Distress and arrears are distinct states. A household is distressed in a tick if it cannot
 cover committed expenditure from opening cash and income, or cannot meet the debt service
 due after seeking credit. A committed-expenditure shortfall counts as distress even when
-credit is granted, and is not carried forward. Credit raised against it pays debt service
-first, then discretionary consumption, and any remainder is saved.
-Section~\ref{sec:results-effect} tests two alternatives: credit pays the unpaid food and rent
-first and the tick still counts as distress, or it pays them and the tick does not. Unpaid
+credit is granted, and the unpaid food and rent are not owed in later ticks. The credit raised
+pays debt service first, then discretionary consumption, and any remainder is saved.
+Section~\ref{sec:results-effect} tests two alternatives: the credit pays the unpaid food and
+rent first and the tick still counts as distress, or it pays them and the tick does not. Unpaid
 traditional instalments are carried as arrears, and the number of consecutive ticks a
 household has carried any traditional arrears places it in a \ac{CCMR} age band;
 \ac{BNPL} arrears are not in the bands.
@@ -272,7 +270,7 @@ identifies the right rule, so the sensitivity analysis compares all three
 (Section~\ref{sec:results-robustness}).
 
 Under Submodel~5 an eligible household uses \ac{BNPL} first, up to $\kappa$ times its
-monthly discretionary budget. \ac{BNPL} cannot pay rent or an instalment directly; it
+monthly discretionary budget, the mean want-driven purchase. \ac{BNPL} cannot pay rent or an instalment directly; it
 relieves a shortfall because the household finances a purchase it would otherwise have
 paid for in cash. An agreement of value $F$ takes $F/4$ at checkout and leaves $3F/4$ in
 the household's hands, so it covers $3F/4$ of the shortfall. The household asks the
@@ -281,12 +279,11 @@ amount in full under Submodel~9. A refused household leaves the remainder unpaid
 distressed in that tick.
 
 The shortfall path reflects evidence that \ac{BNPL} users are disproportionately
-liquidity-constrained \cite{hayashi2025constraints}; we found no study
-measuring how much of a shortfall they finance with it. Because \ac{BNPL} finances retail
-purchases and not general spending, the model caps the amount financed for a shortfall at
-the mean want-driven purchase. We found no empirical maximum, so the sensitivity analysis
-repeats each borrowing-amount rule with the cap removed, and a further arm removes
-\ac{BNPL} from the shortfall path altogether.
+liquidity-constrained \cite{hayashi2025constraints}. Because \ac{BNPL} finances retail
+purchases and not general spending, the amount financed for a shortfall is capped at that
+mean. No study measures how much of a shortfall users finance with \ac{BNPL}, so the
+sensitivity analysis repeats each borrowing-amount rule with the cap removed, and a further
+arm removes \ac{BNPL} from the shortfall path altogether.
 
 \subsubsection*{Submodel 11: Peer Influence}
 \label{sec:peer-influence}
