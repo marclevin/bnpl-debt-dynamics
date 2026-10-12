@@ -84,7 +84,7 @@ are to the body.} \\
 \bottomrule
 \endfoot
 \multicolumn{3}{l}{\emph{Bounding a central claim, argued in the body}} \\
-Default is a model construct & A household defaults after seven consecutive ticks of unmet committed expenditure or debt service; a household without debt can default, although 90.5\% of baseline defaulters owe traditional debt when they do. No external figure measures the construct & Sections~\ref{sec:sequence} and~\ref{sec:data-validation}; bounds the level of default \\
+Default is a model construct & A household defaults after seven consecutive ticks of unmet committed expenditure or debt service; a household without debt can default, although 90.5\% of baseline defaulters owe traditional debt when they do; 90.9\% were short of food or rent in every tick of the streak that ended in default. No external figure measures the construct & Sections~\ref{sec:sequence} and~\ref{sec:data-validation}; bounds the level of default \\
 \addlinespace
 The baseline is calibrated, not validated & Two parameters are fitted to two \ac{CCMR} bands; agreement on those bands is not evidence, and the fitted shock rate is about 1.4 times the upper bound of the labour-force separation rate possibly because one channel does the work of several. The fitted 90+ share is the time average of a share that rises to 19.9\% by the final tick, because every household starts current and no account is written off, so the fitted shock rate depends on the measurement window & Section~\ref{sec:lim-calibration}; bounds every baseline agreement and the level of default \\
 \addlinespace
@@ -152,7 +152,7 @@ default without \ac{BNPL} rises by 0.01 points and the \ac{BNPL} effect at $\bet
 $0.68 \pm 0.11$ points, against $0.60 \pm 0.12$ (Table~\ref{tab:effect}). Not tested for the scenario switches \\
 \addlinespace
 Resample distortion & Weighted resampling raises the per-capita income Gini from 0.6514 to 0.6668,
-a 0.015 shift against a 0.02 tolerance. Measured, not corrected & May overstate distress among the lowest-income agents \\
+a shift of 0.015, within the 0.02 tolerance of Table~\ref{tab:validation}. It is reported and left uncorrected & May overstate distress among the lowest-income agents \\
 \addlinespace
 Weak interaction & Each household observes its group's aggregate adoption share, never another
 household individually. No South African data exists on who influences whom & The social channel
@@ -175,7 +175,7 @@ fourteen-day right of withdrawal under the United Kingdom's Consumer Credit Act,
 to regulated deferred payment credit \cite{fca_ps26_1}, although that
 right cancels an agreement and does not block the next one. It does not
 block borrowing for a shortfall. The second is a cap on the number of platforms a household
-may owe, which no jurisdiction imposes and which is therefore hypothetical. Both are judged on cumulative \ac{BNPL} volume as well as
+may owe, which no jurisdiction we found imposes and which is therefore hypothetical. Both are judged on cumulative \ac{BNPL} volume as well as
 default (Tables~\ref{tab:cooloff} and~\ref{tab:cap}; Figure~\ref{fig:scenarios-appendix}
 places them beside the scenarios).
 
@@ -218,8 +218,9 @@ purchase or a shortfall loan is refused.
 \subsection{Supplementary Sensitivity Results}
 \label{app:sensitivity}
 
-Table~\ref{tab:sobol} gives the Sobol decomposition that Section~\ref{sec:results-robustness}
-summarises; Table~\ref{tab:robustness-appendix} the remaining sensitivity arms, including the
+Table~\ref{tab:sobol} gives a Sobol decomposition of the levels of default and \ac{BNPL}
+holding. The shock probability is swept from 0.005 to 0.026 and takes almost all the variance
+of default, so the table says little about the \ac{BNPL} effect. Table~\ref{tab:robustness-appendix} gives the remaining sensitivity arms, including the
 activation-order and population-size checks and the single-tick shock; and
 Table~\ref{tab:stacking-full} the platform-count grid at every value of $\beta$.
 
@@ -243,5 +244,5 @@ injection.
 
 \textbf{Competition among traditional lenders.} The traditional side is a single non-adaptive stub.
 Hamill et al.\ \cite{hamill2023creditcard} find, in a model of the United Kingdom card market, that longer interest-free promotions
-raise card balances and could increase indebtedness, so a competing, adapting traditional sector
+raise card balances and increase indebtedness, so a competing, adapting traditional sector
 could add a driver of distress that this model holds fixed.

@@ -11,10 +11,10 @@ province $p$, into $|\mathcal{C}| = 45$ cells $c = (q, p)$. For each \ac{NIDS} r
 cell $c(i)$, one donor $d$ is drawn from the \ac{FinScope} records in the same cell with
 probability $w_d / \sum_{d' \in c(i)} w_{d'}$, where $w$ is the \ac{FinScope} household weight,
 and the donor's six-flag vector (banked; store card; revolving credit; hire purchase; short-term
-loan; personal loan) is copied to $i$ in its entirety. Draws are with replacement, seeded (42), and
+loan; personal loan) is copied to $i$ whole. Draws are with replacement, seeded (42), and
 the quintile of a \ac{FinScope} donor is assigned from the midpoint of its seven-band income
-question divided by household size, against the weighted \ac{NIDS} quintile bounds. The
-procedure is specified to fall back to the quintile-only pool if a cell is empty; no draw ever did.
+question divided by household size, against the weighted \ac{NIDS} quintile bounds. An empty
+cell would fall back to the quintile-only pool; none was empty.
 
 The smallest cell holds 30 donors and the median 87; only three cells (all in the top
 quintile: Limpopo, North West, Northern Cape) hold fewer than 50. Of 4{,}969 available donors,
@@ -22,7 +22,7 @@ quintile: Limpopo, North West, Northern Cape) hold fewer than 50. Of 4{,}969 ava
 and the most-used donor 20 times. Donor reuse is concentrated where \ac{NIDS} is dense and
 \ac{FinScope} is thin: in the largest cell, the bottom quintile of KwaZulu-Natal, 1{,}058
 recipients drew from 109 donors, and eleven cells have more than three recipients per donor.
-The heaviest 1\% of donors nonetheless supply only 5.1\% of recipients.
+The most-used 1\% of donors supply 5.1\% of recipients.
 
 \subsection*{E.2 Assumptions under which the match is credible}
 
@@ -30,19 +30,19 @@ The heaviest 1\% of donors nonetheless supply only 5.1\% of recipients.
 \item[A1. Cell sufficiency.] Conditional on income quintile and province, the six flags are
 independent of everything else in \ac{NIDS} that affects a household's behaviour in the model.
 This assumption cannot be tested from the two surveys alone, since the flags
-are observed in one and the balance sheet in the other. Its defence is that quintile and
+are observed in one and the balance sheet in the other. We rely on it because quintile and
 province are the two strongest correlates of financial inclusion available in \emph{both}
 instruments, and that the \ac{FinScope} flags show large between-cell variation along both
 (banked status ranges from below 60\% to above 95\% across cells).
-\item[A2. Common support.] Every \ac{NIDS} cell has \ac{FinScope} donors. Verified, not
-assumed: at least 30 in each of 45 cells, and zero fallback draws.
+\item[A2. Common support.] Every \ac{NIDS} cell has \ac{FinScope} donors. This holds:
+each of the 45 cells has at least 30, and no draw used the fallback.
 \item[A3. Population comparability.] The two instruments sample the same population, and a
 donor's answers stand for its household. \ac{FinScope} interviews one adult per household, chosen
 by Kish grid, and asks about accounts and credit in that adult's own name (\texttt{F1},
 \texttt{G10}) or used in the past twelve months (\texttt{G11}--\texttt{G14}). The imputed flags
 therefore record one adult's holdings and understate holding in households with several adults.
-The product questions name the same instruments the \ac{CCMR} categorises, which is what lets
-each flag be priced from the statutory rate table.
+The product questions name the same instruments the \ac{CCMR} categorises, so each flag can be
+priced from the statutory rate table.
 \item[A4. Joint-structure preservation.] Because one donor supplies all six flags, the imputed
 joint distribution of products within a cell follows the weighted donor distribution in
 expectation. Finite draws need not reproduce it exactly. This is why single-donor transfer was chosen over per-flag imputation
@@ -65,9 +65,9 @@ households, the model may understate exposure concentration. The direction and s
 effect are not established by the marginal checks.
 \item[P2. Small-cell donor reuse.] Recipients are drawn with replacement from pools that in
 three cells are near the 30-donor floor, and in the densest cells outnumber donors nearly ten
-to one. A heavily reused donor's flag vector is stamped onto many recipients, which reduces the
-effective sample of flag vectors below the nominal 10{,}841. The 5.1\% concentration figure of
-Part~E.1 is national and does not bound concentration within a cell.
+to one. A heavily reused donor's flag vector is copied to many recipients, which reduces the
+effective sample of flag vectors below the nominal 10{,}841. The 5.1\% concentration figure in
+E.1 is national and does not bound concentration within a cell.
 \item[P3. Matching-key error.] \ac{FinScope} income is banded and in 2019 Rands, so a donor's
 quintile rests on a band midpoint divided by household size and placed against 2017 cut points.
 Donors therefore do not split evenly into fifths, and misassignment across a quintile boundary
@@ -97,14 +97,16 @@ adoption levels, in opposite directions.
 The access sweep tests sensitivity to eligibility levels, but does not reconstruct who was banked
 in 2017. Lost within-cell associations (P1) can affect both the distribution of exposure and
 aggregate default, since household responses are nonlinear.
-Donor reuse and income-band error (P2--P3) are not ranked. P6--P7 limit the validation claim: agreement on construction targets cannot establish
-that the imputed population reproduces unobserved relationships.
+We have not ranked donor reuse and income-band error (P2--P3). P6 and P7 limit the
+validation claim: agreement on construction targets cannot show that the imputed population
+reproduces relationships that were not observed.
 
-The alternative not taken, a distance-based or model-based fusion on more matching variables recovering finer joint structure
-from both instruments, is recorded in Appendix~\ref{app:rationale}. It would relax A1 at the
+Appendix~\ref{app:rationale} records the alternative: a distance-based or model-based fusion
+on more matching variables, which would recover finer joint structure from both surveys. It
+would relax A1 at the
 cost of its own validation burden and the risk of fitting the idiosyncrasies of two surveys
 rather than the population behind them; the cell match reproduces cell marginals and keeps each
-donor's product combination, the two things the model consumes.
+donor's product combination, the two things the model uses.
 
 \subsection*{E.5 Fidelity of the match and the resample}
 

@@ -927,9 +927,18 @@ def tab_effect(eff: pd.DataFrame) -> None:
     def a(label: str) -> pd.DataFrame:
         return arm(eff, label)
 
+    yrs = years(eff)
+    anchors = json.loads((ROOT / "data/config/bnpl_anchors_2017.json").read_text(encoding="utf-8"))["model_target"]
+    lo_vol, hi_vol = anchors["annual_volume_per_signed_up_user_2017_rands"], anchors["annual_volume_per_active_user_2017_rands"]
+
+    def volume(label: str) -> float:
+        """Annual BNPL volume per eligible household, the measure of Table bnpl-on-checks."""
+        d = a(label)
+        return ms(d.bnpl_volume_cumulative / d.n_bnpl_eligible / yrs)[0]
+
     rows, effects0, effects1 = [], {}, {}
     for group, items in EFFECT_ROWS:
-        rows.append(group_row(group, 5))
+        rows.append(group_row(group, 7))
         for key, name, off_key in items:
             off = a(f"eff_{off_key}_off")
             d0, s0 = paired_diff(a(f"eff_{key}_b0.0"), off, "default_rate_final")
@@ -940,13 +949,16 @@ def tab_effect(eff: pd.DataFrame) -> None:
             purchase = ms(a(f"eff_{key}_b1.0").bnpl_purchase_mean_realised)[0]
             N[f"eff_{key}_purchase_b1"] = purchase
             N[f"eff_{key}_purchase_b0"] = ms(a(f"eff_{key}_b0.0").bnpl_purchase_mean_realised)[0]
+            v0, v1 = volume(f"eff_{key}_b0.0"), volume(f"eff_{key}_b1.0")
+            N[f"eff_{key}_volume_elig_b0"], N[f"eff_{key}_volume_elig_b1"] = v0, v1
             name_ = f"\\textbf{{{name}}}" if key == "ref" else name
             rows.append(f"{name_} & {pct(ms(off.default_rate_final)[0])} & {num(purchase)} & "
-                        f"{pmb(d0, s0, dd)} & {pmb(d1, s1, dd)} \\\\")
-    rows.append(group_row("Want-driven path switched off ($q_{\\text{base}} = 0$, $\\beta = 0$)", 5))
+                        f"{num(v0)} & {num(v1)} & {pmb(d0, s0, dd)} & {pmb(d1, s1, dd)} \\\\")
+    rows.append(group_row("Want-driven path switched off ($q_{\\text{base}} = 0$, $\\beta = 0$)", 7))
     ref_off = a("eff_ref_off")
     dw, sw = paired_diff(a("eff_want_off_b0.0"), ref_off, "default_rate_final")
-    rows.append(f"\\ac{{BNPL}} for shortfalls only & {pct(ms(ref_off.default_rate_final)[0])} & -- & {pmb(dw, sw)} & -- \\\\")
+    rows.append(f"\\ac{{BNPL}} for shortfalls only & {pct(ms(ref_off.default_rate_final)[0])} & -- & "
+                f"{num(volume('eff_want_off_b0.0'))} & -- & {pmb(dw, sw)} & -- \\\\")
 
     for k, (d, s) in effects0.items():
         N[f"eff_{k}_b0"], N[f"eff_{k}_b0_se"] = d, s
@@ -969,13 +981,17 @@ def tab_effect(eff: pd.DataFrame) -> None:
         "Effect: default with \\ac{BNPL} less default without, paired by seed over one block "
         "(70{,}000--70{,}019). No \\ac{BNPL}: the setting's default rate without \\ac{BNPL}. "
         "Purchase: mean want-driven purchase at $\\beta = 1$, in 2017 Rands, against a "
-        "provider-based figure of R992 (Table~\\ref{tab:bnpl-on-checks}).",
-        "L{4.4cm}R{1.5cm}R{1.5cm}rr",
-        r"& & & \multicolumn{2}{c}{\textbf{Effect (pp)}} \\ \cmidrule(lr){4-5}"
-        "\n\\textbf{Setting} & \\textbf{No \\ac{BNPL} (\\%)} & \\textbf{Purchase (R)} & "
-        "$\\beta=0$ & $\\beta=1$",
+        "provider-based figure of R992. Volume: annual \\ac{BNPL} volume per eligible household, "
+        f"in 2017 Rands, against a provider range of {rand(lo_vol)}--{rand(hi_vol)} "
+        "(Table~\\ref{tab:bnpl-on-checks}).",
+        "L{4.15cm}R{1.15cm}R{1.1cm}R{1.0cm}R{1.0cm}rr",
+        r"& & & \multicolumn{2}{c}{\textbf{Volume (R)}} & \multicolumn{2}{c}{\textbf{Effect (pp)}} \\ "
+        r"\cmidrule(lr){4-5}\cmidrule(lr){6-7}"
+        "\n\\textbf{Setting} & \\textbf{No \\ac{BNPL} (\\%)} & \\textbf{Pur\\-chase (R)} & "
+        "$\\beta=0$ & $\\beta=1$ & $\\beta=0$ & $\\beta=1$",
         rows,
         size=r"\footnotesize",
+        colsep="3pt",
     )
 
 

@@ -1,11 +1,18 @@
 \section{The Model}
 \label{sec:model}
 
-
 The model follows households as they receive income, spend, borrow and repay debt.
 Each household begins with financial characteristics drawn from survey microdata.
 Traditional credit is subject to the Regulation 23A residual-income test,
 while \ac{BNPL} platforms apply a lighter screen.
+
+\label{sec:purpose}
+The experiment begins with a traditional-credit baseline calibrated to 2017
+conditions. We then enable \ac{BNPL} while holding the other parameters fixed.
+All households start with zero \ac{BNPL} balances, so any subsequent exposure is
+generated during the simulation. Comparing the runs isolates the effect of the
+additional credit channel within the model. We call the run with \ac{BNPL}
+enabled and no regulatory change the benchmark.
 
 The model moves in steps of 14 days, called ticks, because pay-in-four instalments fall due
 every fortnight. The survey records monthly incomes and expenditures, so we convert them to
@@ -19,14 +26,6 @@ Table~\ref{tab:submodels} summarises the rules and Section~\ref{sec:calibration}
 parameters. Appendix~\ref{app:rationale} gives the alternatives considered,
 Appendix~\ref{app:specification} the design concepts and exclusions, and
 Appendices~\ref{app:pseudo-init} and~\ref{app:pseudo-main} the pseudocode.
-
-\label{sec:purpose}
-The experiment begins with a traditional-credit baseline calibrated to 2017
-conditions. We then enable \ac{BNPL} while holding the other parameters fixed.
-All households start with zero \ac{BNPL} balances, so any subsequent exposure is
-generated during the simulation. Comparing the runs isolates the effect of the
-additional credit channel within the model. We call the run with \ac{BNPL}
-enabled and no regulatory change the benchmark.
 
 \subsection{Agents and Institutions}
 \label{sec:entities}

@@ -13,7 +13,8 @@ Regulation 23A test, which is how we model the reported bureau arrangements
 \ac{BNPL} request, a stricter version of the \ac{FCA}'s affordability check
 \cite{fca_ps26_1, woolard2021}. A third arm combines both (Section~\ref{sec:asymmetry}). Each
 arm runs at $\beta=0$ and $\beta=1$ with one hundred replicates on shared seeds, so a
-difference of about 0.1 points in default is detectable. Whether an agreement that levies late
+difference of 0.1 points in default is detected about half the time and one of 0.15 points
+usually. Whether an agreement that levies late
 fees is incidental credit, and which provisions would then apply, is a legal question the
 scenarios do not settle.
 
@@ -34,12 +35,14 @@ either direction cannot be ruled out.
 
 Bureau visibility works through refusals. Once the lender sees \ac{BNPL} instalments, it
 refuses about a sixth more applications and lends 8 to 9\% less. A refused household in the
-model has no other source of credit, so its shortfall goes unpaid and it is distressed in that
-tick (Section~\ref{sec:amount}). The 90+ share and default rise accordingly, most in Q1, the
+model has no other source of credit. If its shortfall is in debt service, the instalment goes
+unpaid and it is distressed in that tick. A food or rent shortfall is distress either way, but
+a granted loan is spent on debt service or saved, which can prevent the next tick's shortfall
+(Section~\ref{sec:sequence}). The 90+ share and default rise accordingly, most in Q1, the
 poorest quintile, and by less in Q5. \ac{BNPL} volume barely changes, because the switch acts on
 traditional lending and not on \ac{BNPL} requests.
 
-The model's rules may favour this result. A refusal causes distress at once, whereas a granted
+The model's rules may favour this result. A refusal can cause distress at once, whereas a granted
 loan is repaid over 25 months, partly after the run ends, and the lender assesses surveyed
 rather than current income. The switch was not run under the alternative borrowing rules of
 Table~\ref{tab:effect} or over a longer horizon. The result gives the direction of the
@@ -55,18 +58,20 @@ credit is granted, whereas sustained distress follows income shocks that arrive 
 in full to the traditional lender (Algorithm~\ref{alg:gate}). None of these explanations is
 tested, because the outcomes do not follow screened households.
 
-With both switches, default is 0.10 to 0.11 points above the benchmark. Screening already sees
-every platform's obligations, so adding bureau visibility tells the platforms nothing new and
-acts only on the traditional lender; at $\beta=0$, screening roughly halves the rise in
-refusals and in default that visibility causes on its own. Peer influence raises default by
+With both switches, default is 0.10 to 0.11 points above the benchmark: at $\beta=0$,
+screening roughly halves the rise in refusals and in default that visibility causes on its
+own. A likely reason, not tested, is that screening refuses \ac{BNPL} to households near the
+Regulation 23A limit, whose \ac{BNPL} instalments would otherwise lead the traditional lender
+to refuse them. Peer influence raises default by
 about 0.6 points in every arm but does not detectably change the effect of either switch
 ($-0.07 \pm 0.06$ points for bureau visibility).
 
 Two further levers, each run at both values of $\beta$, are reported in Appendix~\ref{app:levers}:
 a cooling-off window of one to four ticks after a want-driven purchase, and a cap on the number
-of platforms a household may owe, which no jurisdiction imposes. Neither changes default
+of platforms a household may owe, which no jurisdiction we found imposes. Neither changes default
 detectably at $\beta = 0$; at $\beta = 1$ every window and caps of one and two lower default by
-0.28 to 0.39 points.
+0.28 to 0.39 points. A cap on agreements that removes as much volume as the cap of two does not
+change default detectably, so lost volume is not established as the cause of the fall.
 
 In answer to RQ3, making \ac{BNPL} visible to the traditional lender reduces traditional
 lending and raises default, most in the poorest quintile, because refused households have

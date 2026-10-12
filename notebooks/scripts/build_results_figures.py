@@ -325,7 +325,7 @@ def fig_scenarios_appendix(rq3: pd.DataFrame, rq3s: pd.DataFrame) -> None:
     axes[0].set_yticklabels([n for _, _, n in arms])
     axes[0].invert_yaxis()
     fig.legend(handles=[Line2D([0], [0], color=SRC, marker="o", lw=0, ms=4.2, label="implemented or proposed instrument"),
-                        Line2D([0], [0], color=RED, marker="D", lw=0, ms=4.2, label="hypothetical: no jurisdiction imposes it"),
+                        Line2D([0], [0], color=RED, marker="D", lw=0, ms=4.2, label="hypothetical: no jurisdiction found that imposes it"),
                         Line2D([0], [0], color=INK, ls="--", lw=1.0, label="no change")],
                loc="lower center", ncol=3, bbox_to_anchor=(0.5, 0.0), handlelength=1.2)
     fig.tight_layout(rect=(0, 0.13, 1, 1), w_pad=1.0)

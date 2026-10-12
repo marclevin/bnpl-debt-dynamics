@@ -38,10 +38,11 @@ the end of at least one of the 52 ticks.
 
 Table~\ref{tab:experiments} lists the experiments. Each arm has twenty replicates, except the
 four scenario arms, which have one hundred because twenty cannot resolve the differences
-between them, and the variance decomposition, which has two per design point. Arms in a group
-share seeds, so a replicate faces the same population sample and starting draws in every arm,
-and differences between arms are taken seed by seed. Differences across seed groups are
-treated as independent.
+between them, and the variance decomposition, which has two per design point. Every run uses
+the same 5{,}000 households (Section~\ref{sec:resample}). Arms in a group share seeds, so a
+replicate starts from the same draws in every arm, and differences between arms are taken seed
+by seed. Each run takes every later draw from one random stream, so the arms soon diverge and
+pairing reduces the standard error little. Differences across seed groups are treated as independent.
 
 Unless a table states otherwise, it reports means over replicates with the replicate standard
 deviation in brackets, and differences with one standard error, paired by seed. Runs use the
@@ -52,7 +53,7 @@ points, so a true change of 0.2 points would be missed about half the time; with
 it is about 0.05 points. We judge many contrasts this way, so about one in twenty would pass
 by chance, and a single detectable difference carries less weight than one that repeats
 across seed blocks. The standard errors measure simulation variance only, not uncertainty in
-the data or the assumptions. Error bars in figures are 95\% confidence intervals.
+the data, the drawn population or the assumptions. Error bars in figures are 95\% confidence intervals.
 
 \begin{table}[H]
 \centering
@@ -295,10 +296,12 @@ develop as they do in the data. The 90+ band also accumulates every uncured acco
 fitted values it averages 14.48\% after burn-in but reaches 19.9\% at the final tick, so the
 fit matches the average of a rising stock.
 
-No external figure measures the model's default. Default in the model is mostly a credit
-event: 90.5\% of baseline defaulters owe traditional debt when they default, and with
-\ac{BNPL} at $\beta=0$, 98.4\% owe traditional debt or \ac{BNPL}.
-% 90.5% and 98.4%: results/summary/defaulter_credit.json (notebooks/scripts/check_defaulter_credit.py).
+No external figure measures the model's default. Most defaulters owe credit, 90.5\% in the
+baseline and 98.4\% with \ac{BNPL} at $\beta=0$, but default is mostly a failure to pay for
+food and rent: 90.9\% of baseline defaulters were short of them in every tick of the streak
+that ended in default, and 8.3\% defaulted on debt service alone.
+% 90.5%, 98.4%, 90.9%, 8.3% and 27% below: results/summary/defaulter_credit.json
+% (notebooks/scripts/check_defaulter_credit.py).
 The nearest external figures are from the \ac{NCR}'s Credit Bureau Monitor: in March 2017,
 21.7\% of credit-active consumers were three or more months in arrears, and 39.3\% had
 impaired records, which also include judgments and adverse listings \cite{ncr_cbm_2017}.
@@ -337,7 +340,7 @@ Debt service & 12.8\% & 6.1--9.8\% \cite{finscope2019} & Above the range \\
 \end{table}
 
 Some households begin in a vulnerable position: income does not cover committed expenditure
-for 3.6\% of agents, or committed expenditure and scheduled debt service for 5.1\%, and
+for 3.6\% of agents, who make up 27\% of baseline defaulters, or committed expenditure and scheduled debt service for 5.1\%, and
 45.2\% have no liquid savings.
 
 \subsubsection*{Behaviour with BNPL}
@@ -363,8 +366,9 @@ household, well above the range, so the two settings bracket the provider's volu
 % R10,400 = vol_per_eligible_year x volume_beta1 / volume_beta0 (results_numbers.json).
 Purchases are sized on discretionary budgets, so they are small in the lower quintiles
 (Table~\ref{tab:distribution}). Adoption has no direct target: 70.0\% of households ever
-hold \ac{BNPL} at $\beta=0$, against TransUnion's 57\% of surveyed consumers who hold a
-\ac{BNPL} product \cite{transunion_cir_sa_2026}.
+hold \ac{BNPL} at $\beta=0$, above TransUnion's 57\% of surveyed consumers who hold a
+\ac{BNPL} product \cite{transunion_cir_sa_2026}, although a share over two years and a share
+at one date are different measures.
 
 \subsubsection*{What the Validation Supports}
 
@@ -378,8 +382,10 @@ Other gaps reflect missing South African data more than visible misspecification
 gives the size or frequency of South African \ac{BNPL} purchases by household, so purchase
 size and volume rest on one provider's disclosures and the adoption parameters have no
 estimate. Purchases that are too small and volume that is too low without peer influence are
-what too low a value of $\kappa$ or $q_{\text{base}}$ would produce; they do not show that
-the borrowing mechanism is wrong. The debt-stock gap partly reflects survey underreporting,
+what too low a value of $\kappa$ would produce: at $\kappa=0.28$ both fall within the
+provider's ranges (Table~\ref{tab:effect}). A higher $q_{\text{base}}$ would also raise
+volume, but it would raise the share of users, which is already above the survey figure. A
+lower $q_{\text{base}}$ with larger purchases might match all three; that was not tested. The debt-stock gap partly reflects survey underreporting,
 and informal borrowing, which South African households use \cite{finscope2019}, is absent
 from both the data and the model.
 
@@ -393,8 +399,8 @@ parameters and seeds, more than statements about levels. A misspecified mechanis
 distort a comparison if it interacts with the change being tested, so
 Section~\ref{sec:results-effect} repeats the \ac{BNPL} comparison under alternative borrowing,
 repayment and purchase-size rules; no arm varies the debt-service construction. We narrow the
-claims accordingly. The default rate is a model quantity, not an estimate of South African
-default. The \ac{BNPL} effects are differences within the model, not forecasts. Statements
+claims accordingly: the default rate is a model quantity, and the \ac{BNPL} effects are
+differences within the model. Statements
 about which quintiles are affected describe a population whose income profile of debt does
 not match the reference pattern.
 
@@ -404,5 +410,4 @@ rather than the model. The baseline reproduces the two arrears bands it was fitt
 misses those between them, its debt service exceeds what households report, and its default
 rate cannot be checked. Traditional arrears rise with \ac{BNPL} and the share without savings
 is of the right order, but the model misses the interest measure, the income profile of debt,
-\ac{BNPL} volume without peer influence and purchase size. It is a stylised model for
-comparing arms, not a forecasting model.
+\ac{BNPL} volume without peer influence and purchase size.

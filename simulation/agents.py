@@ -52,6 +52,8 @@ class HouseholdAgent(Agent):
 
         # -- state ---------------------------------------------------------------
         self.distress_streak = 0
+        #: Observation only: ticks of the current streak with a food or rent shortfall.
+        self.committed_in_streak = 0
         self.arrears_age_ticks = 0
         self.defaulted = False
         self.cool_off_until = -1
@@ -284,8 +286,10 @@ class HouseholdAgent(Agent):
         # D7: cash-flow insolvency, computed above before payment friction was applied.
         if distressed:
             self.distress_streak += 1
+            self.committed_in_streak += committed_shortfall > 0
         else:
             self.distress_streak = 0
+            self.committed_in_streak = 0
 
         if self.arrears_trad > 0:
             self.arrears_age_ticks += 1

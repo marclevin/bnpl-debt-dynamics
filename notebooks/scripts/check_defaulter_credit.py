@@ -36,6 +36,12 @@ def one(params):
         c["owes_any"] += owes_trad or owes_bnpl
         c["owes_trad"] += owes_trad
         c["started_with_debt"] += a.rec.d_trad > 0
+        # Why the defaulting streak was distressed (added 2026-10-12): every tick had a
+        # food or rent shortfall, none did (unmet debt service only), or a mix.
+        k = a.distress_streak
+        c["streak_all_committed"] += a.committed_in_streak == k
+        c["streak_no_committed"] += a.committed_in_streak == 0
+        c["income_below_committed"] += a.income_tick < a.committed_tick
         return orig(self, aid)
 
     cls.record_default = hook
@@ -63,7 +69,10 @@ if __name__ == "__main__":
         d = tot["defaults"]
         out[name] = {"default_rate": d / tot["n"], "owe_any_credit": tot["owes_any"] / d,
                      "owe_traditional": tot["owes_trad"] / d,
-                     "held_traditional_at_start": tot["started_with_debt"] / d}
+                     "held_traditional_at_start": tot["started_with_debt"] / d,
+                     "streak_all_committed": tot["streak_all_committed"] / d,
+                     "streak_no_committed": tot["streak_no_committed"] / d,
+                     "income_below_committed": tot["income_below_committed"] / d}
         print(
             f"{name}: default rate {d / tot['n']:.4f}; of defaulters: owe any credit "
             f"{tot['owes_any'] / d:.3f}, owe traditional {tot['owes_trad'] / d:.3f}, "

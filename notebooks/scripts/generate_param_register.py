@@ -99,7 +99,7 @@ REGISTER: dict[str, tuple[str, str]] = {
                                  r"on / off (Section~\ref{sec:scenarios})"),
     "k_cool": (r"Ticks for which want-driven purchases are blocked after a want-driven purchase. One tick is the fourteen-day right of withdrawal in the United Kingdom's rules \cite{fca_ps26_1}.",
                r"0--4 ticks (Appendix~\ref{app:levers})"),
-    "stacking_cap": (r"Cap on platforms owed: a household that owes this many platforms or more is refused every new agreement. Hypothetical; no jurisdiction imposes one.",
+    "stacking_cap": (r"Cap on platforms owed: a household that owes this many platforms or more is refused every new agreement. Hypothetical; no jurisdiction we found imposes one.",
                      r"1--3 (Appendix~\ref{app:levers})"),
     "platform_routing": (r"Platform order for a \ac{BNPL} request: random for every request, or platforms already owed first. No evidence on how South African households choose providers was located.",
                          r"loyal routing as an effect-robustness arm (Table~\ref{tab:effect})"),
