@@ -403,6 +403,19 @@ EFFECT_SETTINGS: list[tuple[str, dict, bool]] = [
 ]
 
 
+def rq3_relief(reps: int) -> list[ParamSet]:
+    """RQ3 under the committed-relief distress rule (added 2026-10-12).
+
+    The same four arms as `rq3_scenarios`, on the same seed block and replicate count, with
+    `committed_shortfall_funded` and `committed_shortfall_clears_distress` on: a loan that pays
+    food and rent in full clears that tick's distress. Under that rule the BNPL effect
+    disappears (tab:effect), so this checks whether the RQ3 answer survives it. Not
+    recalibrated. Labels rq3r_<arm>_b<beta>.
+    """
+    relief = dict(committed_shortfall_funded=True, committed_shortfall_clears_distress=True)
+    return [p.replace(label=p.label.replace("rq3s_", "rq3r_"), **relief) for p in rq3_scenarios(reps)]
+
+
 def effect_robustness(reps: int) -> list[ParamSet]:
     """Does the BNPL EFFECT, not only the default level, survive the swept assumptions?
 
@@ -437,6 +450,7 @@ SUITES = {
     "rq3s": rq3_scenarios,
     "robustness": robustness,
     "effect": effect_robustness,
+    "rq3r": rq3_relief,
 }
 
 

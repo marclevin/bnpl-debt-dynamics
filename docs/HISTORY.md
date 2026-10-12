@@ -339,3 +339,7 @@ A second review was critiqued by an independent agent before anything changed, a
 ## 2026-10-12: reference audit propagated
 
 The findings of `docs/REFERENCE_AUDIT.md` (R1–R34) were verified independently and applied. See its resolution section. No model input or result changed: the CPI factors and BNPL anchors regenerate with identical values, and only their notes changed. Two parameters were relabelled from *sourced* to *assumed* in `config.py` and the register: `k_default` and `activation`. `NCA_WORKED_EXAMPLES` was renamed `NCA_TABLE_CHECKS`, because the gazette publishes no worked examples. About 130 words of body text were cut to stay under the 10,000-word cap.
+
+## 2026-10-12: RQ3 under the committed-relief rule
+
+New suite `rq3r` (`simulation/experiments.py`): the four scenario arms on the same seeds (80,000 to 80,099, 100 replicates), with a loan that pays food and rent clearing that tick's distress. Not recalibrated. Benchmark default is 5.7%. Bureau visibility raises it by 0.71 ± 0.02 points (β = 0) and 0.73 ± 0.02 (β = 1), most in Q1 (+1.15 ± 0.05). Screening changes it by at most 0.06 points, and both switches together by 0.56 points. The RQ3 direction holds and the rise is larger. The numbers are in `results_numbers.json` (`rq3r_*`), and Section 5 and the conclusion cite them.

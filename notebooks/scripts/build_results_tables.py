@@ -1138,6 +1138,23 @@ def derived_numbers(rq0, rq2, rq2t, rq3, eff) -> None:
         N[f"switch_{k}_interaction"], N[f"switch_{k}_interaction_se"] = float(x.mean()), float(x.std(ddof=1) / len(x) ** 0.5)
 
 
+def scenarios_under_relief(rq3r: pd.DataFrame) -> None:
+    """RQ3 under the committed-relief distress rule (suite rq3r, added 2026-10-12): numbers
+    for Section 5 only, no table. Same arms, seeds and replicate count as tab_scenarios."""
+    for b in (0.0, 1.0):
+        bench = arm(rq3r, f"rq3r_bench_b{b}")
+        N[f"rq3r_bench_default_b{b:g}"] = ms(bench.default_rate_final)[0]
+        for key in ("bureau", "afford", "both"):
+            d = arm(rq3r, f"rq3r_{key}_b{b}")
+            N[f"rq3r_{key}_default_diff_b{b:g}"], N[f"rq3r_{key}_default_diff_se_b{b:g}"] = paired_diff(
+                d, bench, "default_rate_final")
+            N[f"rq3r_{key}_refused_diff_b{b:g}"] = paired_diff(d, bench, "trad_refused_gate")[0]
+        d = arm(rq3r, f"rq3r_bureau_b{b}")
+        for q in range(1, 6):
+            N[f"rq3r_bureau_default_diff_Q{q}_b{b:g}"], N[f"rq3r_bureau_default_diff_Q{q}_se_b{b:g}"] = paired_diff(
+                d, bench, f"default_rate_final_Q{q}")
+
+
 def main() -> None:
     rq0, rq1, rq2, rq2t, rq3, rob = (load(n) for n in ("rq0", "rq1", "rq2", "rq2t", "rq3", "robustness"))
     eff = load("effect")
@@ -1157,6 +1174,9 @@ def main() -> None:
     tab_levers(rq3, rq3s)
     tab_effect(eff)
     derived_numbers(rq0, rq2, rq2t, rq3s, eff)
+    rq3r = load("rq3r")
+    assert rq3r.groupby("label").seed.nunique().eq(100).all(), "every relief scenario arm needs 100 seeds"
+    scenarios_under_relief(rq3r)
     out = {k: (round(float(v), 6) if isinstance(v, (float, np.floating)) else
                (int(v) if isinstance(v, np.integer) else v)) for k, v in N.items()}
     (SUMMARY / "results_numbers.json").write_text(json.dumps(out, indent=2), encoding="utf-8")

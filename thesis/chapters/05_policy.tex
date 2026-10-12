@@ -42,19 +42,21 @@ traditional lending and not on \ac{BNPL} requests.
 
 The model's rules may favour this result. A refusal can cause distress at once, whereas a granted
 loan is repaid over 25 months, partly after the run ends, and the lender assesses surveyed
-rather than current income. The switch was not run under the alternative borrowing rules of
-Table~\ref{tab:effect} or over a longer horizon. The result gives the direction of the
+rather than current income. Under the rule in which a loan that pays food and rent clears that
+tick's distress (Section~\ref{sec:results-effect}), a refusal becomes almost the only route into
+distress, and the rise is larger: $0.71 \pm 0.02$ and $0.73 \pm 0.02$ points from a benchmark of
+5.7\%, most in Q1. Screening then changes default by at most 0.06 points. The switches were not
+run under the alternative borrowing rules of Table~\ref{tab:effect} or over a longer horizon.
+% rq3r_* in results/summary/results_numbers.json (suite rq3r, seeds 80,000-80,099, 100 replicates).
+The result gives the direction of the
 affordability channel under these rules and does not forecast the effect of the reporting
 arrangements.
 
 Screening reduces \ac{BNPL} use only slightly: holding at the final tick falls by two to three
-points and volume by 1 to 4\%. Three features of the model may explain why default does not
-move. A \ac{BNPL} agreement is small beside the room the Regulation 23A test allows, so the
-test refuses only households already near its limit. The test assesses affordability when
-credit is granted, whereas sustained distress follows income shocks that arrive later
-(Section~\ref{sec:results-robustness}). A shortfall request that screening refuses also passes
-in full to the traditional lender (Algorithm~\ref{alg:gate}). None of these explanations is
-tested, because the outcomes do not follow screened households.
+points and volume by 1 to 4\%. Default may not move because a \ac{BNPL} agreement is small beside
+the room the Regulation 23A test allows, because the test is applied before the income shocks
+that drive distress, and because a refused shortfall request passes in full to the
+traditional lender (Algorithm~\ref{alg:gate}). None of these explanations is tested.
 
 With both switches, default is 0.10 to 0.11 points above the benchmark: at $\beta=0$,
 screening roughly halves the rise in refusals and in default that visibility causes on its
@@ -64,7 +66,7 @@ to refuse them. Peer influence raises default by
 about 0.6 points in every arm but does not detectably change the effect of either switch
 ($-0.07 \pm 0.06$ points for bureau visibility).
 
-Two further levers, each run at both values of $\beta$, are reported in Appendix~\ref{app:levers}:
+Two further levers are reported in Appendix~\ref{app:levers}:
 a cooling-off window of one to four ticks after a want-driven purchase, and a cap on the number
 of platforms a household may owe, which no jurisdiction we found imposes. Neither changes default
 detectably at $\beta = 0$; at $\beta = 1$ every window and caps of one and two lower default by
