@@ -216,3 +216,19 @@ Nigeria and Egypt; legal commentary (Webber Wentzel, 2025).
 **Check before submission:** a GIBS MBA report by M. Pietersen, "Buy Now Pay Later, Financial
 Well-Being & Overall Well-Being", seen only as a LinkedIn snippet and not found on UPSpace. If
 it exists and measures distress, the sentence in Section 1.1 needs to cite it.
+
+## Open, 2026-10-12: examiner-style review (Fable), option A approved for all
+
+Approved by Marc on 2026-10-12, not yet done. All are text fixes. H1 and H2 first need a 20-seed computation.
+
+| ID | Hole | Fix (option A) |
+| --- | --- | --- |
+| H1 | Under bureau visibility the lender sees mostly BNPL arrears and late fees (carried indefinitely, ×26/12), not live instalments, especially in Q1. | Compute the live/arrears split by quintile over 20 seeds. Reword Section 5, the RQ3 answer, the conclusion and the abstract: visibility exposes delinquent BNPL. |
+| H2 | Labour flows hold employment constant, not income. Hire wages exceed lost wages in Q1–Q2 and fall short in Q3–Q5. | Report the income path by quintile (20 seeds) in 3.4 and Appendix C. Say "constant employment" instead of "stable labour market". Offer the drift as an untested candidate for the Q4 results. |
+| H3 | About 3.5 of 7.3 default points come from households with income below food and rent, who default regardless. | Give the default rate excluding them and restate relative effects (BNPL about 4.5%, not "about 2%"). |
+| H4 | The single-tick arm removes nearly all non-structural default and changes three things at once. | Reword: the effect works through households in an income-loss spell. |
+| H5 | The β = 0.5 access contrast is an on/off comparison near the provider volume band (+0.17 ± 0.05), and the text never says so. | One sentence in 4.3 or 4.6. |
+| H6 | The derived separation rate (0.446%) is below the QLFS band, and the effect rises with it. | One sentence: 0.17 is at the low end. |
+| H8 | Three detectable results are left unexplained (Q4 screening, six platforms at β = 1, Q4 BNPL effect). | Offer H2 and platform capacity as untested candidates. |
+
+Already fixed (319a695): the sentence swallowed by a comment in 4.5, and the Figure 5 label. Body word budget: add about 400 words and cut about 300 of repetition.
