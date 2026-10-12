@@ -33,18 +33,14 @@ So `factor(2017 -> mid-2026) = factor(2017 -> 2025 average) x 1.05`.
 That happens to reproduce the number the earlier part-year guess produced, but it is now
 *derived from a published rate* rather than assumed, which is the point.
 
-**A drift check on the whole chain.** The published June 2026 index is on a Dec 2024 = 100
-base, so it can be compared against what this script's chain implies for the same date. The
-two agree to within about 1%, which bounds the error on a factor of ~1.5 and is asserted
-below. That check is the reason the `% VERIFY` on the 2018-2025 series is now *narrow*
-rather than open-ended.
-
-⚠ **`% VERIFY`, narrowed.** The 2018-2025 annual averages are still taken from Stats SA's
-published inflation releases and media statements rather than re-derived from **P0141
-Table B1** index numbers (statssa.gov.za blocks automated retrieval; Table B1 is carried in
-the appendix of each monthly release). Two independent checks now constrain them: the 2024
-rate against Stats SA's own published 4,4% statement, and the whole chain against the
-published June 2026 index. Pin the series to Table B1 when convenient and delete this note.
+**Drift checks (corrected 2026-10-12, docs/REFERENCE_AUDIT.md R3).** The asserted check
+below compares the chain with the published June 2026 index, but the chain's implied index
+uses only the 2025 rate and the June 2026 year-on-year rate, so it tests the 2025 link and
+the mid-year approximation, not the 2018-2024 links. A whole-chain check against Stats SA's
+CPI history table (June 2026 index 107.5 over the 2017 annual average 71.4, Dec 2024 = 100,
+CPIHistory.pdf) gives 1.506 against this chain's 1.511, a gap of 0.4%. 2022-2024 come from
+the World Bank series, not Stats SA (see ANNUAL_AVERAGE_INFLATION_PCT). Pin the series to
+the index table at the next full rerun.
 
 Usage:
     python notebooks/scripts/extract_cpi_deflator.py [out_json]
@@ -62,8 +58,12 @@ DEFAULT_OUT = Path("data/config/cpi_deflator_2017.json")
 #: The model's base year. Everything monetary is expressed in Rands of this year.
 BASE_YEAR = 2017
 
-#: Stats SA headline CPI, annual average change on the previous year, per cent.
+#: Headline CPI, annual average change on the previous year, per cent.
 #: Keyed by the year the change lands IN, so 2018 is the 2017->2018 change.
+#: 2018-2021 and 2025 are Stats SA's published annual averages. 2022-2024 (7.04, 6.08, 4.36)
+#: are the World Bank FP.CPI.TOTL.ZG series built from the same index; Stats SA prints 6.9,
+#: 6.0 and 4.4 (docs/REFERENCE_AUDIT.md R3). Left as they are: the chained factor is within
+#: 0.4% of the index ratio, so no deflated parameter moves by more than 0.4%.
 ANNUAL_AVERAGE_INFLATION_PCT: dict[int, float] = {
     2018: 4.7,
     2019: 4.1,
@@ -167,20 +167,19 @@ def main() -> None:
 
     payload = {
         "source": (
-            "Statistics South Africa, Consumer Price Index, statistical release P0141, "
-            "headline CPI. Annual average basis for 2018-2025; the June 2026 release "
-            "supplies the mid-2026 anchor."
+            "Headline CPI, annual average basis. 2018-2021 and 2025: Statistics South Africa, "
+            "statistical release P0141. 2022-2024: World Bank FP.CPI.TOTL.ZG, built from the "
+            "same index (Stats SA prints 6.9, 6.0 and 4.4). The June 2026 release supplies the "
+            "mid-2026 anchor."
         ),
         "source_url": SOURCE_URL,
         "base_year": BASE_YEAR,
         "verify": (
-            "% VERIFY (narrowed 2026-08-13): the 2018-2025 annual averages are taken from "
-            "published Stats SA releases and media statements, NOT re-derived from P0141 "
-            "Table B1 index numbers, because statssa.gov.za blocks automated retrieval. "
-            "TWO independent checks now constrain them: the 2024 rate against Stats SA's "
-            "published 4,4% statement, and the whole compounded chain against the "
-            "published June 2026 index (see index_drift_check). Pin to Table B1 when "
-            "convenient; the residual error is bounded at ~1%."
+            "Corrected 2026-10-12 (docs/REFERENCE_AUDIT.md R3). index_drift_check tests only "
+            "the 2025 rate and the June 2026 anchor, not the 2018-2024 links. A whole-chain "
+            "check: the published June 2026 index over the 2017 annual average index "
+            "(107.5/71.4, Dec 2024 = 100) is 1.506, against this chain's 1.511, a gap of "
+            "0.4%. Pin the series to the index table at the next full rerun."
         ),
         "rebasing_note": (
             "Stats SA rebased the headline index at " + "; ".join(REBASE_MONTHS) + ". "
@@ -207,8 +206,8 @@ def main() -> None:
             "tolerance_pct": INDEX_CHECK_TOLERANCE_PCT,
             "note": (
                 "The residual comes from approximating each year's average by its "
-                "mid-point. Recorded, not tuned away. It bounds the error on a deflator "
-                "of ~1.5 at well under one per cent."
+                "mid-point. Recorded, not tuned away. It tests the 2025 rate and the "
+                "mid-year approximation only, not the 2018-2024 links."
             ),
         },
         "factor_from_2017": {str(y): round(v, 6) for y, v in f.items()},

@@ -16,6 +16,7 @@ Each kind of information has one home. Nothing else should restate it.
 | Why each design choice was made, and what was rejected | [`docs/DECISIONS.md`](docs/DECISIONS.md) (design history; code comments cite its D-numbers) |
 | What is still open, and how past defects were closed | [`docs/DEFECTS.md`](docs/DEFECTS.md) (code comments cite its B-numbers) |
 | What changed when, and why results moved | [`docs/HISTORY.md`](docs/HISTORY.md) |
+| Which citations need fixing, checked against each source | [`docs/REFERENCE_AUDIT.md`](docs/REFERENCE_AUDIT.md) (R-numbers) |
 
 ## Layout
 

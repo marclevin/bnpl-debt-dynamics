@@ -1,8 +1,8 @@
 {
-  "source": "Statistics South Africa, Consumer Price Index, statistical release P0141, headline CPI. Annual average basis for 2018-2025; the June 2026 release supplies the mid-2026 anchor.",
+  "source": "Headline CPI, annual average basis. 2018-2021 and 2025: Statistics South Africa, statistical release P0141. 2022-2024: World Bank FP.CPI.TOTL.ZG, built from the same index (Stats SA prints 6.9, 6.0 and 4.4). The June 2026 release supplies the mid-2026 anchor.",
   "source_url": "https://www.statssa.gov.za/publications/P0141/P0141June2026.pdf",
   "base_year": 2017,
-  "verify": "% VERIFY (narrowed 2026-08-13): the 2018-2025 annual averages are taken from published Stats SA releases and media statements, NOT re-derived from P0141 Table B1 index numbers, because statssa.gov.za blocks automated retrieval. TWO independent checks now constrain them: the 2024 rate against Stats SA's published 4,4% statement, and the whole compounded chain against the published June 2026 index (see index_drift_check). Pin to Table B1 when convenient; the residual error is bounded at ~1%.",
+  "verify": "Corrected 2026-10-12 (docs/REFERENCE_AUDIT.md R3). index_drift_check tests only the 2025 rate and the June 2026 anchor, not the 2018-2024 links. A whole-chain check: the published June 2026 index over the 2017 annual average index (107.5/71.4, Dec 2024 = 100) is 1.506, against this chain's 1.511, a gap of 0.4%. Pin the series to the index table at the next full rerun.",
   "rebasing_note": "Stats SA rebased the headline index at Dec 2016 = 100; Dec 2021 = 100; Dec 2024 = 100. Index numbers from releases either side of a rebase are NOT directly comparable without the published linking factors. This chain is built from annual RATES, which are rebase-invariant, so the issue does not arise.",
   "annual_average_inflation_pct": {
     "2018": 4.7,
@@ -26,7 +26,7 @@
     "implied_by_this_chain": 106.68,
     "gap_pct": -0.765,
     "tolerance_pct": 1.5,
-    "note": "The residual comes from approximating each year's average by its mid-point. Recorded, not tuned away. It bounds the error on a deflator of ~1.5 at well under one per cent."
+    "note": "The residual comes from approximating each year's average by its mid-point. Recorded, not tuned away. It tests the 2025 rate and the mid-year approximation only, not the 2018-2024 links."
   },
   "factor_from_2017": {
     "2017": 1.0,

@@ -31,7 +31,7 @@ unemployment.
 The implementation does not deduct tax or other statutory deductions, which also makes the test
 more permissive. The resulting ceiling
 varies with income, from 10.4\% of income at R900 per month to 83.2\% at R7{,}712 per month, and
-both worked examples published with the regulation are asserted in the verification suite
+two hand-computed checks from the regulation's Table~1 are asserted in the verification suite
 (Table~\ref{tab:reg23a-norms}).
 
 Regulation 23A applies to an individual consumer and is applied here to household income, because
@@ -157,8 +157,7 @@ Weak interaction & Each household observes its group's aggregate adoption share,
 household individually. No South African data exists on who influences whom & The social channel
 is a mean-field one, as in Granovetter's threshold models, not an explicit network \\
 \addlinespace
-\ac{CPI} derivation & The deflator is taken from published Stats SA releases rather than
-re-derived from the underlying index table, reproducing the published index to within 0.8\% &
+\ac{CPI} derivation & The deflator chains annual rates from Stats SA (2018 to 2021, 2025) and the World Bank series built from the same index (2022 to 2024). The chained factor, 1.511, is within 0.4\% of the ratio of the June 2026 index to the 2017 average, 1.506 (Appendix~\ref{app:variables}) &
 All \ac{BNPL} Rand parameters, which are set at 2026 prices and deflated once to 2017
 Rands \\
 \end{longtable}
@@ -170,8 +169,9 @@ Rands \\
 Two further levers are run at the same two values of $\beta$ as the
 scenarios of Section~\ref{sec:scenarios}, with twenty replicates and their own benchmark arm. The first is a cooling-off window that blocks want-driven
 \ac{BNPL} purchases for $k^{\text{cool}}$ ticks after a want-driven purchase. One tick matches the
-fourteen-day right of withdrawal under the United Kingdom's Consumer Credit Act, which applies
-to regulated deferred payment credit \cite{fca_ps26_1}, although that
+fourteen-day right of withdrawal under section 66A of the United Kingdom's Consumer Credit Act
+1974, which the \ac{FCA} confirms applies to regulated deferred payment credit
+\cite{fca_ps26_1}, although that
 right cancels an agreement and does not block the next one. It does not
 block borrowing for a shortfall. The second is a cap on the number of platforms a household
 may owe, which no jurisdiction we found imposes and which is therefore hypothetical. Both are judged on cumulative \ac{BNPL} volume as well as
@@ -248,5 +248,6 @@ injection.
 
 \textbf{Competition among traditional lenders.} The traditional side is a single non-adaptive stub.
 Hamill et al.\ \cite{hamill2023creditcard} find, in a model of the United Kingdom card market, that longer interest-free promotions
-raise card balances and increase indebtedness, so a competing, adapting traditional sector
-could add a driver of distress that this model holds fixed.
+raise card balances, so a competing, adapting traditional sector could add a driver of
+indebtedness that this model holds fixed. In their model the share of accounts with missed
+payments did not rise, so the channel is balance growth and not default.

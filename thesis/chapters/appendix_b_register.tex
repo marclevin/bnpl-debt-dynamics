@@ -76,9 +76,9 @@ fee cap and the assumed order cap, are set at 2026 prices and deflated once (App
 \addlinespace
 \texttt{min\_\allowbreak{}payment\_\allowbreak{}frac} & 6 & 0.05 & assumed & Minimum payment as a share of the balance per month. The \ac{NCA} prescribes no formula. & 0.025--0.10 \\
 \addlinespace
-\texttt{k\_\allowbreak{}default} & 7 & 7 & sourced & Seven ticks are 98 days, the first tick boundary past the 90-day impairment convention. & four ticks (56 days) \\
+\texttt{k\_\allowbreak{}default} & 7 & 7 & assumed & Seven ticks are 98 days, the first tick boundary past the 90-day impairment convention; a consecutive-period rule follows \cite{hamill2023creditcard}. & four ticks (56 days) \\
 \addlinespace
-\texttt{bnpl\_\allowbreak{}bureau\_\allowbreak{}visible} & 10/15 & off & sourced & \ac{BNPL} was not reported to the bureau before the 2026 arrangements \cite{transunion_cps_sa_2025}; off is the benchmark. & on / off (Section~\ref{sec:scenarios}) \\
+\texttt{bnpl\_\allowbreak{}bureau\_\allowbreak{}visible} & 10/15 & off & sourced & \ac{BNPL} agreements were not displayed on bureau profiles before the 2026 arrangements \cite{dcasa_bnpl_2026, finasa_bnpl_2026}; off is the benchmark. & on / off (Section~\ref{sec:scenarios}) \\
 \addlinespace
 \texttt{bnpl\_\allowbreak{}enabled} & design & off & sourced & The 2017 baseline has no \ac{BNPL}; the experiments enable it. & on / off \\
 \addlinespace
@@ -100,12 +100,12 @@ fee cap and the assumed order cap, are set at 2026 prices and deflated once (App
 \addlinespace
 \texttt{bnpl\_\allowbreak{}affordability\_\allowbreak{}check} & 15 & off & sourced & Applies the Regulation 23A test to each \ac{BNPL} request, the analogue of the \ac{FCA}'s affordability check \cite{fca_ps26_1}. & on / off (Section~\ref{sec:scenarios}) \\
 \addlinespace
-\texttt{k\_\allowbreak{}cool} & 15 & 0 & sourced & Ticks for which want-driven purchases are blocked after a want-driven purchase. One tick is the fourteen-day right of withdrawal under the United Kingdom's Consumer Credit Act, which applies to regulated deferred payment credit \cite{fca_ps26_1}. & 0--4 ticks (Appendix~\ref{app:levers}) \\
+\texttt{k\_\allowbreak{}cool} & 15 & 0 & sourced & Ticks for which want-driven purchases are blocked after a want-driven purchase. One tick is the fourteen-day right of withdrawal under section 66A of the United Kingdom's Consumer Credit Act 1974, which the \ac{FCA} confirms applies to regulated deferred payment credit \cite{fca_ps26_1}. & 0--4 ticks (Appendix~\ref{app:levers}) \\
 \addlinespace
 \texttt{stacking\_\allowbreak{}cap} & 15 & none & assumed & Cap on platforms owed: a household that owes this many platforms or more is refused every new agreement. Hypothetical; no jurisdiction we found imposes one. & 1--3 (Appendix~\ref{app:levers}) \\
 \addlinespace
 \texttt{platform\_\allowbreak{}routing} & 13 & random & assumed & Platform order for a \ac{BNPL} request: random for every request, or platforms already owed first. No evidence on how South African households choose providers was located. & loyal routing as an effect-robustness arm (Table~\ref{tab:effect}) \\
 \addlinespace
-\texttt{activation} & 17 & random & sourced & Random order, redrawn every tick \cite{comer2013activation, alizadeh2015activation}. & fixed order as a robustness arm \\
+\texttt{activation} & 17 & random & assumed & Random order, redrawn every tick, is a modelling choice. The activation scheme changes outcomes \cite{comer2013activation, alizadeh2015activation}, so a fixed-order arm tests it. & fixed order as a robustness arm \\
 \end{longtable}
 \endgroup

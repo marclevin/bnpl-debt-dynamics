@@ -32,9 +32,10 @@ NCA_EXPENSE_NORMS: tuple[tuple[float, float, float], ...] = (
     (50000.01, 4905.38, 0.0675),
 )
 
-#: The regulation's two published worked examples. Asserted at import so the table
+#: Two hand-computed checks from Table 1 of GN R202 (the gazette publishes no worked
+#: examples; docs/REFERENCE_AUDIT.md R1). Asserted at import so the table
 #: cannot silently drift, exactly as the P2 notebook does.
-NCA_WORKED_EXAMPLES: tuple[tuple[float, float], ...] = ((2000.0, 881.00), (10000.0, 1505.38))
+NCA_TABLE_CHECKS: tuple[tuple[float, float], ...] = ((2000.0, 881.00), (10000.0, 1505.38))
 
 #: Numerical guard only: keeps a zero or negative term out of the amortisation formula.
 #: This was 6 months, an unsourced assumption inherited from P2. It never bound, because
@@ -92,7 +93,7 @@ def nca_gate(
 
 
 # --- self-check at import, mirroring the P2 notebook -------------------------
-for _income, _expected in NCA_WORKED_EXAMPLES:
+for _income, _expected in NCA_TABLE_CHECKS:
     _got = round(nca_necessary_expenses(_income), 2)
     if _got != _expected:  # pragma: no cover
         raise AssertionError(

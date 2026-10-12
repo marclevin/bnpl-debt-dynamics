@@ -392,7 +392,7 @@ Government Gazette 38557, 13 March 2015, Reg 23A(9).
 | R25,000.01 – R50,000.00 | R2,855.38 | 8.20% |
 | R50,000.01 + | R4,905.38 | 6.75% |
 
-The P2 notebook asserts both published worked examples (R2,000 → R881.00; R10,000 → R1,505.38) so
+The P2 notebook asserts two hand-computed checks from Table 1 of the regulation (R2,000 → R881.00; R10,000 → R1,505.38) so
 the table cannot silently drift.
 
 This yields an **income-varying** affordability ceiling, far tighter at the bottom of the

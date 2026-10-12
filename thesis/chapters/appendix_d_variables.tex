@@ -209,7 +209,7 @@ indebted source households the resulting debt-service-to-income ratio has a weig
 from the Affordability Assessment Regulations \cite{sa_ncr_affordability_2015}. For income $Y$ in
 a band, necessary expenses are the fixed amount plus the percentage of income above the band's
 lower bound; residual-income capacity is $\rho(Y) = Y$ less that amount. The implementation is
-asserted against the regulation's two published worked examples (R2{,}000 $\to$ R881.00;
+asserted against two hand-computed checks from the regulation's Table~1 (R2{,}000 $\to$ R881.00;
 R10{,}000 $\to$ R1{,}505.38). The regulation is written for an individual consumer and is applied
 here to household income, which makes the test more permissive for multi-earner households
 (Appendix~\ref{app:gate}); across the population the resulting ceiling spans 0 to 93.2\% of gross
@@ -228,8 +228,9 @@ income, with a mean of 49.6\% in the bottom quintile.}
 \end{table}
 
 \emph{Diagnostics.} Among indebted households, constructed servicing is 12.8\% of monthly
-outlay, against a \ac{FinScope} self-reported range of 6.1--9.8\% among holders of a modelled
-product. The excess is in the direction ceiling rates imply, and the double count of Part~D.4
+outlay, against a range of 6.1--9.8\% derived from \ac{FinScope}'s 21-matchstick budget question,
+unweighted, among holders of a modelled product. That question measures how adults allocate a
+budget, not debt service, and its upper bound includes bonds and vehicle finance. The excess is in the direction ceiling rates imply, and the double count of Part~D.4
 inflates the outlay denominator, so removing it would widen the gap.
 
 \subsection*{D.10 Resampling}
@@ -260,7 +261,12 @@ Nothing in the \ac{NIDS} or \ac{FinScope} layer is deflated: monetary values are
 surveyed, and the imputed flags are categorical. The only deflated model parameters are three
 \ac{BNPL} parameters at 2026 prices, the assumed per-order cap (R15{,}000
 $\to$ R9{,}927) and Payflex's published late fee (R95 a week, R190 per tick $\to$ R125.74) and fee cap
-(R285 $\to$ R188.61), which are converted once by a cumulative price factor taken from published Stats SA \ac{CPI}
-releases \cite{statssa_cpi}; the factor reproduces the published index to within 0.8\%. The
+(R285 $\to$ R188.61), which are converted once by a cumulative price factor chained from published annual \ac{CPI}
+rates \cite{statssa_cpi}. The 2018 to 2021 rates are Stats SA annual averages; 2022 to 2024
+are the World Bank series built from the same index (7.04, 6.08 and 4.36, against Stats SA's
+6.9, 6.0 and 4.4). The chained factor to June 2026, 1.511, is within 0.4\% of the ratio of the
+published June 2026 index to the 2017 average index (107.5/71.4 = 1.506, both from Stats SA's
+\ac{CPI} history table, December 2024 = 100), so no deflated
+parameter moves by more than 0.4\%. The
 purchase-size ratio $\kappa$ is a share of the household's own discretionary budget and needs no
 deflation.

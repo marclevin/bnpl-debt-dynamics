@@ -1,0 +1,14 @@
+{
+  "R9_informal_debt": {
+    "households_with_mashonisa_debt_weighted": 0.027558134868741035,
+    "households_with_friend_debt_weighted": 0.04343507066369057,
+    "households_with_family_debt_weighted": 0.02171776257455349,
+    "friend_mashonisa_share_of_f_deb_weighted": 0.008528754901110451,
+    "friend_mashonisa_family_share_of_f_deb_weighted": 0.026937615641837147
+  },
+  "R20_gini": {
+    "n_households": 10841,
+    "gini_household_weighted": 0.6513886756965347,
+    "gini_person_weighted": 0.6626179665880141
+  }
+}

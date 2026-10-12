@@ -133,9 +133,11 @@ and the scheduled service on its traditional debt, which the bureau records. The
 assessment does not reduce income while a member is unemployed, although the income the
 household receives falls (Submodel~1), so a household in a spell of unemployment is
 assessed on income it is not receiving. In the benchmark the assessment excludes \ac{BNPL}
-commitments \cite{transunion_cps_sa_2025}, and the model omits
-informal borrowing, which South African households use \cite{finscope2019}. The lender
-therefore applies an affordability rule to an incomplete view of household obligations.
+commitments \cite{dcasa_bnpl_2026, finasa_bnpl_2026}. The model has no informal lender, and
+the informal loans that \ac{NIDS} records, 2.7\% of traditional debt, are carried as debt the
+bureau sees.
+% 2.7%: results/summary/reference_audit_checks.json (notebooks/scripts/check_reference_audit_figures.py).
+The lender therefore applies an affordability rule to an incomplete view of household obligations.
 
 A switch, $\mathbb{1}^{\text{bur}}$, controls whether \ac{BNPL} obligations enter this
 calculation. It is off in the benchmark; switching it on represents one channel of the
@@ -237,13 +239,13 @@ Table~\ref{tab:submodels} sets out the seventeen submodels.
 \addlinespace
 6. Repayment and arrears & Scheduled-payers pay the amortised instalment. Minimum-payers pay the larger of interest and a fraction of the balance. Unpaid traditional instalments become arrears. Payment friction skips an affordable traditional instalment at random. & Minimum-payer share 0.29 (United States), swept 0.20--0.40; fraction 0.05 a month, assumed, swept 0.025--0.10; friction 0.09, fitted & \cite{Keys2019, Kuchler2021} \\
 \addlinespace
-7. Distress and default & Distress: food or rent unpaid, or debt service unmet after borrowing. Default: seven consecutive distressed ticks, after which no credit is granted. & $k = 7$ ticks (98 days); $k = 4$ swept & \cite{madeira2018chile} \\
+7. Distress and default & Distress: food or rent unpaid, or debt service unmet after borrowing. Default: seven consecutive distressed ticks, after which no credit is granted. & $k = 7$ ticks (98 days), assumed; $k = 4$ swept & \cite{madeira2018chile, hamill2023creditcard} \\
 \addlinespace
 8. Heterogeneity & Behavioural parameters are common to all households; heterogeneity comes from the survey data. The repayment archetype is assigned at random. & None & -- \\
 \addlinespace
-9. Credit gate & Regulation 23A residual-income test on household income; a request is granted in full or refused. A new loan is priced as unsecured credit (repurchase rate plus 21 points, 25 months) and added to the household's balance. & Statutory expense table & \cite{sa_ncr_affordability_2015} \\
+9. Credit gate & Regulation 23A residual-income test on household income; a request is granted in full or refused. A new loan is priced as unsecured credit (repurchase rate plus 21 points, 25 months) and added to the household's balance. & Statutory expense table and rate; term derived from the \acs{CCMR} & \cite{sa_ncr_affordability_2015, sa_ncr_ratecaps_2016, ncr_ccmr_2017} \\
 \addlinespace
-10. Information & The bureau records traditional debt and defaults. The traditional lender does not see \acs{BNPL}. & Bureau switch, off in the benchmark & \cite{transunion_cps_sa_2025} \\
+10. Information & The bureau records traditional debt and defaults. The traditional lender does not see \acs{BNPL}. & Bureau switch, off in the benchmark & \cite{dcasa_bnpl_2026, finasa_bnpl_2026} \\
 \addlinespace
 11. Peer influence & The probability of a want-driven purchase rises linearly with the lagged \acs{BNPL} share in the household's reference group (Equation~\ref{eq:peer}); a threshold rule is the alternative. & $q_{\text{base}} = 0.05$; $\beta = 0$, swept 0--3; threshold parameters swept & \cite{ackert2025bnpl, cardaci2018inequality, granovetter1978threshold} \\
 \addlinespace
@@ -251,13 +253,13 @@ Table~\ref{tab:submodels} sets out the seventeen submodels.
 \addlinespace
 13. Stacking & Each request goes to the platforms in a random order; what one platform does not finance passes to the next. No platform sees another's balance. & Routing assumed; loyal routing swept; 1--6 platforms, 4 in the benchmark & Submodel~10 \\
 \addlinespace
-14. \acs{BNPL} repayment & Pay-in-four, interest-free: 25\% at checkout and at each of the next three ticks. A want-driven order is reduced to what the household can pay at checkout. A missed instalment incurs a late fee of R125.74 per tick, capped per agreement at the lower of R188.61 and half the price. Once the cap is reached, that platform refuses the household new agreements. & None & \cite{payflex_terms} \\
+14. \acs{BNPL} repayment & Pay-in-four, interest-free: 25\% at checkout and at each of the next three ticks. A want-driven order is reduced to what the household can pay at checkout. A missed instalment incurs a late fee of R125.74 per tick, capped per agreement at the lower of R188.61 and half the price. Once the cap is reached, that platform refuses the household new agreements. & Refusal at the cap and the checkout reduction assumed & \cite{payflex_terms} \\
 \addlinespace
 15. Scenario switches & Bureau visibility and mandatory screening (Section~\ref{sec:asymmetry}), alone and together. A cooling-off window and a cap on platforms owed are in Appendix~\ref{app:levers}. & On or off; run at $\beta = 0$ and 1 & \cite{businessday_bnpl_2026, fca_ps26_1, woolard2021} \\
 \addlinespace
 16. Macro environment & Static; the repurchase rate is fixed at 7.00\%. & None & -- \\
 \addlinespace
-17. Activation order & Random, redrawn each tick; applications are decided as each household acts. & Fixed order swept & \cite{comer2013activation, alizadeh2015activation} \\
+17. Activation order & Random, redrawn each tick; applications are decided as each household acts. & Random order assumed; fixed order swept & \cite{comer2013activation, alizadeh2015activation} \\
 \end{longtable}
 \endgroup
 
@@ -344,7 +346,7 @@ stacking but still permits several agreements on that platform.
 The model is implemented in Python using Mesa. The lending gate reuses the affordability
 function that constructs scheduled debt service, and the parameter register in
 Appendix~\ref{app:specification} is generated from the code. Automated checks cover cash
-and debt accounting, arrears transitions, the Regulation 23A worked examples, pay-in-four
+and debt accounting, arrears transitions, two hand-computed Regulation 23A checks, pay-in-four
 repayments, late-fee caps, the shortfall path and the platform cap; several compare one
 household's balances after a tick with values calculated by hand. Boundary checks disable
 \ac{BNPL}, remove peer influence and restrict access to one platform. All checks pass on

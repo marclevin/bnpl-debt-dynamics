@@ -25,19 +25,19 @@ Emergence & Default rates and adoption paths follow from household decisions; st
 \addlinespace
 Adaptation & Households compress discretionary spending and borrow against shortfalls from current liquidity, and their want-driven purchase propensity rises with lagged peer adoption; they form none of the income expectations that D'Orazio and Giulioni give their households. The traditional lender and the platforms are non-adaptive. & \cite{dorazio2017micro} \\
 \addlinespace
-Objectives & No forward-looking utility. Households satisfy obligations in a fixed priority order, compressing discretionary spending under stress. & \cite{meier2010present} \\
+Objectives & No forward-looking utility. Households satisfy obligations in a fixed priority order, compressing discretionary spending under stress. The priority order is assumed; the departure from optimisation is motivated by present bias and anchoring. & \cite{meier2010present, Keys2019} \\
 \addlinespace
 Learning & Excluded. Behavioural rules are static over the horizon. & None \\
 \addlinespace
 Prediction & Excluded. Agents treat current income as persistent. & None \\
 \addlinespace
-Sensing & Agents know their own balance sheets and observe the lagged adoption share among their reference group's \ac{BNPL}-eligible members. In the benchmark the traditional lender sees only bureau-recorded traditional debt and defaults, and each platform sees only its own exposure; the bureau switch adds \ac{BNPL} obligations to the lender's view (Submodel~15). & \cite{transunion_cps_sa_2025} \\
+Sensing & Agents know their own balance sheets and observe the lagged adoption share among their reference group's \ac{BNPL}-eligible members. In the benchmark the traditional lender sees only bureau-recorded traditional debt and defaults, and each platform sees only its own exposure; the bureau switch adds \ac{BNPL} obligations to the lender's view (Submodel~15). & \cite{dcasa_bnpl_2026, finasa_bnpl_2026} \\
 \addlinespace
 Interaction & Households interact with lenders through credit applications, and with each other indirectly through reference-group adoption shares. & \cite{ackert2025bnpl} \\
 \pagebreak
 Stochasticity & Income shocks and re-employment, archetype and eligibility assignment, want-driven purchases and their size, platform routing order, payment friction, activation order, and threshold endowments (drawn from a separate stream so control arms reproduce exactly across threshold dispersion). Runs are seeded and replicated, with dispersion reported. & None \\
 \addlinespace
-Collectives & Reference groups (income quintile $\times$ province) aggregate individual adoption into the peer signal. & \cite{cardaci2018inequality} \\
+Collectives & Reference groups (income quintile $\times$ province) aggregate individual adoption into the peer signal. The groups are this model's construction; Cardaci models peer effects on consumption. & \cite{cardaci2018inequality} \\
 \addlinespace
 Observation & Tracked per tick: population default rate; the \ac{CCMR} arrears distribution of credit-active households; traditional debt, arrears and interest; \ac{BNPL} balances, holding, volume and fees; the number of platforms each household owes; reference-group adoption shares; and the share with no liquid savings. Per run: the traditional lender's applications, grants and refusals, order-cap and limit binding rates, and default, purchase size and debt-to-income by income quintile. & None \\
 \addlinespace
@@ -74,9 +74,10 @@ Four groups of entries carry standing flags:
     \cite{ons_income_fye2020}. It is swept 0.10--1.0 and reported against a 0.10--0.48 band
     whose upper end expresses Afterpay's maximum of A\$2{,}000 as a share of Australian median
     monthly household disposable income, equivalised, in 2019--20
-    \cite{asic2020rep672, abs_income_2019_20}. Equivalised income is below the income of a
-    household with more than one member, so both shares overstate the limits relative to the
-    household income that $\lambda$ multiplies (Submodel~12).
+    \cite{asic2020rep672, abs_income_2019_20}. On the Australian scale equivalised income is at or below the income of a household with
+    more than one member, so that share overstates the limit relative to the household income
+    that $\lambda$ multiplies (Submodel~12). On the United Kingdom scale a couple's equivalised
+    income equals its income, so that share is closer to like for like.
 \end{itemize}
 
 \input{chapters/appendix_b_register}

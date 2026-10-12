@@ -453,7 +453,7 @@ class ParamSet:
     k_default: int = _p(
         7,
         rule="D7",
-        provenance="SOURCED",
+        provenance="ASSUMPTION",
         source=(
             "7 ticks = 98 days, inside the CCMR 91-120 band, so it maps onto the 90+ "
             "impairment convention. Revised from 6 once the 2017 CCMR was in hand."
@@ -637,7 +637,7 @@ class ParamSet:
     activation: Activation = _p(
         "random",
         rule="D16",
-        provenance="SOURCED",
+        provenance="ASSUMPTION",
         source="Random asynchronous order, re-drawn every tick (Comer & Loerch; Alizadeh).",
         sweep="MANDATORY: fixed-order (uniform) robustness run",
     )

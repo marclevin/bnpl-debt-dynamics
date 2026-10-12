@@ -106,7 +106,9 @@ Appendix~\ref{app:variables} records the fields, formulas and missing-data treat
 
 We impute banking status and credit-product indicators from the 2019 \ac{FinScope}
 \cite{finscope2019}. Banked status determines eligibility for \ac{BNPL}, so the imputed
-banked share of 82.8\% caps \ac{BNPL} use. Five further flags identify store cards,
+banked share of 82.8\% caps \ac{BNPL} use. \ac{FinScope}'s banking question counts a grant card as a bank
+account, so banked adults include the 13\% whose only account is that card, and the imputed
+share inherits this. Five further flags identify store cards,
 revolving credit, hire purchase, short-term loans and personal loans, and set the terms of
 each household's opening debt (Section~\ref{sec:servicing}).
 
@@ -118,9 +120,7 @@ procedure falls back to a quintile-only pool when a cell has no donors. Every on
 cells has at least 30, so the fallback was never used.
 
 \ac{FinScope} records one adult's holdings, so the flags understate holding in households
-with several adults. Within a cell, flags are assigned without regard to characteristics
-outside the match, such as urban or rural location, and 2019 banking data may overstate
-access in 2017. Appendix~\ref{app:matching} discusses these assumptions and reports donor
+with several adults. The 2019 banking data may overstate access in 2017. Appendix~\ref{app:matching} discusses these assumptions and reports donor
 reuse. National imputed rates differ from their \ac{FinScope} targets by at most 1.8
 percentage points, and by at most 2.3 points within any quintile.
 
@@ -211,7 +211,7 @@ households report, consistent with a net overstatement.
 \midrule
 Store card & 21\% & 11 & \ac{NIDS}, $n=782$ \cite{nids_w5_2018} \\
 Hire purchase & 24\% & 8 & \ac{NIDS}, $n=121$ \cite{nids_w5_2018} \\
-Short-term loan & 60\% & 1 & Repayable within 31 days \cite{finscope2019, ncr_ccmr_2017} \\
+Short-term loan & 60\% & 1 & Repayable within 31 days \cite{finscope2019}; two thirds of short-term agreements run a month or less \cite{ncr_ccmr_2017} \\
 Personal loan & 28\% & 25 & Implied life of the unsecured book, 24.8 months \cite{ncr_ccmr_2017} \\
 Revolving credit & 21\% & 20 & One over the minimum-payment fraction, 0.05 \\
 No product flagged (74.0\%) & 28\% & 25 & Treated as a personal loan \\
@@ -278,10 +278,12 @@ comparable. Checks that the population reproduces its own sources test the imple
 they are in Appendix~\ref{app:matching} and are not counted as validation.
 
 \label{sec:lim-validation}
-Following pattern-oriented modelling \cite{grimm2020odd, windrum2007validation}, four
+Following pattern-oriented modelling \cite{grimm2020odd} and the validation literature
+\cite{windrum2007validation}, four
 empirical patterns guide the behavioural comparison. Pattern~2 is the 2017 arrears profile
 used for fitting. Pattern~1 is United States evidence that \ac{BNPL} adoption raises
-traditional arrears and interest \cite{dehaan2024bnpl}; it is not independent of the design,
+card late fees and interest \cite{dehaan2024bnpl}, whose counterparts in the model are
+traditional arrears and interest; it is not independent of the design,
 because want-driven borrowing was added partly when shortfall-only borrowing failed to
 reproduce it. Pattern~3 is a middle-income peak in debt-to-income from a United Kingdom
 model \cite{hamill2023creditcard}. Pattern~4 sets the share of households without savings
@@ -339,9 +341,10 @@ one to expect.
 \textbf{Quantity} & \textbf{Model} & \textbf{External figure} & \textbf{Comparison} \\
 \midrule
 Mean household size & 3.03 & 3.3 in 2016 \cite{statssa_cs_2016} & 8\% lower \\
-Per-capita income Gini & 0.651 & 0.66 in 2014 \cite{hundenborn2018drivers}; 0.67 in 2015 \cite{statssa2019inequality} & Slightly lower \\
+Per-capita income Gini & 0.651; 0.663 by person & 0.66 in 2014 \cite{hundenborn2018drivers}; 0.67 in 2015 \cite{statssa2019inequality} & Close; the benchmarks weight by person \\
+% 0.663: results/summary/reference_audit_checks.json (notebooks/scripts/check_reference_audit_figures.py).
 Traditional debt & R191.4 bn & R392.0 bn, matching \ac{CCMR} book \cite{ncr_ccmr_2017} & About half \\
-Debt service & 12.8\% & 6.1--9.8\% \cite{finscope2019} & Above the range \\
+Debt service & 12.8\% & 6.1--9.8\%, derived from a \ac{FinScope} budget question, unweighted \cite{finscope2019} & Above the range \\
 \bottomrule
 \end{tabular}
 \endgroup
@@ -396,9 +399,7 @@ gives the size or frequency of South African \ac{BNPL} purchases by household, s
 size and volume rest on one provider's disclosures and the adoption parameters have no
 estimate. Purchases that are too small and volume that is too low without peer influence are
 what too low a value of $\kappa$ would produce: at $\kappa=0.28$ both fall within the
-provider's ranges (Table~\ref{tab:effect}). The debt-stock gap partly reflects survey underreporting,
-and informal borrowing, which South African households use \cite{finscope2019}, is absent
-from both the data and the model.
+provider's ranges (Table~\ref{tab:effect}). The debt-stock gap partly reflects survey underreporting.
 
 Some misses are expected of a stylised model: Pattern~3 comes from another model of another
 country, and a model with one lender, no calendar and no write-offs cannot be expected to

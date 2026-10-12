@@ -64,7 +64,7 @@ FREQUENCY_BY_FY: dict[int, float] = {2021: 1.8, 2022: 2.2, 2023: 2.8, 2024: 3.9,
 #: FY2025 GMV as separately stated in the same report ("grew 80% to R7.1 billion").
 FY2025_GMV_STATED_RM = 7_100.0
 FY2025_GROWTH_STATED = 0.80
-#: The stated FY2025 GMV and the cumulative chart label do not reconcile exactly (~3%),
+#: The stated FY2025 GMV and the cumulative chart label do not reconcile exactly (about 6%),
 #: most likely rounding on the chart plus a scope difference between "GMV at our retailer
 #: partners" and total BNPL GMV. The gap is recorded, not tuned away. It is well inside the
 #: tolerance because the derived order value uses only the cumulative pair, which are
@@ -194,14 +194,13 @@ def main() -> None:
         "superseded_metric": {
             "figure": "FY2024 IAR: 'Frequency is up to 2.12 per annum, average spending up 21% to 7 000'",
             "why_dropped": (
-                "RESOLVED 2026-08-13 and no longer used. Read as a BNPL order value it "
-                "implies R7,000/2.12 = R3,302, which contradicts the R1,394 the cumulative "
-                "aggregates give and would be anomalously high for South African apparel "
-                "and homeware checkouts. It is a GROUP-WIDE fintech metric: Weaver "
-                "cross-sells personal lending, a wallet and insurance alongside BNPL, so "
-                "R7,000 across 2.12 transactions describes a blended portfolio, not a BNPL "
-                "basket. The FY2025 report settles it by publishing a BNPL-SPECIFIC "
-                "frequency series (1.8x to 4.4x), which is what this file now uses."
+                "Not used as an order value: R7,000/2.12 = R3,302 contradicts the R1,394 the "
+                "cumulative aggregates give. Corrected 2026-10-12 (docs/REFERENCE_AUDIT.md R32): "
+                "the sentence sits in the report's BNPL (PayJustNow) passage, so it is BNPL "
+                "spend, not a group-wide metric. Read as annual spend per customer it is about "
+                "R5,000 in 2017 Rands, above the volume band's top; the thesis notes this under "
+                "tab:bnpl-on-checks. Its frequency (2.12 for FY2024) and the FY2025 report's "
+                "3.9 for the same year use different denominators."
             ),
         },
         "international_levels": INTERNATIONAL_LEVELS,

@@ -335,3 +335,7 @@ A second review was critiqued by an independent agent before anything changed, a
 - **Volume benchmark.** One provider per customer against model households across four platforms; the biases run both ways, so the comparison supports orders of magnitude only.
 - **Tables.** `tab_robustness`, `tab_robustness_appendix`, `tab_cooloff` and `tab_cap` now bold detectable differences, as Section 3.1 says. `tab_effect` shows purchase size at both values of β.
 - **Text.** The abstract now states the question (293 words). The conclusion's findings were restructured. The 4.4 Q4–Q1 contrast is labelled as chosen after seeing the table. "Replications" became "replicates". The body is 9,953 words by a float-excluding count.
+
+## 2026-10-12: reference audit propagated
+
+The findings of `docs/REFERENCE_AUDIT.md` (R1–R34) were verified independently and applied. See its resolution section. No model input or result changed: the CPI factors and BNPL anchors regenerate with identical values, and only their notes changed. Two parameters were relabelled from *sourced* to *assumed* in `config.py` and the register: `k_default` and `activation`. `NCA_WORKED_EXAMPLES` was renamed `NCA_TABLE_CHECKS`, because the gazette publishes no worked examples. About 130 words of body text were cut to stay under the 10,000-word cap.

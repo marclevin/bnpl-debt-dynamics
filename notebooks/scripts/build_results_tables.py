@@ -234,8 +234,9 @@ def tab_stacking(rq1: pd.DataFrame) -> None:
         "Stacking, volume and default by number of platforms",
         "Seeds 20{,}000--20{,}019. Holders: share of households holding \\ac{BNPL} at the final "
         "tick that owe two or more platforms. Ever-holders: share of households that ever held "
-        "\\ac{BNPL} that owed two or more platforms at some tick; the \\ac{CFPB} reports 32 to 33\\% "
-        "of United States borrowers with loans at two or more firms in a year \\cite{cfpb2025bnpl}. "
+        "\\ac{BNPL} that owed two or more platforms at some tick; the \\ac{CFPB} reports that 32 to 33\\% "
+        "of United States borrowers in a year held simultaneous loans at two or more firms, an "
+        "undercount by its own account \\cite{cfpb2025bnpl}. "
         "Volume: cumulative post-burn-in \\ac{BNPL} lending. Replicate standard deviations of default "
         f"are at most {sd_def * 100:.2f} points. Default with six platforms less one: "
         f"{pm(d0, se0)} points at $\\beta = 0$ and {pm(d1, se1)} at $\\beta = 1$.",
@@ -396,7 +397,7 @@ def tab_bnpl_on_checks(rq0: pd.DataFrame) -> None:
         f"4. Households without savings \\cite{{transunion_cps_sa_2025}} & 36\\% expect to miss a payment & "
         f"{pct(zs_off, 1)}\\% & Same order \\\\",
         group_row("\\ac{BNPL} market", 4),
-        f"Owing two or more providers \\cite{{cfpb2025bnpl}} & 32--33\\% of borrowers & "
+        f"Owing two or more providers at once \\cite{{cfpb2025bnpl}} & 32--33\\% of borrowers in a year & "
         f"{pct(ev0, 1)}\\% of ever-holders & Close; different market \\\\",
         f"Annual volume per eligible household \\cite{{weaver2025iar}} & {rand(lo_vol)}--{rand(hi_vol)} & "
         f"{rand(N['vol_per_eligible_year'])} & {band(N['vol_per_eligible_year']).capitalize()} \\\\",
@@ -412,8 +413,12 @@ def tab_bnpl_on_checks(rq0: pd.DataFrame) -> None:
         "Table~\\ref{tab:baseline-arms}; Pattern~1 shows the change from the no-\\ac{BNPL} arm at "
         "$\\beta = 0$ and $\\beta = 1$, and Patterns 3 and 4 use the no-\\ac{BNPL} arm. Debt-to-income "
         "is total debt over total monthly income in each quintile. The volume band runs from the "
-        "provider's volume per signed-up customer to its volume per active customer, in 2017 Rands; "
-        "the purchase target divides its gross merchandise value by its transaction count. Pattern~2, "
+        "provider's volume per signed-up customer to its volume per active customer, in 2017 Rands. "
+        "The provider's 2024 report gives average spending of R7{,}000 per customer, about R5{,}000 in "
+        "2017 Rands and above the band \\cite{homechoice2024ir}, so the band's top is uncertain. "
+        "The purchase target divides gross merchandise value by transaction count; the $\\pm$35\\% "
+        "around it is this study's tolerance, not the source's. Pattern~1: deHaan et al.\\ measure "
+        "card late fees and interest; the model's counterpart to late fees is traditional arrears. Pattern~2, "
         "the calibration target, is in Table~\\ref{tab:arrears-fit}.",
         "L{4.6cm}L{2.7cm}L{3.0cm}L{3.3cm}",
         r"\textbf{Comparison} & \textbf{Expected} & \textbf{Model} & \textbf{Result}",

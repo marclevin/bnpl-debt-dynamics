@@ -9,7 +9,7 @@ from __future__ import annotations
 import pytest
 
 from simulation.affordability import (
-    NCA_WORKED_EXAMPLES,
+    NCA_TABLE_CHECKS,
     amortised_instalment,
     nca_gate,
     nca_max_service,
@@ -17,9 +17,9 @@ from simulation.affordability import (
 )
 
 
-@pytest.mark.parametrize("income,expected", NCA_WORKED_EXAMPLES)
-def test_reg23a_reproduces_published_worked_examples(income, expected):
-    """GN R202 GG 38557 publishes two worked examples; both must reproduce exactly.
+@pytest.mark.parametrize("income,expected", NCA_TABLE_CHECKS)
+def test_reg23a_reproduces_table_checks(income, expected):
+    """Two hand-computed checks from Table 1 of GN R202 (GG 38557) must reproduce exactly.
 
     R2,000 -> R881.00 and R10,000 -> R1,505.38. Asserted in P2 as well, so this test
     also protects the population construction from silent drift.
