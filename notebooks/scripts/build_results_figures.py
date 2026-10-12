@@ -226,7 +226,7 @@ TORNADO_GROUPS = [
         ("+25%, BNPL cap removed", "rob_amount_shortfall_125_uncapped"),
         ("+ committed, BNPL cap removed", "rob_amount_shortfall_plus_committed_uncapped"),
     ], True),
-    ("Default horizon (98 days)", "rob_k7", [("56 days", "rob_k4")], False),
+    ("Default threshold (98 days)", "rob_k7", [("56 days", "rob_k4")], False),
     ("Purchase size κ (0.139)", "rob_kappa0.1387", [("0.07", "rob_kappa0.07"), ("0.28", "rob_kappa0.28")], False),
     ("Purchase sizing base (discretionary)", "rob_base_discretionary", [("income", "rob_base_income")], False),
     ("Minimum-payment fraction (0.05)", "rob_minpay0.05",
