@@ -67,6 +67,8 @@ REGISTER: dict[str, tuple[str, str]] = {
                        r"off as an effect-robustness arm (Table~\ref{tab:effect})"),
     "committed_shortfall_funded": (r"Whether credit raised in a tick with a committed-expenditure shortfall pays that shortfall first. Off by default, when the credit goes to debt service, then discretionary spending, then savings.",
                                    r"on as an effect-robustness arm (Table~\ref{tab:effect})"),
+    "committed_shortfall_clears_distress": (r"With credit paying food and rent first, whether food and rent that a loan pays in full still count as distress. Off by default, when any committed shortfall is distress.",
+                                            r"on, with the switch above, as an effect-robustness arm (Table~\ref{tab:effect})"),
     "shortfall_bnpl_capped": (r"Limits the \ac{BNPL} share of a shortfall request to $\kappa$ times the household's monthly discretionary budget, the quantity that sizes a want-driven purchase.",
                               r"capped / uncapped, crossed with the three amount rules"),
     "bnpl_purchase_base": (r"The budget against which a purchase is sized. \ac{BNPL} finances discretionary consumption, so the reference is the household's discretionary budget.",

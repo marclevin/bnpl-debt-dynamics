@@ -26,7 +26,7 @@ Swept & Peer parameters $q_{\text{base}}$, $\beta$ and the threshold parameters;
 \end{tabular}
 \end{table}
 
-\subsection{Runs, Replications and Inference}
+\subsection{Runs, Replicates and Inference}
 \label{sec:sim-params}
 
 Each run follows 5{,}000 households for 52 ticks, or two years. Every household starts with
@@ -250,8 +250,14 @@ probability of 1.6\% and friction of 9\% per tick, stay fixed in every experimen
 Table~\ref{tab:arrears-fit} reports the fit.
 
 The fitted shock probability is about 1.4 times the upper end of the observed job-separation
-rate, 0.54--1.17\% per tick \cite{statssa_lmd_2022}, so the shock may be absorbing income
-losses that the model omits. The fit also depends on the measurement window: households start
+rate, 0.54--1.17\% per tick \cite{statssa_lmd_2022}. Every earner is employed at the start, and
+with re-employment at 1.87\% per tick the share out of work rises through every run towards
+46\%: of those employed at the start, 16\% are out of work at tick 12 and 39\% at tick 52, and
+31\% would be at the observed upper bound. The baseline therefore describes a population losing
+wage income throughout the run.
+% 16%, 39% and 31%: results/summary/defaulter_credit.json, "unemployment path" entries
+% (notebooks/scripts/check_defaulter_credit.py, seeds 10,000-10,019, BNPL off).
+The fit also depends on the measurement window: households start
 with no arrears and no account is written off, so the 90+ share rises through the run, and a
 longer run or a different window would select a different value.
 
@@ -299,8 +305,10 @@ fit matches the average of a rising stock.
 No external figure measures the model's default. Most defaulters owe credit, 90.5\% in the
 baseline and 98.4\% with \ac{BNPL} at $\beta=0$, but default is mostly a failure to pay for
 food and rent: 90.9\% of baseline defaulters were short of them in every tick of the streak
-that ended in default, and 8.3\% defaulted on debt service alone.
-% 90.5%, 98.4%, 90.9%, 8.3% and 27% below: results/summary/defaulter_credit.json
+that ended in default, and 8.3\% defaulted on debt service alone. Two causes account for most
+of it: 66\% of baseline defaulters have an earner out of work when they default, and 27\% have
+had income below their food and rent from the start.
+% 90.5%, 98.4%, 90.9%, 8.3%, 66% and 27% below: results/summary/defaulter_credit.json
 % (notebooks/scripts/check_defaulter_credit.py).
 The nearest external figures are from the \ac{NCR}'s Credit Bureau Monitor: in March 2017,
 21.7\% of credit-active consumers were three or more months in arrears, and 39.3\% had
@@ -340,8 +348,9 @@ Debt service & 12.8\% & 6.1--9.8\% \cite{finscope2019} & Above the range \\
 \end{table}
 
 Some households begin in a vulnerable position: income does not cover committed expenditure
-for 3.6\% of agents, who make up 27\% of baseline defaulters, or committed expenditure and scheduled debt service for 5.1\%, and
-45.2\% have no liquid savings.
+for 3.6\% of agents, or committed expenditure and scheduled debt service for 5.1\%, and
+45.2\% have no liquid savings. Every household in the first group defaults, with and without
+\ac{BNPL}, so about 3.6 points of the default rate are set by the survey records.
 
 \subsubsection*{Behaviour with BNPL}
 
@@ -362,7 +371,11 @@ United States borrowers, but the routing assumption largely sets it
 (Section~\ref{sec:results-stacking}), so the agreement is weak evidence. Without peer
 influence, volume is below the provider's range and the mean purchase is 36\% below the
 provider-based figure. At $\beta=1$ volume is ten times higher, about R10{,}400 per eligible
-household, well above the range, so the two settings bracket the provider's volume.
+household, well above the range, so the two settings bracket the provider's volume. The
+range is one provider's per customer \cite{weaver2025iar}, whereas the model's volume is per
+household across four platforms. Households with several users or providers bias the
+comparison one way and the provider's self-selected active customers the other, so it supports
+orders of magnitude only.
 % R10,400 = vol_per_eligible_year x volume_beta1 / volume_beta0 (results_numbers.json).
 Purchases are sized on discretionary budgets, so they are small in the lower quintiles
 (Table~\ref{tab:distribution}). Adoption has no direct target: 70.0\% of households ever
@@ -383,16 +396,13 @@ gives the size or frequency of South African \ac{BNPL} purchases by household, s
 size and volume rest on one provider's disclosures and the adoption parameters have no
 estimate. Purchases that are too small and volume that is too low without peer influence are
 what too low a value of $\kappa$ would produce: at $\kappa=0.28$ both fall within the
-provider's ranges (Table~\ref{tab:effect}). A higher $q_{\text{base}}$ would also raise
-volume, but it would raise the share of users, which is already above the survey figure. A
-lower $q_{\text{base}}$ with larger purchases might match all three; that was not tested. The debt-stock gap partly reflects survey underreporting,
+provider's ranges (Table~\ref{tab:effect}). The debt-stock gap partly reflects survey underreporting,
 and informal borrowing, which South African households use \cite{finscope2019}, is absent
 from both the data and the model.
 
-Some misses are expected of a stylised model. Pattern~3 comes from another model of another
-country, and the interest measure of Pattern~1 tracks the size of the traditional book. A
-model with one lender, no calendar and no write-offs cannot be expected to reproduce an
-account-level age analysis band by band.
+Some misses are expected of a stylised model: Pattern~3 comes from another model of another
+country, and a model with one lender, no calendar and no write-offs cannot be expected to
+reproduce an account-level age analysis band by band.
 
 The model therefore supports comparisons between arms that share its population, fitted
 parameters and seeds, more than statements about levels. A misspecified mechanism can still
@@ -408,6 +418,4 @@ In answer to RQ1, the population built from survey microdata reproduces househol
 income inequality and the order of magnitude of household debt, which supports the inputs
 rather than the model. The baseline reproduces the two arrears bands it was fitted to and
 misses those between them, its debt service exceeds what households report, and its default
-rate cannot be checked. Traditional arrears rise with \ac{BNPL} and the share without savings
-is of the right order, but the model misses the interest measure, the income profile of debt,
-\ac{BNPL} volume without peer influence and purchase size.
+rate cannot be checked.

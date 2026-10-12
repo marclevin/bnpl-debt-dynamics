@@ -398,6 +398,8 @@ EFFECT_SETTINGS: list[tuple[str, dict, bool]] = [
     ("routing_loyal", dict(platform_routing="loyal"), False),
     ("no_shortfall_bnpl", dict(shortfall_bnpl=False), False),
     ("committed_funded", dict(committed_shortfall_funded=True), True),
+    # Added 2026-10-12: credit that pays food and rent in full also clears that tick's distress.
+    ("committed_relief", dict(committed_shortfall_funded=True, committed_shortfall_clears_distress=True), True),
 ]
 
 

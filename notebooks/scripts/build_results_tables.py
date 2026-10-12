@@ -660,11 +660,11 @@ def tab_robustness(rob: pd.DataFrame) -> None:
             return f"{name} & {cell(d.default_rate_final, 2)} & reference \\\\"
         if paired:
             dd, se = paired_diff(d, a(ref_label), "default_rate_final")
-            return f"{name} & {cell(d.default_rate_final, 2)} & {pm(dd, se)[:-1]}^\\dagger$ \\\\"
+            return f"{name} & {cell(d.default_rate_final, 2)} & {pmb(dd, se)[:-1]}^\\dagger$ \\\\"
         dd, se = delta(d, a(ref_label), "default_rate_final")
         N[f"{label}_diff"], N[f"{label}_diff_se"] = dd, se
         mark = "" if shares_seeds(d, a(ref_label)) else "^\\ddagger"
-        return f"{name} & {cell(d.default_rate_final, 2)} & {pm(dd, se)[:-1]}{mark}$ \\\\"
+        return f"{name} & {cell(d.default_rate_final, 2)} & {pmb(dd, se)[:-1]}{mark}$ \\\\"
 
     rules = [("shortfall", "exact shortfall"), ("shortfall_125", "shortfall $+25\\%$"),
              ("shortfall_plus_committed", "shortfall $+$ one tick of committed spending")]
@@ -830,7 +830,7 @@ def lever_table(rq3: pd.DataFrame, name: str, caption: str, arms: list[tuple[str
             if key != bench_key:
                 paired_any |= shares_seeds(d, bench)
                 unpaired_any |= not shares_seeds(d, bench)
-            cells += [cell(d.default_rate_final, 2), pm(dd, se) if key != bench_key else "--",
+            cells += [cell(d.default_rate_final, 2), pmb(dd, se) if key != bench_key else "--",
                       pct(ms(d.bnpl_adoption_final)[0], 1), f"{dv * 100:+.1f}" if key != bench_key else "--",
                       rm(ms(d.trad_granted_value)[0])]
             N[f"lever_{key}_beta{b:g}_default"] = ms(d.default_rate_final)[0]
@@ -908,7 +908,8 @@ EFFECT_ROWS = [
     ("Routing and the shortfall path (Submodels 5, 7 and 13)", [
         ("routing_loyal", "loyal routing", "ref"),
         ("no_shortfall_bnpl", "no \\ac{BNPL} for shortfalls", "ref"),
-        ("committed_funded", "credit pays food and rent first", "committed_funded"),
+        ("committed_funded", "credit pays food and rent, still distress", "committed_funded"),
+        ("committed_relief", "credit pays food and rent, not distress", "committed_relief"),
     ]),
     ("Other assumptions (Submodels 1, 6, 7 and 12)", [
         ("shock_single_tick", "single-tick income shock", "shock_single_tick"),
@@ -938,7 +939,7 @@ def tab_effect(eff: pd.DataFrame) -> None:
 
     rows, effects0, effects1 = [], {}, {}
     for group, items in EFFECT_ROWS:
-        rows.append(group_row(group, 7))
+        rows.append(group_row(group, 8))
         for key, name, off_key in items:
             off = a(f"eff_{off_key}_off")
             d0, s0 = paired_diff(a(f"eff_{key}_b0.0"), off, "default_rate_final")
@@ -946,18 +947,18 @@ def tab_effect(eff: pd.DataFrame) -> None:
             effects0[key], effects1[key] = (d0, s0), (d1, s1)
             # Three decimals where two would round a 1.1-SE effect to an apparent 2 SE.
             dd = 3 if key == "shock_single_tick" else 2
-            purchase = ms(a(f"eff_{key}_b1.0").bnpl_purchase_mean_realised)[0]
-            N[f"eff_{key}_purchase_b1"] = purchase
-            N[f"eff_{key}_purchase_b0"] = ms(a(f"eff_{key}_b0.0").bnpl_purchase_mean_realised)[0]
+            p0 = ms(a(f"eff_{key}_b0.0").bnpl_purchase_mean_realised)[0]
+            p1 = ms(a(f"eff_{key}_b1.0").bnpl_purchase_mean_realised)[0]
+            N[f"eff_{key}_purchase_b1"], N[f"eff_{key}_purchase_b0"] = p1, p0
             v0, v1 = volume(f"eff_{key}_b0.0"), volume(f"eff_{key}_b1.0")
             N[f"eff_{key}_volume_elig_b0"], N[f"eff_{key}_volume_elig_b1"] = v0, v1
             name_ = f"\\textbf{{{name}}}" if key == "ref" else name
-            rows.append(f"{name_} & {pct(ms(off.default_rate_final)[0])} & {num(purchase)} & "
+            rows.append(f"{name_} & {pct(ms(off.default_rate_final)[0])} & {num(p0)} & {num(p1)} & "
                         f"{num(v0)} & {num(v1)} & {pmb(d0, s0, dd)} & {pmb(d1, s1, dd)} \\\\")
-    rows.append(group_row("Want-driven path switched off ($q_{\\text{base}} = 0$, $\\beta = 0$)", 7))
+    rows.append(group_row("Want-driven path switched off ($q_{\\text{base}} = 0$, $\\beta = 0$)", 8))
     ref_off = a("eff_ref_off")
     dw, sw = paired_diff(a("eff_want_off_b0.0"), ref_off, "default_rate_final")
-    rows.append(f"\\ac{{BNPL}} for shortfalls only & {pct(ms(ref_off.default_rate_final)[0])} & -- & "
+    rows.append(f"\\ac{{BNPL}} for shortfalls only & {pct(ms(ref_off.default_rate_final)[0])} & -- & -- & "
                 f"{num(volume('eff_want_off_b0.0'))} & -- & {pmb(dw, sw)} & -- \\\\")
 
     for k, (d, s) in effects0.items():
@@ -980,18 +981,19 @@ def tab_effect(eff: pd.DataFrame) -> None:
         "The \\ac{BNPL} effect on default under alternative assumptions",
         "Effect: default with \\ac{BNPL} less default without, paired by seed over one block "
         "(70{,}000--70{,}019). No \\ac{BNPL}: the setting's default rate without \\ac{BNPL}. "
-        "Purchase: mean want-driven purchase at $\\beta = 1$, in 2017 Rands, against a "
-        "provider-based figure of R992. Volume: annual \\ac{BNPL} volume per eligible household, "
+        "Purchase: mean want-driven purchase, in 2017 Rands, against a provider-based figure of "
+        "R992 ($\\pm$35\\%). Volume: annual \\ac{BNPL} volume per eligible household, "
         f"in 2017 Rands, against a provider range of {rand(lo_vol)}--{rand(hi_vol)} "
         "(Table~\\ref{tab:bnpl-on-checks}).",
-        "L{4.15cm}R{1.15cm}R{1.1cm}R{1.0cm}R{1.0cm}rr",
-        r"& & & \multicolumn{2}{c}{\textbf{Volume (R)}} & \multicolumn{2}{c}{\textbf{Effect (pp)}} \\ "
-        r"\cmidrule(lr){4-5}\cmidrule(lr){6-7}"
-        "\n\\textbf{Setting} & \\textbf{No \\ac{BNPL} (\\%)} & \\textbf{Pur\\-chase (R)} & "
-        "$\\beta=0$ & $\\beta=1$ & $\\beta=0$ & $\\beta=1$",
+        "L{3.55cm}R{1.0cm}rrrrrr",
+        r"& & \multicolumn{2}{c}{\textbf{Purchase (R)}} & \multicolumn{2}{c}{\textbf{Volume (R)}} "
+        r"& \multicolumn{2}{c}{\textbf{Effect (pp)}} \\ "
+        r"\cmidrule(lr){3-4}\cmidrule(lr){5-6}\cmidrule(lr){7-8}"
+        "\n\\textbf{Setting} & \\textbf{No \\ac{BNPL} (\\%)} & "
+        "$\\beta=0$ & $\\beta=1$ & $\\beta=0$ & $\\beta=1$ & $\\beta=0$ & $\\beta=1$",
         rows,
         size=r"\footnotesize",
-        colsep="3pt",
+        colsep="2.5pt",
     )
 
 

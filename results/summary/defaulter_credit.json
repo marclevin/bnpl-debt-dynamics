@@ -6,7 +6,10 @@
     "held_traditional_at_start": 0.539224526600541,
     "streak_all_committed": 0.90892696122633,
     "streak_no_committed": 0.08303276224827172,
-    "income_below_committed": 0.2735196874060715
+    "income_below_committed": 0.2735196874060715,
+    "unemployed_at_default": 0.6644123835287046,
+    "income_below_committed_share_of_agents": 0.0364,
+    "income_below_committed_who_default": 1.0
   },
   "BNPL beta=0": {
     "default_rate": 0.13341,
@@ -15,7 +18,10 @@
     "held_traditional_at_start": 0.5395397646353347,
     "streak_all_committed": 0.9057042200734577,
     "streak_no_committed": 0.08530095195262724,
-    "income_below_committed": 0.272843115208755
+    "income_below_committed": 0.272843115208755,
+    "unemployed_at_default": 0.6652424855707968,
+    "income_below_committed_share_of_agents": 0.0364,
+    "income_below_committed_who_default": 1.0
   },
   "BNPL beta=1": {
     "default_rate": 0.13919,
@@ -24,6 +30,21 @@
     "held_traditional_at_start": 0.5387599683885337,
     "streak_all_committed": 0.9094762554781234,
     "streak_no_committed": 0.08032186220274445,
-    "income_below_committed": 0.26151303972986567
+    "income_below_committed": 0.26151303972986567,
+    "unemployed_at_default": 0.6789280839140743,
+    "income_below_committed_share_of_agents": 0.0364,
+    "income_below_committed_who_default": 1.0
+  },
+  "unemployment path, fitted shock 0.016": {
+    "earners_out_of_work_t12": 0.1599009900990099,
+    "earners_out_of_work_t26": 0.27772277227722775,
+    "earners_out_of_work_t52": 0.38850247524752474,
+    "households_with_earner_out_t52": 0.27903
+  },
+  "unemployment path, QLFS upper bound 0.0117": {
+    "earners_out_of_work_t12": 0.11948019801980199,
+    "earners_out_of_work_t26": 0.21340346534653465,
+    "earners_out_of_work_t52": 0.3075371287128713,
+    "households_with_earner_out_t52": 0.22644000000000003
   }
 }

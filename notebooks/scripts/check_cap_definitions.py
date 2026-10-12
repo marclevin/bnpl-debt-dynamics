@@ -103,6 +103,17 @@ if __name__ == "__main__":
                 })
     out = pd.DataFrame(rows)
     text = out.to_markdown(index=False)
+    # The model's cap against the agreements cap, paired by seed: one being detectable and
+    # the other not does not show that they differ, so the difference is tested directly.
+    diffs = []
+    for beta in (0.0, 1.0):
+        for cap in (1, 2, 3):
+            a = df[(df.label == f"cap{cap}_b{beta:g}") & (df.definition == "model")].set_index("seed")
+            c = df[(df.label == f"cap{cap}_b{beta:g}") & (df.definition == "agreements")].set_index("seed")
+            z = (a.default_rate_final - c.default_rate_final.reindex(a.index)) * 100
+            diffs.append({"beta": beta, "cap": cap,
+                          "(a) less (c), default (pp)": f"{z.mean():+.2f} ± {z.std(ddof=1) / math.sqrt(len(z)):.2f}"})
+    text += "\n\nThe model's cap less the agreements cap, paired by seed:\n\n" + pd.DataFrame(diffs).to_markdown(index=False)
     print(text)
     from pathlib import Path
     (Path(__file__).resolve().parents[2] / "results" / "summary" / "cap_definitions.md").write_text(

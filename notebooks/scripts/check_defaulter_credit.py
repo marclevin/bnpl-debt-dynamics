@@ -42,6 +42,8 @@ def one(params):
         c["streak_all_committed"] += a.committed_in_streak == k
         c["streak_no_committed"] += a.committed_in_streak == 0
         c["income_below_committed"] += a.income_tick < a.committed_tick
+        # Added 2026-10-12 (second review): an earner out of work when the household defaults.
+        c["unemployed_at_default"] += a.is_wage_household and a.n_unemployed > 0
         return orig(self, aid)
 
     cls.record_default = hook
@@ -50,7 +52,28 @@ def one(params):
     finally:
         cls.record_default = orig
     c["n"] = len(agents)
+    c["n_income_below_committed"] = sum(a.income_tick < a.committed_tick for a in agents.values())
     return dict(c)
+
+
+def unemployment_path(params):
+    """Share of the earners employed at the start who are out of work at ticks 12, 26 and 52.
+
+    Every earner starts employed, and the separation and re-employment rates imply a far
+    higher steady-state share out of work (46% at the fitted rate), so the share rises
+    through the run (Section 3.4)."""
+    from simulation.model import BNPLModel
+
+    m = BNPLModel(params)
+    wage = [a for a in m.agents if a.is_wage_household and a.rec.n_earners > 0]
+    earners = sum(a.rec.n_earners for a in wage)
+    out = {}
+    for t in range(1, 53):
+        m.step()
+        if t in (12, 26, 52):
+            out[f"earners_out_of_work_t{t}"] = sum(a.n_unemployed for a in wage) / earners
+    out["households_with_earner_out_t52"] = sum(a.n_unemployed > 0 for a in wage) / len(m.agents)
+    return out
 
 
 if __name__ == "__main__":
@@ -72,12 +95,23 @@ if __name__ == "__main__":
                      "held_traditional_at_start": tot["started_with_debt"] / d,
                      "streak_all_committed": tot["streak_all_committed"] / d,
                      "streak_no_committed": tot["streak_no_committed"] / d,
-                     "income_below_committed": tot["income_below_committed"] / d}
+                     "income_below_committed": tot["income_below_committed"] / d,
+                     "unemployed_at_default": tot["unemployed_at_default"] / d,
+                     "income_below_committed_share_of_agents": tot["n_income_below_committed"] / tot["n"],
+                     "income_below_committed_who_default": tot["income_below_committed"]
+                     / tot["n_income_below_committed"]}
         print(
             f"{name}: default rate {d / tot['n']:.4f}; of defaulters: owe any credit "
             f"{tot['owes_any'] / d:.3f}, owe traditional {tot['owes_trad'] / d:.3f}, "
             f"held traditional debt at start {tot['started_with_debt'] / d:.3f}"
         )
+    for name, shock in (("unemployment path, fitted shock 0.016", 0.016),
+                        ("unemployment path, QLFS upper bound 0.0117", 0.0117)):
+        ps = [calibrated(bnpl_enabled=False, label=name).replace(seed=10_000 + i, shock_prob=shock)
+              for i in range(20)]
+        rows = Parallel(n_jobs=-2)(delayed(unemployment_path)(p) for p in ps)
+        out[name] = {k: sum(r[k] for r in rows) / len(rows) for k in rows[0]}
+        print(name, {k: round(v, 3) for k, v in out[name].items()})
     dest = Path("results/summary/defaulter_credit.json")
     dest.write_text(json.dumps(out, indent=2))
     print(f"wrote {dest}")

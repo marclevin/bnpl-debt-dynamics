@@ -319,3 +319,19 @@ I read every body chapter once more for simplicity only. These were line edits, 
 - I replaced "mutual blindness" with "platforms not seeing one another" (4.7), matching the conclusion.
 
 I spot-checked the conclusion's 0.37–1.27 range against `tab_effect`. The thesis builds with no undefined references, and `check_results_tables.py` still passes.
+
+## 2026-10-12: second academic review
+
+A second review was critiqued by an independent agent before anything changed, and a second agent checked every edit against the code and data afterwards.
+
+### What moved
+
+- **New effect-robustness arm, `committed_relief`.** A new switch, `committed_shortfall_clears_distress` (off by default), lets a loan that pays food and rent in full clear that tick's distress. The existing "credit pays food and rent first" arm still counts the tick as distress, so no arm had tested the rule itself. The whole effect suite was rerun; the 1,020 existing rows reproduce exactly. Under the new rule, default without BNPL falls from 13.30% to 5.77%, the traditional lender lends about 3.3 times as much (it assesses surveyed income), and the BNPL effect disappears: +0.01 ± 0.04 points at β = 0 and +0.02 ± 0.05 at β = 1. The thesis now says the effect rests on persistent income losses *and* on counting borrowing for food and rent as distress (4.6, 4.7, conclusion, abstract).
+- **Disclosed, not changed:**
+  - The labour-market path. Every earner starts employed, and the separation and re-employment rates imply 46% out of work in steady state, so 16% of initial earners are out of work at tick 12 and 39% at tick 52 (31% at the QLFS upper bound).
+  - Who defaults. 66% of baseline defaulters have an earner out of work, and every household whose income is below its food and rent (3.6% of agents) defaults, about 3.6 points of the rate. `check_defaulter_credit.py` now writes these figures.
+- **Cap.** `check_cap_definitions.py` now tests the platform cap against the agreements cap directly: −0.24 ± 0.08 points at β = 1 and a cap of two. The thesis no longer calls the question unsettled.
+- **"How many vs how often" (4.3, 4.7, conclusion).** Every full-access arm has 70–76% ever-holders, so apart from the access sweeps the experiments vary purchase frequency. Default rises 0.35 ± 0.08 points from β = 1 to 3 while post-burn-in volume rises 9%.
+- **Volume benchmark.** One provider per customer against model households across four platforms; the biases run both ways, so the comparison supports orders of magnitude only.
+- **Tables.** `tab_robustness`, `tab_robustness_appendix`, `tab_cooloff` and `tab_cap` now bold detectable differences, as Section 3.1 says. `tab_effect` shows purchase size at both values of β.
+- **Text.** The abstract now states the question (293 words). The conclusion's findings were restructured. The 4.4 Q4–Q1 contrast is labelled as chosen after seeing the table. "Replications" became "replicates". The body is 9,953 words by a float-excluding count.

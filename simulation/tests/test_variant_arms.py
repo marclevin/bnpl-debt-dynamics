@@ -84,3 +84,20 @@ def test_funded_committed_shortfall_spends_the_loan_on_it():
     assert model.lender.value_granted == pytest.approx(200.0)
     assert a.savings == pytest.approx(0.0)
     assert a.distress_streak == 1  # the shortfall is still distress
+
+
+def test_committed_relief_clears_distress_when_the_loan_pays_food_and_rent():
+    model, a = household(**FOOD_SHORT, bnpl_enabled=False, committed_shortfall_funded=True,
+                         committed_shortfall_clears_distress=True)
+    model.step()
+    assert model.lender.value_granted == pytest.approx(200.0)
+    assert a.savings == pytest.approx(0.0)
+    assert a.distress_streak == 0  # food and rent were paid from the loan
+
+
+def test_committed_relief_still_counts_a_refused_shortfall_as_distress(monkeypatch):
+    model, a = household(**FOOD_SHORT, bnpl_enabled=False, committed_shortfall_funded=True,
+                         committed_shortfall_clears_distress=True)
+    monkeypatch.setattr(type(model.lender), "apply", lambda self, agent, amount: 0.0)
+    model.step()
+    assert a.distress_streak == 1

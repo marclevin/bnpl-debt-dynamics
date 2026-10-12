@@ -22,3 +22,14 @@ Diagnostic only. The model implements definition (a). Paired by seed against a n
 |      1 |     3 | (a) platforms, freeze at cap [the model] | -0.15 ± 0.11               |                   -6.9 |
 |      1 |     3 | (b) platforms, top-ups allowed           | -0.08 ± 0.08               |                   -0.3 |
 |      1 |     3 | (c) agreements                           | -0.02 ± 0.10               |                   -7.4 |
+
+The model's cap less the agreements cap, paired by seed:
+
+|   beta |   cap | (a) less (c), default (pp)   |
+|-------:|------:|:-----------------------------|
+|      0 |     1 | +0.00 ± 0.00                 |
+|      0 |     2 | +0.08 ± 0.12                 |
+|      0 |     3 | +0.06 ± 0.06                 |
+|      1 |     1 | +0.00 ± 0.00                 |
+|      1 |     2 | -0.24 ± 0.08                 |
+|      1 |     3 | -0.13 ± 0.11                 |

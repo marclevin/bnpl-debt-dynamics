@@ -4,40 +4,41 @@
 \centering
 \caption{The \ac{BNPL} effect on default under alternative assumptions}
 \label{tab:effect}
-\tabnote{Effect: default with \ac{BNPL} less default without, paired by seed over one block (70{,}000--70{,}019). No \ac{BNPL}: the setting's default rate without \ac{BNPL}. Purchase: mean want-driven purchase at $\beta = 1$, in 2017 Rands, against a provider-based figure of R992. Volume: annual \ac{BNPL} volume per eligible household, in 2017 Rands, against a provider range of R1{,}333--R4{,}261 (Table~\ref{tab:bnpl-on-checks}).}
-\begingroup\setlength{\tabcolsep}{3pt}\footnotesize
-\begin{tabular}{L{4.15cm}R{1.15cm}R{1.1cm}R{1.0cm}R{1.0cm}rr}
+\tabnote{Effect: default with \ac{BNPL} less default without, paired by seed over one block (70{,}000--70{,}019). No \ac{BNPL}: the setting's default rate without \ac{BNPL}. Purchase: mean want-driven purchase, in 2017 Rands, against a provider-based figure of R992 ($\pm$35\%). Volume: annual \ac{BNPL} volume per eligible household, in 2017 Rands, against a provider range of R1{,}333--R4{,}261 (Table~\ref{tab:bnpl-on-checks}).}
+\begingroup\setlength{\tabcolsep}{2.5pt}\footnotesize
+\begin{tabular}{L{3.55cm}R{1.0cm}rrrrrr}
 \toprule
-& & & \multicolumn{2}{c}{\textbf{Volume (R)}} & \multicolumn{2}{c}{\textbf{Effect (pp)}} \\ \cmidrule(lr){4-5}\cmidrule(lr){6-7}
-\textbf{Setting} & \textbf{No \ac{BNPL} (\%)} & \textbf{Pur\-chase (R)} & $\beta=0$ & $\beta=1$ & $\beta=0$ & $\beta=1$ \\
+& & \multicolumn{2}{c}{\textbf{Purchase (R)}} & \multicolumn{2}{c}{\textbf{Volume (R)}} & \multicolumn{2}{c}{\textbf{Effect (pp)}} \\ \cmidrule(lr){3-4}\cmidrule(lr){5-6}\cmidrule(lr){7-8}
+\textbf{Setting} & \textbf{No \ac{BNPL} (\%)} & $\beta=0$ & $\beta=1$ & $\beta=0$ & $\beta=1$ & $\beta=0$ & $\beta=1$ \\
 \midrule
-\multicolumn{7}{l}{\emph{Reference}} \\
-\textbf{reference settings} & 13.30 & 611 & 1{,}018 & 10{,}399 & $\boldsymbol{+0.15 \pm 0.07}$ & $\boldsymbol{+0.60 \pm 0.12}$ \\
-\multicolumn{7}{l}{\emph{Purchase size (Submodel 4)}} \\
-$\kappa = 0.07$ (half) & 13.30 & 316 & 546 & 5{,}508 & $+0.01 \pm 0.10$ & $\boldsymbol{+0.25 \pm 0.09}$ \\
-$\kappa = 0.28$ (double) & 13.30 & 1{,}159 & 1{,}837 & 18{,}802 & $-0.02 \pm 0.09$ & $\boldsymbol{+0.91 \pm 0.07}$ \\
-sized on income & 13.30 & 1{,}075 & 1{,}419 & 17{,}990 & $+0.09 \pm 0.07$ & $\boldsymbol{+1.22 \pm 0.10}$ \\
-\multicolumn{7}{l}{\emph{Borrowing amount on a shortfall (Submodel 4)}} \\
-shortfall $+25\%$ & 13.14 & 608 & 1{,}056 & 10{,}454 & $+0.12 \pm 0.09$ & $\boldsymbol{+0.72 \pm 0.08}$ \\
-shortfall $+$ committed spending & 12.02 & 601 & 1{,}208 & 10{,}704 & $\boldsymbol{+0.22 \pm 0.10}$ & $\boldsymbol{+1.08 \pm 0.11}$ \\
-exact shortfall, no cap & 13.30 & 609 & 1{,}425 & 10{,}803 & $+0.05 \pm 0.09$ & $\boldsymbol{+0.59 \pm 0.09}$ \\
-shortfall $+25\%$, no cap & 13.14 & 609 & 1{,}713 & 11{,}123 & $-0.11 \pm 0.08$ & $\boldsymbol{+0.37 \pm 0.09}$ \\
-shortfall $+$ committed, no cap & 12.02 & 603 & 2{,}070 & 11{,}747 & $\boldsymbol{+0.52 \pm 0.09}$ & $\boldsymbol{+1.27 \pm 0.11}$ \\
-\multicolumn{7}{l}{\emph{Routing and the shortfall path (Submodels 5, 7 and 13)}} \\
-loyal routing & 13.30 & 611 & 1{,}011 & 10{,}410 & $+0.08 \pm 0.08$ & $\boldsymbol{+0.62 \pm 0.07}$ \\
-no \ac{BNPL} for shortfalls & 13.30 & 628 & 610 & 9{,}262 & $+0.06 \pm 0.10$ & $\boldsymbol{+0.47 \pm 0.11}$ \\
-credit pays food and rent first & 13.31 & 613 & 1{,}000 & 10{,}354 & $+0.06 \pm 0.09$ & $\boldsymbol{+0.68 \pm 0.11}$ \\
-\multicolumn{7}{l}{\emph{Other assumptions (Submodels 1, 6, 7 and 12)}} \\
-single-tick income shock & 4.82 & 624 & 792 & 11{,}446 & $-0.015 \pm 0.013$ & $+0.018 \pm 0.015$ \\
-default after 56 days & 14.24 & 612 & 922 & 10{,}213 & $-0.01 \pm 0.06$ & $\boldsymbol{+0.76 \pm 0.11}$ \\
-minimum payment 2.5\% a month & 13.16 & 611 & 1{,}004 & 10{,}411 & $+0.06 \pm 0.10$ & $\boldsymbol{+0.50 \pm 0.09}$ \\
-minimum payment 10\% a month & 13.42 & 610 & 1{,}045 & 10{,}357 & $+0.06 \pm 0.10$ & $\boldsymbol{+0.70 \pm 0.09}$ \\
-minimum-payer share 0.20 & 13.35 & 612 & 1{,}037 & 10{,}411 & $-0.05 \pm 0.09$ & $\boldsymbol{+0.54 \pm 0.11}$ \\
-minimum-payer share 0.40 & 13.34 & 611 & 1{,}018 & 10{,}405 & $+0.24 \pm 0.14$ & $\boldsymbol{+0.65 \pm 0.12}$ \\
-platform limit $\lambda = 0.25$ & 13.30 & 611 & 1{,}033 & 10{,}393 & $\boldsymbol{+0.20 \pm 0.07}$ & $\boldsymbol{+0.63 \pm 0.11}$ \\
-platform limit $\lambda = 1.0$ & 13.30 & 610 & 1{,}033 & 10{,}385 & $\boldsymbol{+0.20 \pm 0.07}$ & $\boldsymbol{+0.67 \pm 0.10}$ \\
-\multicolumn{7}{l}{\emph{Want-driven path switched off ($q_{\text{base}} = 0$, $\beta = 0$)}} \\
-\ac{BNPL} for shortfalls only & 13.30 & -- & 388 & -- & $+0.05 \pm 0.09$ & -- \\
+\multicolumn{8}{l}{\emph{Reference}} \\
+\textbf{reference settings} & 13.30 & 636 & 611 & 1{,}018 & 10{,}399 & $\boldsymbol{+0.15 \pm 0.07}$ & $\boldsymbol{+0.60 \pm 0.12}$ \\
+\multicolumn{8}{l}{\emph{Purchase size (Submodel 4)}} \\
+$\kappa = 0.07$ (half) & 13.30 & 328 & 316 & 546 & 5{,}508 & $+0.01 \pm 0.10$ & $\boldsymbol{+0.25 \pm 0.09}$ \\
+$\kappa = 0.28$ (double) & 13.30 & 1{,}281 & 1{,}159 & 1{,}837 & 18{,}802 & $-0.02 \pm 0.09$ & $\boldsymbol{+0.91 \pm 0.07}$ \\
+sized on income & 13.30 & 1{,}066 & 1{,}075 & 1{,}419 & 17{,}990 & $+0.09 \pm 0.07$ & $\boldsymbol{+1.22 \pm 0.10}$ \\
+\multicolumn{8}{l}{\emph{Borrowing amount on a shortfall (Submodel 4)}} \\
+shortfall $+25\%$ & 13.14 & 636 & 608 & 1{,}056 & 10{,}454 & $+0.12 \pm 0.09$ & $\boldsymbol{+0.72 \pm 0.08}$ \\
+shortfall $+$ committed spending & 12.02 & 629 & 601 & 1{,}208 & 10{,}704 & $\boldsymbol{+0.22 \pm 0.10}$ & $\boldsymbol{+1.08 \pm 0.11}$ \\
+exact shortfall, no cap & 13.30 & 642 & 609 & 1{,}425 & 10{,}803 & $+0.05 \pm 0.09$ & $\boldsymbol{+0.59 \pm 0.09}$ \\
+shortfall $+25\%$, no cap & 13.14 & 633 & 609 & 1{,}713 & 11{,}123 & $-0.11 \pm 0.08$ & $\boldsymbol{+0.37 \pm 0.09}$ \\
+shortfall $+$ committed, no cap & 12.02 & 629 & 603 & 2{,}070 & 11{,}747 & $\boldsymbol{+0.52 \pm 0.09}$ & $\boldsymbol{+1.27 \pm 0.11}$ \\
+\multicolumn{8}{l}{\emph{Routing and the shortfall path (Submodels 5, 7 and 13)}} \\
+loyal routing & 13.30 & 640 & 611 & 1{,}011 & 10{,}410 & $+0.08 \pm 0.08$ & $\boldsymbol{+0.62 \pm 0.07}$ \\
+no \ac{BNPL} for shortfalls & 13.30 & 640 & 628 & 610 & 9{,}262 & $+0.06 \pm 0.10$ & $\boldsymbol{+0.47 \pm 0.11}$ \\
+credit pays food and rent, still distress & 13.31 & 641 & 613 & 1{,}000 & 10{,}354 & $+0.06 \pm 0.09$ & $\boldsymbol{+0.68 \pm 0.11}$ \\
+credit pays food and rent, not distress & 5.77 & 645 & 609 & 1{,}650 & 11{,}127 & $+0.01 \pm 0.04$ & $+0.02 \pm 0.05$ \\
+\multicolumn{8}{l}{\emph{Other assumptions (Submodels 1, 6, 7 and 12)}} \\
+single-tick income shock & 4.82 & 650 & 624 & 792 & 11{,}446 & $-0.015 \pm 0.013$ & $+0.018 \pm 0.015$ \\
+default after 56 days & 14.24 & 642 & 612 & 922 & 10{,}213 & $-0.01 \pm 0.06$ & $\boldsymbol{+0.76 \pm 0.11}$ \\
+minimum payment 2.5\% a month & 13.16 & 644 & 611 & 1{,}004 & 10{,}411 & $+0.06 \pm 0.10$ & $\boldsymbol{+0.50 \pm 0.09}$ \\
+minimum payment 10\% a month & 13.42 & 650 & 610 & 1{,}045 & 10{,}357 & $+0.06 \pm 0.10$ & $\boldsymbol{+0.70 \pm 0.09}$ \\
+minimum-payer share 0.20 & 13.35 & 645 & 612 & 1{,}037 & 10{,}411 & $-0.05 \pm 0.09$ & $\boldsymbol{+0.54 \pm 0.11}$ \\
+minimum-payer share 0.40 & 13.34 & 643 & 611 & 1{,}018 & 10{,}405 & $+0.24 \pm 0.14$ & $\boldsymbol{+0.65 \pm 0.12}$ \\
+platform limit $\lambda = 0.25$ & 13.30 & 642 & 611 & 1{,}033 & 10{,}393 & $\boldsymbol{+0.20 \pm 0.07}$ & $\boldsymbol{+0.63 \pm 0.11}$ \\
+platform limit $\lambda = 1.0$ & 13.30 & 642 & 610 & 1{,}033 & 10{,}385 & $\boldsymbol{+0.20 \pm 0.07}$ & $\boldsymbol{+0.67 \pm 0.10}$ \\
+\multicolumn{8}{l}{\emph{Want-driven path switched off ($q_{\text{base}} = 0$, $\beta = 0$)}} \\
+\ac{BNPL} for shortfalls only & 13.30 & -- & -- & 388 & -- & $+0.05 \pm 0.09$ & -- \\
 \bottomrule
 \end{tabular}
 \endgroup

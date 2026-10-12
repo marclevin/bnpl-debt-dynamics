@@ -60,6 +60,8 @@ fee cap and the assumed order cap, are set at 2026 prices and deflated once (App
 \addlinespace
 \texttt{committed\_\allowbreak{}shortfall\_\allowbreak{}funded} & 7 & off & assumed & Whether credit raised in a tick with a committed-expenditure shortfall pays that shortfall first. Off by default, when the credit goes to debt service, then discretionary spending, then savings. & on as an effect-robustness arm (Table~\ref{tab:effect}) \\
 \addlinespace
+\texttt{committed\_\allowbreak{}shortfall\_\allowbreak{}clears\_\allowbreak{}distress} & 7 & off & assumed & With credit paying food and rent first, whether food and rent that a loan pays in full still count as distress. Off by default, when any committed shortfall is distress. & on, with the switch above, as an effect-robustness arm (Table~\ref{tab:effect}) \\
+\addlinespace
 \texttt{shortfall\_\allowbreak{}bnpl\_\allowbreak{}capped} & 5 & on & assumed & Limits the \ac{BNPL} share of a shortfall request to $\kappa$ times the household's monthly discretionary budget, the quantity that sizes a want-driven purchase. & capped / uncapped, crossed with the three amount rules \\
 \addlinespace
 \texttt{bnpl\_\allowbreak{}purchase\_\allowbreak{}base} & 4/12 & discretionary & sourced & The budget against which a purchase is sized. \ac{BNPL} finances discretionary consumption, so the reference is the household's discretionary budget. & discretionary / income \\

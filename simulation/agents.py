@@ -205,12 +205,15 @@ class HouseholdAgent(Agent):
         # payments it funds are made. The trigger is the realised shortfall from steps
         # 2 and 3, which is exactly what D3 and D4 specify.
         shortfall = committed_shortfall + service_shortfall
+        committed_paid_by_credit = 0.0
         if shortfall > 0 and not self.defaulted:
             cash += self._seek_credit(shortfall)
             if p.committed_shortfall_funded and committed_shortfall > 0:
                 # Robustness arm: the loan pays the food or rent left unpaid at step 2
-                # before anything else. Distress is still recorded below.
-                cash -= min(cash, committed_shortfall)
+                # before anything else. Distress is still recorded below, unless
+                # `committed_shortfall_clears_distress` is also on.
+                committed_paid_by_credit = min(cash, committed_shortfall)
+                cash -= committed_paid_by_credit
 
         # --- D7 distress is assessed HERE, before payment friction -------------
         # Either condition suffices. (1) Income plus savings could not cover committed
@@ -223,7 +226,12 @@ class HouseholdAgent(Agent):
         # through present bias is NOT counted as cash-flow insolvent. Friction must move
         # arrears without moving default.
         unmet_after_credit = max(due_trad + bnpl_due - cash, 0.0)
-        distressed = committed_shortfall > 0 or unmet_after_credit > 0
+        committed_unmet = committed_shortfall
+        if p.committed_shortfall_clears_distress:
+            # Second robustness arm (added 2026-10-12): food and rent paid from a loan in
+            # full are not distress, so only what credit leaves unpaid counts.
+            committed_unmet = committed_shortfall - committed_paid_by_credit
+        distressed = committed_unmet > 0 or unmet_after_credit > 0
 
         # --- pay BNPL, then traditional --------------------------------------
         # BNPL first: its instalments are contractually fixed and the platform debits a

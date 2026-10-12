@@ -84,7 +84,7 @@ are to the body.} \\
 \bottomrule
 \endfoot
 \multicolumn{3}{l}{\emph{Bounding a central claim, argued in the body}} \\
-Default is a model construct & A household defaults after seven consecutive ticks of unmet committed expenditure or debt service; a household without debt can default, although 90.5\% of baseline defaulters owe traditional debt when they do; 90.9\% were short of food or rent in every tick of the streak that ended in default. No external figure measures the construct & Sections~\ref{sec:sequence} and~\ref{sec:data-validation}; bounds the level of default \\
+Default is a model construct & A household defaults after seven consecutive ticks of unmet committed expenditure or debt service; a household without debt can default, although 90.5\% of baseline defaulters owe traditional debt when they do; 90.9\% were short of food or rent in every tick of the streak that ended in default, and 66\% had an earner out of work. No external figure measures the construct & Sections~\ref{sec:sequence} and~\ref{sec:data-validation}; bounds the level of default \\
 \addlinespace
 The baseline is calibrated, not validated & Two parameters are fitted to two \ac{CCMR} bands; agreement on those bands is not evidence, and the fitted shock rate is about 1.4 times the upper bound of the labour-force separation rate possibly because one channel does the work of several. The fitted 90+ share is the time average of a share that rises to 19.9\% by the final tick, because every household starts current and no account is written off, so the fitted shock rate depends on the measurement window & Section~\ref{sec:lim-calibration}; bounds every baseline agreement and the level of default \\
 \addlinespace
@@ -98,7 +98,7 @@ Platform choice is assumed & Households send each request to the platforms in a 
 \addlinespace
 Platform count moves capacity & Each platform brings its own limit, so platform count and total credit capacity move together, and no arm gives platforms a shared view of exposure & Section~\ref{sec:results-stacking}; bounds the RQ2 findings on platform count and on platforms not seeing one another \\
 \addlinespace
-Differences below about 0.2 points are not detectable & With twenty replications a difference in default has a standard error of about 0.1 points. A true difference of 0.2 points would be missed about half the time, and smaller effects cannot be distinguished from none. The four scenario arms of Section~\ref{sec:scenarios} have one hundred replications and a standard error of about 0.05 points & Sections~\ref{sec:results} and~\ref{sec:scenarios}; bounds every statement that a difference is not detectable \\
+Differences below about 0.2 points are not detectable & With twenty replicates a difference in default has a standard error of about 0.1 points. A true difference of 0.2 points would be missed about half the time, and smaller effects cannot be distinguished from none. The four scenario arms of Section~\ref{sec:scenarios} have one hundred replicates and a standard error of about 0.05 points & Sections~\ref{sec:results} and~\ref{sec:scenarios}; bounds every statement that a difference is not detectable \\
 \addlinespace
 Default contagion is excluded & No channel carries household default to other households' income or lenders' credit supply & Table~\ref{tab:design-concepts}; Section~\ref{sec:no-cascade}; limits the contagion mechanisms tested in RQ2 \\
 \addlinespace
@@ -147,9 +147,8 @@ permissive than in practice \\
 \addlinespace
 Committed shortfalls are not repaid & A committed-expenditure shortfall is recorded as distress
 and is not carried forward. Credit raised against it is spent on debt service and discretionary
-spending, or saved (Section~\ref{sec:sequence}) & Little for the \ac{BNPL} effect: when credit pays the shortfall first,
-default without \ac{BNPL} rises by 0.01 points and the \ac{BNPL} effect at $\beta = 1$ is
-$0.68 \pm 0.11$ points, against $0.60 \pm 0.12$ (Table~\ref{tab:effect}). Not tested for the scenario switches \\
+spending, or saved (Section~\ref{sec:sequence}) & Little when credit pays the shortfall first and the tick is still distress: the \ac{BNPL} effect at $\beta = 1$ is
+$0.68 \pm 0.11$ points, against $0.60 \pm 0.12$. When the paid tick is not distress, default without \ac{BNPL} falls to 5.77\% and the effect disappears (Table~\ref{tab:effect}, Section~\ref{sec:results-effect}). Not tested for the scenario switches \\
 \addlinespace
 Resample distortion & Weighted resampling raises the per-capita income Gini from 0.6514 to 0.6668,
 a shift of 0.015, within the 0.02 tolerance of Table~\ref{tab:validation}. It is reported and left uncorrected & May overstate distress among the lowest-income agents \\
@@ -169,7 +168,7 @@ Rands \\
 \label{app:levers}
 
 Two further levers are run at the same two values of $\beta$ as the
-scenarios of Section~\ref{sec:scenarios}, with twenty replications and their own benchmark arm. The first is a cooling-off window that blocks want-driven
+scenarios of Section~\ref{sec:scenarios}, with twenty replicates and their own benchmark arm. The first is a cooling-off window that blocks want-driven
 \ac{BNPL} purchases for $k^{\text{cool}}$ ticks after a want-driven purchase. One tick matches the
 fourteen-day right of withdrawal under the United Kingdom's Consumer Credit Act, which applies
 to regulated deferred payment credit \cite{fca_ps26_1}, although that
@@ -197,9 +196,14 @@ compared unpaired with the benchmark on other seeds. A
 cap that counts agreements in place of platforms removes 32.9\% of volume and changes default
 by $-0.11 \pm 0.07$ points. A cap on platforms that still allows further agreements on
 platforms already in use removes 1\% of volume and changes default by $-0.04 \pm 0.08$
-points. Neither of the last two changes is detectable. Only the cap as modelled changes default
-detectably, although the agreements cap removes as much volume, so the results do not establish
-lost volume as the cause of the fall. Neither lever was run under the alternative borrowing
+points. Neither of the last two changes is detectable. Paired by seed, the cap as modelled
+lowers default by $0.24 \pm 0.08$ points more than the agreements cap, which removes as much
+volume, so lost volume alone does not explain the fall. The other comparisons add little: at a cap of one the two definitions coincide, and at a cap of three the difference
+is $-0.13 \pm 0.11$ points. One reading, not tested, is that the platform cap withdraws credit from households that
+borrow most often; the routing rule and platform count do not change default detectably
+(Section~\ref{sec:results-stacking}).
+% results/summary/cap_definitions.md (notebooks/scripts/check_cap_definitions.py).
+Neither lever was run under the alternative borrowing
 rules of Table~\ref{tab:effect}, and the model has no measure of what a household loses when a
 purchase or a shortfall loan is refused.
 

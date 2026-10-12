@@ -353,6 +353,19 @@ class ParamSet:
         ),
         sweep="effect-robustness arm: on",
     )
+    committed_shortfall_clears_distress: bool = _p(
+        False,
+        rule="D7",
+        provenance="ASSUMPTION",
+        source=(
+            "With committed_shortfall_funded, whether food and rent that a loan pays in full "
+            "still count as distress. False (the baseline) counts any committed shortfall as "
+            "distress whether or not credit covers it. True counts only the part credit leaves "
+            "unpaid, so borrowing for food is not itself distress. Added 2026-10-12 as an "
+            "effect-robustness arm; the baseline is not recalibrated."
+        ),
+        sweep="effect-robustness arm: on, with committed_shortfall_funded",
+    )
     shortfall_bnpl_capped: bool = _p(
         True,
         rule="D5",

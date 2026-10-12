@@ -125,7 +125,7 @@ def main() -> None:
     cap = rob[rob.label == "rob_amount_shortfall"].set_index("seed").default_rate_final
     unc = rob[rob.label == "rob_amount_shortfall_uncapped"].set_index("seed").default_rate_final
     d = (unc - cap.reindex(unc.index)) * 100
-    expect("robustness", t, f"${d.mean():+.2f} \\pm {d.std(ddof=1) / math.sqrt(len(d)):.2f}^\\dagger$")
+    expect("robustness", t, f"{d.mean():+.2f} \\pm {d.std(ddof=1) / math.sqrt(len(d)):.2f}")
 
     t = frag("tab_robustness_appendix")
     expect("robustness_appendix", t, cell(rob[rob.label == "rob_n1000"].default_rate_final))
@@ -145,12 +145,12 @@ def main() -> None:
     ben1 = rq3[rq3.label == "rq3_kcool0_b1.0"]
     expect("cooloff", t, cell(k4.default_rate_final))
     expect("cooloff", t, f"{(k4.bnpl_volume_cumulative.mean() / ben1.bnpl_volume_cumulative.mean() - 1) * 100:+.1f}")
-    expect("cooloff", t, pmp(k4, ben1, "default_rate_final"))
+    expect("cooloff", t, core(pmp(k4, ben1, "default_rate_final")))
 
     t = frag("tab_cap")
     c1 = rq3[rq3.label == "rq3_cap1_b0.0"]
     expect("cap", t, cell(c1.default_rate_final))
-    expect("cap", t, pm(c1.default_rate_final, ben0.default_rate_final))
+    expect("cap", t, core(pm(c1.default_rate_final, ben0.default_rate_final)))
     expect("cap", t, f"& {c1.bnpl_adoption_final.mean() * 100:.1f} &")
 
     t = frag("tab_scenarios")
