@@ -4,37 +4,37 @@
 \centering
 \caption{Sensitivity of the default rate: remaining arms}
 \label{tab:robustness-appendix}
-\tabnote{Default rate at $\beta = 1$, laid out as Table~\ref{tab:robustness}; seed blocks 53{,}000 (activation), 55{,}000 (population), 51{,}000 (minimum-payer share), 52{,}000 (minimum payment), 56{,}000 (limit) and 58{,}000 (single-tick shock, against the exact-shortfall reference on 50{,}000). $\ddagger$: unpaired, because seeds or population size differ. Under the single-tick shock the baseline 90+ share stays between 7.3\% and 7.6\% at every shock probability on the calibration grid, about half the \ac{CCMR} target.}
+\tabnote{Default rate at $\beta = 1$, laid out as Table~\ref{tab:robustness}; seed blocks 53{,}000 (activation), 55{,}000 (population), 51{,}000 (minimum-payer share), 52{,}000 (minimum payment), 56{,}000 (limit) and 58{,}000 (single-tick shock, against the exact-shortfall reference on 50{,}000). $\ddagger$: unpaired, because seeds or population size differ.}
 \begingroup\setlength{\tabcolsep}{4pt}\footnotesize
 \begin{tabular}{L{7.2cm}rr}
 \toprule
 \textbf{Arm} & \textbf{Default (\%)} & \textbf{Difference (pp)} \\
 \midrule
 \multicolumn{3}{l}{\emph{Activation order (Submodel 17)}} \\
-random, reseeded each tick & 13.94 (0.34) & reference \\
-fixed order, the same every tick & 13.95 (0.30) & $+0.01 \pm 0.10$ \\
+random, reseeded each tick & 7.49 (0.23) & reference \\
+fixed order, the same every tick & 7.43 (0.20) & $-0.07 \pm 0.07$ \\
 \multicolumn{3}{l}{\emph{Population size}} \\
-5{,}000 households & 13.85 (0.41) & reference \\
-1{,}000 households & 14.21 (0.90) & $+0.35 \pm 0.22^\ddagger$ \\
-10{,}000 households & 13.91 (0.42) & $+0.05 \pm 0.13^\ddagger$ \\
+5{,}000 households & 7.45 (0.21) & reference \\
+1{,}000 households & 7.41 (0.92) & $-0.04 \pm 0.21^\ddagger$ \\
+10{,}000 households & 7.40 (0.37) & $-0.04 \pm 0.09^\ddagger$ \\
 \multicolumn{3}{l}{\emph{Minimum-payer share (Submodel 6)}} \\
-0.29 (transferred United States estimate) & 14.01 (0.36) & reference \\
-0.20 & 13.95 (0.42) & $-0.06 \pm 0.12$ \\
-0.25 & 13.98 (0.24) & $-0.03 \pm 0.10$ \\
-0.35 & 13.99 (0.41) & $-0.03 \pm 0.12$ \\
-0.40 & 13.99 (0.36) & $-0.02 \pm 0.10$ \\
+0.29 (transferred United States estimate) & 7.43 (0.24) & reference \\
+0.20 & 7.45 (0.25) & $+0.01 \pm 0.08$ \\
+0.25 & 7.43 (0.23) & $-0.01 \pm 0.06$ \\
+0.35 & 7.51 (0.28) & $+0.08 \pm 0.09$ \\
+0.40 & 7.53 (0.22) & $+0.09 \pm 0.08$ \\
 \multicolumn{3}{l}{\emph{Minimum-payment fraction of balance per month (Submodel 6)}} \\
-0.05 & 13.89 (0.35) & reference \\
-0.025 & 13.79 (0.25) & $-0.10 \pm 0.09$ \\
-0.1 & 14.04 (0.38) & $+0.16 \pm 0.11$ \\
+0.05 & 7.29 (0.19) & reference \\
+0.025 & 7.20 (0.30) & $-0.10 \pm 0.05$ \\
+0.1 & 7.54 (0.15) & $\boldsymbol{+0.25 \pm 0.05}$ \\
 \multicolumn{3}{l}{\emph{Rolling per-platform limit $\lambda$, months of income (Submodel 12)}} \\
-0.10 & 13.78 (0.29) & reference \\
-0.25 & 13.93 (0.33) & $+0.14 \pm 0.10$ \\
-0.50 & 13.88 (0.36) & $+0.10 \pm 0.09$ \\
-1.00 & 13.88 (0.36) & $+0.10 \pm 0.09$ \\
+0.10 & 7.32 (0.23) & reference \\
+0.25 & 7.39 (0.27) & $+0.07 \pm 0.05$ \\
+0.50 & 7.42 (0.24) & $+0.10 \pm 0.05$ \\
+1.00 & 7.42 (0.24) & $+0.10 \pm 0.05$ \\
 \multicolumn{3}{l}{\emph{Income-shock persistence (Submodel 1)}} \\
-persistent until re-employment (default rule, seeds 50{,}000--) & 14.05 (0.47) & reference \\
-single-tick shock & 4.81 (0.04) & $\boldsymbol{-9.23 \pm 0.11}^\ddagger$ \\
+persistent until re-employment (default rule, seeds 50{,}000--) & 7.54 (0.29) & reference \\
+single-tick shock & 4.78 (0.06) & $\boldsymbol{-2.76 \pm 0.07}^\ddagger$ \\
 \bottomrule
 \end{tabular}
 \endgroup

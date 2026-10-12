@@ -195,12 +195,14 @@ class ParamSet:
     shock_prob: float = _p(
         0.01,
         rule="D1",
-        provenance="FITTED",
+        provenance="DERIVED",
         source=(
-            "CALIBRATION TARGET, fitted to CCMR baseline arrears. Reported against the "
-            "QLFS 2017 job-separation band (0.54%-1.17% per tick), NOT fitted to it."
+            "Revised 2026-10-12: DERIVED, not fitted. The baseline (experiments.calibrated) "
+            "uses the separation rate at which expected employment is constant under labour "
+            "flows, shock_exit_prob x jobseekers / earners = 0.00446. The QLFS 2017 band is "
+            "0.54%-1.17% per tick. Earlier versions fitted it to the CCMR 90+ band (0.016)."
         ),
-        sweep="calibration grid",
+        sweep="0.0013-0.0071 in the Sobol design",
     )
     # NOTE: there is deliberately no shock_magnitude parameter. Following Madeira, the
     # shock is a separation from employment, so the magnitude is the household's observed
@@ -226,6 +228,21 @@ class ParamSet:
             "moved into employment per quarter -> 1.87% per 14-day tick."
         ),
         sweep="with the QLFS band",
+    )
+    labour_flows: bool = _p(
+        False,
+        rule="D1",
+        provenance="SOURCED",
+        source=(
+            "Added 2026-10-12. When on, every employed member (in every household, not only "
+            "wage-dominant ones) separates at shock_prob and every unemployed member, "
+            "including those strictly unemployed on the NIDS roster at the start, finds work "
+            "at shock_exit_prob (QLFS). A hired jobseeker brings the median NIDS take-home pay "
+            "of employed adults in the household's income quintile. With shock_prob set to "
+            "shock_exit_prob x jobseekers / earners, expected employment is constant from the "
+            "first tick, as in the stable 2017 labour market."
+        ),
+        sweep="on in the baseline once adopted",
     )
 
     # -- D2 consumption ---------------------------------------------------------

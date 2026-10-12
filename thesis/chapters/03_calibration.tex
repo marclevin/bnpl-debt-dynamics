@@ -19,7 +19,9 @@ Constructed & Scheduled debt service; income quintiles and reference groups; the
 \addlinespace
 Imported & Minimum-payer share of 0.29; the evidence behind payment friction and want-driven borrowing (all United States) & Section~\ref{sec:lim-transfer} \\
 \addlinespace
-Fitted & Income-shock probability; payment friction & Section~\ref{sec:lim-calibration} \\
+Derived & The separation rate, set so that expected employment is constant & Section~\ref{sec:lim-calibration} \\
+\addlinespace
+Fitted & Payment friction & Section~\ref{sec:lim-calibration} \\
 \addlinespace
 Swept & Peer parameters $q_{\text{base}}$, $\beta$ and the threshold parameters; the shortfall borrowing rule and its \ac{BNPL} cap; the minimum-payment fraction; the platform limit $\lambda$ & Section~\ref{sec:results-robustness} \\
 \bottomrule
@@ -46,14 +48,18 @@ pairing reduces the standard error little. Differences across seed groups are tr
 
 Unless a table states otherwise, it reports means over replicates with the replicate standard
 deviation in brackets, and differences with one standard error, paired by seed. Runs use the
-fitted parameters, four platforms and access for every banked household. We call a
+calibrated parameters, four platforms and access for every banked household. We call a
 difference detectable when it exceeds two standard errors, and tables print such differences
-in bold. With twenty replicates the standard error of a difference in default is about 0.1
-points, so a true change of 0.2 points would be missed about half the time; with one hundred
-it is about 0.05 points. We judge many contrasts this way, so about one in twenty would pass
+in bold. With twenty replicates the standard error of a difference in default is about 0.07
+points, so a true change of 0.14 points would be missed about half the time; with one hundred
+it is about 0.03 points. We judge many contrasts this way, so about one in twenty would pass
 by chance, and a single detectable difference carries less weight than one that repeats
 across seed blocks. The standard errors measure simulation variance only, not uncertainty in
 the data, the drawn population or the assumptions. Error bars in figures are 95\% confidence intervals.
+% 0.07 and 0.03: median standard error of the default differences in results_numbers.json,
+% 0.068 points over the twenty-replicate arms (eff_*_se, injection_*_se, access_rise_*_se,
+% lever_cap*/lever_kcool*_diff_se) and 0.029--0.040 over the scenario arms
+% (lever_bureau/afford/both_*_diff_se).
 
 \begin{table}[H]
 \centering
@@ -241,24 +247,23 @@ African distribution was available to calibrate it.
 \subsection{Calibration}
 \label{sec:lim-calibration}
 
-With \ac{BNPL} disabled, we fit two parameters to the 2017-Q1 \ac{CCMR} arrears profile:
-the income-shock probability to the 90+ day share and payment friction to the 1--30 day
-share. Persistent shocks produce long arrears and friction produces brief delays, so each
-parameter mainly moves one band. Each value is chosen from a grid by the smallest absolute
-error over twenty replicates (Appendix~\ref{app:calibration}). The selected values, a shock
-probability of 1.6\% and friction of 9\% per tick, stay fixed in every experiment.
-Table~\ref{tab:arrears-fit} reports the fit.
+The labour market is set from data and is not fitted. In the population, 4{,}670 members
+are employed and 1{,}113 are strictly unemployed. With re-employment at the \ac{QLFS} rate of
+1.87\% per tick, employment stays constant in expectation if each employed member loses work
+with probability 0.446\% per tick, so that separations equal hires. This is slightly below the
+observed job-separation band of 0.54--1.17\% per tick \cite{statssa_lmd_2022}, because
+\ac{NIDS} records a lower unemployment rate than the \ac{QLFS}. After two years employment is
+within 0.1\% of its starting level. Households still lose income: 13.5\% of the members employed
+at the start are out of work at the final tick, offset by jobseekers who find work.
 
-The fitted shock probability is about 1.4 times the upper end of the observed job-separation
-rate, 0.54--1.17\% per tick \cite{statssa_lmd_2022}. Every earner is employed at the start, no member who starts without
-work enters it, and re-employment runs at 1.87\% per tick, so the share out of work rises
-through every run towards 46\%: 16\% of the starting earners are out of work at tick 12 and
-39\% at tick 52, where the observed upper bound would give 31\%. Employment cannot recover as
-it does in a stable labour market. The baseline therefore assumes a population losing wage
-income throughout the run, and that persistent loss lets it match the 2017 arrears profile.
-The single-tick shock of Section~\ref{sec:results-robustness} holds the expected share out of
-work constant but gives spells no persistence, so neither arm is a stable labour market.
-% 16%, 39% and 31%: results/summary/defaulter_credit.json, "unemployment path" entries
+With \ac{BNPL} disabled, we fit one parameter, payment friction, to the 1--30 day share of
+the 2017-Q1 \ac{CCMR} arrears profile, choosing it from a grid by the smallest absolute error
+over twenty replicates (Appendix~\ref{app:calibration}). The selected value of 9\% per tick
+stays fixed in every experiment. The 90+ day share is not targeted. Table~\ref{tab:arrears-fit}
+reports the fit. An earlier version fitted the separation rate to the 90+ band instead. That
+required 1.6\% per tick and, with no hires, took the share of starting earners out of work to
+39\% within two years, a recession that did not occur.
+% 0.1%, 13.5% and 39%: results/summary/defaulter_credit.json, "unemployment path" entries
 % (notebooks/scripts/check_defaulter_credit.py, seeds 10,000-10,019, BNPL off).
 
 \input{chapters/generated/tab_arrears_fit}
@@ -269,8 +274,8 @@ adoption is not identified.
 \subsection{Validation}
 \label{sec:data-validation}
 
-We check the model in two ways, after setting aside the two fitted arrears bands, which are
-calibration targets and so not evidence. Comparisons of the constructed population with external
+We check the model in two ways, after setting aside the fitted 1--30 day arrears band, which
+is a calibration target and so not evidence. Comparisons of the constructed population with external
 figures test the survey inputs. Comparisons of the model's behaviour test quantities it was
 neither fitted to nor built from, and are only as informative as those quantities are
 comparable. Checks that the population reproduces its own sources test the implementation;
@@ -283,7 +288,7 @@ empirical patterns guide the behavioural comparison. Pattern~1 is United States 
 card late fees and interest \cite{dehaan2024bnpl}, whose counterparts in the model are
 traditional arrears and interest; it is not independent of the design,
 because want-driven borrowing was added partly when shortfall-only borrowing failed to
-reproduce it. Pattern~2 is the 2017 arrears profile used for fitting. Pattern~3 is a middle-income peak in debt-to-income from a United Kingdom
+reproduce it. Pattern~2 is the 2017 arrears profile, of which only the 1--30 day band was fitted. Pattern~3 is a middle-income peak in debt-to-income from a United Kingdom
 model \cite{hamill2023creditcard}. Pattern~4 sets the share of households without savings
 against the share of South African consumers who expect to miss a payment in an online survey
 \cite{transunion_cps_sa_2025}, a different outcome, so it can test only the order of
@@ -294,28 +299,31 @@ without removing it.
 
 \subsubsection*{Arrears and Default}
 
-The baseline matches the two fitted bands and misses those between them
-(Table~\ref{tab:arrears-fit}). Each band from 31 to 120 days holds about 1\% of credit-active
-households, against 1.8 to 3.6\% in the \ac{CCMR}: households in the model tend either to
-cure quickly or to stay in arrears. Matching the targets therefore does not show that arrears
-develop as they do in the data. The 90+ band also accumulates every uncured account, since none is
-written off. At the fitted values it averages 14.48\% after burn-in but reaches 19.9\% at the
-final tick, so the fit matches the average of a rising stock and a different window would
-select a different value.
+The 90+ band was not targeted, so it is evidence (Table~\ref{tab:arrears-fit}). It averages
+9.10\% of credit-active households after burn-in, about two-thirds of the \ac{CCMR}'s
+14.21\%. The \ac{CCMR} figure is a stock built up over years, most of it more than 120 days in arrears.
+Every household in the model starts current and no account is written off, so the band rises
+through the run and reaches 11.03\% at the final tick. A two-year run cannot rebuild the whole
+stock. The bands from 31 to 120 days are missed: each holds 0.4 to 0.5\% of credit-active
+households, against 1.8 to 3.6\% in the \ac{CCMR}. Households in the model tend either to
+cure quickly or to stay in arrears, so the model does not show that arrears develop as they
+do in the data.
+% 11.03%: fit_90plus_final in results/summary/results_numbers.json (seeds 1,000-1,019).
 
 No external figure measures the model's default. The nearest are from the \ac{NCR}'s Credit
 Bureau Monitor: in March 2017, 21.7\% of credit-active consumers were three or more months in
 arrears, and 39.3\% had impaired records, which also include judgments and adverse listings
-\cite{ncr_cbm_2017}. These are of the same order as the model's 13.3\% of households over two
-years, but they count individuals at one date and include listings that stay on record for
-years, so the level of default is not validated. Most defaulters owe credit, 90.5\% in the
-baseline and 98.4\% with \ac{BNPL} at $\beta=0$, but default is mostly a failure to pay for
-food and rent: 90.9\% of baseline defaulters were short of them in every tick of the streak
-that ended in default, and 8.3\% defaulted on debt service alone. Two causes account for most
-defaults: 66\% of baseline defaulters have an earner out of work when they default, and 27\%
-have had income below their food and rent from the start.
-% 90.5%, 98.4%, 90.9%, 8.3%, 66% and 27%: results/summary/defaulter_credit.json
-% (notebooks/scripts/check_defaulter_credit.py).
+\cite{ncr_cbm_2017}. The model's 7.3\% of households over two years is about a third of the
+first figure. The bureau figures count individuals at one date and include listings that stay
+on record for years, so the level of default is not validated. Most defaulters owe credit, 84.8\%
+in the baseline and 97.9\% with \ac{BNPL} at $\beta=0$, but default is mostly a failure to pay
+for food and rent: 84.1\% of baseline defaulters were short of them in every tick of the
+streak that ended in default, and 15.2\% defaulted on debt service alone. Of baseline
+defaulters, 48\% have had income below their food and rent from the start, and 37\% have an
+earner out of work when they default.
+% 84.8%, 97.9%, 84.1%, 15.2%, 48% and 37%: owe_any_credit, streak_all_committed,
+% streak_no_committed, income_below_committed and unemployed_at_default in
+% results/summary/defaulter_credit.json (notebooks/scripts/check_defaulter_credit.py).
 
 \subsubsection*{The Constructed Population}
 
@@ -348,46 +356,54 @@ Debt service & 12.8\% & 6.1--9.8\%, derived from a \ac{FinScope} budget question
 
 Some households begin in a vulnerable position: income does not cover committed expenditure
 for 3.6\% of agents, or committed expenditure and scheduled debt service for 5.1\%, and
-45.2\% have no liquid savings. Every household in the first group defaults, with and without
-\ac{BNPL}, so about 3.6 points of the default rate are set by the survey records.
+45.2\% have no liquid savings. About 96\% of the first group default, with and without
+\ac{BNPL}, so about 3.5 of the 7.3 points of baseline default are set by the survey records.
+% 96% and 3.5: income_below_committed_who_default (0.962-0.965) times
+% income_below_committed_share_of_agents (0.0364), results/summary/defaulter_credit.json.
 
 \subsubsection*{Behaviour with BNPL}
 
 Table~\ref{tab:bnpl-on-checks} compares the model with \ac{BNPL} against external evidence.
-Pattern~1 holds for traditional arrears and fails for traditional interest. Neither measure
+Pattern~1 holds for traditional arrears only at $\beta=1$; at $\beta=0$ the change is not
+detectable. Traditional interest falls at $\beta=0$ and does not change detectably at
+$\beta=1$. Neither measure
 discriminates well. Interest falls at $\beta=0$ because \ac{BNPL} partly replaces
 traditional credit and the book shrinks (Section~\ref{sec:results-injection}), so it tracks
 the size of the book more than servicing stress. Households pay \ac{BNPL} instalments
-before traditional debt, so almost any \ac{BNPL} obligation raises traditional arrears.
+before traditional debt, so \ac{BNPL} obligations push traditional arrears up; the rise is
+detectable once peer influence raises \ac{BNPL} volume.
 Pattern~3 is not reproduced: debt-to-income is highest in Q1. Pattern~4 agrees in order of
 magnitude; the share without savings falls below its starting value because most of those
 households have income above their outlays and save the difference.
 
 \input{chapters/generated/tab_bnpl_on_checks}
 
-The share of ever-holders who owe two platforms at once is close to the \ac{CFPB}'s figure for
+The share of ever-holders who owe two platforms at once, 30.3\%, is close to the \ac{CFPB}'s figure for
 United States borrowers, but the routing assumption largely sets it
 (Section~\ref{sec:results-stacking}), so the agreement is weak evidence. Without peer
-influence, volume is below the provider's range and the mean purchase is 36\% below the
-provider-based figure. Purchases are sized on discretionary budgets, so they are small in the
-lower quintiles (Table~\ref{tab:distribution}). At $\beta=1$ volume is ten times higher, about
-R10{,}400 per eligible household, 2.4 times the top of the range, so the two settings bracket the provider's volume. The
+influence, volume is below the provider's range and the mean purchase is 35\% below the
+provider-based figure, at the edge of the tolerance. Purchases are sized on discretionary budgets, so they are small in the
+lower quintiles (Table~\ref{tab:distribution}). At $\beta=1$ volume is 13 times higher, about
+R11{,}200 per eligible household, 2.6 times the top of the range, so the two settings bracket
+the provider's volume. The
 range is one provider's per customer \cite{weaver2025iar}, whereas the model's volume is per
 household across four platforms. Households with several users or providers bias the
 comparison one way and the provider's self-selected active customers the other, so it supports
 orders of magnitude only.
-% R10,400 = vol_per_eligible_year x volume_beta1 / volume_beta0 (results_numbers.json); 10,400/4,261 = 2.4.
-Adoption has no direct target: 70.0\% of households ever
+% 13 = volume_ratio_beta1_over_beta0 (13.16); R11,200 = vol_per_eligible_year (852) x 13.16
+% (results_numbers.json); 11,216/4,261 = 2.6.
+Adoption has no direct target: 69.1\% of households ever
 hold \ac{BNPL} at $\beta=0$, above TransUnion's 57\% of surveyed consumers who hold a
 \ac{BNPL} product \cite{transunion_cir_sa_2026}, although a share over two years and a share
 at one date are different measures.
+% 69.1%: ever_adopted_beta0 in results/summary/results_numbers.json.
 
 \subsubsection*{What the Validation Supports}
 
 The failures differ in kind. The serious ones concern how the model generates distress. It
-reproduces the share of persistent arrears but not the intermediate bands, so the paths by
-which arrears develop are not well represented. Its opening debt service is higher than
-households report. Its default rate has no external counterpart. These problems bound every
+reproduces about two-thirds of the untargeted 90+ share but not the intermediate bands, so the
+paths by which arrears develop are not well represented. Its opening debt service is higher
+than households report. Its default rate has no external counterpart. These problems bound every
 statement about the level of distress.
 
 Other gaps reflect missing South African data more than visible misspecification. No source
@@ -398,10 +414,10 @@ $\kappa$: at $\kappa=0.28$ both fall within the
 provider's ranges (Table~\ref{tab:effect}). The debt-stock gap may partly reflect survey underreporting.
 
 Some misses are expected of a stylised model: Pattern~3 comes from another model of another
-country, and a model with one lender, no calendar and no write-offs cannot be expected to
-reproduce an account-level age analysis band by band.
+country, and a model with one lender, no calendar, no write-offs and a two-year horizon cannot
+be expected to reproduce an account-level age analysis band by band.
 
-The model therefore supports comparisons between arms that share its population, fitted
+The model therefore supports comparisons between arms that share its population,
 parameters and seeds, more than statements about levels. A misspecified mechanism can still
 distort a comparison if it interacts with the change being tested, so
 Section~\ref{sec:results-effect} repeats the \ac{BNPL} comparison under alternative borrowing,
@@ -413,6 +429,6 @@ quintiles does not match the reference pattern.
 
 In answer to RQ1, the population built from survey microdata reproduces household size,
 income inequality and the order of magnitude of household debt, which supports the inputs
-rather than the model. The baseline reproduces the two arrears bands it was fitted to and
-misses those between them, its debt service exceeds what households report, and its default
-rate cannot be checked.
+rather than the model. The baseline reproduces the one arrears band it was fitted to and
+about two-thirds of the untargeted 90+ day share, and misses the bands between them. Its debt
+service exceeds what households report, and its default rate cannot be checked.

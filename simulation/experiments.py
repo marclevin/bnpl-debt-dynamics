@@ -34,9 +34,9 @@ from .batch import replicate, run_batch, save
 from .config import BNPL_PURCHASE_SHARE_OF_DISCRETIONARY, ParamSet
 
 # ---------------------------------------------------------------------------
-# The calibrated baseline. Both values are FITTED (calibrate.py):
-#   shock_prob      -> the CCMR 90+ band
-#   payment_friction -> the CCMR 1-30 band
+# The calibrated baseline (revised 2026-10-12, calibrate.py):
+#   shock_prob      -> DERIVED so that expected employment is constant (labour flows on)
+#   payment_friction -> FITTED to the CCMR 1-30 band
 # Held fixed across every BNPL run, so nothing downstream is re-tuned.
 #
 # NOTE: neither is disturbed by BNPL-side parameter work. Both are fitted with
@@ -52,7 +52,13 @@ from .config import BNPL_PURCHASE_SHARE_OF_DISCRETIONARY, ParamSet
 # produce CCMR arrears in spite of that free credit: it fell from 0.040 to 0.016, from
 # 3.4x the QLFS upper bound to 1.4x. Friction again did not move.
 # ---------------------------------------------------------------------------
-FITTED_SHOCK_PROB = 0.016
+#: Superseded 2026-10-12. Fitting the separation rate to the 90+ band chose 0.016, which,
+#: with no movement into work by members unemployed at the start, drove the share of
+#: earners out of work from zero towards 46%. The baseline now uses labour flows and a
+#: separation rate DERIVED so that expected employment is constant (stationary_separation_rate).
+EARLIER_FITTED_SHOCK_PROB = 0.016
+#: shock_exit_prob x jobseekers / earners for the 5,000-agent population; asserted in tests.
+DERIVED_SHOCK_PROB = 0.00446
 FITTED_PAYMENT_FRICTION = 0.09
 
 #: kappa as derived from IES 2022/23. Held here so the robustness grid centres on the
@@ -62,7 +68,8 @@ PURCHASE_RATIO = BNPL_PURCHASE_SHARE_OF_DISCRETIONARY
 
 def calibrated(**kw) -> ParamSet:
     return ParamSet(
-        shock_prob=FITTED_SHOCK_PROB,
+        shock_prob=DERIVED_SHOCK_PROB,
+        labour_flows=True,
         payment_friction=FITTED_PAYMENT_FRICTION,
         **kw,
     )

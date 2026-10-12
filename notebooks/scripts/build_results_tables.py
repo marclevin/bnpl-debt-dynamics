@@ -133,12 +133,15 @@ def tab_baseline_arms(rq0: pd.DataFrame) -> None:
 
 # ============================================================ 3.5 the calibration fit
 def tab_arrears_fit() -> None:
-    """The fitted baseline against the CCMR bands, from the calibration run itself."""
+    """The calibrated baseline against the CCMR bands, from the calibration run itself.
+
+    Revised 2026-10-12: the separation rate is derived (labour flows on) and only friction
+    is fitted, to the 1-30 band; the 90+ band is unfitted."""
     from simulation.config import load_ccmr_bands
 
     cal = json.loads((SUMMARY / "calibration.json").read_text(encoding="utf-8"))
     runs = pd.read_parquet(SUMMARY / "calibration_runs.parquet")
-    p, f = cal["fitted_shock_prob"], cal["fitted_payment_friction"]
+    p, f = cal["derived_shock_prob"], cal["fitted_payment_friction"]
     fit = runs[(runs.shock_prob == p) & (runs.payment_friction == f)].drop_duplicates("seed")
     assert len(fit) == 20, len(fit)
     ccmr = load_ccmr_bands()
@@ -148,6 +151,7 @@ def tab_arrears_fit() -> None:
         "d31_60": ms(fit.active_d31_60_mean)[0], "d61_90": ms(fit.active_d61_90_mean)[0],
         "d91_120": ms(fit.active_d91_120_mean)[0], "d120_plus": ms(fit.active_d120_plus_mean)[0],
         "90": ms(fit.active_90_plus_mean)[0], "60": ms(fit.active_60_plus_mean)[0],
+        "90_final": ms(fit.active_90_plus_final)[0],
     }
     assert abs(model["90"] - cal["objective_value"]) < 1e-9
     rows = [
@@ -158,30 +162,20 @@ def tab_arrears_fit() -> None:
         f"91--120 days & {ccmr['d91_120']:.2f} & {pct(model['d91_120'])} & \\\\",
         f"120+ days & {ccmr['d120_plus']:.2f} & {pct(model['d120_plus'])} & \\\\",
         "\\midrule",
-        f"90+ days & {target['pct_90_plus']:.2f} & {pct(model['90'])} & fitted \\\\",
+        f"90+ days & {target['pct_90_plus']:.2f} & {pct(model['90'])} & \\\\",
         f"60+ days & {target['pct_60_plus']:.2f} & {pct(model['60'])} & \\\\",
     ]
-    grid = sorted(runs.shock_prob.unique())
-    step = min(b - a for a, b in zip(grid[:-1], grid[1:]))
-    stage3 = runs[runs.payment_friction == f].drop_duplicates(["shock_prob", "seed"])
-    by_p = stage3.groupby("shock_prob").active_90_plus_mean.mean()
-    lo_p = max(x for x in grid if x < p)
-    hi_p = min(x for x in grid if x > p)
     qlfs = cal["qlfs_band"]
-    fine = {float(k): v for k, v in cal["fine_grid_90_plus"].items()}
-    fine_lo = max(x for x in fine if x < p)
-    assert abs(fine[p] - model["90"]) < 1e-9
     N.update(
-        fit_fine_step=round(p - fine_lo, 6), fit_fine_below=fine_lo, fit_90plus_fine_below=fine[fine_lo],
-        fit_90plus_fine_above=fine[min(x for x in fine if x > p)],
-        fit_shock_prob=p, fit_friction=f, fit_90plus=model["90"], fit_90plus_sd=ms(fit.active_90_plus_mean)[1],
+        derived_shock_prob=p, fit_shock_prob=p, fit_friction=f, fit_90plus=model["90"],
+        fit_90plus_sd=ms(fit.active_90_plus_mean)[1], fit_90plus_final=model["90_final"],
         fit_d30=model["d30"], fit_d31_60=model["d31_60"], fit_d61_90=model["d61_90"],
+        fit_d91_120=model["d91_120"], fit_d120_plus=model["d120_plus"],
         fit_current=model["current"], fit_60plus=model["60"],
         ccmr_d31_60=ccmr["d31_60"] / 100, ccmr_d61_90=ccmr["d61_90"] / 100,
         ccmr_60plus=target["pct_60_plus"] / 100, ccmr_d30=ccmr["d30"] / 100, ccmr_current=ccmr["current"] / 100,
-        fit_grid_step=step, fit_grid_below=lo_p, fit_grid_above=hi_p,
-        fit_90plus_below=float(by_p[lo_p]), fit_90plus_above=float(by_p[hi_p]),
-        fit_ratio_to_qlfs_upper=p / qlfs["upper"], qlfs_lower=qlfs["lower"], qlfs_upper=qlfs["upper"],
+        ccmr_90plus=target["pct_90_plus"] / 100, ccmr_d120_plus=ccmr["d120_plus"] / 100,
+        qlfs_lower=qlfs["lower"], qlfs_upper=qlfs["upper"],
         fit_seed_min=int(fit.seed.min()), fit_seed_max=int(fit.seed.max()),
     )
     table(
@@ -190,17 +184,16 @@ def tab_arrears_fit() -> None:
         "\\ac{CCMR}: share of unsecured and credit-facility accounts by days in arrears, first "
         "quarter of 2017 \\cite{ncr_ccmr_2017}. Model: share of credit-active households (those "
         "owing traditional debt or arrears), \\ac{BNPL} disabled, averaged over the post-burn-in "
-        f"ticks; seeds {num(fit.seed.min())}--{num(fit.seed.max())}. Fitted: the two bands that the "
-        "income-shock probability and payment friction were chosen to match, so agreement there "
-        "is by construction. The other bands were not targeted.",
+        f"ticks; seeds {num(fit.seed.min())}--{num(fit.seed.max())}. Fitted: the band that payment "
+        "friction was chosen to match, so agreement there is by construction. The separation rate "
+        "is derived from the stable-employment condition, not fitted, and the other bands, including "
+        "90+, were not targeted.",
         "lrrl",
         r"\textbf{Days in arrears} & \textbf{\ac{CCMR} (\%)} & \textbf{Model (\%)} & ",
         rows,
         size=r"\small",
     )
 
-
-# ============================================================ 4.1 stacking
 def tab_stacking(rq1: pd.DataFrame) -> None:
     rows = []
     n1, n6 = {}, {}
@@ -764,8 +757,7 @@ def tab_robustness(rob: pd.DataFrame) -> None:
         "53{,}000 (activation), 55{,}000 (population), 51{,}000 (minimum-payer share), 52{,}000 "
         "(minimum payment), 56{,}000 (limit) and 58{,}000 (single-tick shock, against the "
         "exact-shortfall reference on 50{,}000). $\\ddagger$: unpaired, because seeds or population "
-        "size differ. Under the single-tick shock the baseline 90+ share stays between 7.3\\% and "
-        "7.6\\% at every shock probability on the calibration grid, about half the \\ac{CCMR} target.",
+        "size differ.",
         "L{7.2cm}rr",
         r"\textbf{Arm} & \textbf{Default (\%)} & \textbf{Difference (pp)}",
         rows,
@@ -781,7 +773,7 @@ def tab_sobol() -> None:
         "min_payment_frac": "minimum-payment fraction (Submodel 6)",
         "bnpl_purchase_ratio": "$\\kappa$ (Submodel 4)",
         "bnpl_limit_income_multiple": "$\\lambda$ (Submodel 12)",
-        "shock_prob": "shock probability (Submodel 1, fitted)",
+        "shock_prob": "separation rate (Submodel 1, derived)",
     }
     bounds = dict(zip(data["problem"]["names"], data["problem"]["bounds"]))
     idx = {k: {r["parameter"]: r for r in v} for k, v in data["indices"].items()}

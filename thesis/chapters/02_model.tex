@@ -167,7 +167,7 @@ group member acts first.
 
 Each household follows seven steps (Algorithm~\ref{alg:tick}):
 \begin{enumerate}
-    \item Receive income, adjusted for employment shocks.
+    \item Receive income, adjusted for job losses and hires.
     \item Pay committed expenditure from income and savings.
     \item Accrue interest and calculate traditional and \ac{BNPL} payments due, including arrears. Minimum-payers owe the larger of interest and a fixed fraction of the balance; scheduled-payers owe their contractual instalment.
     \item Seek credit for a shortfall, using \ac{BNPL} first where eligible and traditional credit for the remainder.
@@ -214,7 +214,7 @@ Table~\ref{tab:submodels} sets out the seventeen submodels.
 \begin{longtable}{L{2.3cm}L{5.6cm}L{3.9cm}L{2.0cm}}
 \caption{Submodels}
 \label{tab:submodels} \\
-\multicolumn{4}{p{14.2cm}}{\footnotesize Fitted: chosen to match the \acs{CCMR} arrears profile. Assumed: no empirical source. Swept: varied in the sensitivity analysis. Appendix~\ref{app:specification} gives every parameter's value, source and range, and Appendix~\ref{app:pseudo-main} the pseudocode.} \\
+\multicolumn{4}{p{14.2cm}}{\footnotesize Fitted: chosen to match the \acs{CCMR} 1--30 day band. Assumed: no empirical source. Swept: varied in the sensitivity analysis. Appendix~\ref{app:specification} gives every parameter's value, source and range, and Appendix~\ref{app:pseudo-main} the pseudocode.} \\
 \toprule
 \textbf{Submodel} & \textbf{Rule} & \textbf{Parameters} & \textbf{Source} \\
 \midrule
@@ -225,7 +225,7 @@ Table~\ref{tab:submodels} sets out the seventeen submodels.
 \endhead
 \bottomrule
 \endfoot
-1. Income shock & An employed member of a wage-dominant household loses their job with a fixed probability each tick, and the household loses that member's wage until re-employment. Households living mainly on grants or other income are exempt. & Shock 0.016, fitted; re-employment 0.0187 per tick (\acs{QLFS}); single-tick shock swept & \cite{madeira2018chile, statssa_lmd_2022} \\
+1. Labour flows & Each employed member loses their job with a fixed probability each tick, and the household loses that member's wage until re-employment. Members unemployed at the start find work at the same rate as those who lose it, and a hire brings the median take-home pay of employed adults in its income quintile. Separations and hires balance, so expected employment is constant. & Separation 0.00446, derived; re-employment 0.0187 per tick (\acs{QLFS}); single-tick shock swept & \cite{madeira2018chile, statssa_lmd_2022} \\
 \addlinespace
 2. Consumption & Food and rent cannot be reduced. Discretionary spending falls to zero before an instalment is missed for lack of cash. & None & Section~\ref{sec:population} \\
 \addlinespace

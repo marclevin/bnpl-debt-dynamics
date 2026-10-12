@@ -22,8 +22,8 @@ from joblib import Parallel, delayed
 
 from simulation.affordability import nca_gate
 from simulation.config import MONTHLY_TO_TICK, ParamSet
+from simulation.experiments import calibrated
 
-P, F = 0.016, 0.09
 
 
 def n_agreements(agent) -> int:
@@ -81,11 +81,11 @@ if __name__ == "__main__":
     jobs = []
     for beta in (0.0, 1.0):
         for seed in range(43_000, 43_020):
-            base = dict(shock_prob=P, payment_friction=F, bnpl_enabled=True, beta=beta, seed=seed)
-            jobs.append(("model", ParamSet(**base, label=f"none_b{beta:g}")))
+            base = dict(bnpl_enabled=True, beta=beta, seed=seed)
+            jobs.append(("model", calibrated(**base, label=f"none_b{beta:g}")))
             for cap in (1, 2, 3):
                 for d in ("model", "platforms_topup", "agreements"):
-                    jobs.append((d, ParamSet(**base, stacking_cap=cap, label=f"cap{cap}_b{beta:g}")))
+                    jobs.append((d, calibrated(**base, stacking_cap=cap, label=f"cap{cap}_b{beta:g}")))
     df = pd.DataFrame(Parallel(n_jobs=14)(delayed(run)(d, p) for d, p in jobs))
     names = {"model": "(a) platforms, freeze at cap [the model]", "platforms_topup": "(b) platforms, top-ups allowed",
              "agreements": "(c) agreements"}
@@ -119,5 +119,5 @@ if __name__ == "__main__":
     (Path(__file__).resolve().parents[2] / "results" / "summary" / "cap_definitions.md").write_text(
         "# The hypothetical cap under three definitions\n\n"
         "Diagnostic only. The model implements definition (a). Paired by seed against a no-cap arm "
-        "on the same seeds (43,000-43,019), one standard error. Corrected code, fitted parameters.\n\n"
+        "on the same seeds (43,000-43,019), one standard error. Calibrated parameters (labour flows on).\n\n"
         + text + "\n")

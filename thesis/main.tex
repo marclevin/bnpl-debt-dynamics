@@ -80,24 +80,21 @@ not been submitted for any other degree or examination at any other university.
 \addcontentsline{toc}{section}{Abstract}
 
 % Every number is read from a generated table or results/summary/results_numbers.json:
-% 0.12 and 0.6 points and the 13.3% baseline from Section 4.1 (beta0/beta1_effect_pooled);
-% want-driven path mainly: want-off arm (+0.05 +/- 0.09) in tab:effect and Section 4.1;
+% -0.03 +/- 0.03 and 0.17 +/- 0.04 points (beta0/beta1_effect_pooled), baseline 7.28% (Section 4.1);
+% 13 times: volume_ratio_beta1_over_beta0; two-thirds: 9.10/14.21 (calibration.json);
 % purchase size and volume both matched: kappa0.28 and base_income at beta = 0 in tab:effect;
 % single-tick shock and committed_relief rows of tab:effect;
-% a sixth and 0.15 to 0.22 points from tab:scenarios.
+% about 15% (161/1060, 164/1073), 0.16 to 0.18 points and 1 to 5% volume from tab:scenarios.
 This thesis asks how \ac{BNPL} changes household credit distress in South Africa, and what
-bureau visibility and affordability screening would change. Bureau reporting of \ac{BNPL} is
-reportedly due from 2027.
-We build an agent-based model of 5{,}000 households from \ac{NIDS} and \acs{FinScope} microdata. A traditional lender applies the Regulation 23A affordability test to the debts the bureau records, while four \ac{BNPL} platforms apply a light screen and cannot see one another.
-We fit the model to the 2017 arrears profile without \ac{BNPL}, then add \ac{BNPL}.
-A household defaults after seven consecutive fortnights of unpaid food, rent or debt service.
-The population matches household size, income inequality and the order of magnitude of debt, but the model misses the intermediate arrears bands and overstates debt service, so we interpret only two-year differences between simulated scenarios.
-Households often owe several platforms at once, at a rate set mainly by an assumed routing rule; default does not change detectably with that rule or the number of platforms.
-From a baseline default rate of 13.3\%, adding \ac{BNPL} raises default by 0.12 percentage points without peer influence and by 0.6 points under illustrative peer influence, at which households borrow ten times as much, above the range one provider reports.
-The effect comes mainly from want-driven purchases and grows with their frequency and, when they are frequent, their size.
-Without peer influence, it is not detectable in the two settings whose purchase size and volume match provider data. It disappears if income losses last one fortnight or if borrowing for food and rent is not counted as distress.
-The model has no credit score, so we test reporting through the lender's affordability test. Adding \ac{BNPL} obligations to it raises refusals by about a sixth and default by 0.15 to 0.22 points, most in the poorest quintile, because a refused household has no other source of credit.
-Screening \ac{BNPL} requests with the same test reduces their volume by 1 to 4\% and does not change default detectably.
+bureau reporting, reportedly due from 2027, or affordability screening would change.
+We build an agent-based model of 5{,}000 households from \ac{NIDS} and \acs{FinScope} microdata, with job loss and hiring set from labour-force data so that employment stays stable, fit it to the 2017 arrears profile without \ac{BNPL}, then add \ac{BNPL} platforms that cannot see one another and a bureau that cannot see them.
+A household defaults after 98 days of unmet food, rent or debt payments.
+The model reproduces household size, income inequality, the order of magnitude of debt and about two-thirds of the untargeted long-arrears share, but not the intermediate arrears bands or the income profile of debt, so we read its results only as two-year comparisons between simulated scenarios.
+Owing several platforms at once is common, but default does not change detectably with the number of platforms or the assumed rule for choosing them.
+Adding \ac{BNPL} does not change default detectably without peer influence and raises it by 0.17 percentage points with illustrative peer influence, under which borrowing is 13 times higher and above one provider's reported range.
+The effect grows with purchase size and how often households borrow, and disappears if income losses last one fortnight or if borrowing for food and rent is not counted as distress.
+The model has no credit score, so reporting is tested only through the traditional lender's affordability assessment. Adding \ac{BNPL} obligations to it raises refusals by about 15\% and default by 0.16 to 0.18 points, most in the poorest quintile, because a refused household has no other credit.
+Screening reduces \ac{BNPL} volume by 1 to 5\% and does not change default detectably.
 
 \section*{Data and Code}
 \addcontentsline{toc}{section}{Data and Code}

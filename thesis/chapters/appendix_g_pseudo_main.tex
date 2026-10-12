@@ -34,13 +34,13 @@ left unpaid at step~2; the household is still recorded as distressed.
 \label{alg:tick}
 \begin{algorithmic}
 \footnotesize
-\State \textbf{Step 1: income, subject to the employment shock}
+\State \textbf{Step 1: income, subject to labour flows}
 \State $y \gets y_i$
-\If{$\text{source}_i = \text{WAGE}$ and $n_i > 0$}
-    \State for each of the $u_i$ unemployed earners, first: with probability $p^{\text{exit}}$, $u_i \gets u_i - 1$
-    \State for each of the $n_i - u_i$ employed earners: with probability $p^{\text{sep}}$, $u_i \gets u_i + 1$
-    \State $y \gets y - y^w_i \cdot u_i / n_i$
-\EndIf
+\State for each of the $u_i$ starting earners out of work, first: with probability $p^{\text{exit}}$, $u_i \gets u_i - 1$
+\State for each of the $n_i - u_i$ starting earners in work: with probability $p^{\text{sep}}$, $u_i \gets u_i + 1$
+\State for each of the $j_i - h_i$ jobseekers out of work: with probability $p^{\text{exit}}$, $h_i \gets h_i + 1$
+\State for each of the $h_i$ jobseekers in work: with probability $p^{\text{sep}}$, $h_i \gets h_i - 1$
+\State $y \gets y - y^w_i \cdot u_i / n_i + h_i\, \bar{w}_{q(i)}$ \Comment{the first deduction only if $n_i > 0$}
 \State $\text{cash} \gets a_i + \max(y, 0)$
 \State \textbf{Step 2: committed expenditure is paid first}
 \State $\text{cash} \gets \text{cash} - e^c_i$;\quad $\text{short}^c \gets \max(-\text{cash}, 0)$;\quad $\text{cash} \gets \max(\text{cash}, 0)$

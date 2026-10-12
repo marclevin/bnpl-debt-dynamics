@@ -4,21 +4,21 @@
 \centering
 \caption{Baseline arrears profile: model and \ac{CCMR}}
 \label{tab:arrears-fit}
-\tabnote{\ac{CCMR}: share of unsecured and credit-facility accounts by days in arrears, first quarter of 2017 \cite{ncr_ccmr_2017}. Model: share of credit-active households (those owing traditional debt or arrears), \ac{BNPL} disabled, averaged over the post-burn-in ticks; seeds 1{,}000--1{,}019. Fitted: the two bands that the income-shock probability and payment friction were chosen to match, so agreement there is by construction. The other bands were not targeted.}
+\tabnote{\ac{CCMR}: share of unsecured and credit-facility accounts by days in arrears, first quarter of 2017 \cite{ncr_ccmr_2017}. Model: share of credit-active households (those owing traditional debt or arrears), \ac{BNPL} disabled, averaged over the post-burn-in ticks; seeds 1{,}000--1{,}019. Fitted: the band that payment friction was chosen to match, so agreement there is by construction. The separation rate is derived from the stable-employment condition, not fitted, and the other bands, including 90+, were not targeted.}
 \begingroup\setlength{\tabcolsep}{4pt}\small
 \begin{tabular}{lrrl}
 \toprule
 \textbf{Days in arrears} & \textbf{\ac{CCMR} (\%)} & \textbf{Model (\%)} &  \\
 \midrule
-Current & 71.63 & 75.38 & \\
-1--30 days & 8.24 & 8.19 & fitted \\
-31--60 days & 3.59 & 0.97 & \\
-61--90 days & 2.32 & 0.99 & \\
-91--120 days & 1.76 & 1.01 & \\
-120+ days & 12.45 & 13.46 & \\
+Current & 71.63 & 81.83 & \\
+1--30 days & 8.24 & 8.27 & fitted \\
+31--60 days & 3.59 & 0.39 & \\
+61--90 days & 2.32 & 0.41 & \\
+91--120 days & 1.76 & 0.46 & \\
+120+ days & 12.45 & 8.64 & \\
 \midrule
-90+ days & 14.21 & 14.48 & fitted \\
-60+ days & 16.54 & 15.46 & \\
+90+ days & 14.21 & 9.10 & \\
+60+ days & 16.54 & 9.50 & \\
 \bottomrule
 \end{tabular}
 \endgroup

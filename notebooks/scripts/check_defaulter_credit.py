@@ -59,20 +59,25 @@ def one(params):
 def unemployment_path(params):
     """Share of the earners employed at the start who are out of work at ticks 12, 26 and 52.
 
-    Every earner starts employed, and the separation and re-employment rates imply a far
-    higher steady-state share out of work (46% at the fitted rate), so the share rises
-    through the run (Section 3.4)."""
+    Without labour flows every earner starts employed and the share out of work rises
+    towards its steady state (46% at the earlier fitted rate). With labour flows (the
+    baseline from 2026-10-12) employment is constant in expectation."""
     from simulation.model import BNPLModel
 
     m = BNPLModel(params)
-    wage = [a for a in m.agents if a.is_wage_household and a.rec.n_earners > 0]
-    earners = sum(a.rec.n_earners for a in wage)
+    flows = params.labour_flows
+    pool = [a for a in m.agents if a.rec.n_earners > 0 and (flows or a.is_wage_household)]
+    earners = sum(a.rec.n_earners for a in pool)
     out = {}
     for t in range(1, 53):
         m.step()
         if t in (12, 26, 52):
-            out[f"earners_out_of_work_t{t}"] = sum(a.n_unemployed for a in wage) / earners
-    out["households_with_earner_out_t52"] = sum(a.n_unemployed > 0 for a in wage) / len(m.agents)
+            out[f"earners_out_of_work_t{t}"] = sum(a.n_unemployed for a in pool) / earners
+            # Employment relative to the start: starting earners still in work plus hires.
+            out[f"employment_index_t{t}"] = sum(
+                a.rec.n_earners - a.n_unemployed + a.n_hired for a in m.agents) / sum(
+                a.rec.n_earners for a in m.agents)
+    out["households_with_earner_out_t52"] = sum(a.n_unemployed > 0 for a in pool) / len(m.agents)
     return out
 
 
@@ -105,9 +110,12 @@ if __name__ == "__main__":
             f"{tot['owes_any'] / d:.3f}, owe traditional {tot['owes_trad'] / d:.3f}, "
             f"held traditional debt at start {tot['started_with_debt'] / d:.3f}"
         )
-    for name, shock in (("unemployment path, fitted shock 0.016", 0.016),
-                        ("unemployment path, QLFS upper bound 0.0117", 0.0117)):
-        ps = [calibrated(bnpl_enabled=False, label=name).replace(seed=10_000 + i, shock_prob=shock)
+    for name, kw in (("unemployment path, baseline with labour flows", {}),
+                     ("unemployment path, earlier fitted shock 0.016, no flows",
+                      dict(shock_prob=0.016, labour_flows=False)),
+                     ("unemployment path, QLFS upper bound 0.0117, no flows",
+                      dict(shock_prob=0.0117, labour_flows=False))):
+        ps = [calibrated(bnpl_enabled=False, label=name).replace(seed=10_000 + i, **kw)
               for i in range(20)]
         rows = Parallel(n_jobs=-2)(delayed(unemployment_path)(p) for p in ps)
         out[name] = {k: sum(r[k] for r in rows) / len(rows) for k in rows[0]}

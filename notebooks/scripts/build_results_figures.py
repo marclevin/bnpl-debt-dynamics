@@ -61,7 +61,7 @@ def fig_baseline_arrears(rq0: pd.DataFrame) -> None:
     labels = ["Current", "1–30 d", "31–60 d", "61–90 d", "91–120 d", "120+ d"]
     # The 1-30 day band is fitted on its own; 91-120 and 120+ are fitted only as their sum (90+).
     fitted = {"d30", "d91_120", "d120_plus"}
-    status = {"d30": "fitted", "d91_120": "in fitted 90+", "d120_plus": "in fitted 90+"}
+    status = {"d30": "fitted", "d91_120": "", "d120_plus": ""}
     model = np.array([off[f"active_{b}_mean"].mean() * 100 for b in bands])
     sd = np.array([half_ci(off[f"active_{b}_mean"]) * 100 for b in bands])
     target = np.array([pct[b] for b in bands])
@@ -217,7 +217,7 @@ def fig_scenarios(rq3s: pd.DataFrame) -> None:
 # the value: the "Swept" class of Table 3.1). Arms are matched by exact label; a prefix match
 # once pooled the default-horizon arms with the kappa arms ("rob_k" is a prefix of "rob_kappa").
 # Population size and activation order are numerical checks, not model assumptions, and the
-# single-tick shock arm (-9.2pp) is off any shared scale; all three stay in the appendix table.
+# single-tick shock arm (-2.76pp) is off any shared scale; all three stay in the appendix table.
 TORNADO_GROUPS = [
     ("Borrowing amount on a shortfall (exact)", "rob_amount_shortfall", [
         ("+25%", "rob_amount_shortfall_125"),

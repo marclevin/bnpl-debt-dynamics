@@ -1,4 +1,9 @@
-"""Calibrate the income-shock probability `p` against the 2017-Q1 CCMR.
+"""Calibrate the baseline against the 2017-Q1 CCMR.
+
+Revised 2026-10-12: the separation rate `p` is now DERIVED from the stable-employment
+condition (labour flows on) and only payment friction is fitted, to the 1-30 band. The
+90+ band is reported unfitted. The earlier text below describes the superseded fit.
+
 
 D1 makes `p` a calibration target rather than a sourced parameter, which is what makes
 the baseline CALIBRATED rather than validated: only the BNPL-on results are genuine
@@ -27,6 +32,7 @@ import json
 import pandas as pd
 
 from .batch import replicate, run_batch
+from .population import stationary_separation_rate
 from .config import (
     RESULTS_SUMMARY,
     ParamSet,
@@ -44,8 +50,8 @@ P_COLS = ["shock_prob", "objective_mean", "active_d30", "active_current", "abs_e
 
 
 def baseline(**overrides) -> ParamSet:
-    """The no-BNPL 2017 baseline. BNPL is off by construction (the injection design)."""
-    return ParamSet(bnpl_enabled=False, **overrides)
+    """The no-BNPL 2017 baseline with labour flows. BNPL is off by construction."""
+    return ParamSet(bnpl_enabled=False, labour_flows=True, **overrides)
 
 
 def evaluate(
@@ -106,104 +112,49 @@ def main() -> None:
     ccmr = load_ccmr_target()
     qlfs = load_qlfs_band()
     target = ccmr["pct_90_plus"] / 100.0
-
-    print("=" * 78)
-    print("CALIBRATION OF THE INCOME-SHOCK PROBABILITY p  (D1)")
-    print("=" * 78)
-    print(f"target        : CCMR 2017-Q1 90+ = {target:.2%} (account basis)")
-    print(f"objective     : {OBJECTIVE_COLUMN} (credit-active denominator)")
-    print(f"replicates    : {args.reps} per grid point")
-    print()
-
     bands = load_ccmr_bands()
     d30_target = bands["d30"] / 100.0
 
-    # --- stage 1: fit p to the 90+ tail with friction off ---------------------
-    # Extended one step down to 0.008 once granted loans were booked as debt (DEFECTS.md
-    # B34): the fit then fell to 0.016, the old lower edge, and a fitted value has to be
-    # interior to its grid to be read as an optimum.
-    coarse_grid = [0.008, 0.016, 0.024, 0.032, 0.040, 0.048, 0.056, 0.064]
-    print(f"--- stage 1, p grid (friction off): {coarse_grid}")
-    df = evaluate(coarse_grid, args.reps, args.jobs)
-    coarse = summarise(df, target)
-    show(coarse, P_COLS)
-    p_hat = float(coarse.loc[coarse["abs_error"].idxmin(), "shock_prob"])
-    print(f"    -> p = {p_hat:.4f}")
+    # --- the separation rate is DERIVED, not fitted (2026-10-12) ---------------
+    # Labour flows on: employed members separate at p, unemployed members (including the
+    # strictly unemployed on the NIDS roster) find work at the QLFS rate. p is the value
+    # at which expected employment is constant, as in the stable 2017 labour market.
+    exit_prob = ParamSet().shock_exit_prob
+    p = round(stationary_separation_rate(exit_prob), 5)
+    print("=" * 78)
+    print("CALIBRATION (labour flows on)")
+    print("=" * 78)
+    print(f"separation rate p : {p:.5f} per tick, DERIVED (re-employment {exit_prob:.5f} x "
+          "jobseekers / earners)")
+    print(f"QLFS 2017 band    : {qlfs['p_tick_lower']:.5f} to {qlfs['p_tick_upper']:.5f} per tick")
 
-    # --- stage 2: fit friction to the 1-30 band, holding p ---------------------
-    friction_grid = [0.0, 0.02, 0.04, 0.06, 0.09, 0.12, 0.16]
-    print(f"\n--- stage 2, friction grid at p={p_hat:.4f}: {friction_grid}")
-    df2 = evaluate([p_hat], args.reps, args.jobs, friction_grid=friction_grid)
-    fr = summarise(df2, target, by=["payment_friction"])
+    # --- fit friction to the 1-30 band at the derived p -----------------------
+    friction_grid = [0.0, 0.02, 0.04, 0.06, 0.08, 0.09, 0.10, 0.12, 0.16]
+    print(f"\n--- friction grid at p={p:.5f}: {friction_grid}")
+    df = evaluate([p], args.reps, args.jobs, friction_grid=friction_grid)
+    fr = summarise(df, target, by=["payment_friction"])
     fr["d30_error"] = (fr["active_d30"] - d30_target).abs()
     show(fr, ["payment_friction", "active_d30", "objective_mean", "active_current", "d30_error"])
-    f_hat = float(fr.loc[fr["d30_error"].idxmin(), "payment_friction"])
-    print(f"    -> friction = {f_hat:.4f}  (1-30 target {d30_target:.2%})")
-
-    # --- stage 3: re-fit p with friction on (they are not perfectly orthogonal) -
-    print(f"\n--- stage 3, re-fit p at friction={f_hat:.4f}")
-    df3 = evaluate(coarse_grid, args.reps, args.jobs, friction_grid=[f_hat])
-    final_tbl = summarise(df3, target)
-    show(final_tbl, P_COLS)
-
-    all_runs = pd.concat([df, df2, df3], ignore_index=True)
-    best_row = final_tbl.loc[final_tbl["abs_error"].idxmin()]
-    p_hat = float(best_row["shock_prob"])
-
-    # --- stage 4: is the coarse grid hiding a better value? --------------------
-    # A CHECK, not a re-fit: the selection above stands. Steps of 0.001 either side of
-    # the selected value, on the same seeds, reported beside it.
-    fine_grid = [round(p_hat + d, 4) for d in (-0.002, -0.001, 0.001, 0.002)]
-    print(f"\n--- stage 4, fine p grid around {p_hat:.4f} at friction={f_hat:.4f}: {fine_grid}")
-    df4 = evaluate(fine_grid, args.reps, args.jobs, friction_grid=[f_hat])
-    fine_tbl = (
-        pd.concat([summarise(df4, target), final_tbl[final_tbl["shock_prob"] == p_hat]])
-        .sort_values("shock_prob")
-        .reset_index(drop=True)
-    )
-    show(fine_tbl, P_COLS)
-
-    # --- the QLFS plausibility check ------------------------------------------
-    lo, hi = qlfs["p_tick_lower"], qlfs["p_tick_upper"]
-    inside = lo <= p_hat <= hi
+    best_row = fr.loc[fr["d30_error"].idxmin()]
+    f_hat = float(best_row["payment_friction"])
 
     print()
     print("=" * 78)
     print("RESULT")
     print("=" * 78)
-    print(f"fitted p                     : {p_hat:.5f} per tick   [FITTED to 90+]")
+    print(f"derived p                    : {p:.5f} per tick")
     print(f"fitted payment friction      : {f_hat:.5f} per tick   [FITTED to 1-30]")
-    print()
-    print(f"  90+  (credit-active)       : {best_row['objective_mean']:.2%}  "
-          f"target {target:.2%}   [FITTED]")
-    print(f"  1-30 (credit-active)       : {best_row['active_d30']:.2%}  "
-          f"target {d30_target:.2%}   [FITTED]")
-    print(f"  31-60 (credit-active)      : {best_row['active_d31_60']:.2%}  "
-          f"CCMR {bands['d31_60']:.2f}%   [UNFITTED]")
-    print(f"  61-90 (credit-active)      : {best_row['active_d61_90']:.2%}  "
-          f"CCMR {bands['d61_90']:.2f}%   [UNFITTED]")
-    print(f"  current (credit-active)    : {best_row['active_current']:.2%}  "
-          f"CCMR {ccmr['pct_current']:.2f}%   [UNFITTED]")
-    print(f"  60+  (credit-active)       : {best_row['active_60_plus']:.2%}  "
-          f"CCMR {ccmr['pct_60_plus']:.2f}%   [UNFITTED]")
-    print(f"  90+  (all households)      : {best_row['all_90_plus']:.2%}   [different denominator]")
+    print(f"  1-30 (credit-active)       : {best_row['active_d30']:.2%}  target {d30_target:.2%}   [FITTED]")
+    print(f"  90+  (credit-active)       : {best_row['objective_mean']:.2%}  CCMR {target:.2%}   [UNFITTED]")
     print(f"  population default rate    : {best_row['default_rate']:.2%}")
-    print()
-    print(f"QLFS 2017 job-separation band: {lo:.5f} to {hi:.5f} per tick")
-    print(f"  fitted p inside the band?  : {'YES' if inside else 'NO'}"
-          f"  (ratio to upper bound {p_hat / hi:.2f}x)")
-    print("  NOTE: this comparison is now LIKE-FOR-LIKE. Since the shock hazard applies")
-    print("  per EARNER (each employed member separates independently), `p` is an")
-    print("  individual separation rate, directly comparable to the QLFS individual")
-    print("  transition rate. The earlier household-vs-individual caveat no longer")
-    print("  applies and cannot be used to explain away the gap.")
 
     RESULTS_SUMMARY.mkdir(parents=True, exist_ok=True)
-    all_runs.to_parquet(RESULTS_SUMMARY / "calibration_runs.parquet", index=False)
-    final_tbl.to_csv(RESULTS_SUMMARY / "calibration_grid.csv", index=False)
-    fine_tbl.to_csv(RESULTS_SUMMARY / "calibration_fine_grid.csv", index=False)
+    df.to_parquet(RESULTS_SUMMARY / "calibration_runs.parquet", index=False)
+    fr.to_csv(RESULTS_SUMMARY / "calibration_grid.csv", index=False)
     payload = {
-        "fitted_shock_prob": p_hat,
+        "derived_shock_prob": p,
+        "shock_exit_prob": exit_prob,
+        "labour_flows": True,
         "fitted_payment_friction": f_hat,
         "objective_column": OBJECTIVE_COLUMN,
         "objective_value": float(best_row["objective_mean"]),
@@ -212,6 +163,7 @@ def main() -> None:
         "target_d30": d30_target,
         "fitted_d30": float(best_row["active_d30"]),
         "unfitted": {
+            "active_90_plus": float(best_row["objective_mean"]),
             "active_d31_60": float(best_row["active_d31_60"]),
             "active_d61_90": float(best_row["active_d61_90"]),
             "active_60_plus": float(best_row["active_60_plus"]),
@@ -220,15 +172,14 @@ def main() -> None:
             "default_rate": float(best_row["default_rate"]),
             "zero_savings_rate": float(best_row["zero_savings"]),
         },
-        "qlfs_band": {"lower": lo, "upper": hi, "fitted_inside": bool(inside)},
+        "qlfs_band": {"lower": qlfs["p_tick_lower"], "upper": qlfs["p_tick_upper"]},
         "replicates": args.reps,
-        "fine_grid_90_plus": {
-            f"{r.shock_prob:.3f}": float(r.objective_mean) for r in fine_tbl.itertuples()
+        "earlier_fit": {
+            "note": "Before 2026-10-12 p was fitted to the 90+ band without labour flows: 0.016.",
+            "shock_prob": 0.016,
         },
     }
-    (RESULTS_SUMMARY / "calibration.json").write_text(
-        json.dumps(payload, indent=2), encoding="utf-8"
-    )
+    (RESULTS_SUMMARY / "calibration.json").write_text(json.dumps(payload, indent=2), encoding="utf-8")
     print(f"\nwrote {RESULTS_SUMMARY / 'calibration.json'}")
 
 

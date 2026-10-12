@@ -60,7 +60,9 @@ $w_i$ & survey weight (data layer only) & \texttt{w5\_wgt} \\
 \addlinespace
 \multicolumn{3}{l}{\emph{Household state at tick $t$}} \\
 $a_i(t)$ & liquid savings & \texttt{savings} \\
-$u_i(t)$ & earners currently unemployed & \texttt{n\_unemployed} \\
+$u_i(t)$ & starting earners currently out of work & \texttt{n\_unemployed} \\
+$j_i$, $h_i(t)$ & members strictly unemployed at the start; of them, those currently in work & \texttt{n\_jobseekers}, \texttt{n\_hired} \\
+$\bar{w}_{q}$ & per-tick pay of a hired jobseeker in income quintile $q$ & \texttt{hire\_wage\_tick} \\
 $D_i(t)$, $A_i(t)$ & traditional debt; traditional arrears & \texttt{d\_trad}, \texttt{arrears\_trad} \\
 $r_i(t)$, $\iota_i(t)$ & scheduled traditional debt service per tick; annual rate on the consolidated balance. Both open at the data-layer values and move when a traditional loan is booked (Algorithm~\ref{alg:gate}); $r_i$ returns to zero when the balance clears & \texttt{scheduled\_service\_tick}, \texttt{apr\_annual} \\
 $B_{ip}(t)$ & \ac{BNPL} receivable owed by $i$ to platform $p$ & \texttt{exposure} \\

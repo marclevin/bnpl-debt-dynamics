@@ -1,32 +1,31 @@
 {
-  "fitted_shock_prob": 0.016,
+  "derived_shock_prob": 0.00446,
+  "shock_exit_prob": 0.018724,
+  "labour_flows": true,
   "fitted_payment_friction": 0.09,
   "objective_column": "active_90_plus_mean",
-  "objective_value": 0.14476841166574922,
-  "objective_sd": 0.0040307761139057804,
+  "objective_value": 0.09099035541630147,
+  "objective_sd": 0.0028523566267249366,
   "target_90_plus": 0.1421,
   "target_d30": 0.0824,
-  "fitted_d30": 0.08193493287266597,
+  "fitted_d30": 0.08273508351261402,
   "unfitted": {
-    "active_d31_60": 0.009666006140793163,
-    "active_d61_90": 0.009866786734608045,
-    "active_60_plus": 0.15463519840035725,
-    "active_current": 0.7537638625861837,
-    "all_households_90_plus": 0.06335450000000001,
-    "default_rate": 0.101939,
-    "zero_savings_rate": 0.258474
+    "active_90_plus": 0.09099035541630147,
+    "active_d31_60": 0.0038949851358690084,
+    "active_d61_90": 0.004050888275751418,
+    "active_60_plus": 0.09504124369205288,
+    "active_current": 0.8183286876594641,
+    "all_households_90_plus": 0.03736075,
+    "default_rate": 0.06049575,
+    "zero_savings_rate": 0.203995
   },
   "qlfs_band": {
     "lower": 0.005447,
-    "upper": 0.011718,
-    "fitted_inside": false
+    "upper": 0.011718
   },
   "replicates": 20,
-  "fine_grid_90_plus": {
-    "0.014": 0.1356586624341898,
-    "0.015": 0.1392882174655541,
-    "0.016": 0.14476841166574922,
-    "0.017": 0.14648334152269016,
-    "0.018": 0.15207387797010352
+  "earlier_fit": {
+    "note": "Before 2026-10-12 p was fitted to the 90+ band without labour flows: 0.016.",
+    "shock_prob": 0.016
   }
 }

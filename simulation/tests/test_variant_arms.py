@@ -101,3 +101,40 @@ def test_committed_relief_still_counts_a_refused_shortfall_as_distress(monkeypat
     monkeypatch.setattr(type(model.lender), "apply", lambda self, agent, amount: 0.0)
     model.step()
     assert a.distress_streak == 1
+
+
+def test_derived_shock_prob_matches_the_stable_employment_condition():
+    from simulation.experiments import DERIVED_SHOCK_PROB
+    from simulation.population import stationary_separation_rate
+    from simulation.config import ParamSet
+    assert round(stationary_separation_rate(ParamSet().shock_exit_prob), 5) == DERIVED_SHOCK_PROB
+
+
+def test_labour_flows_hire_a_jobseeker_and_add_the_hire_wage():
+    from dataclasses import replace
+    model, a = household(income_tick=1000, committed_tick=1000, bnpl_enabled=False,
+                         labour_flows=True, shock_exit_prob=1.0, shock_prob=0.0)
+    a.rec = replace(a.rec, n_jobseekers=1, hire_wage_tick=300.0)
+    model.step()
+    assert a.n_hired == 1
+    assert a.savings == pytest.approx(300.0)
+
+
+def test_labour_flows_separate_a_hired_jobseeker():
+    from dataclasses import replace
+    model, a = household(income_tick=1000, committed_tick=1000, bnpl_enabled=False,
+                         labour_flows=True, shock_exit_prob=1.0, shock_prob=1.0)
+    a.rec = replace(a.rec, n_jobseekers=1, hire_wage_tick=300.0)
+    model.step()
+    assert a.n_hired == 0  # hired, then separated in the same tick
+    assert a.savings == pytest.approx(0.0)
+
+
+def test_labour_flows_off_by_default_leave_jobseekers_idle():
+    from dataclasses import replace
+    model, a = household(income_tick=1000, committed_tick=1000, bnpl_enabled=False,
+                         shock_exit_prob=1.0)
+    a.rec = replace(a.rec, n_jobseekers=2, hire_wage_tick=300.0)
+    model.step()
+    assert a.n_hired == 0
+    assert a.savings == pytest.approx(0.0)

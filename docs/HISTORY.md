@@ -351,3 +351,22 @@ Four Fable agents audited the writing chapter by chapter. Their brief excluded n
 - Section 5's quintile sentence now says that only Q1 and Q5 rise detectably under bureau visibility.
 
 The labour-market drift is stated in 3.4 as an assumption of the baseline. The single-tick shock is described as removing persistence, not as a stable labour market. Body 9,845 words by the float-excluding count. Abstract 297 words as typeset.
+
+## 2026-10-12: stable labour market (labour flows); every experiment rerun
+
+**Why.** Two reviewers flagged the baseline's labour market. The separation rate had been fitted to the CCMR 90+ band (0.016 per tick). Only members employed at the start could lose and regain work, so the share of starting earners out of work rose from zero to 39% in two years, a recession that did not occur. The fitted rate was manufacturing the 2017 stock of long arrears.
+
+**What changed.**
+- New switch `labour_flows` (`config.py`, `agents.py`), on in the baseline (`experiments.calibrated`). Every employed member separates at `shock_prob`, in every household. Members strictly unemployed on the NIDS roster at the start (`n_jobseekers`, `population.py`) find work at the QLFS re-employment rate (0.0187). A hire brings the median NIDS take-home pay (`w5_fwag`) of employed adults in the household's income quintile.
+- `shock_prob` is now **derived**, not fitted: 0.00446 = 0.0187 × 1,113 jobseekers / 4,670 earners, so expected employment is constant. Over 20 seeds it stays within 0.1% of its start.
+- `calibrate.py` now fits only payment friction, to the 1–30 band. It is still 0.09 (8.27% against 8.24%). The 90+ band is unfitted: 9.10% against 14.21%, about two-thirds. The rest is a stock built over years that a two-year run starting from current accounts cannot rebuild.
+- Every suite was rerun (`final_run.py`), along with the calibration, the Sobol design (separation range now 0.0013–0.0071), the cap diagnostic and the defaulter check. Tables and figures were regenerated. Sections 3 to 6, the abstract and appendices B, C, D, F and G were rewritten against the new numbers. Three new unit tests cover the hiring mechanism.
+
+**What moved.**
+- Baseline default: 13.3% → 7.3%.
+- BNPL effect: −0.03 ± 0.03 at β = 0 (was +0.12 ± 0.05) and +0.17 ± 0.04 at β = 1 (was +0.60 ± 0.07).
+- Bureau visibility: +0.18 and +0.16 (was +0.22 and +0.15), still most in Q1.
+- The platform cap and an agreements cap now give the same change in default (difference 0.00 ± 0.06, was 0.24 ± 0.08), so the cap works through lost volume.
+- About half of default (3.5 of 7.3 points) now comes from households whose recorded income is below their food and rent.
+
+Results under the old baseline are archived outside the repository, from the session of 2026-10-12.

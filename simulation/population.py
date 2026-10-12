@@ -62,6 +62,13 @@ class HouseholdRecord:
     banked: bool
     # -- D17 --------------------------------------------------------------------
     reference_group: tuple[str, str]
+    # -- labour flows (added 2026-10-12) ------------------------------------------
+    #: Members unemployed (strict definition) on the NIDS roster. With labour flows on,
+    #: they find work at the QLFS re-employment rate.
+    n_jobseekers: int = 0
+    #: Per-tick take-home pay a hired jobseeker brings: the median NIDS primary-job
+    #: take-home pay of employed adults in the household's income quintile.
+    hire_wage_tick: float = 0.0
 
 
 @lru_cache(maxsize=1)
@@ -126,6 +133,32 @@ def load_population_frame() -> pd.DataFrame:
             f"{wage_no_earner} WAGE-dominant households have no employed member on the "
             "NIDS roster; income_source and w5_empl_stat disagree"
         )
+
+    # --- labour flows: jobseekers and the wage a hire brings (2026-10-12) -------
+    # Strictly unemployed members can find work, so employment need not only fall. A
+    # hire earns the median take-home pay (w5_fwag, primary and secondary jobs) of
+    # employed adults in households of the same per-capita income quintile. The
+    # population is a weighted resample, so medians over its rows are weighted.
+    ind = pd.read_stata(NIDS_INDDERIVED, columns=["w5_hhid", "w5_empl_stat", "w5_fwag"])
+    seekers = (
+        ind.assign(_u=(ind["w5_empl_stat"] == "Unemployed_Strict").astype(int))
+        .groupby("w5_hhid", as_index=False)["_u"].sum()
+        .rename(columns={"_u": "n_jobseekers"})
+    )
+    merged = merged.merge(
+        seekers, left_on="source_w5_hhid", right_on="w5_hhid", how="left"
+    ).drop(columns=["w5_hhid"])
+    merged["n_jobseekers"] = merged["n_jobseekers"].fillna(0).astype(int)
+    workers = ind[(ind["w5_empl_stat"] == "Employed")].copy()
+    workers["w5_fwag"] = pd.to_numeric(workers["w5_fwag"], errors="coerce")
+    workers = workers[workers["w5_fwag"] > 0]
+    pay = merged[["source_w5_hhid", "income_quintile"]].merge(
+        workers[["w5_hhid", "w5_fwag"]], left_on="source_w5_hhid", right_on="w5_hhid"
+    )
+    median_pay = pay.groupby("income_quintile", observed=True)["w5_fwag"].median()
+    merged["hire_wage_monthly"] = merged["income_quintile"].map(median_pay).astype(float)
+    if merged["hire_wage_monthly"].isna().any():
+        raise ValueError("a quintile has no employed adult with a positive wage")
 
     # --- recompute the product-mix APR and term -------------------------------
     # The parquet stores repay_uncapped but not the rate behind it, and per-tick
@@ -193,6 +226,8 @@ def build_records(
                 apr_annual=float(row.apr_annual),
                 banked=bool(row.banked),
                 reference_group=group,
+                n_jobseekers=int(row.n_jobseekers),
+                hire_wage_tick=float(row.hire_wage_monthly) * MONTHLY_TO_TICK,
             )
         )
         groups.setdefault(group, []).append(i)
@@ -209,3 +244,15 @@ def zero_capacity_debtors(records: list[HouseholdRecord]) -> list[int]:
     diagnostic so they cannot quietly distort the arrears denominator.
     """
     return [r.agent_id for r in records if r.d_trad > 0 and r.nca_capacity_monthly <= 0]
+
+
+def stationary_separation_rate(reemployment: float) -> float:
+    """The per-earner separation rate at which expected employment is constant.
+
+    With labour flows on, employed members separate at `s` and unemployed members (the
+    jobseekers on the NIDS roster, then anyone who separates) find work at the QLFS
+    re-employment rate. Expected employment is flat from the first tick when outflows
+    equal inflows, s x earners = reemployment x jobseekers (added 2026-10-12).
+    """
+    df = load_population_frame()
+    return reemployment * float(df["n_jobseekers"].sum()) / float(df["n_earners"].sum())

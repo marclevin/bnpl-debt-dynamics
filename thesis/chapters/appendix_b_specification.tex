@@ -52,10 +52,9 @@ It is generated from the parameter declarations in \texttt{simulation/config.py}
 
 Four groups of entries carry standing flags:
 \begin{itemize}
-    \item \textbf{The two fitted parameters.} The income-shock probability (Submodel~1) and the
-    payment-friction rate (Submodel~6) are fitted to the \ac{CCMR} 90+ and 1--30 day bands, which
-    is what makes the baseline calibrated rather than validated
-    (Section~\ref{sec:lim-calibration}).
+    \item \textbf{The fitted and derived parameters.} Payment friction (Submodel~6) is fitted to
+    the \ac{CCMR} 1--30 day band. The separation rate (Submodel~1) is derived from the
+    stable-employment condition and is not fitted (Section~\ref{sec:lim-calibration}).
     \item \textbf{The uncited rules.} The shortfall borrowing amount (Submodel~4), \ac{BNPL} relief
     of a shortfall and its cap (Submodel~5), the minimum-payment fraction (Submodel~6), the use of
     credit raised against a committed shortfall (Submodel~7) and platform routing (Submodel~13)

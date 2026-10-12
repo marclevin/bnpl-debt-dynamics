@@ -59,6 +59,8 @@ class HouseholdAgent(Agent):
         self.cool_off_until = -1
         #: D1: how many of the household's earners are currently out of work.
         self.n_unemployed = 0
+        #: Jobseekers currently in work (labour flows only).
+        self.n_hired = 0
 
         # D17 threshold mechanism: this household's personal tipping point, fixed for
         # life (Granovetter 1978). Drawn ONLY under the threshold mechanism, so the
@@ -144,15 +146,39 @@ class HouseholdAgent(Agent):
         # --- 1. income arrives, subject to the shock ---------------------------
         # D1: the shock is a separation from employment, so the household loses its
         # WAGE COMPONENT. The magnitude is observed (w5_hhwage), not a parameter.
-        # Grant-dependent households are exempt: SA social grants are statutory
-        # transfers and do not vary with employment.
+        # Without labour flows (the earlier rule, and the single-tick arm), grant-dependent
+        # households are exempt. With labour flows (the baseline) every household's
+        # employed members can separate; see the labour_flows branch below.
         # The hazard applies PER EARNER, so `p` is an individual separation rate directly
         # comparable to the QLFS figure, and a multi-earner household correctly faces a
         # higher chance that someone loses work. Losing one of two earners costs half the
         # wage component, which is what puts households in the mild arrears bands.
         income = self.income_tick
         n_earners = self.rec.n_earners
-        if self.is_wage_household and n_earners > 0:
+        if p.labour_flows and p.shock_persistent:
+            # Labour flows (added 2026-10-12): every employed member separates at
+            # shock_prob and every unemployed member finds work at shock_exit_prob, in
+            # every household. Members unemployed at the start are jobseekers; a hired
+            # jobseeker brings hire_wage_tick. Moves into work come first, as below.
+            rng = self.model.rng
+            for _ in range(self.n_unemployed):
+                if rng.random() < p.shock_exit_prob:
+                    self.n_unemployed -= 1
+            for _ in range(n_earners - self.n_unemployed):
+                if rng.random() < p.shock_prob:
+                    self.n_unemployed += 1
+            for _ in range(self.rec.n_jobseekers - self.n_hired):
+                if rng.random() < p.shock_exit_prob:
+                    self.n_hired += 1
+            for _ in range(self.n_hired):
+                if rng.random() < p.shock_prob:
+                    self.n_hired -= 1
+            lost = self.n_unemployed
+            self.shocked_tick = lost > 0
+            if lost:
+                income -= self.rec.income_wage_tick * (lost / n_earners)
+            income += self.n_hired * self.rec.hire_wage_tick
+        elif self.is_wage_household and n_earners > 0:
             rng = self.model.rng
             if p.shock_persistent:
                 # Re-employment first, at the QLFS unemployed->employed hazard, so an

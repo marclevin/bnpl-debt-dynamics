@@ -83,8 +83,9 @@ derives it from its component questions; it is not recomposed. \texttt{income\_s
 the household by its largest component: wage (\texttt{w5\_hhwage}), government grant
 (\texttt{w5\_hhgovt}), or other, the sum of remittances, other income, agricultural income,
 investment income and capital income. Components are zero-filled before comparison, and a
-household with no positive component is classed as other. The class gates the employment shock of
-Submodel~1: only wage-dominant households are shocked, because grants are statutory transfers.
+household with no positive component is classed as other. The class gated the employment shock of
+Submodel~1 in an earlier version, which shocked only wage-dominant households, and still gates the single-tick arm. With labour
+flows every employed member can lose work, and the wage component is what a separation removes.
 
 \texttt{income\_wage\_tick} is the wage component itself, joined at instantiation from
 \texttt{w5\_hhwage} on the household identifier, zero-filled where absent and clipped to lie
@@ -101,6 +102,15 @@ file is ``Employed'', merged on the household identifier; households with no suc
 zero. It makes the separation probability a per-earner hazard, directly comparable to the
 individual transition rate in the \ac{QLFS}, and it is why losing one earner in a two-earner
 household costs half the wage component rather than all of it.
+
+\texttt{n\_jobseekers} counts roster members whose status is ``Unemployed\_Strict'', the
+official definition used by the \ac{QLFS} transition rates. The population holds 4{,}670
+employed and 1{,}113 strictly unemployed members, a strict unemployment rate of 19\%, below the
+\ac{QLFS} rate because \ac{NIDS} measures it differently. \texttt{hire\_wage\_tick} is the
+median of \texttt{w5\_fwag}, monthly take-home pay from primary and secondary jobs, among
+employed adults in households of the same per-capita income quintile: R1{,}754, R2{,}600,
+R3{,}200, R5{,}600 and R15{,}000 a month from Q1 to Q5. The population is a weighted resample,
+so medians over its rows are weighted.
 
 \subsection*{D.4 Committed and discretionary expenditure}
 

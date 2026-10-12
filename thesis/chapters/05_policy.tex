@@ -13,13 +13,14 @@ Regulation 23A test, which is how we model the reported bureau arrangements
 \ac{BNPL} request, a stricter version of the \ac{FCA}'s affordability check
 \cite{fca_ps26_1, woolard2021}. A third arm combines both (Section~\ref{sec:asymmetry}). Each
 arm runs at $\beta=0$ and $\beta=1$ with one hundred replicates on shared seeds, so a
-difference of 0.1 points in default is detected about half the time and one of 0.15 points
+difference of 0.08 points in default is detected about half the time and one of 0.12 points
 usually.
+% switch_se_max = 0.0004, switch_detectable_min = 0.0008 in results_numbers.json.
 
 Neither switch lowers default (Table~\ref{tab:scenarios}; Figure~\ref{fig:scenarios}). Bureau
-visibility raises it, by $0.22 \pm 0.04$ points at $\beta=0$ and $0.15 \pm 0.04$ at
-$\beta=1$. Screening leaves it unchanged, although an effect of about a tenth of a point in
-either direction cannot be ruled out.
+visibility raises it, by $0.18 \pm 0.03$ points at $\beta=0$ and $0.16 \pm 0.03$ at
+$\beta=1$. Screening changes it by $+0.04 \pm 0.03$ and $+0.02 \pm 0.03$ points, which is not
+detectable, although a rise of about a tenth of a point cannot be ruled out.
 
 \input{chapters/generated/tab_scenarios}
 
@@ -32,46 +33,57 @@ either direction cannot be ruled out.
 \end{figure}
 
 Bureau visibility works through refusals. Once the lender sees \ac{BNPL} instalments, it
-refuses about a sixth more applications and lends 8 to 9\% less. A refused household in the
+refuses about 15\% more applications and lends 12 to 14\% less. A refused household in the
 model has no other source of credit. If its shortfall is in debt service, the instalment goes
 unpaid and it is distressed in that tick. A food or rent shortfall is distress either way, but
 a granted loan is spent on debt service or saved, which can prevent the next tick's shortfall
-(Section~\ref{sec:sequence}). The 90+ share and default rise, most in Q1, the poorest
-quintile; among the quintiles only Q1 and Q5 rise detectably. \ac{BNPL} volume barely changes, because the switch acts on
-traditional lending and not on \ac{BNPL} requests.
+(Section~\ref{sec:sequence}). Default rises most in Q1, the poorest quintile, by
+$0.44 \pm 0.06$ points at $\beta=0$ and $0.54 \pm 0.05$ at $\beta=1$, and detectably also in
+Q2 and Q3 at $\beta=0$ only. \ac{BNPL} volume falls by less than 3\%, because the switch acts
+on traditional lending and not on \ac{BNPL} requests.
+% 15%: +161/1060 and +164/1073 refusals; 12 to 14%: lever_bureau_beta{0,1}_lending_diff over
+% lever_bench_beta{0,1}_lending (-0.120, -0.142).
 
 The model's rules may favour this result. A refusal can cause distress at once, whereas a granted
 loan is repaid over 25 months, partly after the run ends, and the lender assesses surveyed
 rather than current income. Under the rule in which a loan that pays food and rent clears that
 tick's distress (Section~\ref{sec:results-effect}), a refusal becomes almost the only route into
-distress, and the rise is larger: $0.71 \pm 0.02$ and $0.73 \pm 0.02$ points from a benchmark of
-5.7\%, most in Q1, while screening changes default by at most 0.06 points. The switches were
-not run under the other rules of Table~\ref{tab:effect} or over a longer horizon, so the result
-gives the direction of the affordability channel and is not a forecast.
-% rq3r_* in results/summary/results_numbers.json (suite rq3r, seeds 80,000-80,099, 100 replicates).
+distress, and the rise is larger: $0.40 \pm 0.01$ and $0.42 \pm 0.01$ points from a benchmark of
+4.4\%, most in Q1, while screening changes default by at most 0.02 points. The switches were not run under the other rules of Table~\ref{tab:effect} or
+over a longer horizon, so the result gives the direction of the affordability channel and is not
+a forecast.
+% rq3r_bench_default_b{0,1}, rq3r_bureau_default_diff_b{0,1} (+ _se), rq3r_bureau_default_diff_Q*,
+% rq3r_afford_default_diff_b{0,1} in results/summary/results_numbers.json (suite rq3r, seeds
+% 80,000-80,099, 100 replicates).
 
-Screening reduces \ac{BNPL} use slightly: holding at the final tick falls by 2 to 3 points and
-volume by 1 to 4\%. Three features of the model could explain why default does not move, none
-of them tested: a \ac{BNPL} agreement is small beside the room the Regulation 23A test allows;
-the test is applied before the income shocks that drive distress; and a refused shortfall
-request passes in full to the traditional lender (Algorithm~\ref{alg:gate}).
+Screening reduces \ac{BNPL} use: holding at the final tick falls by 1.4 points at $\beta=0$
+and 2.4 at $\beta=1$, and volume by 4.6\% and 1.2\%. Its one detectable effect on default is in
+Q4, $+0.23 \pm 0.09$ and $+0.24 \pm 0.09$ points on the same seeds, which we have not explained.
+Three features of the model could explain
+why default does not move, none of them tested: a \ac{BNPL} agreement is small beside the room
+the Regulation 23A test allows; the test is applied before the income shocks that drive
+distress; and a refused shortfall request passes in full to the traditional lender
+(Algorithm~\ref{alg:gate}).
 
-With both switches, default is 0.10 to 0.11 points above the benchmark. At $\beta=0$
-screening roughly halves the rise in refusals and in default that visibility causes on its
-own. A likely reason, not tested, is that screening refuses \ac{BNPL} to households near the
-Regulation 23A limit, whose \ac{BNPL} instalments would otherwise lead the traditional lender
-to refuse them. Peer influence raises default by
-about 0.6 points in every arm but does not detectably change the effect of either switch
-($-0.07 \pm 0.06$ points for bureau visibility).
+With both switches, default is 0.06 points above the benchmark at each $\beta$, which is not
+detectable. Against visibility alone, adding screening lowers default by $0.13 \pm 0.03$ points
+at $\beta=0$ and $0.10 \pm 0.03$ at $\beta=1$, and roughly halves the extra refusals. A likely
+reason, not tested, is that screening refuses \ac{BNPL} to households near the Regulation 23A
+limit, whose \ac{BNPL} instalments would otherwise lead the traditional lender to refuse them.
+Peer influence raises default by 0.18 to 0.21 points in every arm but does not detectably
+change the effect of either switch ($-0.02 \pm 0.05$ points for bureau visibility).
+% switch_both_less_bureau_beta{0,1} (+ _se); switch_{bench,bureau,afford,both}_beta_gap;
+% switch_bureau_interaction (+ _se), results/summary/results_numbers.json.
 
-Two further levers are reported in Appendix~\ref{app:levers}:
-a cooling-off window of one to four ticks after a want-driven purchase, and a cap on the number
-of platforms a household may owe, which no jurisdiction we found imposes. Neither changes default
-detectably at $\beta = 0$; at $\beta = 1$ every window and caps of one and two lower default by
-0.28 to 0.39 points. The cap of two lowers default by $0.24 \pm 0.08$ points more than a cap on
-agreements that removes as much volume, so lost volume alone does not explain the fall.
+Two further levers, a cooling-off window of one to four ticks after a want-driven purchase and
+a hypothetical cap on platforms owed, are reported in Appendix~\ref{app:levers}. Of their
+fourteen contrasts with the benchmark, chance alone would make about one detectable, and two
+are: the two-tick window at $\beta=0$, $+0.15 \pm 0.06$ points, which the windows either side
+do not support, and the four-tick window at $\beta=1$, $-0.21 \pm 0.07$ points. No cap lowers
+default by more than about 0.1 points, and a cap on agreements that removes as much volume has the same effect.
 
 In answer to RQ3, making \ac{BNPL} visible to the traditional lender reduces traditional
 lending and raises default, most in the poorest quintile, because refused households have
-nowhere else to borrow. Mandatory screening slightly reduces \ac{BNPL} borrowing and does not
-change default detectably. Under the model's rules neither measure lowers aggregate default.
+nowhere else to borrow. Mandatory screening reduces \ac{BNPL} borrowing and does not change
+default detectably, but added to visibility it removes about two-thirds of visibility's rise in
+default. Under the model's rules neither measure lowers aggregate default.

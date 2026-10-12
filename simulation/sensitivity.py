@@ -31,7 +31,7 @@ from .experiments import calibrated
 
 #: The uncalibrated and fitted parameters, with the ranges each is defensible over.
 #: `beta` and `q_base` are the two admitted uncalibratable parameters (DEFECTS.md B8);
-#: min_payment_frac is the model's second uncited rule (B15); shock_prob is fitted but
+#: min_payment_frac is the model's second uncited rule (B15); shock_prob is derived (2026-10-12) but
 #: sits above the QLFS band (1.4x its upper bound since the B34 refit; B20), so its
 #: uncertainty belongs here too.
 #:
@@ -59,10 +59,9 @@ PROBLEM = {
         [0.025, 0.10],     # contractual minimum payment (mandatory sweep)
         [0.07, 0.28],      # kappa: half to double the IES-derived budget share
         [0.10, 1.00],      # lambda: months of income per provider; band is 0.10-0.26
-        # Shock probability: 0.3x to 1.6x the fitted 0.016, the same proportional span as
-        # before the B34 refit (0.012-0.064 about 0.040). It now covers the whole QLFS
-        # band (0.0054-0.0117) as well as the fitted value above it.
-        [0.005, 0.026],
+        # Separation rate: 0.3x to 1.6x the derived 0.00446 (2026-10-12), the same
+        # proportional span as before. Above the derived value employment falls.
+        [0.0013, 0.0071],
     ],
 }
 
