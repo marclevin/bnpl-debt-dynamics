@@ -119,7 +119,7 @@ def fig_stacking(rq1: pd.DataFrame) -> None:
         dress(ax)
     axes[0].set_ylim(0, 70)
     axes[1].set_ylim(0, 105)
-    axes[2].set_ylim(12.5, 15.0)
+    axes[2].margins(y=0.25)  # data-driven: default levels moved with the 2026-10-12 rebuild
     axes[0].legend(loc="center right", handlelength=1.6)
     fig.tight_layout(w_pad=1.4)
     save(fig, "fig_stacking")
@@ -164,9 +164,13 @@ def fig_access_default(rq2: pd.DataFrame, rq2t: pd.DataFrame) -> None:
         ax.set_xlabel("Access (share of banked)")
         ax.set_xlim(-0.03, 1.03)
         dress(ax)
-    ax_a.set_ylim(12.5, 15.0)
     ax_b.set_ylim(0, 75)
-    ax_c.set_ylim(12.5, 15.0)
+    # Panels (a) and (c) share a data-driven default scale (fixed limits went stale on 2026-10-12).
+    for ax in (ax_a, ax_c):
+        ax.margins(y=0.15)
+        ax.autoscale_view()
+    lo = min(ax_a.get_ylim()[0], ax_c.get_ylim()[0]); hi = max(ax_a.get_ylim()[1], ax_c.get_ylim()[1])
+    ax_a.set_ylim(lo, hi); ax_c.set_ylim(lo, hi)
     fig.tight_layout(w_pad=1.3)
     save(fig, "fig_access_default")
     plt.close(fig)
@@ -199,7 +203,7 @@ def fig_scenarios(rq3s: pd.DataFrame) -> None:
         ax.set_xticks(x)
         ax.set_xticklabels(names)
         dress(ax)
-    ax_a.set_ylim(12.5, 15.0)
+    ax_a.margins(y=0.25)  # data-driven, see fig_access
     ax_a.set_ylabel("Population default rate (%)")
     ax_a.set_title("(a) Default at the final tick")
     ax_a.legend(loc="upper left", handlelength=1.2)
