@@ -217,18 +217,18 @@ Nigeria and Egypt; legal commentary (Webber Wentzel, 2025).
 Well-Being & Overall Well-Being", seen only as a LinkedIn snippet and not found on UPSpace. If
 it exists and measures distress, the sentence in Section 1.1 needs to cite it.
 
-## Open, 2026-10-12: examiner-style review (Fable), option A approved for all
+## Done, 2026-10-13: examiner-style review (Fable), option A approved for all
 
-Approved by Marc on 2026-10-12, not yet done. All are text fixes. H1 and H2 first need a 20-seed computation.
+Approved by Marc on 2026-10-12 and done on 2026-10-13, uncommitted. Three new scripts write the numbers: `check_bureau_visible_split.py` (`bureau_visible_split.json`), `check_contestable_default.py` (`contestable_default.json`), and an `income_path` addition to `check_defaulter_credit.py` (`defaulter_credit.json`; existing keys reproduce exactly).
 
-| ID | Hole | Fix (option A) |
+| ID | Hole | Resolution |
 | --- | --- | --- |
-| H1 | Under bureau visibility the lender sees mostly BNPL arrears and late fees (carried indefinitely, ×26/12), not live instalments, especially in Q1. | Compute the live/arrears split by quintile over 20 seeds. Reword Section 5, the RQ3 answer, the conclusion and the abstract: visibility exposes delinquent BNPL. |
-| H2 | Labour flows hold employment constant, not income. Hire wages exceed lost wages in Q1–Q2 and fall short in Q3–Q5. | Report the income path by quintile (20 seeds) in 3.4 and Appendix C. Say "constant employment" instead of "stable labour market". Offer the drift as an untested candidate for the Q4 results. |
-| H3 | About 3.5 of 7.3 default points come from households with income below food and rent, who default regardless. | Give the default rate excluding them and restate relative effects (BNPL about 4.5%, not "about 2%"). |
-| H4 | The single-tick arm removes nearly all non-structural default and changes three things at once. | Reword: the effect works through households in an income-loss spell. |
-| H5 | The β = 0.5 access contrast is an on/off comparison near the provider volume band (+0.17 ± 0.05), and the text never says so. | One sentence in 4.3 or 4.6. |
-| H6 | The derived separation rate (0.446%) is below the QLFS band, and the effect rises with it. | One sentence: 0.17 is at the low end. |
-| H8 | Three detectable results are left unexplained (Q4 screening, six platforms at β = 1, Q4 BNPL effect). | Offer H2 and platform capacity as untested candidates. |
+| H1 | Under bureau visibility the lender sees mostly BNPL arrears and late fees, not live instalments. | **Premise refuted; the approved rewording was not applied.** At the applications the lender assesses (20 seeds, post-burn-in), arrears and fees are 0.3% (β = 0) and 0.5% (β = 1) of the visible BNPL obligation, at most 2.1% in any quintile. 99.9% of BNPL arrears are held by households that have already defaulted, which the bureau refuses before the test and which no longer apply. The probe's 91/75/64/31% reproduces exactly as the stock over all holders *including* defaulted households (β = 0). Only 2.3% and 3.7% of bureau-induced refusals would pass if arrears were hidden. Section 5 now states this in one sentence. It adds that 27 to 30% of the visible obligation is on agreements opened in the same tick against the same shortfall, which a lagged bureau would not show. Section 2.2 now says that late fees are counted too, until paid. |
+| H2 | Labour flows hold employment constant, not income. | Done: 3.4 gives employment and income by quintile at the final tick: income +15.2% in Q1, +3.2% in Q2, −3.6% in Q3, −6.1% in Q4, −5.7% in Q5, and −3.9% in total. Employment is +30% in Q1 and −12% in Q5, because jobseekers are concentrated in the lower quintiles. The same is in the Appendix C row. "Stable" became "constant" in the abstract and the conclusion. |
+| H3 | About 3.5 of 7.3 default points come from households who default regardless. | Done: 3.5 adds that the contestable baseline is 3.91%. Against it, the BNPL effect is 0.18 ± 0.05 points (4.6%) and the bureau effect is 0.19 ± 0.04 (5.1%) and 0.17 ± 0.03 (4.2%). 4.7 and the conclusion now say "about 5%" where they said "about 2%". 4.4 adds that contestable default is lowest in Q1 (2.77%) and highest in Q4 (5.93%). All 700 reruns reproduce `results/raw`. |
+| H4 | The single-tick arm changes three things at once. | Done, with a corrected premise. The arm removes 69% of contestable default (3.88% → 1.19%), not "nearly all". 4.6 and the conclusion now say that the effect works through households in a spell of lost income, and that the arm does not isolate persistence. |
+| H5 | The β = 0.5 access contrast is an on/off comparison. | Done (4.3): +0.17 ± 0.05 at volume R5,040 per eligible household a year, 6.0 times the control and above the R4,261 top of the provider band. |
+| H6 | The derived separation rate is below the QLFS band. | Done (4.5, conclusion): the effect is at the low end along this dimension. |
+| H8 | Three detectable results are left unexplained. | Done: the income drift is offered as an untested candidate for Q4 (4.4, 5). Platform capacity is offered for six platforms at β = 1 (4.2). |
 
-Already fixed (319a695): the sentence swallowed by a comment in 4.5, and the Figure 5 label. Body word budget: add about 400 words and cut about 300 of repetition.
+Body 9,943 words (cap 10,000). Abstract 299 typeset words. Still open: `config.py` still says "as in the stable 2017 labour market" in the `labour_flows` source note, which feeds the generated register in Appendix B. It was not changed, to keep model code untouched.

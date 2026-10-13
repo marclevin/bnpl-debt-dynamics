@@ -253,23 +253,28 @@ are employed and 1{,}113 are strictly unemployed. With re-employment at the \ac{
 with probability 0.446\% per tick, so that separations equal hires. This is slightly below the
 observed job-separation band of 0.54--1.17\% per tick \cite{statssa_lmd_2022}, because
 \ac{NIDS} records a lower unemployment rate than the \ac{QLFS}. After two years employment is
-within 0.1\% of its starting level. Households still lose income: 13.5\% of the members employed
-at the start are out of work at the final tick, offset by jobseekers who find work.
+within 0.1\% of its starting level, although 13.5\% of the members employed at the start are
+out of work at the final tick. Employment is constant in total but not within quintiles.
+Jobseekers are concentrated in the lower quintiles, so by the final tick employment is 30\% above its start in Q1 and 12\% below
+it in Q5. A hire brings the median pay of employed adults in its quintile, which is above the
+mean wage per earner in Q1 and Q2 and below it in Q3 to Q5. Household income at the final tick
+is therefore 15.2\% and 3.2\% above its start in Q1 and Q2, and 3.6\%, 6.1\% and 5.7\% below
+it in Q3, Q4 and Q5. In total it is 3.9\% lower.
+% Income path: "income path, baseline with labour flows" in results/summary/defaulter_credit.json
+% (employment_rel_t52_*, income_rel_t52_*, lost_wage_per_earner_monthly_*, hire_wage_monthly_*),
+% notebooks/scripts/check_defaulter_credit.py, seeds 10,000-10,019, BNPL off.
 
 With \ac{BNPL} disabled, we fit one parameter, payment friction, to the 1--30 day share of
 the 2017-Q1 \ac{CCMR} arrears profile, choosing it from a grid by the smallest absolute error
 over twenty replicates (Appendix~\ref{app:calibration}). The selected value of 9\% per tick
 stays fixed in every experiment. The 90+ day share is not targeted. Table~\ref{tab:arrears-fit}
-reports the fit. An earlier version fitted the separation rate to the 90+ band instead. That
-required 1.6\% per tick and, with no hires, took the share of starting earners out of work to
-39\% within two years, a recession that did not occur.
-% 0.1%, 13.5% and 39%: results/summary/defaulter_credit.json, "unemployment path" entries
+reports the fit. An earlier version fitted the separation rate to the 90+ band instead, which
+required 1.6\% per tick and, with no hires, produced a recession that did not occur
+(Appendix~\ref{app:calibration}).
+% 0.1% and 13.5%: results/summary/defaulter_credit.json, "unemployment path" entries
 % (notebooks/scripts/check_defaulter_credit.py, seeds 10,000-10,019, BNPL off).
 
 \input{chapters/generated/tab_arrears_fit}
-
-Neither $q_{\text{base}}$ nor $\beta$ has an empirical estimate, so the rate of \ac{BNPL}
-adoption is not identified.
 
 \subsection{Validation}
 \label{sec:data-validation}
@@ -319,10 +324,9 @@ on record for years, so the level of default is not validated. Most defaulters o
 in the baseline and 97.9\% with \ac{BNPL} at $\beta=0$, but default is mostly a failure to pay
 for food and rent: 84.1\% of baseline defaulters were short of them in every tick of the
 streak that ended in default, and 15.2\% defaulted on debt service alone. Of baseline
-defaulters, 48\% have had income below their food and rent from the start, and 37\% have an
-earner out of work when they default.
-% 84.8%, 97.9%, 84.1%, 15.2%, 48% and 37%: owe_any_credit, streak_all_committed,
-% streak_no_committed, income_below_committed and unemployed_at_default in
+defaulters, 37\% have an earner out of work when they default.
+% 84.8%, 97.9%, 84.1%, 15.2% and 37%: owe_any_credit, streak_all_committed,
+% streak_no_committed and unemployed_at_default in
 % results/summary/defaulter_credit.json (notebooks/scripts/check_defaulter_credit.py).
 
 \subsubsection*{The Constructed Population}
@@ -358,8 +362,17 @@ Some households begin in a vulnerable position: income does not cover committed 
 for 3.6\% of agents, or committed expenditure and scheduled debt service for 5.1\%, and
 45.2\% have no liquid savings. About 96\% of the first group default, with and without
 \ac{BNPL}, so about 3.5 of the 7.3 points of baseline default are set by the survey records.
+The group is probably an artefact of the survey, in which income is under-reported relative
+to spending on food and rent, and the model carries it. Among the other households baseline
+default is 3.91\%. Against that rate the \ac{BNPL} effect at $\beta=1$ is $0.18 \pm 0.05$
+points, or 4.6\%, and bureau visibility (Section~\ref{sec:scenarios}) raises default by
+$0.19 \pm 0.04$ points at $\beta=0$ and $0.17 \pm 0.03$ at $\beta=1$, or 5.1\% and 4.2\%.
 % 96% and 3.5: income_below_committed_who_default (0.962-0.965) times
 % income_below_committed_share_of_agents (0.0364), results/summary/defaulter_credit.json.
+% 3.91%, 0.18 +/- 0.05, 4.6%: baseline_contestable_default_rate, beta1_effect_pooled_contestable
+% (+ _se), beta1_effect_relative_to_contestable_baseline; bureau: rq3s_bureau_diff_contestable_b{0,1}
+% (+ _se), rq3s_bureau_relative_to_contestable_bench_b{0,1}; results/summary/contestable_default.json
+% (notebooks/scripts/check_contestable_default.py; same seeds and pooling as the published effects).
 
 \subsubsection*{Behaviour with BNPL}
 
@@ -382,8 +395,7 @@ The share of ever-holders who owe two platforms at once, 30.3\%, is close to the
 United States borrowers, but the routing assumption largely sets it
 (Section~\ref{sec:results-stacking}), so the agreement is weak evidence. Without peer
 influence, volume is below the provider's range and the mean purchase is 35\% below the
-provider-based figure, at the edge of the tolerance. Purchases are sized on discretionary budgets, so they are small in the
-lower quintiles (Table~\ref{tab:distribution}). At $\beta=1$ volume is 13 times higher, about
+provider-based figure, at the edge of the tolerance. At $\beta=1$ volume is 13 times higher, about
 R11{,}200 per eligible household, 2.6 times the top of the range, so the two settings bracket
 the provider's volume. The
 range is one provider's per customer \cite{weaver2025iar}, whereas the model's volume is per
@@ -400,18 +412,14 @@ at one date are different measures.
 
 \subsubsection*{What the Validation Supports}
 
-The failures differ in kind. The serious ones concern how the model generates distress. It
-reproduces about two-thirds of the untargeted 90+ share but not the intermediate bands, so the
-paths by which arrears develop are not well represented. Its opening debt service is higher
-than households report. Its default rate has no external counterpart. These problems bound every
-statement about the level of distress.
+The failures differ in kind. The serious ones concern how the model generates distress: the
+missed intermediate bands, the high opening debt service and a default rate with no external
+counterpart. They bound every statement about the level of distress.
 
 Other gaps reflect missing South African data more than visible misspecification. No source
 gives the size or frequency of South African \ac{BNPL} purchases by household, so purchase
 size and volume rest on one provider's disclosures and the adoption parameters have no
-estimate. Small purchases and low volume without peer influence are consistent with too low a value of
-$\kappa$: at $\kappa=0.28$ both fall within the
-provider's ranges (Table~\ref{tab:effect}). The debt-stock gap may partly reflect survey underreporting.
+estimate.
 
 Some misses are expected of a stylised model: Pattern~3 comes from another model of another
 country, and a model with one lender, no calendar, no write-offs and a two-year horizon cannot
@@ -421,9 +429,7 @@ The model therefore supports comparisons between arms that share its population,
 parameters and seeds, more than statements about levels. A misspecified mechanism can still
 distort a comparison if it interacts with the change being tested, so
 Section~\ref{sec:results-effect} repeats the \ac{BNPL} comparison under alternative borrowing,
-repayment and purchase-size rules; no arm varies the debt-service construction. We narrow the
-claims accordingly: the default rate is a model quantity, and the \ac{BNPL} effects are
-differences within the model. Statements
+repayment and purchase-size rules; no arm varies the debt-service construction. Statements
 about which quintiles are affected describe a population whose debt-to-income profile across
 quintiles does not match the reference pattern.
 

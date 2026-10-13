@@ -370,3 +370,13 @@ The labour-market drift is stated in 3.4 as an assumption of the baseline. The s
 - About half of default (3.5 of 7.3 points) now comes from households whose recorded income is below their food and rent.
 
 Results under the old baseline are archived outside the repository, from the session of 2026-10-12.
+
+## 2026-10-13: examiner holes H1 to H8 (option A)
+
+Text fixes for the seven holes in `docs/DEFECTS.md`, backed by three 20-seed computations. No model code changed. Every rerun reproduces `results/raw`, and the pooled effects match `results_numbers.json`.
+
+- **H1, premise refuted.** `check_bureau_visible_split.py` shows that under bureau visibility the lender sees almost only live instalments: arrears and late fees are 0.3% to 0.5% of the visible BNPL obligation at the applications it assesses. Almost all BNPL arrears sit with households that have already defaulted, and the lender never assesses them. The probe that raised the hole had counted those households. The "delinquent BNPL" rewording was therefore not made. Section 5 states the split and notes that 27 to 30% of what the lender sees was opened in the same tick.
+- **H2.** Constant employment is not constant income. Hires move employment towards Q1, and the hire wage is above the mean wage per earner in Q1 and Q2 and below it in Q3 to Q5. By the final tick income is +15.2% in Q1, −6.1% in Q4 and −3.9% in total (3.4, Appendix C). This drift is offered as an untested candidate for the Q4 results.
+- **H3.** Excluding the 3.6% of households whose income is below their food and rent, baseline default is 3.91%. The BNPL effect is 4.6% of that rate and the bureau effect is 4.2 to 5.1% (3.5, 4.7, conclusion). Q1 has the lowest default among the remaining households (4.4).
+- **H4 to H8.** The single-tick arm is reworded: it removes 69% of contestable default, so it shows that the effect works through income-loss spells. Three sentences were added. The first notes that the β = 0.5 access contrast is an on/off comparison at six times the control's volume (+0.17 ± 0.05). The second notes that the separation rate is below the QLFS band, so the effect of 0.17 is at the low end. The third offers platform capacity as an untested explanation of the six-platform result.
+- **Length.** About 360 words of repetition were cut, mostly from 4.7, the end of Section 5 and the conclusion, and from repeated caveats in 3.5. The conclusion now has three findings, and the bureau finding was folded into its RQ3 paragraph. Body 9,943 words. Abstract 299 typeset words.

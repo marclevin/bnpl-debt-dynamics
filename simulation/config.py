@@ -240,7 +240,7 @@ class ParamSet:
             "at shock_exit_prob (QLFS). A hired jobseeker brings the median NIDS take-home pay "
             "of employed adults in the household's income quintile. With shock_prob set to "
             "shock_exit_prob x jobseekers / earners, expected employment is constant from the "
-            "first tick, as in the stable 2017 labour market."
+            "first tick."
         ),
         sweep="on in the baseline once adopted",
     )

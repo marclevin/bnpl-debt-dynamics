@@ -43,7 +43,7 @@ REGISTER: dict[str, tuple[str, str]] = {
     "burn_in": (r"Arrears, savings and volume measures exclude the first 12 ticks; default is counted from the first tick (Section~\ref{sec:sim-params}).", ""),
     "n_agents": (r"The full resampled population of 5{,}000 (Appendix~\ref{app:variables}, Part~D.10).",
                  r"1{,}000 / 5{,}000 / 10{,}000"),
-    "labour_flows": (r"Every employed member separates at \texttt{shock\_prob} and every unemployed member, including members strictly unemployed on the \ac{NIDS} roster at the start, finds work at \texttt{shock\_exit\_prob}. A hired jobseeker brings the median \ac{NIDS} take-home pay of employed adults in the household's income quintile. Expected employment is then constant, as in the stable 2017 labour market.",
+    "labour_flows": (r"Every employed member separates at \texttt{shock\_prob} and every unemployed member, including members strictly unemployed on the \ac{NIDS} roster at the start, finds work at \texttt{shock\_exit\_prob}. A hired jobseeker brings the median \ac{NIDS} take-home pay of employed adults in the household's income quintile. Expected employment is then constant.",
                      r"off reproduces the earlier rule, in which only members employed at the start can lose and regain work"),
     "shock_prob": (r"Derived, not fitted: the separation rate at which expected employment is constant, the re-employment rate times the ratio of strictly unemployed to employed members in the population (1{,}113 to 4{,}670). The \ac{QLFS} 2017 job-separation band is 0.54--1.17\% per tick \cite{statssa_lmd_2022}. Fitting the rate to the \ac{CCMR} 90+ band without labour flows, as an earlier version did, chose 0.016.",
                    r"0.0013--0.0071 in the Sobol design"),

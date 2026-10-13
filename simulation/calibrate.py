@@ -118,7 +118,7 @@ def main() -> None:
     # --- the separation rate is DERIVED, not fitted (2026-10-12) ---------------
     # Labour flows on: employed members separate at p, unemployed members (including the
     # strictly unemployed on the NIDS roster) find work at the QLFS rate. p is the value
-    # at which expected employment is constant, as in the stable 2017 labour market.
+    # at which expected employment is constant.
     exit_prob = ParamSet().shock_exit_prob
     p = round(stationary_separation_rate(exit_prob), 5)
     print("=" * 78)
