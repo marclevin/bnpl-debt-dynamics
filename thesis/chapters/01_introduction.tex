@@ -52,8 +52,7 @@ apply a light screen and cannot see one another's balances. We fit a traditional
 baseline to the 2017 arrears profile with \ac{BNPL} disabled, then enable \ac{BNPL} in the
 same population and compare outcomes over two years. Further experiments vary the number of
 platforms, access to \ac{BNPL}, peer influence on adoption, bureau visibility and
-affordability screening. The model has no credit score, so it represents reporting only
-through the traditional lender's affordability test.
+affordability screening.
 
 The experiments measure differences between arms of the model. They do not estimate the
 historical effect of \ac{BNPL} in South Africa or forecast default under the new reporting
@@ -61,6 +60,15 @@ arrangements. The contribution is a household model in which lenders differ in w
 observe, so that the reporting gap can be switched on and off, and a set of experiments
 that identify the mechanisms and assumptions on which the effect of \ac{BNPL} on default
 depends.
+
+In the experiments, enabling \ac{BNPL} without peer influence does not change default
+detectably. Under illustrative peer influence it raises default by $0.17 \pm 0.04$ points from
+a base of 7.3\%, and the effect disappears when borrowing for food and rent is not counted as
+distress. Default does not rise with the number of platforms. Making \ac{BNPL} instalments
+visible to the traditional lender raises default by 0.16 to 0.18 points through refusals, most
+in the poorest quintile. Screening \ac{BNPL} requests does not change default detectably.
+% beta1_effect_pooled and baseline 7.28% (results_numbers.json, Section 4.1); committed_relief
+% rows of tab:effect; platform sweep tab:stacking-full; bureau and screening rows of tab:scenarios.
 
 \subsection{Research Questions}
 \label{sec:rqs}
@@ -130,7 +138,7 @@ spending among both constrained and unconstrained users, beyond what intertempor
 substitution explains. Together with the financial-distress findings of deHaan et al.\
 \cite{dehaan2024bnpl}, this suggests that additional \ac{BNPL} obligations
 increase stress on traditional debt. We check the model against this through traditional
-arrears and interest charges (Pattern~1, Table~\ref{tab:bnpl-on-checks}).
+arrears and interest charges (Table~\ref{tab:bnpl-on-checks}).
 
 Hayashi and Routh
 \cite{hayashi2025constraints} find that \ac{BNPL} users are more financially

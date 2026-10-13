@@ -36,7 +36,7 @@ fee cap and the assumed order cap, are set at 2026 prices and deflated once (App
 \addlinespace
 \texttt{shock\_\allowbreak{}prob} & 1 & 0.00446 & derived & Derived, not fitted: the separation rate at which expected employment is constant, the re-employment rate times the ratio of strictly unemployed to employed members in the population (1{,}113 to 4{,}670). The \ac{QLFS} 2017 job-separation band is 0.54--1.17\% per tick \cite{statssa_lmd_2022}. Fitting the rate to the \ac{CCMR} 90+ band without labour flows, as an earlier version did, chose 0.016. & 0.0013--0.0071 in the Sobol design \\
 \addlinespace
-\texttt{labour\_\allowbreak{}flows} & 1 & on & sourced & Every employed member separates at \texttt{shock\_prob} and every unemployed member, including members strictly unemployed on the \ac{NIDS} roster at the start, finds work at \texttt{shock\_exit\_prob}. A hired jobseeker brings the median \ac{NIDS} take-home pay of employed adults in the household's income quintile. Expected employment is then constant. & off reproduces the earlier rule, in which only members employed at the start can lose and regain work \\
+\texttt{labour\_\allowbreak{}flows} & 1 & on & assumed & Every employed member separates at \texttt{shock\_prob} and every unemployed member, including members strictly unemployed on the \ac{NIDS} roster at the start, finds work at \texttt{shock\_exit\_prob}. A hired jobseeker brings the median \ac{NIDS} take-home pay of employed adults in the household's income quintile. Expected employment is then constant. & off reproduces the earlier rule, in which only members employed at the start can lose and regain work \\
 \addlinespace
 \texttt{shock\_\allowbreak{}persistent} & 1 & on & sourced & An unemployment spell lasts until re-employment. In the \ac{QLFS} 2017, 68.4\% of the unemployed were still unemployed a quarter later \cite{statssa_lmd_2022}. & single-tick shock as a robustness arm \\
 \addlinespace
@@ -84,7 +84,7 @@ fee cap and the assumed order cap, are set at 2026 prices and deflated once (App
 \addlinespace
 \texttt{bnpl\_\allowbreak{}enabled} & design & off & sourced & The 2017 baseline has no \ac{BNPL}; the experiments enable it. & on / off \\
 \addlinespace
-\texttt{bnpl\_\allowbreak{}access\_\allowbreak{}rate} & 12 & 1 & derived & Share of banked households that are eligible for \ac{BNPL}. Banked households are 82.8\% of the population. & 0--1.0 at seven levels \\
+\texttt{bnpl\_\allowbreak{}access\_\allowbreak{}rate} & 12 & 1 & assumed & Share of banked households that are eligible for \ac{BNPL}. Banked households are 82.8\% of the population. & 0--1.0 at seven levels \\
 \addlinespace
 \texttt{n\_\allowbreak{}platforms} & 13 & 4 & assumed & Several providers operate in South Africa, among them PayJustNow and Payflex \cite{payjustnow_terms, payflex_terms}; four is a stylised count. & 1--6 \\
 \addlinespace

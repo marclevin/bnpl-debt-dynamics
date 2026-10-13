@@ -256,7 +256,7 @@ observed job-separation band of 0.54--1.17\% per tick \cite{statssa_lmd_2022}, b
 within 0.1\% of its starting level, although 13.5\% of the members employed at the start are
 out of work at the final tick. Employment is constant in total but not within quintiles.
 Jobseekers are concentrated in the lower quintiles, so by the final tick employment is 30\% above its start in Q1 and 12\% below
-it in Q5. A hire brings the median pay of employed adults in its quintile, which is above the
+it in Q5. Left running, the uniform hazards would equalise unemployment across quintiles. A hire brings the median pay of employed adults in its quintile, which is above the
 mean wage per earner in Q1 and Q2 and below it in Q3 to Q5. Household income at the final tick
 is therefore 15.2\% and 3.2\% above its start in Q1 and Q2, and 3.6\%, 6.1\% and 5.7\% below
 it in Q3, Q4 and Q5. In total it is 3.9\% lower.
@@ -364,14 +364,15 @@ for 3.6\% of agents, or committed expenditure and scheduled debt service for 5.1
 \ac{BNPL}, so about 3.5 of the 7.3 points of baseline default are set by the survey records.
 The group is probably an artefact of the survey, in which income is under-reported relative
 to spending on food and rent, and the model carries it. Among the other households baseline
-default is 3.91\%. Against that rate the \ac{BNPL} effect at $\beta=1$ is $0.18 \pm 0.05$
-points, or 4.6\%, and bureau visibility (Section~\ref{sec:scenarios}) raises default by
-$0.19 \pm 0.04$ points at $\beta=0$ and $0.17 \pm 0.03$ at $\beta=1$, or 5.1\% and 4.2\%.
+default is 3.91\%. Relative to each comparison arm's default among those households, the
+\ac{BNPL} effect at $\beta=1$ is 4.6\% and the rise under bureau visibility
+(Section~\ref{sec:scenarios}) is 5.1\% at $\beta=0$ and 4.2\% at $\beta=1$.
 % 96% and 3.5: income_below_committed_who_default (0.962-0.965) times
 % income_below_committed_share_of_agents (0.0364), results/summary/defaulter_credit.json.
 % 3.91%, 0.18 +/- 0.05, 4.6%: baseline_contestable_default_rate, beta1_effect_pooled_contestable
 % (+ _se), beta1_effect_relative_to_contestable_baseline; bureau: rq3s_bureau_diff_contestable_b{0,1}
-% (+ _se), rq3s_bureau_relative_to_contestable_bench_b{0,1}; results/summary/contestable_default.json
+% (+ _se), rq3s_bureau_relative_to_contestable_bench_b{0,1} (benchmark rates rq3s_bench_contestable_b{0,1},
+% 3.84% and 4.06%); results/summary/contestable_default.json
 % (notebooks/scripts/check_contestable_default.py; same seeds and pooling as the published effects).
 
 \subsubsection*{Behaviour with BNPL}
@@ -412,7 +413,7 @@ at one date are different measures.
 
 \subsubsection*{What the Validation Supports}
 
-The failures differ in kind. The serious ones concern how the model generates distress: the
+The serious failures concern how the model generates distress: the
 missed intermediate bands, the high opening debt service and a default rate with no external
 counterpart. They bound every statement about the level of distress.
 
@@ -421,9 +422,7 @@ gives the size or frequency of South African \ac{BNPL} purchases by household, s
 size and volume rest on one provider's disclosures and the adoption parameters have no
 estimate.
 
-Some misses are expected of a stylised model: Pattern~3 comes from another model of another
-country, and a model with one lender, no calendar, no write-offs and a two-year horizon cannot
-be expected to reproduce an account-level age analysis band by band.
+Pattern~3 comes from another model of another country, so missing it matters less.
 
 The model therefore supports comparisons between arms that share its population,
 parameters and seeds, more than statements about levels. A misspecified mechanism can still

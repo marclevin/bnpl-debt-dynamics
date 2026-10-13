@@ -33,9 +33,9 @@ detectable, although a rise of about a tenth of a point cannot be ruled out.
 
 Bureau visibility works through refusals. Once the lender sees \ac{BNPL} instalments, it
 refuses about 15\% more applications and lends 12 to 14\% less. What it sees is almost entirely
-live instalments: arrears and late fees (Section~\ref{sec:asymmetry}) are 0.3\% of the visible \ac{BNPL} obligation at the applications it assesses at $\beta=0$ and 0.5\%
-at $\beta=1$, because nearly all \ac{BNPL} arrears belong to households that have already
-defaulted and no longer apply. Between 27 and 30\% of the obligation is on agreements opened in the same
+live instalments: arrears and late fees are under 0.5\% of the visible obligation, because
+nearly all \ac{BNPL} arrears belong to households that have already defaulted and no longer
+apply. Between 27 and 30\% of the obligation is on agreements opened in the same
 tick against the same shortfall, which a bureau reporting with a lag would not show.
 % arrears_share_at_application (0.0028, 0.0045; at most 0.021 in any quintile),
 % arrears_held_by_defaulted_share (0.999) and live_opened_same_tick_share_at_application
@@ -64,19 +64,17 @@ a forecast.
 
 Screening reduces \ac{BNPL} use: holding at the final tick falls by 1.4 points at $\beta=0$
 and 2.4 at $\beta=1$, and volume by 4.6\% and 1.2\%. Its one detectable effect on default is in
-Q4, $+0.23 \pm 0.09$ and $+0.24 \pm 0.09$ points on the same seeds. One candidate, not tested,
-is the income drift of Section~\ref{sec:lim-calibration}, which is largest in Q4.
-Three features of the model could explain
-why default does not move, none of them tested: a \ac{BNPL} agreement is small beside the room
-the Regulation 23A test allows; the test is applied before the income shocks that drive
-distress; and a refused shortfall request passes in full to the traditional lender
-(Algorithm~\ref{alg:gate}).
+Q4, $+0.23 \pm 0.09$ and $+0.24 \pm 0.09$ points on the same seeds, the quintile discussed in
+Section~\ref{sec:results-distribution}. Default may not move because a \ac{BNPL} agreement is
+small beside the room the Regulation 23A test allows, because the test is applied before the
+income shocks that drive distress, or because a refused shortfall request passes in full to the
+traditional lender (Algorithm~\ref{alg:gate}); we tested none of these.
 
 With both switches, default is 0.06 points above the benchmark at each $\beta$, which is not
 detectable. Against visibility alone, adding screening lowers default by $0.13 \pm 0.03$ points
-at $\beta=0$ and $0.10 \pm 0.03$ at $\beta=1$, and roughly halves the extra refusals. A likely
-reason, not tested, is that screening refuses \ac{BNPL} to households near the Regulation 23A
-limit, whose \ac{BNPL} instalments would otherwise lead the traditional lender to refuse them.
+at $\beta=0$ and $0.10 \pm 0.03$ at $\beta=1$, and roughly halves the extra refusals. Screening
+may refuse \ac{BNPL} to households near the Regulation 23A limit, whose \ac{BNPL} instalments
+would otherwise lead the traditional lender to refuse them. This is not tested.
 Peer influence raises default by 0.18 to 0.21 points in every arm but does not detectably
 change the effect of either switch ($-0.02 \pm 0.05$ points for bureau visibility).
 % switch_both_less_bureau_beta{0,1} (+ _se); switch_{bench,bureau,afford,both}_beta_gap;
@@ -92,4 +90,4 @@ default by more than about 0.1 points.
 In answer to RQ3, making \ac{BNPL} instalments visible to the traditional lender raises
 default, most in the poorest quintile, because refused households have nowhere else to borrow.
 Mandatory screening does not change default detectably, but added to visibility it removes
-about two-thirds of visibility's rise. Neither measure lowers aggregate default.
+about two-thirds of visibility's rise. Neither switch lowers aggregate default.

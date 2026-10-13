@@ -84,19 +84,20 @@ not been submitted for any other degree or examination at any other university.
 % 13 times: volume_ratio_beta1_over_beta0; two-thirds: 9.10/14.21 (calibration.json);
 % purchase size and volume both matched: kappa0.28 and base_income at beta = 0 in tab:effect;
 % single-tick shock and committed_relief rows of tab:effect;
-% about 15% (161/1060, 164/1073), 0.16 to 0.18 points and 1 to 5% volume from tab:scenarios.
-This thesis asks how \ac{BNPL} changes household credit distress in South Africa, and what
+% about 15% (161/1060, 164/1073) and 0.16 to 0.18 points from tab:scenarios; two-thirds:
+% switch_both_less_bureau_beta{0,1} against the bureau rise (0.13/0.18, 0.10/0.16), results_numbers.json.
+This thesis asks how \ac{BNPL} changes credit distress in a model of South African households, and what
 bureau visibility and affordability screening would change. Bureau reporting of \ac{BNPL} is
 reportedly due from 2027.
-We build an agent-based model of 5{,}000 households from \ac{NIDS} and \acs{FinScope} microdata. A traditional lender applies the Regulation 23A affordability test to the debts the bureau records, while four \ac{BNPL} platforms apply a light screen and cannot see one another. Job loss and hiring follow labour-force data, so employment stays constant.
-We fit the model to the 2017 arrears profile without \ac{BNPL}, then add \ac{BNPL}.
+We build an agent-based model of 5{,}000 households from \ac{NIDS} and \acs{FinScope} microdata. A traditional lender applies the Regulation 23A affordability test to the debts the bureau records, while four \ac{BNPL} platforms apply a light screen and cannot see one another. Hires follow labour-force data and job losses offset them in expectation.
+We fit the model to the 2017 arrears profile before adding \ac{BNPL}.
 A household defaults after seven consecutive fortnights of unpaid food, rent or debt service.
-The model matches household size, income inequality, the order of magnitude of debt and about two-thirds of the untargeted long-arrears share, but misses the intermediate arrears bands, so we interpret only two-year differences between simulated scenarios.
-Households often owe several platforms at once, but default does not change detectably with the number of platforms.
-From a baseline default rate of 7.3\%, adding \ac{BNPL} does not change default detectably without peer influence and raises it by 0.17 percentage points under illustrative peer influence, at which households borrow 13 times as much.
-The effect grows with how often and how much households borrow, and disappears if income losses last one fortnight or if borrowing for food and rent is not counted as distress.
-The model has no credit score, so we test reporting through the lender's affordability test. Adding \ac{BNPL} obligations to it raises refusals by about 15\% and default by 0.16 to 0.18 points, most in the poorest quintile, because refused households have no other credit.
-Screening \ac{BNPL} requests reduces their volume by 1 to 5\% and does not change default detectably.
+The model matches household size, income inequality, the order of magnitude of debt and about two-thirds of the untargeted long-arrears share, but misses the intermediate arrears bands, so we interpret only differences between scenarios.
+Many users owe several platforms at once, but default does not rise with the number of platforms.
+From a 7.3\% baseline default rate, adding \ac{BNPL} does not change default detectably without peer influence and raises it by 0.17 percentage points under illustrative peer influence, at which households borrow 13 times as much.
+The effect grows with how often and how much households borrow, and disappears under one-fortnight income losses without hiring, or when borrowing for food and rent is not counted as distress.
+The model has no credit score, so reporting acts through the lender's affordability test. Adding \ac{BNPL} obligations to it raises refusals by about 15\% and default by 0.16 to 0.18 points, most in the poorest quintile, because in the model refused households have no other credit.
+Screening \ac{BNPL} requests does not change default detectably, but added to visibility it removes two-thirds of that rise.
 
 \section*{Data and Code}
 \addcontentsline{toc}{section}{Data and Code}
@@ -111,7 +112,10 @@ University of Cape Town and distributed by DataFirst \cite{nids_w5_2018}; the 20
 \ac{FinScope} is produced by FinMark Trust \cite{finscope2019}. Both are used under
 their access conditions, and no respondent is identifiable in the data or the
 results. The simulation code, the constructed population and the scripts that
-generate every table and figure are submitted with this thesis.
+generate every table and figure are submitted with this thesis. The simulations were run in
+Python 3.14.4 with Mesa 3.5.1; \texttt{simulation/requirements.txt} pins every package
+version. The results are those of the commit tagged in the code release.
+% Versions: simulation/requirements.txt and the project .venv (checked 2026-10-13).
 
 \acresetall
 \tableofcontents

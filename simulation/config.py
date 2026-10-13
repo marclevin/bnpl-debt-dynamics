@@ -232,12 +232,14 @@ class ParamSet:
     labour_flows: bool = _p(
         False,
         rule="D1",
-        provenance="SOURCED",
+        provenance="ASSUMPTION",
         source=(
-            "Added 2026-10-12. When on, every employed member (in every household, not only "
-            "wage-dominant ones) separates at shock_prob and every unemployed member, "
-            "including those strictly unemployed on the NIDS roster at the start, finds work "
-            "at shock_exit_prob (QLFS). A hired jobseeker brings the median NIDS take-home pay "
+            "Added 2026-10-12. Provenance 'assumed' (2026-10-13): the re-employment rate is "
+            "sourced and the separation rate derived, but the hire wage is imputed. When on, "
+            "every employed member (in every household, not only wage-dominant ones) "
+            "separates at shock_prob and every unemployed member, including those strictly "
+            "unemployed on the NIDS roster at the start, finds work at shock_exit_prob (QLFS)."
+            " A hired jobseeker brings the median NIDS take-home pay "
             "of employed adults in the household's income quintile. With shock_prob set to "
             "shock_exit_prob x jobseekers / earners, expected employment is constant from the "
             "first tick."
@@ -501,9 +503,10 @@ class ParamSet:
     bnpl_access_rate: float = _p(
         1.0,
         rule="D11",
-        provenance="DERIVED",
+        provenance="ASSUMPTION",
         source=(
-            "Share of the BANKED subpopulation that is BNPL-eligible. Banked = 82.8% of "
+            "Share of the BANKED subpopulation that is BNPL-eligible. Full access (1.0) is an "
+            "assumption; only the banked share is observed. Banked = 82.8% of "
             "households by observed data, so access_rate=1.0 means 82.8% of all households."
         ),
         sweep="RQ2 axis 1, 0.0-1.0 within the banked subpopulation",

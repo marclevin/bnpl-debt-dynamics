@@ -9,27 +9,22 @@ African households, and how bureau visibility and affordability screening affect
 The answers are comparisons within the model under 2017 conditions.
 
 \textbf{RQ1.} The population built from survey microdata matches external figures for
-household size and income inequality and is of the right order for household debt. With employment constant in expectation, the baseline reproduces the one
-arrears band it was fitted to and about two-thirds of the untargeted 90+ day share. It misses the bands between them, its debt service
-is above what households report, and its default rate has no external counterpart.
+household size and income inequality and is of the right order for household debt. The
+baseline reproduces the one arrears band it was fitted to and about two-thirds of the
+untargeted 90+ day share. It misses the bands between them, its debt service is above what
+households report, and its default rate has no external counterpart.
 
-\textbf{RQ2.} Owing several platforms at once is common, at a rate set mostly by the assumed
-routing rule and by how often households borrow.
-Enabling \ac{BNPL} does not change default detectably without peer influence
-($-0.03 \pm 0.03$ points) and raises it by $0.17 \pm 0.04$ points at $\beta=1$, where
-households borrow 13 times as much. Default does not change detectably with the routing rule
-and does not rise with the number of platforms.
+\textbf{RQ2.} Owing several platforms at once is common, at a rate set by the routing
+assumption (Section~\ref{sec:results-stacking}). Enabling \ac{BNPL} does not change default
+detectably without peer influence ($-0.03 \pm 0.03$ points) and raises it by
+$0.17 \pm 0.04$ points at $\beta=1$, where households borrow 13 times as much. Default does
+not rise with the number of platforms.
 
 \textbf{RQ3.} Making \ac{BNPL} instalments visible to the traditional lender raises its
-refusals by about 15\% and default by 0.16 to 0.18 points, most in the poorest quintile. The
-rise is 4 to 5\% of the default rate among households whose income covers their food and rent,
-and it is larger when borrowing for food and rent is not counted as distress. Because a refused
-household has no informal or alternative credit, the model cannot say whether visibility helps
-or harms households. Mandatory
-screening reduces \ac{BNPL} borrowing and does not change default detectably. Neither measure
-lowers aggregate default under the model's rules.
-
-These answers support three findings.
+refusals by about 15\% and default by 0.16 to 0.18 points, most in the poorest quintile.
+Screening alone does not change default detectably; added to visibility it removes about
+two-thirds of the rise. What reporting does to distress therefore depends on where refused
+households borrow next, which the model does not represent.
 
 With employment held constant, \ac{BNPL} adds little to default. Its effect at $\beta=1$ is
 about 5\% of the 3.9\% default rate among households whose income covers their food and rent
@@ -41,8 +36,8 @@ default only with peer influence ($0.23 \pm 0.09$ points at $\beta=1$, against
 $0.06 \pm 0.07$ without). At $\beta=1$ the effect ranges from 0.15 points with half the
 reference purchase size to 0.41 with double it. The settings whose purchase size matches the
 provider's show no detectable effect without peer influence. Caps on platforms owed and on
-agreements remove as much volume and change default equally, by at most about 0.1 points, so
-the number of platforms owed matters only through the volume borrowed.
+agreements remove similar volume and change default alike, by at most about 0.1 points, so the
+caps give no sign that platform count matters beyond volume.
 
 The effect works through households in a spell of lost income and depends on counting
 borrowing for food and rent as distress. It disappears when that borrowing is not counted, and
@@ -71,7 +66,8 @@ bureau visibility survives. A lender that restricts credit after losses, or a li
 aggregate default to employment, would let distress spread through channels the model now
 excludes (Table~\ref{tab:design-concepts}).
 % Numbers: results_numbers.json (beta0/beta1_effect_pooled, rq3s, eff_*), tab_access, tab_effect,
+% two-thirds: switch_both_less_bureau_beta{0,1} against the bureau rise (0.13/0.18, 0.10/0.16),
 % tab_scenarios, defaulter_credit.json.
-% 3.9%, about 5% and 4 to 5%: baseline_contestable_default_rate, beta1_effect_relative_to_contestable_baseline,
-% rq3s_bureau_relative_to_contestable_bench_b{0,1}; about 70%: single_tick_removes_contestable_share;
+% 3.9% and about 5%: baseline_contestable_default_rate, beta1_effect_relative_to_contestable_baseline;
+% about 70%: single_tick_removes_contestable_share;
 % results/summary/contestable_default.json.
