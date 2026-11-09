@@ -137,10 +137,10 @@ the informal loans that \ac{NIDS} records, 2.7\% of traditional debt, are carrie
 bureau sees.
 % 2.7%: results/summary/reference_audit_checks.json (notebooks/scripts/check_reference_audit_figures.py).
 
-A switch, $\mathbb{1}^{\text{bur}}$, controls whether \ac{BNPL} obligations enter this
-calculation. It is off in the benchmark; switching it on represents one channel of the
+A switch, $\mathbb{1}^{\text{bur}}$, controls whether \ac{BNPL} obligations enter the
+test. It is off in the benchmark; switching it on represents one channel of the
 reporting arrangements of Section~\ref{sec:background}. A second switch,
-$\mathbb{1}^{\text{aff}}$, mandatory screening, applies the same residual-income test to each
+$\mathbb{1}^{\text{aff}}$, mandatory screening, applies the same test to each
 \ac{BNPL} request before it reaches a platform. That test sees the household's traditional
 service and its \ac{BNPL} obligations on every platform, whether or not the bureau switch is
 on. No platform could see all of that without bureau reporting, so screening is the most
@@ -153,7 +153,7 @@ counted the same way until paid, as if the household owed them again every month
 of a one-off arrear. Traditional arrears enter neither test, which sees only scheduled
 traditional service. Algorithms~\ref{alg:gate} and~\ref{alg:bnpl} give the details.
 
-The bureau switch acts only through the affordability calculation. The model has no credit
+The bureau switch acts only through the Regulation 23A test. The model has no credit
 score and no risk-based pricing, so it cannot represent score-based refusals. This omission
 may matter, given the preliminary score reductions reported by \ac{FINASA}
 \cite{finasa_bnpl_2026}; the final paragraph of Section~\ref{sec:conclusion} discusses it as an extension.
@@ -340,7 +340,7 @@ stacking but still permits several agreements on that platform.
 \subsection{Implementation and Verification}
 \label{sec:implementation}
 
-The model is implemented in Python using Mesa. The lending gate reuses the affordability
+The model is implemented in Python using Mesa. The credit gate reuses the
 function that constructs scheduled debt service, and the parameter register in
 Appendix~\ref{app:specification} is generated from the code. Automated checks cover cash
 and debt accounting, arrears transitions, two hand-computed Regulation 23A checks, pay-in-four
