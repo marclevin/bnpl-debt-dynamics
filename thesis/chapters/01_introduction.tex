@@ -48,7 +48,7 @@ We study these questions with an \ac{ABM} of 5{,}000 households built from South
 survey microdata. Every fortnight each household receives income, pays for food and rent,
 borrows if it is short of cash and repays its debts. A traditional lender applies the
 Regulation 23A test to the obligations the credit bureau records, while \ac{BNPL} platforms
-apply a light screen and cannot see one another's balances. We fit a traditional-credit
+apply a light screen and cannot see one another's balances. We calibrate a traditional-credit
 baseline to the 2017 arrears profile with \ac{BNPL} disabled, then enable \ac{BNPL} in the
 same population and compare outcomes over two years. Further experiments vary the number of
 platforms, access to \ac{BNPL}, peer influence on adoption, bureau visibility and
@@ -61,14 +61,16 @@ observe, so that the reporting gap can be switched on and off, and a set of expe
 that identify the mechanisms and assumptions on which the effect of \ac{BNPL} on default
 depends.
 
-In the experiments, enabling \ac{BNPL} without peer influence does not change default
-detectably. Under illustrative peer influence it raises default by $0.17 \pm 0.04$ points from
-a base of 7.3\%, and the effect disappears when borrowing for food and rent is not counted as
-distress. Default does not rise with the number of platforms. Making \ac{BNPL} instalments
-visible to the traditional lender raises default by 0.16 to 0.18 points through refusals, most
-in the poorest quintile. Screening \ac{BNPL} requests does not change default detectably.
-% beta1_effect_pooled and baseline 7.28% (results_numbers.json, Section 4.1); committed_relief
-% rows of tab:effect; platform sweep tab:stacking-full; bureau and screening rows of tab:scenarios.
+In the experiments, enabling \ac{BNPL} raises default by $1.03 \pm 0.06$ points from a base
+of 20.7\%, and the effect does not change with peer influence. It runs through households that
+use \ac{BNPL} to bridge cash shortfalls and then fall more than 90 days behind on it, and it
+disappears when \ac{BNPL} cannot be used against a shortfall. Default does not rise with the
+number of platforms. Making \ac{BNPL} instalments visible to the traditional lender raises
+default by 0.20 points through refusals. Screening \ac{BNPL} requests with the Regulation 23A
+test lowers default by 0.93 points, almost all in the poorest quintile.
+% beta0_effect_pooled and baseline_default (results_numbers.json, Section 4.1); slope:
+% results/summary/beta_sweep.json; no-shortfall-BNPL row of tab:effect; platform sweep
+% tab:stacking-full; bureau and screening rows of tab:scenarios.
 
 \subsection{Research Questions}
 \label{sec:rqs}
@@ -94,11 +96,11 @@ Three subsidiary questions, RQ1 to RQ3, follow:
     borrowing and distress, both with and without peer influence on adoption?
 \end{enumerate}
 
-We measure distress mainly by the population default rate. A household defaults after
-seven consecutive fortnights in which it cannot pay for food and rent or cannot meet the
-debt service due, a cash-flow rule set out in Section~\ref{sec:sequence}. We also report
-the share of credit-active households more than 90 days in arrears, the household
-counterpart of the 2017 account figure above. Section~\ref{sec:calibration} answers RQ1, Section~\ref{sec:results}
+We measure distress mainly by the population default rate. A household defaults when an
+instalment on any of its credit, traditional or \ac{BNPL}, is more than 90 days past due, the
+rule set out in Section~\ref{sec:sequence}. We also report the share of credit-active households
+more than 90 days in arrears, the household counterpart of the 2017 account figure above, and
+food and rent left unpaid as consumption distress. Section~\ref{sec:calibration} answers RQ1, Section~\ref{sec:results}
 RQ2 and Section~\ref{sec:scenarios} RQ3.
 
 \subsection{Related Literature}
@@ -114,12 +116,12 @@ a banking crisis. That model concerns collateralised debt, so its mechanism diff
 from unsecured pay-in-four lending. D'Orazio and Giulioni \cite{dorazio2017micro}
 model household borrowing over the business cycle, driven by consumption wants,
 expectations of future income and bank credit rationing; our traditional lender rations
-credit through its affordability test.
+credit through the Regulation 23A test.
 
 Madeira \cite{madeira2018chile} models Chilean households exposed to labour-income
-shocks; a household defaults when it cannot finance minimum consumption. We also model
-distress as a cash-flow failure, which is the logic of the residual-income affordability
-test.
+shocks; a household defaults when it cannot finance minimum consumption. We model a
+shortfall as a cash-flow failure in the same way, which is the logic of the residual-income
+test, but count default only once an instalment is more than 90 days past due.
 
 Hamill et al.\ \cite{hamill2023creditcard} suggest that longer interest-free promotions could
 raise indebtedness in a model of the United Kingdom credit-card market. Their model
@@ -173,7 +175,7 @@ United States estimate to South African households (Section~\ref{sec:lim-transfe
 \subsubsection*{The Regulatory Setting}
 \label{sec:lit-regulatory}
 
-South African regulation informs the traditional lender's affordability test and
+South African regulation informs the traditional lender's Regulation 23A test and
 the construction of debt service. The unsecured-credit interest ceiling
 in 2017 was the repurchase rate plus 21 percentage points
 \cite{sa_ncr_ratecaps_2016}. We use the statutory ceilings as proxies for the

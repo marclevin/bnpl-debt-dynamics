@@ -23,7 +23,7 @@ Derived & The separation rate, set so that expected employment is constant; the 
 \addlinespace
 Fitted & Payment friction and arrears persistence & Section~\ref{sec:lim-calibration} \\
 \addlinespace
-Swept & Peer parameters $q_{\text{base}}$, $\beta$ and the threshold parameters; the shortfall borrowing rule and its \ac{BNPL} cap; the minimum-payment fraction; the platform limit $\lambda$ & Section~\ref{sec:results-robustness} \\
+Swept & Peer parameters $q_{\text{base}}$, $\beta$ and the threshold parameters; the shortfall borrowing rule and the shortfall cap; the minimum-payment fraction; the platform limit $\lambda$ & Section~\ref{sec:results-robustness} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -234,7 +234,7 @@ The \ac{BNPL} contract and late fees come from Payflex's published terms
 discretionary budget, the \ac{IES} 2022/23 share of discretionary spending on eligible
 categories \cite{statssa_ies_2023}. Treating a month's spending in those categories as one
 purchase, and 2022/23 shares as 2017's, are assumptions.
-No South African provider publishes a rolling limit, so $\lambda$ is an assumption, informed
+No South African provider publishes a platform limit, so $\lambda$ is an assumption, informed
 by Woolard's illustrative stacked exposure \cite{woolard2021} and swept from 0.10 to 1.00.
 
 \subsubsection*{Transferred Behavioural Evidence}
@@ -266,8 +266,8 @@ it in Q3, Q4 and Q5. In total it is 3.9\% lower.
 % notebooks/scripts/check_defaulter_credit.py, seeds 10,000-10,019, BNPL off.
 
 The arrears profile is set in three steps, with \ac{BNPL} disabled. First, the run starts from
-the 2017-Q1 \ac{CCMR} age profile \cite{ncr_ccmr_2017}. Credit-active households, the 45.7\%
-that owe traditional debt at the start, are placed in each band at its \ac{CCMR} share, with
+the 2017-Q1 \ac{CCMR} age profile \cite{ncr_ccmr_2017}. Credit-active households, about 45\%
+of the population at the start, are placed in each band at its \ac{CCMR} share, with
 the households that have least income left after food, rent and debt service in the oldest
 bands. Those placed at 91 days or more, 6.4\% of all households, start in default. No source
 says which households were in arrears in 2017, so this placement is an assumption. Second, the
