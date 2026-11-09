@@ -2,8 +2,7 @@
 \label{app:pseudo-main}
 
 The main loop runs for $T$ ticks. Within a tick, households act in a random order redrawn every
-tick; the peer signal is recomputed once, after every household has acted, which is what makes
-Submodel~11 independent of activation order. Algorithm~\ref{alg:main} dispatches the tick.
+tick; the peer signal is recomputed once, after every household has acted. Algorithm~\ref{alg:main} dispatches the tick.
 
 \begin{algorithm}[H]
 \caption{Main simulation}
@@ -228,8 +227,7 @@ is cut off by that platform only.
 \subsection*{G.5 The peer signal}
 
 Algorithm~\ref{alg:peer} is Submodel~11. The group share is computed once per tick from
-end-of-tick balances and read by every household in the next tick, so no household's decision
-depends on the order in which its group acted. With \ac{BNPL} disabled the signal is identically
+end-of-tick balances and read by every household in the next tick. With \ac{BNPL} disabled the signal is identically
 zero and the channel is inert, which is why the calibration baseline is untouched by it.
 
 \begin{algorithm}[H]
