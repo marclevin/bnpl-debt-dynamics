@@ -187,8 +187,8 @@ class ParamSet:
     n_agents: int | None = _p(
         None,
         rule="P3",
-        provenance="DERIVED",
-        source="None = use the full 5,000-agent resample",
+        provenance="ASSUMPTION",
+        source="None = use the full 5,000-agent resample (a design choice, not computed from data)",
         sweep="1000 / 5000 / 10000 population-stability check",
     )
 
@@ -252,8 +252,8 @@ class ParamSet:
     discretionary_floor: float = _p(
         0.0,
         rule="D2",
-        provenance="SOURCED",
-        source="Discretionary spend fully compressible in the baseline (D2)",
+        provenance="ASSUMPTION",
+        source="Discretionary spend fully compressible in the baseline (D2). No source.",
     )
 
     # -- D3 borrowing trigger / D17 peer influence -------------------------------
@@ -404,9 +404,9 @@ class ParamSet:
     bnpl_purchase_base: PurchaseBase = _p(
         "discretionary",
         rule="D4/D11",
-        provenance="SOURCED",
+        provenance="ASSUMPTION",
         source=(
-            "What a BNPL purchase is sized AGAINST. BNPL finances discretionary "
+            "What a BNPL purchase is sized AGAINST. No citation fixes it. BNPL finances discretionary "
             "consumption, so the household's own discretionary budget is the observed "
             "scale at which it makes discretionary purchases. 'income' is the "
             "robustness arm, and is the base the international regulator ratios are "
@@ -510,8 +510,8 @@ class ParamSet:
         source=(
             "Added 2026-11-09. Under the arrears rule, the probability that a household "
             "already in traditional arrears pays nothing again this tick, whatever its "
-            "cash: the persistence of non-payment behind the CCMR roll rates. Fitted to "
-            "the 31-60 day band, jointly with payment friction on the 1-30 band."
+            "cash: the persistence of non-payment behind the CCMR roll rates. Fitted "
+            "jointly with payment friction to the five CCMR arrears bands (calibrate.py)."
         ),
         sweep="calibration grid",
     )
@@ -530,9 +530,11 @@ class ParamSet:
     k_default: int = _p(
         7,
         rule="D7",
-        provenance="ASSUMPTION",
+        provenance="SOURCED",
         source=(
-            "7 ticks = 98 days, the first tick past 90 days, inside the CCMR 91-120 band. "
+            "7 ticks = 98 days, the first tick past 90 days, inside the CCMR 91-120 band: "
+            "the 90-days-past-due impairment convention (NCR CBM, three or more months in "
+            "arrears). "
             "Under the arrears rule it is the arrears age at which a household is in "
             "default; under the streak rule, the length of the distress streak."
         ),
