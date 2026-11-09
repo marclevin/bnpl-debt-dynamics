@@ -500,7 +500,7 @@ def tab_scenarios(rq3s: pd.DataFrame) -> None:
         "others are each arm's change from it, paired by seed, in the row's unit except for "
         "\\ac{BNPL} volume, whose change is in per cent. Refused applications and lending: the traditional lender's. Holding: at the "
         "final tick. Quintiles are of per-capita income.",
-        "L{3.5cm}R{1.9cm}R{2.4cm}R{2.3cm}R{2.3cm}",
+        "L{3.5cm}R{2.05cm}R{2.4cm}R{2.3cm}R{2.3cm}",
         r"& & \multicolumn{3}{c}{\textbf{Change from benchmark}} \\ \cmidrule(lr){3-5}"
         "\n\\textbf{Outcome} & \\textbf{Benchmark} & \\textbf{Bureau visibility} & "
         "\\textbf{Screening} & \\textbf{Both}",
@@ -563,13 +563,13 @@ def tab_distribution(rq0: pd.DataFrame) -> None:
         "monthly income. Limit binds: share of the quintile's platform requests that a platform's "
         "limit for that household reduced or refused. Purchase: mean want-driven purchase, in 2017 "
         "Rands.",
-        "c R{1.4cm} R{2.3cm} R{2.3cm} R{1.4cm} R{1.3cm} R{1.4cm} R{1.4cm}",
+        "c R{1.4cm} R{2.3cm} R{2.3cm} R{1.4cm} R{1.3cm} R{1.4cm} R{1.6cm}",
         r"& \textbf{Default (\%)} & \multicolumn{2}{c}{\textbf{Change in default (pp)}} & "
         r"\textbf{Holding (\%)} & \textbf{Debt/ income} & \textbf{Limit binds (\%)} & \textbf{Purchase (R)} \\ \cmidrule(lr){3-4}"
         "\n\\textbf{Quintile} & No \\ac{BNPL} & $\\beta=0$ & $\\beta=0.3$ & $\\beta=0$ & No \\ac{BNPL} & $\\beta=0$ & $\\beta=0$",
         rows,
         size=r"\footnotesize",
-        colsep="3pt",
+        colsep="2.8pt",
     )
 
 
@@ -821,7 +821,7 @@ def tab_sobol() -> None:
         f"\\ac{{BNPL}} enabled. The indices apportion the variance of the \\emph{{level}} of each outcome "
         f"across the ranges shown; they do not decompose the \\ac{{BNPL}} effect. Values outside "
         f"zero to one are bootstrap noise.",
-        "L{4.0cm}c rr rr",
+        "L{3.8cm}c rr rr",
         r"& & \multicolumn{2}{c}{Default rate} & \multicolumn{2}{c}{Holding} \\ \cmidrule(lr){3-4}\cmidrule(lr){5-6}"
         "\n\\textbf{Parameter} & \\textbf{Range} & \\textbf{$S_1$} & \\textbf{$S_T$} & \\textbf{$S_1$} & \\textbf{$S_T$}",
         rows,
@@ -1006,7 +1006,7 @@ def tab_effect(eff: pd.DataFrame) -> None:
         + (f" The {' and '.join(fine)} row{'s are' if len(fine) > 1 else ' is'} at three decimals "
            f"because at two {'their' if len(fine) > 1 else 'its'} standard errors round to 0.01."
            if fine else ""),
-        "L{3.9cm}R{1.0cm}rrrrrr",
+        "L{3.75cm}R{1.15cm}rrrrrr",
         r"& & \multicolumn{2}{c}{\textbf{Purchase (R)}} & \multicolumn{2}{c}{\textbf{Volume (R)}} "
         r"& \multicolumn{2}{c}{\textbf{Effect (pp)}} \\ "
         r"\cmidrule(lr){3-4}\cmidrule(lr){5-6}\cmidrule(lr){7-8}"
