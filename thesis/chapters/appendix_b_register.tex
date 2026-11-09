@@ -7,8 +7,8 @@
 \caption{The full parameter register}
 \label{tab:param-register} \\
 \multicolumn{6}{p{13.4cm}}{\footnotesize Every model parameter. Names, submodels,
-provenance and values are read from the parameter declarations in the code, so the
-table and the code cannot drift apart. Columns: the parameter name in the code; the
+provenance and values are taken from the parameter declarations in the code. Columns:
+the parameter name in the code; the
 submodel of Table~\ref{tab:submodels} that it belongs to (``design'' marks the
 experimental design and ``data'' the data layer); its default value, that of the
 \ac{BNPL}-free baseline with payment friction at its fitted value and the separation rate at its derived value (the benchmark
@@ -17,7 +17,7 @@ source that fixes or motivates the value; and the range swept where one applies.
 Provenance: sourced = a citation, statute or stated convention fixes the value; derived = the value is computed from
 data; fitted = the value is chosen by calibration; assumed = no anchor exists. Rand
 values are 2017 Rands; the three \ac{BNPL} money parameters, Payflex's published late fee and
-fee cap and the assumed order cap, are set at 2026 prices and deflated once (Appendix~\ref{app:variables}, Part~D.12).} \\
+fee cap and the assumed order cap, are set at 2026 prices and deflated once (Appendix~\ref{app:var-deflation}).} \\
 \toprule
 \textbf{Parameter} & \textbf{Submodel} & \textbf{Value} & \textbf{Prov.} & \textbf{Source} & \textbf{Sweep} \\
 \midrule
@@ -32,7 +32,7 @@ fee cap and the assumed order cap, are set at 2026 prices and deflated once (App
 \addlinespace
 \texttt{burn\_\allowbreak{}in} & design & 12 & sourced & Arrears, savings and volume measures exclude the first 12 ticks; default is counted from the first tick (Section~\ref{sec:sim-params}). & -- \\
 \addlinespace
-\texttt{n\_\allowbreak{}agents} & data & 5{,}000 & derived & The full resampled population of 5{,}000 (Appendix~\ref{app:variables}, Part~D.10). & 1{,}000 / 5{,}000 / 10{,}000 \\
+\texttt{n\_\allowbreak{}agents} & data & 5{,}000 & derived & The full resampled population of 5{,}000 (Appendix~\ref{app:var-resample}). & 1{,}000 / 5{,}000 / 10{,}000 \\
 \addlinespace
 \texttt{shock\_\allowbreak{}prob} & 1 & 0.00446 & derived & Derived, not fitted: the separation rate at which expected employment is constant, the re-employment rate times the ratio of strictly unemployed to employed members in the population (1{,}113 to 4{,}670). The \ac{QLFS} 2017 job-separation band is 0.54--1.17\% per tick \cite{statssa_lmd_2022}. Fitting the rate to the \ac{CCMR} 90+ band without labour flows, as an earlier version did, chose 0.016. & 0.0013--0.0071 in the Sobol design \\
 \addlinespace
