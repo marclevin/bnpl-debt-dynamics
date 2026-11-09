@@ -449,7 +449,7 @@ def tab_scenarios(rq3s: pd.DataFrame) -> None:
     # relative change in per cent, 'abs' a difference in the column's own unit
     outcomes = [
         ("Default rate (\\%)", "default_rate_final", "pp", 100, 2),
-        ("90+ day arrears (\\%)", "active_90_plus_mean", "pp", 100, 2),
+        ("90+ day arrears, credit-active (\\%)", "active_90_plus_mean", "pp", 100, 2),
         ("Refused applications", "trad_refused_gate", "abs", 1, 0),
         ("Traditional lending (R m)", "trad_granted_value", "abs", 1e-6, 2),
         ("\\ac{BNPL} holding (\\%)", "bnpl_adoption_final", "pp", 100, 2),
@@ -498,8 +498,7 @@ def tab_scenarios(rq3s: pd.DataFrame) -> None:
         "Bureau visibility and mandatory screening",
         f"One hundred replicates per arm, {SEEDS_S}. The first column is the benchmark's mean; the "
         "others are each arm's change from it, paired by seed, in the row's unit except for "
-        "\\ac{BNPL} volume, whose change is in per cent. 90+ day arrears: share of credit-active "
-        "households. Refused applications and lending: the traditional lender's. Holding: at the "
+        "\\ac{BNPL} volume, whose change is in per cent. Refused applications and lending: the traditional lender's. Holding: at the "
         "final tick. Quintiles are of per-capita income.",
         "L{3.5cm}R{1.9cm}R{2.4cm}R{2.3cm}R{2.3cm}",
         r"& & \multicolumn{3}{c}{\textbf{Change from benchmark}} \\ \cmidrule(lr){3-5}"
