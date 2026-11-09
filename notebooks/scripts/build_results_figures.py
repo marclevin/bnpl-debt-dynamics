@@ -32,7 +32,7 @@ from scipy import stats
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from results_common import (  # noqa: E402
-    GRID, INK, INK2, INK3, RAMP, RC, RED, SCENARIOS, SRC, SURF, TW, arm, delta, dress, load, save,
+    GRID, INK, INK2, INK3, RAMP, RC, RED, SCENARIOS, SRC, SURF, TW, arm, delta, dress, load, param, save,
 )
 from simulation.config import load_ccmr_bands  # noqa: E402
 
@@ -128,7 +128,7 @@ def fig_stacking(rq1: pd.DataFrame) -> None:
 
 # =================================================================== access and default
 def fig_access_default(rq2: pd.DataFrame, rq2t: pd.DataFrame) -> None:
-    fig, axes = plt.subplots(1, 3, figsize=(TW, 2.5))
+    fig, axes = plt.subplots(1, 3, figsize=(TW, 2.85))
     ax_a, ax_b, ax_c = axes
 
     betas = sorted(rq2.beta.unique())
@@ -141,7 +141,10 @@ def fig_access_default(rq2: pd.DataFrame, rq2t: pd.DataFrame) -> None:
                       label=CTRL_LBL if ctrl else rf"$\beta = {b:g}$")
     ax_a.set_title("(a) Linear rule")
     ax_a.set_ylabel("Population default rate (%)")
-    ax_a.legend(loc="upper left", handlelength=1.4, ncol=1)
+    # Panel (a)'s legend sits below the figure, not over the beta = 2 and beta = 3 lines.
+    fig.legend(*ax_a.get_legend_handles_labels(), loc="lower center", ncol=len(betas),
+               bbox_to_anchor=(0.5, 0.0), handlelength=1.4, columnspacing=1.2,
+               title="(a) Linear rule:", title_fontsize=7.0, alignment="left")
 
     surf = rq2t[rq2t.label.str.startswith("rq2t_a")]
     ctrl = surf[surf.gamma == 0]
@@ -151,7 +154,7 @@ def fig_access_default(rq2: pd.DataFrame, rq2t: pd.DataFrame) -> None:
         for i, s in enumerate(sigmas):
             g = agg(live[live.sigma_theta == s], "bnpl_access_rate", col)
             ax.errorbar(g.index, g["mean"] * scale, yerr=g["ci"] * scale, color=RAMP[i], marker="o",
-                        ms=2.8, lw=1.1, capsize=1.5, elinewidth=0.5, label=rf"$\sigma_\theta = {s:g}$", zorder=3)
+                        ms=2.8, lw=1.1, capsize=1.5, elinewidth=0.5, label=rf"$\sigma_\theta = {param(s)}$", zorder=3)
         g = agg(ctrl, "bnpl_access_rate", col)
         ax.errorbar(g.index, g["mean"] * scale, yerr=g["ci"] * scale, color=INK, marker="s", ms=3.0,
                     lw=1.6, capsize=2, elinewidth=0.6, label=r"$\gamma = 0$ (control)", zorder=5)
@@ -171,7 +174,7 @@ def fig_access_default(rq2: pd.DataFrame, rq2t: pd.DataFrame) -> None:
         ax.autoscale_view()
     lo = min(ax_a.get_ylim()[0], ax_c.get_ylim()[0]); hi = max(ax_a.get_ylim()[1], ax_c.get_ylim()[1])
     ax_a.set_ylim(lo, hi); ax_c.set_ylim(lo, hi)
-    fig.tight_layout(w_pad=1.3)
+    fig.tight_layout(w_pad=1.3, rect=(0, 0.11, 1, 1))
     save(fig, "fig_access_default")
     plt.close(fig)
 
@@ -181,7 +184,7 @@ def fig_scenarios(rq3s: pd.DataFrame) -> None:
     fig, (ax_a, ax_b) = plt.subplots(1, 2, figsize=(TW, 2.5))
     x = np.arange(len(SCENARIOS))
     w = 0.36
-    for j, (b, colour, label) in enumerate([(0.0, INK3, CTRL_LBL), (1.0, SRC, BETA1_LBL)]):
+    for j, (b, colour, label) in enumerate([(0.0, INK, CTRL_LBL), (1.0, SRC, BETA1_LBL)]):
         means, sds, vols = [], [], []
         bench = arm(rq3s, f"rq3s_bench_b{b}").bnpl_volume_cumulative.mean()
         for key, _ in SCENARIOS:
@@ -196,7 +199,7 @@ def fig_scenarios(rq3s: pd.DataFrame) -> None:
         for xi, v in zip(x + off, vols):
             if abs(v) < 0.05:
                 continue
-            ax_b.text(xi, v + (0.15 if v >= 0 else -0.15), f"{v:+.1f}", ha="center",
+            ax_b.text(xi, v + (0.15 if v >= 0 else -0.15), f"{v:+.1f}".replace("-", "\u2212"), ha="center",
                       va="bottom" if v >= 0 else "top", fontsize=6.2, color=INK2)
     names = [n for _, n in SCENARIOS]
     for ax in (ax_a, ax_b):
@@ -224,15 +227,15 @@ def fig_scenarios(rq3s: pd.DataFrame) -> None:
 # single-tick shock arm (-2.76pp) is off any shared scale; all three stay in the appendix table.
 TORNADO_GROUPS = [
     ("Borrowing amount on a shortfall (exact)", "rob_amount_shortfall", [
-        ("+25%", "rob_amount_shortfall_125"),
-        ("+ one tick of committed spending", "rob_amount_shortfall_plus_committed"),
-        ("exact, BNPL cap removed", "rob_amount_shortfall_uncapped"),
-        ("+25%, BNPL cap removed", "rob_amount_shortfall_125_uncapped"),
-        ("+ committed, BNPL cap removed", "rob_amount_shortfall_plus_committed_uncapped"),
+        ("shortfall +25%", "rob_amount_shortfall_125"),
+        ("shortfall + one tick of committed spending", "rob_amount_shortfall_plus_committed"),
+        ("exact shortfall, uncapped", "rob_amount_shortfall_uncapped"),
+        ("shortfall +25%, uncapped", "rob_amount_shortfall_125_uncapped"),
+        ("shortfall + one tick of committed spending, uncapped", "rob_amount_shortfall_plus_committed_uncapped"),
     ], True),
     ("Default threshold (98 days)", "rob_k7", [("56 days", "rob_k4")], False),
     ("Purchase size κ (0.139)", "rob_kappa0.1387", [("0.07", "rob_kappa0.07"), ("0.28", "rob_kappa0.28")], False),
-    ("Purchase sizing base (discretionary)", "rob_base_discretionary", [("income", "rob_base_income")], False),
+    ("Purchase sizing base (discretionary)", "rob_base_discretionary", [("sized on income", "rob_base_income")], False),
     ("Minimum-payment fraction (0.05)", "rob_minpay0.05",
      [("0.025", "rob_minpay0.025"), ("0.10", "rob_minpay0.1")], True),
     ("Rolling limit λ (0.10)", "rob_limit0.1",
@@ -286,7 +289,7 @@ def fig_tornado(rob: pd.DataFrame) -> None:
         t.set_color(INK if head else INK2)
     ax.invert_yaxis()
     ax.tick_params(axis="y", length=0)
-    ax.set_xlabel("Change in population default rate from the reference value (pp)")
+    ax.set_xlabel("Change in default rate from the reference value (pp)")
     fig.legend(handles=[
         Line2D([0], [0], marker="o", lw=0, ms=4, mfc=SRC, mec=SRC,
                label="reference value observed, constructed, imported or fitted"),

@@ -19,7 +19,7 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from results_common import (  # noqa: E402
     GEN, Q, ROOT, SUMMARY, SCENARIOS, arm, cell, delta, detectable, diff, group_row, load, ms,
-    num, paired_diff, pct, pm, pmb, rand, ratio_change, rm, shares_seeds, table, years,
+    num, paired_diff, param, pct, pm, pmb, rand, ratio_change, rm, shares_seeds, signed, table, years,
 )
 from simulation.config import load_ccmr_target  # noqa: E402
 
@@ -32,6 +32,10 @@ N = {}  # the numbers the prose quotes; dumped to results_numbers.json at the en
 SEEDS_S = "seeds 80{,}000--80{,}099"
 SE_P = "paired by seed"
 SE_U = "unpaired, on different seed blocks"
+# One label per sensitivity arm, shared by Tables robustness and effect (build_results_figures.py
+# uses the same words in Figure tornado).
+SHORTFALL_COMMITTED = "shortfall $+$ one tick of committed spending"
+CAP_REMOVED = ", uncapped"
 
 
 def se_note(a: pd.DataFrame, b: pd.DataFrame) -> str:
@@ -278,13 +282,14 @@ def tab_stacking(rq1: pd.DataFrame) -> None:
     table(
         "tab_stacking_full",
         "Platform count by peer-influence strength: the full grid",
-        f"Seeds 20{{,}}000--20{{,}}019. 2+ platforms: share of all households owing two or more "
-        f"platforms at the final tick. Replicate standard deviations are at most {sd_max * 100:.1f} "
+        f"Seeds 20{{,}}000--20{{,}}019. 2+ platforms: share of all households, not of holders as in "
+        f"Table~\\ref{{tab:stacking}}, owing two or more platforms at the final tick. Replicate "
+        f"standard deviations are at most {sd_max * 100:.1f} "
         f"points for that share and {sd_def * 100:.2f} for default. Default with six platforms less "
         f"one: {', '.join(contrasts)}.",
         "c " + "r" * k + " " + "r" * k,
         f"& \\multicolumn{{{k}}}{{c}}{{2+ platforms (\\% of households)}} & \\multicolumn{{{k}}}{{c}}{{Default rate (\\%)}} \\\\ "
-        f"\\cmidrule(lr){{2-{k + 1}}}\\cmidrule(lr){{{k + 2}-{2 * k + 1}}}\n\\textbf{{$N$}} & "
+        f"\\cmidrule(lr){{2-{k + 1}}}\\cmidrule(lr){{{k + 2}-{2 * k + 1}}}\n\\textbf{{Platforms}} & "
         + " & ".join(f"$\\beta={b:g}$" for b in betas) + " & "
         + " & ".join(f"$\\beta={b:g}$" for b in betas),
         rows,
@@ -396,8 +401,8 @@ def tab_bnpl_on_checks(rq0: pd.DataFrame) -> None:
         f"{rand(N['vol_per_eligible_year'])} & {band(N['vol_per_eligible_year']).capitalize()} \\\\",
         f"Annual volume per ever-holder \\cite{{weaver2025iar}} & {rand(lo_vol)}--{rand(hi_vol)} & "
         f"{rand(N['vol_per_adopter_year'])} & {band(N['vol_per_adopter_year']).capitalize()} \\\\",
-        f"Mean purchase \\cite{{weaver2025iar}} & {rand(target)} ($\\pm$35\\%) & {rand(mp0)} & "
-        f"{'Inside' if lo_band <= mp0 <= hi_band else 'Below'}: {-gap0 * 100:.0f}\\% low \\\\",
+        f"Mean purchase \\cite{{weaver2025iar}} & {rand(target)} & {rand(mp0)} & "
+        f"{abs(gap0) * 100:.0f}\\% {'low' if gap0 < 0 else 'high'} \\\\",
     ]
     table(
         "tab_bnpl_on_checks",
@@ -409,9 +414,8 @@ def tab_bnpl_on_checks(rq0: pd.DataFrame) -> None:
         "provider's volume per signed-up customer to its volume per active customer, in 2017 Rands. "
         "The provider's 2024 report gives average spending of R7{,}000 per customer, about R5{,}000 in "
         "2017 Rands and above the band \\cite{homechoice2024ir}, so the band's top is uncertain. "
-        "The purchase target divides gross merchandise value by transaction count; the $\\pm$35\\% "
-        "around it is this study's tolerance, not the source's. Pattern~1: deHaan et al.\\ measure "
-        "card late fees and interest; the model's counterpart to late fees is traditional arrears. Pattern~2, "
+        "The purchase target divides gross merchandise value by transaction count. Pattern~1: "
+        "deHaan et al.\\ measure card late fees and interest; the model's counterpart to late fees is traditional arrears. Pattern~2, "
         "the calibration target, is in Table~\\ref{tab:arrears-fit}.",
         "L{4.6cm}L{2.7cm}L{3.0cm}L{3.3cm}",
         r"\textbf{Comparison} & \textbf{Expected} & \textbf{Model} & \textbf{Result}",
@@ -443,7 +447,7 @@ def tab_scenarios(rq3s: pd.DataFrame) -> None:
                               "Peer influence ($\\beta = 1$)", 5))
         bench = arms[b]["bench"]
         for name, col, kind, scale, dd in outcomes:
-            cells = [name, f"{ms(bench[col])[0] * scale:.{dd}f}"]
+            cells = [name, num(ms(bench[col])[0] * scale, dd)]
             for k, _ in keys[1:]:
                 assert shares_seeds(arms[b][k], bench)
                 if kind == "rel":
@@ -578,7 +582,7 @@ def tab_access(rq2: pd.DataFrame, rq2t: pd.DataFrame) -> None:
         fit = f"{d['linear_r2']:.2f}" if detectable(dd, se) else "--"
         N[f"access_rise_beta{b:g}_detectable"] = bool(detectable(dd, se))
         N[f"access_maxdev_beta{b:g}"] = d["max_dev_frac"]
-        rows.append(f"$\\beta = {b:g}${tag} & {hold_rise * 100:+.1f} & {pmb(dd, se)} & {fit} \\\\")
+        rows.append(f"$\\beta = {b:g}${tag} & {signed(hold_rise * 100, 1)} & {pmb(dd, se)} & {fit} \\\\")
         N[f"access_rise_beta{b:g}"], N[f"access_rise_beta{b:g}_se"], N[f"access_r2_beta{b:g}"] = dd, se, d["linear_r2"]
     fitted = [b for b in rq2.beta.unique() if N[f"access_rise_beta{b:g}_detectable"]]
     N["access_fitted_betas"] = sorted(float(b) for b in fitted)
@@ -602,7 +606,7 @@ def tab_access(rq2: pd.DataFrame, rq2t: pd.DataFrame) -> None:
     cd, cse = ends(ctrl_runs)
     N["thr_ctrl_default_rise_se"] = cse
     N["thr_ctrl_default_detectable"] = bool(detectable(cd, cse))
-    rows.append(f"$\\gamma = 0$ (control) & {ac['rise'] * 100:+.1f} & {pmb(cd, cse)} & {fit_cells(cd, cse, dc)} \\\\")
+    rows.append(f"$\\gamma = 0$ (control) & {signed(ac['rise'] * 100, 1)} & {pmb(cd, cse)} & {fit_cells(cd, cse, dc)} \\\\")
     N["thr_ctrl_default_rise"], N["thr_ctrl_default_r2"] = dc["rise"], dc["linear_r2"]
     N["thr_ctrl_adoption_rise"] = ac["rise"]
     thr_r2, ad_rises, d_rises = [], [], []
@@ -618,7 +622,7 @@ def tab_access(rq2: pd.DataFrame, rq2t: pd.DataFrame) -> None:
         if detectable(dd, se):
             thr_r2.append(d["linear_r2"])
         ad_rises.append(a["rise"]); d_rises.append(d["rise"])
-        rows.append(f"$\\sigma_\\theta = {s:g}$ & {a['rise'] * 100:+.1f} & {pmb(dd, se)} & {fit_cells(dd, se, d)} \\\\")
+        rows.append(f"$\\sigma_\\theta = {param(s)}$ & {signed(a['rise'] * 100, 1)} & {pmb(dd, se)} & {fit_cells(dd, se, d)} \\\\")
     N.update(thr_default_r2_min=min(thr_r2, default=float("nan")), thr_adoption_rise_max=max(ad_rises),
              thr_adoption_rise_min=min(ad_rises),
              thr_adoption_r2_min=min(N[f"thr_adoption_r2_s{s:g}"] for s in surf.sigma_theta.unique()),
@@ -665,26 +669,26 @@ def tab_robustness(rob: pd.DataFrame) -> None:
         return f"{name} & {cell(d.default_rate_final, 2)} & {pmb(dd, se)[:-1]}{mark}$ \\\\"
 
     rules = [("shortfall", "exact shortfall"), ("shortfall_125", "shortfall $+25\\%$"),
-             ("shortfall_plus_committed", "shortfall $+$ one tick of committed spending")]
+             ("shortfall_plus_committed", SHORTFALL_COMMITTED)]
     rows = [group_row("Borrowing-amount rule (Submodel 4), \\ac{BNPL} share of a shortfall capped", 3)]
     rows.append(row(rules[0][1], "rob_amount_shortfall"))
     for key, name in rules[1:]:
         rows.append(row(name, f"rob_amount_{key}", "rob_amount_shortfall"))
     rows.append(group_row("The same rules with the cap removed (paired with the row above by seed)", 3))
     for key, name in rules:
-        rows.append(row(name + ", uncapped", f"rob_amount_{key}_uncapped", f"rob_amount_{key}", paired=True))
+        rows.append(row(name + CAP_REMOVED, f"rob_amount_{key}_uncapped", f"rob_amount_{key}", paired=True))
     rows.append(group_row("Default threshold $k$ (Submodel 7)", 3))
     rows.append(row("$k = 7$ ticks, 98 days", "rob_k7"))
     rows.append(row("$k = 4$ ticks, 56 days", "rob_k4", "rob_k7"))
     rows.append(group_row("Purchase size $\\kappa$ (Submodel 4)", 3))
     kappas = sorted(float(l.replace("rob_kappa", "")) for l in rob.label.unique() if l.startswith("rob_kappa"))
     mid = kappas[1]
-    rows.append(row(f"$\\kappa = {mid:g}$ (IES-derived)", f"rob_kappa{mid}"))
+    rows.append(row(f"$\\kappa = {mid:.3f}$ (IES-derived)", f"rob_kappa{mid}"))
     for k in (kappas[0], kappas[2]):
-        rows.append(row(f"$\\kappa = {k:g}$", f"rob_kappa{k}", f"rob_kappa{mid}"))
-    rows.append(group_row("Purchase sizing base (Submodel 4)", 3))
-    rows.append(row("monthly discretionary budget", "rob_base_discretionary"))
-    rows.append(row("monthly income, $\\kappa$ matched", "rob_base_income", "rob_base_discretionary"))
+        rows.append(row(f"$\\kappa = {param(k)}$", f"rob_kappa{k}", f"rob_kappa{mid}"))
+    rows.append(group_row("Purchase sizing base, $\\kappa$ matched (Submodel 4)", 3))
+    rows.append(row("sized on discretionary budget", "rob_base_discretionary"))
+    rows.append(row("sized on income", "rob_base_income", "rob_base_discretionary"))
 
     amount_vals = [ms(a(f"rob_amount_{k}{s}").default_rate_final)[0] for k, _ in rules for s in ("", "_uncapped")]
     N.update(
@@ -730,14 +734,14 @@ def tab_robustness(rob: pd.DataFrame) -> None:
     rows += [group_row("Minimum-payment fraction of balance per month (Submodel 6)", 3),
              row("0.05", "rob_minpay0.05")]
     for f in (0.025, 0.1):
-        rows.append(row(f"{f:g}", f"rob_minpay{f}", "rob_minpay0.05"))
-    rows += [group_row("Rolling per-platform limit $\\lambda$, months of income (Submodel 12)", 3),
+        rows.append(row(param(f), f"rob_minpay{f}", "rob_minpay0.05"))
+    rows += [group_row("Rolling limit $\\lambda$, months of income (Submodel 12)", 3),
              row("0.10", "rob_limit0.1")]
     for lam in (0.25, 0.5, 1.0):
         rows.append(row(f"{lam:.2f}", f"rob_limit{lam}", "rob_limit0.1"))
     rows += [group_row("Income-shock persistence (Submodel 1)", 3),
              row("persistent until re-employment (default rule, seeds 50{,}000--)", "rob_amount_shortfall"),
-             row("single-tick shock", "rob_shock_single_tick", "rob_amount_shortfall")]
+             row("single-tick income shock", "rob_shock_single_tick", "rob_amount_shortfall")]
     N.update(
         rob_act_random=ms(a("rob_act_random").default_rate_final)[0],
         rob_act_uniform=ms(a("rob_act_uniform").default_rate_final)[0],
@@ -779,6 +783,9 @@ def tab_sobol() -> None:
     idx = {k: {r["parameter"]: r for r in v} for k, v in data["indices"].items()}
     rows = []
 
+    def rng(x: float) -> str:  # parameter bounds at two decimals; beta keeps its integer grid
+        return f"{x:g}" if p == "beta" else param(x)
+
     def z(x: float) -> str:  # a bootstrap estimate that rounds to zero prints without a sign
         return f"{x:.2f}".replace("-0.00", "0.00")
 
@@ -786,7 +793,7 @@ def tab_sobol() -> None:
         d, ad = idx["default_rate_final"][p], idx["bnpl_adoption_final"][p]
         lo, hi = bounds[p]
         rows.append(
-            f"{names[p]} & {lo:g}--{hi:g} & ${z(d['S1'])} \\pm {d['S1_conf']:.2f}$ & ${z(d['ST'])} \\pm {d['ST_conf']:.2f}$ "
+            f"{names[p]} & {rng(lo)}--{rng(hi)} & ${z(d['S1'])} \\pm {d['S1_conf']:.2f}$ & ${z(d['ST'])} \\pm {d['ST_conf']:.2f}$ "
             f"& ${z(ad['S1'])} \\pm {ad['S1_conf']:.2f}$ & ${z(ad['ST'])} \\pm {ad['ST_conf']:.2f}$ \\\\"
         )
     sh = idx["default_rate_final"]["shock_prob"]
@@ -797,7 +804,7 @@ def tab_sobol() -> None:
         "tab_sobol",
         "Sobol indices for the population default rate and \\ac{BNPL} holding",
         f"First-order ($S_1$) and total-order ($S_T$) indices with 95\\% bootstrap half-widths; "
-        f"Saltelli design, $N = {data['n_base_samples']}$ base samples, {num(N['sobol_runs'])} runs, "
+        f"Saltelli design, {data['n_base_samples']} base samples, {num(N['sobol_runs'])} runs, "
         f"\\ac{{BNPL}} enabled. The indices apportion the variance of the \\emph{{level}} of each outcome "
         f"across the ranges shown; they do not decompose the \\ac{{BNPL}} effect. Values outside "
         f"zero to one are bootstrap noise.",
@@ -828,7 +835,7 @@ def lever_table(rq3: pd.DataFrame, name: str, caption: str, arms: list[tuple[str
                 paired_any |= shares_seeds(d, bench)
                 unpaired_any |= not shares_seeds(d, bench)
             cells += [cell(d.default_rate_final, 2), pmb(dd, se) if key != bench_key else "--",
-                      pct(ms(d.bnpl_adoption_final)[0], 1), f"{dv * 100:+.1f}" if key != bench_key else "--",
+                      pct(ms(d.bnpl_adoption_final)[0], 1), signed(dv * 100, 1) if key != bench_key else "--",
                       rm(ms(d.trad_granted_value)[0])]
             N[f"lever_{key}_beta{b:g}_default"] = ms(d.default_rate_final)[0]
             N[f"lever_{key}_beta{b:g}_diff"], N[f"lever_{key}_beta{b:g}_diff_se"] = dd, se
@@ -897,10 +904,10 @@ EFFECT_ROWS = [
     ]),
     ("Borrowing amount on a shortfall (Submodel 4)", [
         ("amount125", "shortfall $+25\\%$", "amount125"),
-        ("amountcommitted", "shortfall $+$ committed spending", "amountcommitted"),
-        ("uncapped", "exact shortfall, no cap", "ref"),
-        ("amount125_uncapped", "shortfall $+25\\%$, no cap", "amount125"),
-        ("amountcommitted_uncapped", "shortfall $+$ committed, no cap", "amountcommitted"),
+        ("amountcommitted", SHORTFALL_COMMITTED, "amountcommitted"),
+        ("uncapped", "exact shortfall" + CAP_REMOVED, "ref"),
+        ("amount125_uncapped", "shortfall $+25\\%$" + CAP_REMOVED, "amount125"),
+        ("amountcommitted_uncapped", SHORTFALL_COMMITTED + CAP_REMOVED, "amountcommitted"),
     ]),
     ("Routing and the shortfall path (Submodels 5, 7 and 13)", [
         ("routing_loyal", "loyal routing", "ref"),
@@ -915,8 +922,8 @@ EFFECT_ROWS = [
         ("minpay0.1", "minimum payment 10\\% a month", "minpay0.1"),
         ("m0.2", "minimum-payer share 0.20", "m0.2"),
         ("m0.4", "minimum-payer share 0.40", "m0.4"),
-        ("limit0.25", "platform limit $\\lambda = 0.25$", "ref"),
-        ("limit1.0", "platform limit $\\lambda = 1.0$", "ref"),
+        ("limit0.25", "rolling limit $\\lambda = 0.25$", "ref"),
+        ("limit1.0", "rolling limit $\\lambda = 1.00$", "ref"),
     ]),
 ]
 
@@ -934,7 +941,7 @@ def tab_effect(eff: pd.DataFrame) -> None:
         d = a(label)
         return ms(d.bnpl_volume_cumulative / d.n_bnpl_eligible / yrs)[0]
 
-    rows, effects0, effects1 = [], {}, {}
+    rows, effects0, effects1, fine = [], {}, {}, []
     for group, items in EFFECT_ROWS:
         rows.append(group_row(group, 8))
         for key, name, off_key in items:
@@ -942,8 +949,11 @@ def tab_effect(eff: pd.DataFrame) -> None:
             d0, s0 = paired_diff(a(f"eff_{key}_b0.0"), off, "default_rate_final")
             d1, s1 = paired_diff(a(f"eff_{key}_b1.0"), off, "default_rate_final")
             effects0[key], effects1[key] = (d0, s0), (d1, s1)
-            # Three decimals where two would round a 1.1-SE effect to an apparent 2 SE.
-            dd = 3 if key == "shock_single_tick" else 2
+            # Three decimals where a standard error would round to 0.01 at two, which would make
+            # an effect of under 2 SE look like 2 SE; the note names the rows.
+            dd = 3 if max(s0, s1) * 100 < 0.015 else 2
+            if dd == 3:
+                fine.append(name)
             p0 = ms(a(f"eff_{key}_b0.0").bnpl_purchase_mean_realised)[0]
             p1 = ms(a(f"eff_{key}_b1.0").bnpl_purchase_mean_realised)[0]
             N[f"eff_{key}_purchase_b1"], N[f"eff_{key}_purchase_b0"] = p1, p0
@@ -979,10 +989,13 @@ def tab_effect(eff: pd.DataFrame) -> None:
         "Effect: default with \\ac{BNPL} less default without, paired by seed over one block "
         "(70{,}000--70{,}019). No \\ac{BNPL}: the setting's default rate without \\ac{BNPL}. "
         "Purchase: mean want-driven purchase, in 2017 Rands, against a provider-based figure of "
-        "R992 ($\\pm$35\\%). Volume: annual \\ac{BNPL} volume per eligible household, "
+        "R992. Volume: annual \\ac{BNPL} volume per eligible household, "
         f"in 2017 Rands, against a provider range of {rand(lo_vol)}--{rand(hi_vol)} "
-        "(Table~\\ref{tab:bnpl-on-checks}).",
-        "L{3.55cm}R{1.0cm}rrrrrr",
+        "(Table~\\ref{tab:bnpl-on-checks})."
+        + (f" The {' and '.join(fine)} row{'s are' if len(fine) > 1 else ' is'} at three decimals "
+           f"because at two {'their' if len(fine) > 1 else 'its'} standard errors round to 0.01."
+           if fine else ""),
+        "L{3.9cm}R{1.0cm}rrrrrr",
         r"& & \multicolumn{2}{c}{\textbf{Purchase (R)}} & \multicolumn{2}{c}{\textbf{Volume (R)}} "
         r"& \multicolumn{2}{c}{\textbf{Effect (pp)}} \\ "
         r"\cmidrule(lr){3-4}\cmidrule(lr){5-6}\cmidrule(lr){7-8}"
@@ -990,7 +1003,7 @@ def tab_effect(eff: pd.DataFrame) -> None:
         "$\\beta=0$ & $\\beta=1$ & $\\beta=0$ & $\\beta=1$ & $\\beta=0$ & $\\beta=1$",
         rows,
         size=r"\footnotesize",
-        colsep="2.5pt",
+        colsep="1.8pt",
     )
 
 

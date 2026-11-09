@@ -233,7 +233,7 @@ depends on the order in which its group acted. With \ac{BNPL} disabled the signa
 zero and the channel is inert, which is why the calibration baseline is untouched by it.
 
 \begin{algorithm}[H]
-\caption{Peer-signal update and appetite}
+\caption{Peer-signal update and propensity}
 \label{alg:peer}
 \begin{algorithmic}
 \If{not $\mathbb{1}^{\text{bnpl}}$} $s_g \gets 0$ for all $g$; \Return \EndIf
@@ -243,7 +243,7 @@ zero and the channel is inert, which is why the calibration baseline is untouche
 \EndFor
 \Statex
 \Function{Appetite}{$i$, $s$} \Comment{Equation~\ref{eq:peer} and its threshold variant}
-    \If{threshold mechanism} $q \gets q_{\text{base}} + (s \geq \theta_i \;?\; \gamma : 0)$
+    \If{threshold rule} $q \gets q_{\text{base}} + (s \geq \theta_i \;?\; \gamma : 0)$
     \Else\ $q \gets q_{\text{base}} + \beta s$ \Comment{$\beta = 0$: the control arm}
     \EndIf
     \State \Return $\mathrm{clip}(q, 0, 1)$

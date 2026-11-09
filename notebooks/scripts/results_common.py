@@ -120,20 +120,34 @@ def pct(x: float, d: int = 2) -> str:
     return f"{x * 100:.{d}f}"
 
 
+def signed(x: float, d: int = 2) -> str:
+    """x with an explicit sign and thousands separators, except a value that rounds to zero,
+    which prints as 0.00 with no sign (never -0.00 or +0.00)."""
+    s = f"{x:+,.{d}f}".replace(",", "{,}")
+    return s[1:] if float(f"{x:.{d}f}") == 0 else s
+
+
 def cell(x: pd.Series, d: int = 2, scale: float = 100.0) -> str:
     """'mean (sd)' for a replicate series, both scaled (per cent by default)."""
     m, s, _ = ms(x)
-    return f"{m * scale:.{d}f} ({s * scale:.{d}f})"
+    return f"{num(m * scale, d)} ({num(s * scale, d)})"
 
 
 def pm(d: float, se: float, dd: int = 2, scale: float = 100.0, unit: str = "") -> str:
-    return f"${d * scale:+.{dd}f} \\pm {se * scale:.{dd}f}${unit}"
+    return f"${signed(d * scale, dd)} \\pm {num(se * scale, dd)}${unit}"
 
 
 def pmb(d: float, se: float, dd: int = 2, scale: float = 100.0) -> str:
     """As `pm`, in bold where the difference exceeds two standard errors (Section 3.1)."""
-    body = f"{d * scale:+.{dd}f} \\pm {se * scale:.{dd}f}"
+    body = f"{signed(d * scale, dd)} \\pm {num(se * scale, dd)}"
     return f"$\\boldsymbol{{{body}}}$" if detectable(d, se) else f"${body}$"
+
+
+def param(x: float, d: int = 2) -> str:
+    """A parameter value at two decimals, or more where two would lose a digit (0.025)."""
+    while d < 6 and abs(float(f"{x:.{d}f}") - x) > 1e-12:
+        d += 1
+    return f"{x:.{d}f}"
 
 
 def rand(x: float, d: int = 0) -> str:
