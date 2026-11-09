@@ -220,6 +220,15 @@ def check_prose() -> None:
     expect("ch3 short", ch["03_calibration"], pmj(cont, "beta0_effect_pooled_contestable"))
     expect("ch3 short", ch["03_calibration"], pmj(cont, "peer_effect_pooled_contestable"))
     expect("ch3 short", ch["03_calibration"], unsigned(pmj(cont, "rq3s_bureau_diff_contestable_b0")))
+    # Section 3.5: the default level against the bureau figures (check_default_level.py).
+    lvl = json.loads((SUMMARY / "default_level.json").read_text())
+    expect("ch3 level", ch["03_calibration"], f"{lvl['off_new_default_rate_final'] * 100:.2f}\\%")
+    expect("ch3 level", ch["03_calibration"], f"{lvl['off_new_defaults_per_year_of_all_households'] * 100:.1f}\\%")
+    expect("ch3 level", ch["03_calibration"], f"{lvl['off_inflow_per_tick_of_book'] * 100:.2f}\\%")
+    expect("ch3 level", ch["03_calibration"], f"{lvl['ccmr_inflow_91plus_per_tick_of_accounts'] * 100:.2f}\\%")
+    expect("ch3 level", ch["03_calibration"], f"about {lvl['ccmr_inflow_91plus_per_year_of_accounts'] * 100:.0f}\\%")
+    expect("ch3 level", ch["03_calibration"], f"{lvl['off_defaulted_of_ever_active'] * 100:.1f}\\%")
+    expect("ch4 level", ch["04_results"], f"{num['baseline_default'] * 100:.2f}\\%")
     # Section 4.1 and the RQ2 answer: the pooled effect.
     for c in ("04_results", "06_conclusion"):
         expect(f"{c} pooled", ch[c], unsigned(pmj(num, "beta0_effect_pooled")))

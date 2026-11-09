@@ -92,10 +92,10 @@ def main() -> None:
         default=128,
         help=(
             "Saltelli base sample size (power of 2). Second-order indices are off, so "
-            "total runs = N*(D+2)*reps: 4,096 at N=256 with D=6 and 2 replicates."
+            "total runs = N*(D+2)*reps: 16,384 at N=256 with D=6 and 8 replicates."
         ),
     )
-    ap.add_argument("--reps", type=int, default=2, help="replicates per design point")
+    ap.add_argument("--reps", type=int, default=8, help="replicates per design point (8 since B45: 2 left the default indices noise-dominated)")
     ap.add_argument("--jobs", type=int, default=-2)
     ap.add_argument("--ticks", type=int, default=52)
     args = ap.parse_args()

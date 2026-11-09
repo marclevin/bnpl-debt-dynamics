@@ -326,14 +326,26 @@ households narrows the mismatch without removing it.
 
 \subsubsection*{Default}
 
-No external figure measures the model's default. The nearest are from the \ac{NCR}'s Credit
-Bureau Monitor: in March 2017, 21.7\% of credit-active consumers were three or more months in
-arrears, and 39.3\% had impaired records, which also include judgments and adverse listings
-\citep{ncr_cbm_2017}. The model's construct is the first of these. At the final tick 13.84\% of
-credit-active households are 91 or more days in arrears, below the 21.7\%, which also covers
-retail and telecoms accounts the model does not hold. Over two years 20.73\% of households are
-in default at some tick: 6.36\% placed there at the start and 14.37\% who default during the
-run. Of those who default during the run, 88.3\% held traditional debt at the start and 12.5\%
+No external figure measures household default directly, but the credit bureau figures bound its
+level. With \ac{BNPL} off, 14.37\% of households default during the two-year run, about 7.2\% a
+year. A further 6.36\% are placed in default at the start, so 20.73\% are in default at some tick.
+We report default during the run as the level, and the starting stock separately, because the
+stock is an input. Three comparisons place the level, all on seeds 10{,}000--10{,}019.
+The first is the flow. Each tick 0.83\% of the credit-active book reaches 91 days, against the
+0.82\% implied by the \ac{CCMR} 91--120 day band, which holds 1.76\% of accounts for 30 days.
+That is about 19\% of the book a year. The band was a target, so this is consistency rather than
+an independent check.
+The second is the stock, which was not targeted. By the final tick 43.7\% of the households that
+held credit at any tick have defaulted, against the 39.3\% of credit-active consumers with
+impaired records in the \ac{NCR}'s Credit Bureau Monitor for March 2017 \citep{ncr_cbm_2017}.
+Impaired records also include judgments and adverse listings, and the Monitor counts consumers,
+not households.
+The third is arrears at the final tick: 13.84\% of credit-active households are 91 or more days
+behind, below the Monitor's 21.7\% of consumers three or more months in arrears, which also
+covers retail and telecoms accounts the model does not hold.
+% 0.83%, 0.82%, 19%, 43.7%, 7.2%: results/summary/default_level.json
+% (notebooks/scripts/check_default_level.py, rq0 seeds 10,000-10,019 checked against results/raw).
+Of those who default during the run, 88.3\% held traditional debt at the start and 12.5\%
 have an earner out of work when they default. Food and rent left unpaid are reported
 separately: in an average tick 3.4\% of households are short of them.
 % 20.73%, 6.36% and 14.37%: baseline_default (results_numbers.json) and default_rate,

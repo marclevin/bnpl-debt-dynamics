@@ -64,7 +64,8 @@ def tab_baseline_arms(rq0: pd.DataFrame) -> None:
     off, b0, b1 = (arm(rq0, l) for l in ("baseline_no_bnpl", "bnpl_on_beta0", "bnpl_on_peer"))
     rows_spec = [
         ("Distress", None, 0, 0),
-        ("Default rate (\\%)", "default_rate_final", 100, 2),
+        ("Default during the run (\\%)", "new_default_rate_final", 100, 2),
+        ("Default, including the starting stock (\\%)", "default_rate_final", 100, 2),
         ("90+ day arrears, credit-active (\\%)", "active_90_plus_mean", 100, 2),
         ("Traditional arrears, all households (\\%)", "trad_arrears_rate_mean", 100, 2),
         ("No liquid savings (\\% of households)", "zero_savings_rate_mean", 100, 1),

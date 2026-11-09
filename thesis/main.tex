@@ -86,7 +86,7 @@ not been submitted for any other degree or examination at any other university.
 \addcontentsline{toc}{section}{Abstract}
 
 % Every number is read from a generated table or a results/summary JSON:
-% 1.0 point: beta0_effect_pooled (1.03); baseline 20.7%: baseline_default (Section 4.1);
+% 1.0 point: beta0_effect_pooled (1.03); baseline 14.4%: default during the run, tab:baseline-arms;
 % 2.4 times: volume_ratio_peer_over_beta0; flat in beta: results/summary/beta_sweep.json;
 % shortfall path: no-shortfall-BNPL row of tab:effect; households below food and rent:
 % defaulter_credit.json and contestable_default.json (Section 3.5);
@@ -99,7 +99,7 @@ The baseline starts from the 2017 arrears profile, and two parameters are fitted
 A household defaults when an instalment on any facility is more than 90 days past due.
 The model matches household size, income inequality and the order of magnitude of debt, and holds the arrears profile for two years, but the profile is calibrated rather than validated, so we interpret only differences between scenarios.
 Many users owe several platforms at once, but default does not rise with the number of platforms.
-From a 20.7\% baseline default rate, adding \ac{BNPL} raises default by 1.0 percentage point, and the effect does not change with peer influence over the range tested, although households borrow 2.4 times as much at its top.
+From a baseline in which 14.4\% of households default over two years, adding \ac{BNPL} raises default by 1.0 percentage point, and the effect does not change with peer influence over the range tested, although households borrow 2.4 times as much at its top.
 The effect runs through households that use \ac{BNPL} to bridge cash shortfalls and then fall more than 90 days behind on it, most of them households whose surveyed income does not cover food and rent; it disappears when \ac{BNPL} cannot be used against a shortfall.
 The model has no credit score, so reporting acts through the lender's Regulation 23A test. Adding \ac{BNPL} obligations to it raises refusals by about 13\% and default by 0.20 points without peer influence, because in the model refused households have no other credit.
 Screening \ac{BNPL} requests with the same test lowers default by 0.9 to 1.0 points, almost all in the poorest quintile.
