@@ -163,6 +163,16 @@ evidence. The write-off rate is derived from the CCMR, not fitted, but it assume
 profile is a steady state. CCMR shares are of accounts, applied to households (B5). Disclose in
 Sections 3.4 and 3.5 and the limitations index (#95).
 
+### B46 · The credit-active population halves over the run · `MAJOR` · Marc
+
+New 2026-11-09 (D18). With BNPL off, credit-active households fall from 2,285 at tick 0 to 1,175
+at the final tick (`docs/ARREARS_RULE_2026-11.md`). Written-off accounts leave, households that
+repay leave, and the only new traditional borrowing is against shortfalls; the CCMR stock is
+replenished by new accounts, the model's is not. The 90+ share is stationary, but it is the
+share of a shrinking book, so "the profile holds for two years" is a statement about ratios, not
+about a steady-state population. Disclose beside B44 in Sections 3.4 and 3.5 and the limitations
+index (#95). Fixing it needs an origination flow and a recalibration; not planned.
+
 ### B7 · Behavioural parameters are imported from the United States · `MINOR` · Marc
 
 **Updated 2026-11-09.** Under the arrears rule the minimum-payer share at 0.20 and 0.40 gives a BNPL
