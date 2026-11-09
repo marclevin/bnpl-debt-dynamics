@@ -18,6 +18,7 @@ from mesa import Agent
 
 from .affordability import nca_gate, tick_interest_rate
 from .config import MONTHLY_TO_TICK
+from .bnpl import _age_unpaid
 from .lender import NEW_LOAN_APR, new_loan_instalment
 from .population import HouseholdRecord
 
@@ -55,6 +56,15 @@ class HouseholdAgent(Agent):
         #: Observation only: ticks of the current streak with a food or rent shortfall.
         self.committed_in_streak = 0
         self.arrears_age_ticks = 0
+        #: D18: traditional arrears by the tick each unpaid amount fell due, oldest first,
+        #: as [tick, amount] pairs summing to `arrears_trad`. Bookkeeping only.
+        self.trad_unpaid: list = []
+        #: D18: age in ticks of the oldest unpaid instalment on ANY facility, traditional
+        #: or BNPL. Drives the CCMR bands and default under `distress_rule="arrears"`.
+        self.arrears_age_max = 0
+        #: Food or rent left unpaid after credit in the current tick, and ever (C4).
+        self.consumption_distress_tick = False
+        self.ever_consumption_distress = False
         self.defaulted = False
         self.cool_off_until = -1
         #: D1: how many of the household's earners are currently out of work.
@@ -209,8 +219,12 @@ class HouseholdAgent(Agent):
             cash = 0.0
 
         # --- 3. scheduled debt service is attempted ----------------------------
+        # D18: under the arrears rule a defaulted account is non-performing. It has been
+        # handed over, so nothing more is due or collected on any facility, no interest
+        # accrues, and its arrears stay where they are until it is written off.
+        frozen = p.distress_rule == "arrears" and self.defaulted
         # Interest accrues on the traditional balance before servicing.
-        interest = self.d_trad * tick_interest_rate(self.apr_annual)
+        interest = 0.0 if frozen else self.d_trad * tick_interest_rate(self.apr_annual)
         self.d_trad += interest
         self.interest_charged_tick = interest
 
@@ -223,6 +237,8 @@ class HouseholdAgent(Agent):
         # owe the lender more this tick than the balance itself.
         due_trad = min(due_trad + self.arrears_trad, self.d_trad)
         bnpl_due = self.bnpl_due_per_tick()
+        if frozen:
+            due_trad = bnpl_due = 0.0
 
         service_shortfall = max(due_trad + bnpl_due - cash, 0.0)
 
@@ -258,11 +274,15 @@ class HouseholdAgent(Agent):
             # full are not distress, so only what credit leaves unpaid counts.
             committed_unmet = committed_shortfall - committed_paid_by_credit
         distressed = committed_unmet > 0 or unmet_after_credit > 0
+        # Consumption distress (D18, reported separately from default): food or rent the
+        # household could not pay this tick, after any credit that paid it.
+        self.consumption_distress_tick = committed_shortfall - committed_paid_by_credit > 0
+        self.ever_consumption_distress |= self.consumption_distress_tick
 
         # --- pay BNPL, then traditional --------------------------------------
         # BNPL first: its instalments are contractually fixed and the platform debits a
         # card automatically, whereas the traditional lender tolerates arrears.
-        for platform in self.model.platforms:
+        for platform in self.model.platforms if not frozen else ():
             paid, fees = platform.collect(self.agent_id, cash, self.model.tick)
             cash -= paid
             self.bnpl_fees_tick += fees
@@ -272,10 +292,22 @@ class HouseholdAgent(Agent):
         # inattention cannot stop a BNPL instalment. This is what generates transient
         # mild delinquency: a household misses one instalment and catches up next tick.
         skipped_payment = self.model.rng.random() < p.payment_friction
+        if (
+            p.distress_rule == "arrears"
+            and not frozen
+            and self.arrears_trad > 0
+            and self.model.rng.random() < p.arrears_persistence
+        ):
+            # D18 arrears persistence: a household already behind stays behind, paying
+            # nothing this tick, with probability pi (fitted to the CCMR 31-60 band).
+            # `arrears_trad` still holds last tick's arrears here.
+            skipped_payment = True
         paid_trad = 0.0 if skipped_payment else min(cash, due_trad)
         cash -= paid_trad
         self.paid_trad_tick = paid_trad
-        self.arrears_trad = max(due_trad - paid_trad, 0.0)
+        if not frozen:
+            self.arrears_trad = max(due_trad - paid_trad, 0.0)
+            _age_unpaid(self.trad_unpaid, paid_trad, self.arrears_trad, self.model.tick)
         # Interest was added to the balance at accrual, so the WHOLE payment comes off
         # it. Deducting only `paid - interest` charged the interest twice: once into the
         # balance and once out of the payment.
@@ -285,6 +317,7 @@ class HouseholdAgent(Agent):
             # showing the lender the service of a loan that no longer existed.
             self.d_trad = 0.0
             self.arrears_trad = 0.0
+            self.trad_unpaid.clear()
             self.scheduled_service_tick = 0.0
 
         # --- 4. discretionary consumption is set ------------------------------
@@ -330,7 +363,31 @@ class HouseholdAgent(Agent):
         else:
             self.arrears_age_ticks = 0
 
-        if not self.defaulted and self.distress_streak >= p.k_default:
+        # D18: the age of the oldest unpaid instalment on any facility. Computed under
+        # both rules (it draws nothing), but only the arrears rule acts on it.
+        tick = self.model.tick
+        trad_age = tick - self.trad_unpaid[0][0] + 1 if self.trad_unpaid and self.arrears_trad > 0 else 0
+        bnpl_age = max((pl.arrears_age(self.agent_id, tick) for pl in self.model.platforms), default=0)
+        self.arrears_age_max = max(trad_age, bnpl_age)
+
+        if p.distress_rule == "arrears" and self.defaulted and (
+            self.d_trad > 0 or any(pl.loans.get(self.agent_id) for pl in self.model.platforms)
+        ) and self.model.rng.random() < p.write_off_rate:
+            # D18 write-off: a defaulted account leaves the book at a rate derived from
+            # the CCMR stock-flow balance. The household stays in default at the bureau.
+            self.d_trad = self.arrears_trad = self.scheduled_service_tick = 0.0
+            self.trad_unpaid.clear()
+            for pl in self.model.platforms:
+                pl.loans.pop(self.agent_id, None)
+            self.arrears_age_max = 0
+
+        if p.distress_rule == "arrears":
+            # D18 (2026-11-09): default is 91+ days past due on any facility, the first
+            # tick the oldest unpaid instalment is k_default ticks old. Absorbing.
+            in_default = self.arrears_age_max >= p.k_default
+        else:
+            in_default = self.distress_streak >= p.k_default
+        if not self.defaulted and in_default:
             self.defaulted = True
             self.model.bureau.record_default(self.agent_id)
 

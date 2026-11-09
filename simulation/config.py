@@ -68,6 +68,7 @@ Provenance = Literal["SOURCED", "DERIVED", "ASSUMPTION", "FITTED"]
 AmountRule = Literal["shortfall", "shortfall_125", "shortfall_plus_committed"]
 Activation = Literal["random", "uniform"]
 PurchaseBase = Literal["discretionary", "income"]
+DistressRule = Literal["streak", "arrears"]
 PeerMechanism = Literal["linear", "threshold"]
 Routing = Literal["random", "loyal"]
 
@@ -469,13 +470,71 @@ class ParamSet:
     )
 
     # -- D7 distress and default -------------------------------------------------
+    distress_rule: DistressRule = _p(
+        "streak",
+        rule="D7/D18",
+        provenance="SOURCED",
+        source=(
+            "Added 2026-11-09 (D18, issue #92). 'arrears' (the baseline, set by "
+            "ARREARS_RULE): a household is distressed, and in default, once its oldest "
+            "unpaid instalment on any facility, traditional or BNPL, is k_default ticks "
+            "old; default is absorbing. This is the 90-days-past-due convention "
+            "(Basel) and the construct of the NCR CBM's 3+ months in arrears. 'streak' "
+            "(the rule to 6b0a4c7): k_default consecutive ticks with a food or rent "
+            "shortfall or with debt service unmet after credit. Kept so the change can "
+            "be compared; it reproduces 6b0a4c7 bit for bit."
+        ),
+        sweep="'streak' in the old-against-new comparison only",
+    )
+    initial_arrears: bool = _p(
+        False,
+        rule="D18",
+        provenance="SOURCED",
+        source=(
+            "Added 2026-11-09. Starts the run from the 2017-Q1 CCMR age analysis instead of "
+            "with every household current: credit-active households are placed in each "
+            "band at its CCMR share (accounts applied to households, B5), the least able "
+            "to pay in the oldest bands, ranked by income less committed expenditure and "
+            "debt service per tick. A household in a band owes one unpaid instalment per "
+            "tick of its age, capped at its balance; 120+ ages are drawn uniformly over "
+            "9-26 ticks (an assumption). Households placed at 91+ start in default. The "
+            "shares are an input, so agreement at tick 0 is not evidence; whether the "
+            "profile holds after burn-in is."
+        ),
+        sweep="on with the arrears rule (ARREARS_RULE); off reproduces an all-current start",
+    )
+    arrears_persistence: float = _p(
+        0.0,
+        rule="D18",
+        provenance="FITTED",
+        source=(
+            "Added 2026-11-09. Under the arrears rule, the probability that a household "
+            "already in traditional arrears pays nothing again this tick, whatever its "
+            "cash: the persistence of non-payment behind the CCMR roll rates. Fitted to "
+            "the 31-60 day band, jointly with payment friction on the 1-30 band."
+        ),
+        sweep="calibration grid",
+    )
+    write_off_rate: float = _p(
+        0.0,
+        rule="D18",
+        provenance="DERIVED",
+        source=(
+            "Added 2026-11-09. Per-tick probability that a defaulted account leaves the "
+            "book. Derived from the CCMR 2017-Q1 stock-flow balance: accounts roll into "
+            "120+ at half the 91-120 share per tick, so a stationary 120+ stock needs "
+            "write_off_rate = (d91_120 / 2) / d120_plus = 0.0707 (derived_write_off_rate)."
+        ),
+        sweep="set by ARREARS_RULE",
+    )
     k_default: int = _p(
         7,
         rule="D7",
         provenance="ASSUMPTION",
         source=(
-            "7 ticks = 98 days, inside the CCMR 91-120 band, so it maps onto the 90+ "
-            "impairment convention. Revised from 6 once the 2017 CCMR was in hand."
+            "7 ticks = 98 days, the first tick past 90 days, inside the CCMR 91-120 band. "
+            "Under the arrears rule it is the arrears age at which a household is in "
+            "default; under the streak rule, the length of the distress streak."
         ),
         sweep="k=4 (56 days -> the 60+ band, target 16.54%)",
     )
@@ -720,3 +779,27 @@ if __name__ == "__main__":  # pragma: no cover
     )
     w.writeheader()
     w.writerows(parameter_register())
+
+
+def derived_write_off_rate() -> float:
+    """D18: the per-tick write-off hazard at which the CCMR 120+ stock is stationary.
+
+    Accounts spend two ticks in the 91-120 band, so they enter 120+ at d91_120 / 2 a tick;
+    a stock of d120_plus is stationary when that inflow equals write_off_rate x d120_plus.
+    """
+    b = load_ccmr_bands()
+    return round((b["d91_120"] / 2.0) / b["d120_plus"], 4)
+
+
+#: D18 (2026-11-09, issues #91 and #92): the baseline distress rule. Default is 91+ days
+#: past due on any facility; the run starts from the CCMR 2017-Q1 age profile; defaulted
+#: accounts are non-performing and written off at the derived rate; credit raised against a
+#: food or rent shortfall pays it first. `arrears_persistence` is fitted (calibrate.py) and
+#: set in experiments.calibrated. Applied by `experiments.calibrated` and
+#: `calibrate.baseline`, so ParamSet's own defaults stay the 6b0a4c7 model.
+ARREARS_RULE: dict[str, Any] = dict(
+    distress_rule="arrears",
+    committed_shortfall_funded=True,
+    initial_arrears=True,
+    write_off_rate=derived_write_off_rate(),
+)

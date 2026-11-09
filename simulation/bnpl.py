@@ -38,6 +38,15 @@ class BNPLLoan:
     #: that tick, so nothing further is collected until the next one. None means the
     #: agreement was opened outside a model run (unit tests), and is always collectable.
     opened_tick: int | None = None
+    #: D18 (2026-11-09): `arrears` split by the tick each unpaid amount fell due, oldest
+    #: first, as [tick, amount] pairs that sum to `arrears`. Payments clear the oldest
+    #: first, so the agreement's arrears age is the age of its oldest unpaid instalment.
+    #: Bookkeeping only: no amount above is computed from it.
+    unpaid: list = field(default_factory=list)
+
+    def arrears_age(self, tick: int) -> int:
+        """Ticks since the oldest unpaid instalment fell due, counting its own tick; 0 if none."""
+        return tick - self.unpaid[0][0] + 1 if self.unpaid and self.arrears > 0 else 0
 
     @property
     def outstanding(self) -> float:
@@ -218,6 +227,7 @@ class BNPLPlatform:
                 cash -= owed
                 paid += owed
                 loan.arrears = 0.0
+                loan.unpaid.clear()
             else:
                 part = cash
                 cash = 0.0
@@ -232,6 +242,7 @@ class BNPLPlatform:
 
                 # Fees roll into the single payable rather than being tracked separately.
                 loan.arrears = shortfall + fee
+                _age_unpaid(loan.unpaid, part, shortfall + fee, tick)
 
                 if loan.fee_accrued >= cap:
                     self.cut_off.add(agent_id)
@@ -245,5 +256,40 @@ class BNPLPlatform:
 
         return paid, fees
 
+    def arrears_age(self, agent_id: int, tick: int) -> int:
+        """Age of the household's oldest unpaid BNPL instalment on this platform (D18)."""
+        return max((loan.arrears_age(tick) for loan in self.loans.get(agent_id, ())), default=0)
+
     def has_balance(self, agent_id: int) -> bool:
         return self.exposure(agent_id) > 0
+
+
+def _age_unpaid(unpaid: list, paid: float, arrears_now: float, tick: int | None) -> None:
+    """Update [tick, amount] arrears buckets after a payment (D18, oldest first).
+
+    `paid` clears the oldest buckets first; whatever of `arrears_now` the remaining
+    buckets do not account for fell due in `tick` and opens a new bucket. If the
+    buckets exceed `arrears_now` (a cap bound the amount due), the newest are trimmed.
+    Afterwards the buckets sum to `arrears_now` up to rounding.
+    """
+    t = 0 if tick is None else tick
+    while paid > 0 and unpaid:
+        take = min(paid, unpaid[0][1])
+        unpaid[0][1] -= take
+        paid -= take
+        if unpaid[0][1] <= 1e-9:
+            unpaid.pop(0)
+    held = sum(amount for _, amount in unpaid)
+    if arrears_now > held + 1e-9:
+        if unpaid and unpaid[-1][0] == t:
+            unpaid[-1][1] += arrears_now - held
+        else:
+            unpaid.append([t, arrears_now - held])
+    else:
+        excess = held - arrears_now
+        while excess > 1e-9 and unpaid:
+            take = min(excess, unpaid[-1][1])
+            unpaid[-1][1] -= take
+            excess -= take
+            if unpaid[-1][1] <= 1e-9:
+                unpaid.pop()

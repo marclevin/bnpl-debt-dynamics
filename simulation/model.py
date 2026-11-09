@@ -108,6 +108,11 @@ class BNPLModel(Model):
                 bnpl_eligible=rec.agent_id in eligible,
             )
 
+        #: Households in default before the first tick (initial arrears of 91+ days).
+        self.n_initial_defaults = 0
+        if params.initial_arrears:
+            self._seed_initial_arrears()
+
         # D17: zero at t=0 everywhere, which is why q_base > 0 is structurally required.
         self.group_share_lagged: dict[tuple[str, str], float] = {g: 0.0 for g in groups}
 
@@ -134,6 +139,48 @@ class BNPLModel(Model):
         self.ever_stacked: set[int] = set()
 
         self.history: list[dict] = []
+
+    def _seed_initial_arrears(self) -> None:
+        """D18: start from the 2017-Q1 CCMR age analysis (`initial_arrears`).
+
+        Credit-active households (traditional debt; nobody holds BNPL at t=0) are ranked
+        by income less committed expenditure and debt service per tick, lowest first, and
+        the oldest CCMR bands are filled first at their published shares. Ages within a
+        band are drawn on `init_rng`, so the simulation stream is untouched.
+        """
+        from .agents import BALANCE_EPS
+        from .affordability import tick_interest_rate
+        from .config import CCMR_BANDS, load_ccmr_bands
+
+        shares = load_ccmr_bands()
+        agents = sorted(
+            (a for a in self.agents if a.d_trad > BALANCE_EPS), key=lambda a: a.agent_id
+        )
+
+        def due_tick(a) -> float:
+            if a.is_min_payer:
+                return a.minimum_payment_tick(a.d_trad * tick_interest_rate(a.apr_annual))
+            return a.scheduled_service_tick
+
+        ranked = sorted(agents, key=lambda a: (a.income_tick - a.committed_tick - due_tick(a), a.agent_id))
+        start = 0
+        for label, lo, hi in reversed(CCMR_BANDS):  # oldest band first
+            if label == "current":
+                continue
+            n_band = int(round(shares[label] / 100.0 * len(agents)))
+            for a in ranked[start:start + n_band]:
+                age = self.init_rng.randint(lo, hi if hi is not None else 26)
+                inst = min(due_tick(a), a.d_trad / age) if due_tick(a) > 0 else a.d_trad / age
+                # One unpaid instalment for each tick of age, the oldest due `age` ticks ago.
+                a.trad_unpaid = [[-k, inst] for k in range(age, 0, -1)]
+                a.arrears_trad = inst * age
+                a.arrears_age_ticks = age
+                a.arrears_age_max = age
+                if self.params.distress_rule == "arrears" and age >= self.params.k_default:
+                    a.defaulted = True
+                    self.bureau.record_default(a.agent_id)
+                    self.n_initial_defaults += 1
+            start += n_band
 
     def record_want_purchase(self, financed: float, quintile: str) -> None:
         """Record one want-driven BNPL origination (D3)."""

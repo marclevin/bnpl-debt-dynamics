@@ -4,9 +4,13 @@ The CCMR band mapping is exact at a 14-day tick, which is the reason k was revis
 6 to 7: 7 ticks is 98 days, inside the 91-120 bucket, so it maps onto the 90+ impairment
 convention. k=6 would be 84 days and would land in 61-90 with no clean analogue.
 
-Two counters are tracked separately and must not be conflated:
-  * `distress_streak` drives DEFAULT (D7), the model's headline output.
-  * `arrears_age_ticks` drives the CCMR BAND comparison (D6).
+Under the arrears rule (D18, the baseline since 2026-11-09) one quantity drives both the
+bands and default: `arrears_age_max`, the age of the household's oldest unpaid instalment
+on any facility, traditional or BNPL. Default is reaching k_default ticks (91+ days), and
+the credit-active denominator counts households with any traditional or BNPL balance or
+arrears. Under the old streak rule (`distress_rule="streak"`, kept for comparison)
+`distress_streak` drives default and `arrears_age_ticks`, traditional only, drives the
+bands, exactly as at 6b0a4c7.
 """
 
 from __future__ import annotations
@@ -40,8 +44,18 @@ def collect_tick(model) -> dict:
     """One row of per-tick observation."""
     agents = list(model.agents)
     n = len(agents)
+    arrears_rule = model.params.distress_rule == "arrears"
 
-    bands = Counter(ccmr_band(a.arrears_age_ticks) for a in agents)
+    def age(a) -> int:
+        return a.arrears_age_max if arrears_rule else a.arrears_age_ticks
+
+    def credit_active(a) -> bool:
+        if a.d_trad > 0 or a.arrears_trad > 0:
+            return True
+        # D18: BNPL holders count too. The bands are then over every facility.
+        return arrears_rule and any(pl.loans.get(a.agent_id) for pl in model.platforms)
+
+    bands = Counter(ccmr_band(age(a)) for a in agents)
     n_defaulted = sum(1 for a in agents if a.defaulted)
     n_zero_savings = sum(1 for a in agents if a.savings <= 0)
 
@@ -50,9 +64,9 @@ def collect_tick(model) -> dict:
     # arrears; including them guarantees the model undershoots the target for a reason
     # that has nothing to do with behaviour. The credit-active denominator is the closer
     # analogue and is reported alongside the all-household figure, never instead of it.
-    active = [a for a in agents if a.d_trad > 0 or a.arrears_trad > 0]
+    active = [a for a in agents if credit_active(a)]
     n_active = len(active)
-    bands_active = Counter(ccmr_band(a.arrears_age_ticks) for a in active)
+    bands_active = Counter(ccmr_band(age(a)) for a in active)
 
     bnpl_holders = 0
     stacking = Counter()
@@ -75,6 +89,11 @@ def collect_tick(model) -> dict:
         # --- headline outputs ---------------------------------------------------
         "default_rate": n_defaulted / n,
         "n_defaulted": n_defaulted,
+        # D18: defaults during the run, excluding households that start at 91+ days.
+        "new_default_rate": (n_defaulted - model.n_initial_defaults) / n,
+        # D18: food or rent unpaid after credit, reported apart from default.
+        "consumption_distress_rate": sum(1 for a in agents if a.consumption_distress_tick) / n,
+        "ever_consumption_distress": sum(1 for a in agents if a.ever_consumption_distress) / n,
         # --- CCMR bands (D6) ------------------------------------------------------
         **{f"band_{label}": band_share(bands, (label,), n) for label, _, _ in CCMR_BANDS},
         "pct_60_plus": band_share(bands, BANDS_60_PLUS, n),
@@ -221,6 +240,8 @@ def summarise_run(model) -> dict:
         # --- headline -----------------------------------------------------------
         "default_rate_final": final["default_rate"],
         "default_rate_mean": mean("default_rate"),
+        "new_default_rate_final": final["new_default_rate"],
+        "initial_default_rate": model.n_initial_defaults / len(agents),
         "pct_90_plus_final": final["pct_90_plus"],
         "pct_90_plus_mean": mean("pct_90_plus"),
         "pct_60_plus_final": final["pct_60_plus"],
@@ -235,6 +256,9 @@ def summarise_run(model) -> dict:
         "active_current_final": final["active_current"],
         **{f"active_{label}_mean": mean(f"active_{label}") for label, _, _ in CCMR_BANDS},
         "n_credit_active_final": final["n_credit_active"],
+        # --- D18: consumption distress, apart from default ----------------------
+        "consumption_distress_mean": mean("consumption_distress_rate"),
+        "ever_consumption_distress_final": final["ever_consumption_distress"],
         # --- pattern 1: traditional stress --------------------------------------
         "trad_arrears_rate_mean": mean("trad_arrears_rate"),
         "trad_interest_total": sum(r["trad_interest_tick"] for r in post),

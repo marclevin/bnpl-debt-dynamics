@@ -21,7 +21,7 @@ what Part I's rules then operate on.
 
 | | |
 | --- | --- |
-| **Part I** | **The eighteen model decision rules (D0–D17)** — one rule per agent behaviour, each with a stated choice, a citation, parameters, and a validation hook |
+| **Part I** | **The model decision rules (D0–D18; D18 replaced the D7 streak rule on 2026-11-09)** — one rule per agent behaviour, each with a stated choice, a citation, parameters, and a validation hook |
 | **Part II** | **The data layer** — how 5,000 households were built from two surveys: the design commitments, the matching procedure, and the column-by-column variable map |
 
 **The three rules that carry the thesis**, if you read nothing else: **D9** (the Regulation 23A
@@ -499,6 +499,8 @@ ordered sequence; **the order itself is a modelling decision.**
   Table 21 is authoritative and reproduces the prose figure of 71.55%. Do not read section 4.4.
 
 ### D7. Distress and default definition
+- **SUPERSEDED 2026-11-09 by D18** (arrears-based distress). The rule below is kept behind
+  `distress_rule="streak"`; its numbers describe 6b0a4c7.
 - **Governs:** the model's headline output variable. The threshold the RQs ask about.
 - **Anchors:** `[ANCHOR: ABM]` Madeira `[madeira2018chile]` (households default when unable to
   finance minimum consumption standards, and the model is validated against observed default rates);
@@ -1105,6 +1107,57 @@ Four levers, three of which correspond to instruments that actually exist:
   output (DEFECTS **B1**), so a sharp adoption cascade alongside a linear default response would be
   a much stronger answer to RQ2 than the linear arm can give: the cascade mechanism demonstrably
   works and still does not move the outcome.
+
+---
+
+### D18. Arrears-based distress and default (supersedes the D7 streak rule, 2026-11-09)
+- **Governs:** distress, default, the CCMR bands and their starting state. Replaces the D7
+  rule in the baseline. The old rule stays behind `distress_rule="streak"` and reproduces
+  6b0a4c7 bit for bit (`test_streak_rule_reproduces.py`).
+- **Why:** supervisor feedback (issue #91). A household is distressed only after three months
+  in arrears: two months behind and caught up in the third is never distressed. The CCMR bands
+  must be reproduced, and default must be on the scale of the CCMR and bureau figures.
+- **DECISION (Marc, 2026-11-09; #91 C1-C7):**
+  - **Arrears on every facility.** Each agreement, traditional or BNPL, holds its arrears as
+    unpaid amounts tagged with the tick they fell due (`trad_unpaid`, `BNPLLoan.unpaid`).
+    Payments clear the oldest first, so an agreement's age is that of its oldest unpaid
+    instalment (contractual delinquency). The household's age is the largest across its
+    facilities (`arrears_age_max`) and drives the bands. Credit-active households are those
+    with any traditional or BNPL balance or arrears.
+  - **Default** is the first tick at which that age reaches `k_default` = 7 ticks (98 days,
+    the first tick past 90 days): the 90-days-past-due convention (Basel) and the NCR Credit
+    Bureau Monitor's "three or more months in arrears". It is absorbing and recorded by the
+    bureau. `k_default` = 4 is the 60+ sensitivity.
+  - **Food and rent** shortfalls are not default. Credit raised against them pays them first
+    (`committed_shortfall_funded` on), and what stays unpaid is reported as consumption
+    distress (`consumption_distress_mean`, `ever_consumption_distress_final`).
+  - The headline arrears measure is the share of credit-active households 90+ days in
+    arrears, at the final tick and as the post-burn-in mean. Cumulative default is
+    secondary, split into initial defaults and defaults during the run (`new_default_rate`).
+- **Added 2026-11-09 so the CCMR bands are reproduced, not only fitted** (Marc asked for the
+  bands to be hit faithfully; these replace "no write-off" in #91 C5):
+  - **Initial arrears** (`initial_arrears`). The run starts from the 2017-Q1 CCMR age analysis:
+    credit-active households are placed in each band at its CCMR share, the least able to pay
+    (income less committed expenditure and debt service per tick) in the oldest bands. 120+
+    ages are drawn over 9-26 ticks (an assumption). Households placed at 91+ start in default
+    (6.4% of households). The starting profile is an input, not evidence.
+  - **Non-performing default.** A defaulted account is handed over: nothing more is due or
+    collected on any facility, no interest accrues, and its arrears keep ageing.
+  - **Write-off** at `write_off_rate` = 0.0707 per tick, DERIVED from the CCMR stock-flow
+    balance: accounts enter 120+ at half the 91-120 share per tick, so a stationary 120+ stock
+    needs (1.76 / 2) / 12.45. A written-off household leaves the book but stays in default.
+  - **Arrears persistence** (`arrears_persistence`, FITTED). A household already behind pays
+    nothing again with probability pi. Without it, households with spare income clear old
+    arrears at once and the profile collapses to the structurally unable (90+ about 3%).
+- **Calibration (#93):** payment friction and persistence are fitted jointly by minimum
+  distance to the five arrears bands: friction 0.0575, pi 0.72 (fit error 0.98 points). Fitting
+  each to one band (1-30 and 31-60) left every band above 60 days short (90+ 9.9%), because
+  one persistence parameter cannot reproduce the CCMR's rising roll rates. Untargeted: the 90+
+  share at the final tick (13.84% against a post-burn-in mean of 14.08%, so the profile is
+  stationary) and the default level against the NCR CBM.
+- **Consequences:** B21 (thin intermediate bands) and B39 (90+ a rising stock) are closed by
+  this rule. The `rq3r` suite and the `committed_funded` / `committed_relief` effect arms
+  lose their meaning (#91 C7) and are to be dropped in the rerun (#96).
 
 ---
 

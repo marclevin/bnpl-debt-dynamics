@@ -11,6 +11,22 @@ Earlier history (model build, 2026-08-05 to 2026-09-28) is in the closed rows of
 
 ---
 
+## 2026-11-09: arrears-based distress (supervisor feedback; Milestone 1, branch `arrears-rule`)
+
+The supervisor asked that a household be distressed only after three months in arrears, that
+the CCMR bands be reproduced, and that default sit on the CCMR and bureau scale. D18 replaces
+the D7 streak rule in the baseline. Arrears are aged by the oldest unpaid instalment on every
+facility, traditional and BNPL; default is 91+ days past due. The run starts from the CCMR
+2017-Q1 age profile; defaulted accounts are non-performing and written off at a rate derived
+from the CCMR stock-flow balance (0.0707 per tick); a fitted persistence parameter keeps
+households behind. Payment friction (0.0575) and persistence (0.72) are fitted jointly to the
+five arrears bands. Every band is within 0.9 points of the CCMR, and 90+ is 14.08% against
+14.21%, stable over the run. The old rule reproduces 6b0a4c7 bit for bit. The 6b0a4c7
+calibration outputs are kept in `results/summary/pre_arrears_rule/` and the old raw runs, outside
+git, in `results/raw_6b0a4c7/`. Issues #91 to #94.
+
+---
+
 ## 2026-10-07: presentation and interpretation revision (branch `revision-oct-feedback`)
 
 No model code, parameter or simulation output changed; every number is regenerated from the same

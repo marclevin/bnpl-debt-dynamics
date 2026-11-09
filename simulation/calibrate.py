@@ -1,24 +1,26 @@
 """Calibrate the baseline against the 2017-Q1 CCMR.
 
-Revised 2026-10-12: the separation rate `p` is now DERIVED from the stable-employment
-condition (labour flows on) and only payment friction is fitted, to the 1-30 band. The
-90+ band is reported unfitted. The earlier text below describes the superseded fit.
+Revised 2026-11-09 (D18, issue #93), under the arrears distress rule. The run starts from
+the CCMR age profile (`initial_arrears`), defaulted accounts are written off at a rate
+DERIVED from the CCMR stock-flow balance, and the separation rate `p` is DERIVED from the
+stable-employment condition. Two parameters are FITTED jointly:
 
+  * payment friction, the entry into arrears;
+  * arrears persistence, the chance a household already behind pays nothing again.
 
-D1 makes `p` a calibration target rather than a sourced parameter, which is what makes
-the baseline CALIBRATED rather than validated: only the BNPL-on results are genuine
-predictions. That has to be stated in the limitations chapter, not buried here.
+They are fitted by simulated minimum distance to the five CCMR arrears bands (1-30, 31-60,
+61-90, 91-120, 120+): the grid point with the smallest root sum of squared deviations, in
+points. Five moments for two parameters, so the fit is over-identified and its band-by-band
+error is reported. A first attempt fitted friction to 1-30 and persistence to 31-60 alone;
+one persistence parameter cannot reproduce the CCMR's rising roll rates, and every band
+above 60 days then fell short (90+ at 9.9%), so all five bands are targeted. UNFITTED: the
+90+ share at the final tick against its post-burn-in mean (whether the profile is
+stationary), default against the NCR Credit Bureau Monitor, and the BNPL-off patterns of
+Section 3.5. Every share is over credit-active households, the closest analogue to the
+CCMR's accounts (B5). The fit is with BNPL off.
 
-The fit is to the 90+ band at k=7. The other two bands are reported as UNFITTED
-diagnostics, as are patterns 3 and 4, so the checkpoint distinguishes what was fitted
-from what was merely observed.
-
-A last stage reruns the fitted band on a grid of 0.001 either side of the selected value.
-It is a check on the coarse grid and does not change the selection.
-
-The fitted value is then compared to the QLFS 2017 job-separation band. That comparison
-is a plausibility check on the calibration, NOT a second objective: fitting to both would
-over-determine the baseline.
+The earlier calibrations (friction alone to 1-30, 2026-10-12; the shock rate to 90+, before
+that) are in calibration history; their outputs are kept in results/summary/pre_arrears_rule.
 
 Usage:
     python -m simulation.calibrate --reps 20
@@ -34,6 +36,7 @@ import pandas as pd
 from .batch import replicate, run_batch
 from .population import stationary_separation_rate
 from .config import (
+    ARREARS_RULE,
     RESULTS_SUMMARY,
     ParamSet,
     load_ccmr_bands,
@@ -51,7 +54,7 @@ P_COLS = ["shock_prob", "objective_mean", "active_d30", "active_current", "abs_e
 
 def baseline(**overrides) -> ParamSet:
     """The no-BNPL 2017 baseline with labour flows. BNPL is off by construction."""
-    return ParamSet(bnpl_enabled=False, labour_flows=True, **overrides)
+    return ParamSet(**{"bnpl_enabled": False, "labour_flows": True, **ARREARS_RULE, **overrides})
 
 
 def evaluate(
@@ -103,6 +106,14 @@ def show(table: pd.DataFrame, cols: list[str]) -> None:
     print(table[cols].to_string(index=False, float_format=lambda v: f"{v:.4f}"))
 
 
+#: The five target bands and the grid. Persistence sets the shape of the profile; friction
+#: sets the level of entry into arrears.
+TARGETS = ("d30", "d31_60", "d61_90", "d91_120", "d120_plus")
+FRICTION_GRID = [0.05, 0.0525, 0.055, 0.0575, 0.06]
+PERSISTENCE_GRID = [0.70, 0.71, 0.72, 0.73, 0.74]
+BAND_COLS = ["current", "d30", "d31_60", "d61_90", "d91_120", "d120_plus"]
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--reps", type=int, default=20, help="replicates per grid point")
@@ -111,71 +122,93 @@ def main() -> None:
 
     ccmr = load_ccmr_target()
     qlfs = load_qlfs_band()
-    target = ccmr["pct_90_plus"] / 100.0
-    bands = load_ccmr_bands()
-    d30_target = bands["d30"] / 100.0
+    bands = {k: v / 100.0 for k, v in load_ccmr_bands().items()}
+    target_90 = ccmr["pct_90_plus"] / 100.0
 
-    # --- the separation rate is DERIVED, not fitted (2026-10-12) ---------------
-    # Labour flows on: employed members separate at p, unemployed members (including the
-    # strictly unemployed on the NIDS roster) find work at the QLFS rate. p is the value
-    # at which expected employment is constant.
     exit_prob = ParamSet().shock_exit_prob
     p = round(stationary_separation_rate(exit_prob), 5)
     print("=" * 78)
-    print("CALIBRATION (labour flows on)")
+    print("CALIBRATION (arrears rule, CCMR initial arrears, labour flows)")
     print("=" * 78)
-    print(f"separation rate p : {p:.5f} per tick, DERIVED (re-employment {exit_prob:.5f} x "
-          "jobseekers / earners)")
-    print(f"QLFS 2017 band    : {qlfs['p_tick_lower']:.5f} to {qlfs['p_tick_upper']:.5f} per tick")
+    print(f"separation rate p : {p:.5f} per tick, DERIVED")
+    print(f"write-off rate    : {ARREARS_RULE['write_off_rate']:.4f} per tick, DERIVED from the CCMR")
 
-    # --- fit friction to the 1-30 band at the derived p -----------------------
-    friction_grid = [0.0, 0.02, 0.04, 0.06, 0.08, 0.09, 0.10, 0.12, 0.16]
-    print(f"\n--- friction grid at p={p:.5f}: {friction_grid}")
-    df = evaluate([p], args.reps, args.jobs, friction_grid=friction_grid)
-    fr = summarise(df, target, by=["payment_friction"])
-    fr["d30_error"] = (fr["active_d30"] - d30_target).abs()
-    show(fr, ["payment_friction", "active_d30", "objective_mean", "active_current", "d30_error"])
-    best_row = fr.loc[fr["d30_error"].idxmin()]
-    f_hat = float(best_row["payment_friction"])
+    runs: list[ParamSet] = []
+    for f in FRICTION_GRID:
+        for pi in PERSISTENCE_GRID:
+            runs += replicate(
+                baseline(shock_prob=p, payment_friction=f, arrears_persistence=pi,
+                         label=f"f={f:.3f},pi={pi:.2f}"),
+                args.reps, seed0=1000,
+            )
+    df = run_batch(runs, n_jobs=args.jobs)
+    keys = ["payment_friction", "arrears_persistence"]
+    agg = {f"active_{b}": (f"active_{b}_mean", "mean") for b in BAND_COLS}
+    agg.update(
+        active_90_plus=("active_90_plus_mean", "mean"),
+        active_90_plus_sd=("active_90_plus_mean", "std"),
+        active_90_plus_final=("active_90_plus_final", "mean"),
+        default_rate=("default_rate_final", "mean"),
+        new_default_rate=("new_default_rate_final", "mean"),
+        initial_default_rate=("initial_default_rate", "mean"),
+        consumption_distress=("consumption_distress_mean", "mean"),
+        n_credit_active=("n_credit_active_final", "mean"),
+        n_runs=("seed", "count"),
+    )
+    fr = df.groupby(keys, as_index=False).agg(**agg)
+    fr["fit_error"] = sum((fr[f"active_{b}"] - bands[b]) ** 2 for b in TARGETS) ** 0.5 * 100
+    best = fr.loc[fr["fit_error"].idxmin()]
+    f_hat, pi_hat = float(best["payment_friction"]), float(best["arrears_persistence"])
+    print(fr.to_string(index=False, float_format=lambda v: f"{v:.4f}"))
 
     print()
     print("=" * 78)
     print("RESULT")
     print("=" * 78)
-    print(f"derived p                    : {p:.5f} per tick")
-    print(f"fitted payment friction      : {f_hat:.5f} per tick   [FITTED to 1-30]")
-    print(f"  1-30 (credit-active)       : {best_row['active_d30']:.2%}  target {d30_target:.2%}   [FITTED]")
-    print(f"  90+  (credit-active)       : {best_row['objective_mean']:.2%}  CCMR {target:.2%}   [UNFITTED]")
-    print(f"  population default rate    : {best_row['default_rate']:.2%}")
+    print(f"fitted payment friction   : {f_hat:.4f}   [FITTED, five bands]")
+    print(f"fitted arrears persistence: {pi_hat:.2f}   [FITTED, five bands]")
+    for b in BAND_COLS:
+        tag = "FITTED" if b in TARGETS else "UNFITTED"
+        print(f"  {b:10s}: {best[f'active_{b}']:.2%}  CCMR {bands[b]:.2%}   [{tag}]")
+    print(f"  90+       : {best['active_90_plus']:.2%}  CCMR {target_90:.2%}   [sum of two fitted bands]")
+    print(f"  90+ final : {best['active_90_plus_final']:.2%}   [UNFITTED: stationarity]")
 
     RESULTS_SUMMARY.mkdir(parents=True, exist_ok=True)
     df.to_parquet(RESULTS_SUMMARY / "calibration_runs.parquet", index=False)
     fr.to_csv(RESULTS_SUMMARY / "calibration_grid.csv", index=False)
     payload = {
+        "rule": "arrears (D18, 2026-11-09)",
         "derived_shock_prob": p,
         "shock_exit_prob": exit_prob,
+        "derived_write_off_rate": ARREARS_RULE["write_off_rate"],
         "labour_flows": True,
         "fitted_payment_friction": f_hat,
-        "objective_column": OBJECTIVE_COLUMN,
-        "objective_value": float(best_row["objective_mean"]),
-        "objective_sd": float(best_row["objective_sd"]),
-        "target_90_plus": target,
-        "target_d30": d30_target,
-        "fitted_d30": float(best_row["active_d30"]),
+        "fitted_arrears_persistence": pi_hat,
+        "targets": list(TARGETS),
+        "fit_error_points": float(best["fit_error"]),
+        "ccmr_bands": bands,
+        "target_90_plus": target_90,
+        "model_bands": {b: float(best[f"active_{b}"]) for b in BAND_COLS},
+        "objective_value": float(best["active_90_plus"]),
+        "objective_sd": float(best["active_90_plus_sd"]),
+        "fitted_d30": float(best["active_d30"]),
         "unfitted": {
-            "active_90_plus": float(best_row["objective_mean"]),
-            "active_d31_60": float(best_row["active_d31_60"]),
-            "active_d61_90": float(best_row["active_d61_90"]),
-            "active_60_plus": float(best_row["active_60_plus"]),
-            "active_current": float(best_row["active_current"]),
-            "all_households_90_plus": float(best_row["all_90_plus"]),
-            "default_rate": float(best_row["default_rate"]),
-            "zero_savings_rate": float(best_row["zero_savings"]),
+            "active_90_plus": float(best["active_90_plus"]),
+            "active_90_plus_final": float(best["active_90_plus_final"]),
+            "active_d61_90": float(best["active_d61_90"]),
+            "active_d91_120": float(best["active_d91_120"]),
+            "active_d120_plus": float(best["active_d120_plus"]),
+            "active_current": float(best["active_current"]),
+            "default_rate": float(best["default_rate"]),
+            "new_default_rate": float(best["new_default_rate"]),
+            "initial_default_rate": float(best["initial_default_rate"]),
+            "consumption_distress": float(best["consumption_distress"]),
         },
         "qlfs_band": {"lower": qlfs["p_tick_lower"], "upper": qlfs["p_tick_upper"]},
         "replicates": args.reps,
         "earlier_fit": {
-            "note": "Before 2026-10-12 p was fitted to the 90+ band without labour flows: 0.016.",
+            "note": "Streak rule, all households current at t=0: friction 0.09 fitted to 1-30 (2026-10-12); before that p fitted to 90+ (0.016).",
+            "payment_friction": 0.09,
             "shock_prob": 0.016,
         },
     }

@@ -82,11 +82,18 @@ population rebuild (B32) and the loan-booking fix (B34).
 
 ### B21 · The intermediate arrears bands are thin · `MINOR` · Marc
 
+**Closed by D18 (2026-11-09).** Under the arrears rule the 31-60 and 61-90 bands are 4.50% and
+2.54% against 3.59% and 2.32% (`calibration.json`). The text below describes 6b0a4c7.
+
 31 to 60 days and 61 to 90 days sit near 1% against 3.6% and 2.3% in the CCMR; the profile is
 too concentrated in brief and persistent arrears. Reported as a miss in Section 3.5 and in the
 RQ1 answer. A third fitted parameter was rejected.
 
 ### B39 · The 90+ band is a rising stock · `MAJOR` · Marc
+
+**Closed by D18 (2026-11-09).** With initial arrears and the derived write-off, 90+ averages
+14.08% after burn-in and is 13.84% at the final tick. The text below describes the rule before
+the labour-flows rebuild; its figures are stale.
 
 New 2026-10-06. Nothing is written off, so every uncured account accumulates in the 90+ band: at
 the fitted values it averages 14.48% after burn-in but reaches 19.9% at the final tick. The fit
@@ -117,6 +124,17 @@ under the "+25%" and "credit pays committed shortfall first" rules, or over 104 
 aggregate limit, which would separate platforms not seeing one another from extra capacity;
 (d) refitting the shock rate on another window and the effects at the QLFS upper bound.
 (a) and (c) are the likeliest viva questions. The thesis states each gap (Sections 4.2, 5 and 6).
+
+### B44 · The arrears rule adds two assumptions and one fitted parameter · `MAJOR` · Marc
+
+New 2026-11-09 (D18). (1) Initial arrears are placed on the least able households by a
+deterministic ranking, and 120+ ages are drawn over 9-26 ticks; no source gives which
+households were in arrears in 2017. (2) A defaulted account is non-performing: the model has no
+collections, debt review or partial recovery. (3) Arrears persistence (0.72) is fitted, so the
+model now has two fitted parameters and five targeted bands; agreement on those bands is not
+evidence. The write-off rate is derived from the CCMR, not fitted, but it assumes the 2017
+profile is a steady state. CCMR shares are of accounts, applied to households (B5). Disclose in
+Sections 3.4 and 3.5 and the limitations index (#95).
 
 ### B7 · Behavioural parameters are imported from the United States · `MINOR` · Marc
 

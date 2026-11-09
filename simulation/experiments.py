@@ -31,7 +31,7 @@ from __future__ import annotations
 import argparse
 
 from .batch import replicate, run_batch, save
-from .config import BNPL_PURCHASE_SHARE_OF_DISCRETIONARY, ParamSet
+from .config import ARREARS_RULE, BNPL_PURCHASE_SHARE_OF_DISCRETIONARY, ParamSet
 
 # ---------------------------------------------------------------------------
 # The calibrated baseline (revised 2026-10-12, calibrate.py):
@@ -59,7 +59,11 @@ from .config import BNPL_PURCHASE_SHARE_OF_DISCRETIONARY, ParamSet
 EARLIER_FITTED_SHOCK_PROB = 0.016
 #: shock_exit_prob x jobseekers / earners for the 5,000-agent population; asserted in tests.
 DERIVED_SHOCK_PROB = 0.00446
-FITTED_PAYMENT_FRICTION = 0.09
+#: Refitted 2026-11-09 under the arrears rule (D18, issue #93): friction and arrears
+#: persistence jointly, by minimum distance to the five CCMR arrears bands
+#: (results/summary/calibration.json). The streak rule's friction was 0.09.
+FITTED_PAYMENT_FRICTION = 0.0575
+FITTED_ARREARS_PERSISTENCE = 0.72
 
 #: kappa as derived from IES 2022/23. Held here so the robustness grid centres on the
 #: derived value rather than on a number typed twice.
@@ -67,12 +71,17 @@ PURCHASE_RATIO = BNPL_PURCHASE_SHARE_OF_DISCRETIONARY
 
 
 def calibrated(**kw) -> ParamSet:
-    return ParamSet(
-        shock_prob=DERIVED_SHOCK_PROB,
-        labour_flows=True,
-        payment_friction=FITTED_PAYMENT_FRICTION,
+    """The baseline: labour flows, the derived separation rate, the fitted friction, and
+    (from 2026-11-09, D18) the arrears distress rule with CCMR initial arrears. Any
+    keyword overrides, so `distress_rule="streak"` recovers the 6b0a4c7 rule."""
+    return ParamSet(**{
+        "shock_prob": DERIVED_SHOCK_PROB,
+        "labour_flows": True,
+        "payment_friction": FITTED_PAYMENT_FRICTION,
+        "arrears_persistence": FITTED_ARREARS_PERSISTENCE,
+        **ARREARS_RULE,
         **kw,
-    )
+    })
 
 
 #: beta = 0 first and always. The control arm.

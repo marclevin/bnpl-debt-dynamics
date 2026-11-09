@@ -1,23 +1,50 @@
 {
+  "rule": "arrears (D18, 2026-11-09)",
   "derived_shock_prob": 0.00446,
   "shock_exit_prob": 0.018724,
+  "derived_write_off_rate": 0.0707,
   "labour_flows": true,
-  "fitted_payment_friction": 0.09,
-  "objective_column": "active_90_plus_mean",
-  "objective_value": 0.09099035541630147,
-  "objective_sd": 0.0028523566267249366,
+  "fitted_payment_friction": 0.0575,
+  "fitted_arrears_persistence": 0.72,
+  "targets": [
+    "d30",
+    "d31_60",
+    "d61_90",
+    "d91_120",
+    "d120_plus"
+  ],
+  "fit_error_points": 0.9783847390087925,
+  "ccmr_bands": {
+    "current": 0.7162999999999999,
+    "d30": 0.0824,
+    "d31_60": 0.0359,
+    "d61_90": 0.0232,
+    "d91_120": 0.0176,
+    "d120_plus": 0.1245
+  },
   "target_90_plus": 0.1421,
-  "target_d30": 0.0824,
-  "fitted_d30": 0.08273508351261402,
+  "model_bands": {
+    "current": 0.708657201183626,
+    "d30": 0.08011715617284179,
+    "d31_60": 0.045000128039365345,
+    "d61_90": 0.025378468560777266,
+    "d91_120": 0.015932059771861955,
+    "d120_plus": 0.12491498627152771
+  },
+  "objective_value": 0.14084704604338966,
+  "objective_sd": 0.005765362328192402,
+  "fitted_d30": 0.08011715617284179,
   "unfitted": {
-    "active_90_plus": 0.09099035541630147,
-    "active_d31_60": 0.0038949851358690084,
-    "active_d61_90": 0.004050888275751418,
-    "active_60_plus": 0.09504124369205288,
-    "active_current": 0.8183286876594641,
-    "all_households_90_plus": 0.03736075,
-    "default_rate": 0.06049575,
-    "zero_savings_rate": 0.203995
+    "active_90_plus": 0.14084704604338966,
+    "active_90_plus_final": 0.13840922870256298,
+    "active_d61_90": 0.025378468560777266,
+    "active_d91_120": 0.015932059771861955,
+    "active_d120_plus": 0.12491498627152771,
+    "active_current": 0.708657201183626,
+    "default_rate": 0.20587,
+    "new_default_rate": 0.14227,
+    "initial_default_rate": 0.0636,
+    "consumption_distress": 0.034405000000000005
   },
   "qlfs_band": {
     "lower": 0.005447,
@@ -25,7 +52,8 @@
   },
   "replicates": 20,
   "earlier_fit": {
-    "note": "Before 2026-10-12 p was fitted to the 90+ band without labour flows: 0.016.",
+    "note": "Streak rule, all households current at t=0: friction 0.09 fitted to 1-30 (2026-10-12); before that p fitted to 90+ (0.016).",
+    "payment_friction": 0.09,
     "shock_prob": 0.016
   }
 }
