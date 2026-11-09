@@ -46,7 +46,7 @@ recession that did not occur, so the fit was dropped.
 \label{app:gate}
 
 The lender uses a simplified residual-income test based on the Regulation 23A expense norms
-\cite{sa_ncr_affordability_2015}. It grants credit when household income, less the expense
+\citep{sa_ncr_affordability_2015}. It grants credit when household income, less the expense
 norm and visible existing obligations, covers the new instalment.
 Income is the amount observed in the survey, which the model does not reduce during a spell of
 unemployment.
@@ -70,8 +70,8 @@ across the population the applied ceiling spans zero to 93.2\% of income, with a
 Households act in random asynchronous order, reseeded every tick. The peer channel of Submodel~11
 is activation-order independent by construction, since it reads the reference-group adoption share
 lagged one tick, so every household within a tick sees the same settled share regardless of when it
-acts. Comer and Loerch \cite{comer2013activation} and Alizadeh and Cioffi-Revilla
-\cite{alizadeh2015activation} find population behaviour sensitive to the activation regime, so the
+acts. Comer and Loerch~\citeyearpar{comer2013activation} and Alizadeh and Cioffi-Revilla
+\citeyearpar{alizadeh2015activation} find population behaviour sensitive to the activation regime, so the
 model is also run under a fixed order, the same every tick: default changes by $+0.17 \pm 0.11$
 points (Table~\ref{tab:robustness-appendix}).
 
@@ -201,7 +201,7 @@ scenarios of Section~\ref{sec:scenarios}, with twenty replicates and their own b
 \ac{BNPL} purchases for $k^{\text{cool}}$ ticks after a want-driven purchase. One tick matches the
 fourteen-day right of withdrawal under section 66A of the United Kingdom's Consumer Credit Act
 1974, which the \ac{FCA} confirms applies to regulated deferred payment credit
-\cite{fca_ps26_1}, although that
+\citep{fca_ps26_1}, although that
 right cancels an agreement and does not block the next one. It does not
 block borrowing for a shortfall. The second is a cap on the number of platforms a household
 may owe, which no jurisdiction we found imposes and which is therefore hypothetical. Both are judged on cumulative \ac{BNPL} volume as well as
@@ -287,7 +287,7 @@ be separately identified, which requires a more elaborate design than a single c
 injection.
 
 \textbf{Competition among traditional lenders.} The traditional side is one non-adaptive lender.
-Hamill et al.\ \cite{hamill2023creditcard} find, in a model of the United Kingdom card market, that longer interest-free promotions
+Hamill et al.~\citeyearpar{hamill2023creditcard} find, in a model of the United Kingdom card market, that longer interest-free promotions
 raise card balances, so a competing, adapting traditional sector could add a driver of
 indebtedness that this model holds fixed. In their model the share of accounts with missed
 payments did not rise, so the channel is balance growth and not default.

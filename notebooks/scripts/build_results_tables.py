@@ -198,7 +198,7 @@ def tab_arrears_fit() -> None:
         "tab_arrears_fit",
         "Baseline arrears profile: model and \\ac{CCMR}",
         "\\ac{CCMR}: share of unsecured and credit-facility accounts by days in arrears, first "
-        "quarter of 2017 \\cite{ncr_ccmr_2017}. Model: share of credit-active households (those "
+        "quarter of 2017~\\citep{ncr_ccmr_2017}. Model: share of credit-active households (those "
         "owing traditional or \\ac{BNPL} debt or arrears), by the age of the oldest unpaid "
         "instalment, \\ac{BNPL} disabled, averaged over the post-burn-in "
         f"ticks; seeds {num(fit.seed.min())}--{num(fit.seed.max())}. The run starts from the "
@@ -246,7 +246,7 @@ def tab_stacking(rq1: pd.DataFrame) -> None:
         "tick that owe two or more platforms. Ever-holders: share of households that ever held "
         "\\ac{BNPL} that owed two or more platforms at some tick; the \\ac{CFPB} reports that 32 to 33\\% "
         "of United States borrowers in a year held simultaneous loans at two or more firms, an "
-        "undercount by its own account \\cite{cfpb2025bnpl}. "
+        "undercount by its own account~\\citep{cfpb2025bnpl}. "
         "Volume: cumulative post-burn-in \\ac{BNPL} lending. Replicate standard deviations of default "
         f"are at most {sd_def * 100:.2f} points. Default with six platforms less one: "
         f"{pm(d0, se0)} points at $\\beta = 0$ and {pm(d1, se1)} at $\\beta = 0.3$.",
@@ -398,23 +398,23 @@ def tab_bnpl_on_checks(rq0: pd.DataFrame) -> None:
                   f"Not reproduced: peak in {peak}, {second} second")
     rows = [
         group_row("Behavioural patterns", 4),
-        f"1. Traditional arrears rise \\cite{{dehaan2024bnpl}} & Rise & {pmb(d_arr0, se_arr0)}; "
+        f"1. Traditional arrears rise~\\citep{{dehaan2024bnpl}} & Rise & {pmb(d_arr0, se_arr0)}; "
         f"{pmb(d_arr1, se_arr1)} pp & {verdict(((d_arr0, se_arr0), (d_arr1, se_arr1)))} \\\\",
-        f"1. Traditional interest rises \\cite{{dehaan2024bnpl}} & Rise & "
+        f"1. Traditional interest rises~\\citep{{dehaan2024bnpl}} & Rise & "
         f"{pmb(r_int0, r_int0_se, 1)}; {pmb(r_int1, r_int1_se, 1)}\\% & "
         f"{verdict(((r_int0, r_int0_se), (r_int1, r_int1_se)))} \\\\",
-        f"3. Debt-to-income peaks mid-distribution \\cite{{hamill2023creditcard}} & Peak in Q2--Q4 & "
+        f"3. Debt-to-income peaks mid-distribution~\\citep{{hamill2023creditcard}} & Peak in Q2--Q4 & "
         f"{peak} {dti[peak]:.2f}; {second} {dti[second]:.2f} & {p3_reading} \\\\",
-        f"4. Households without savings \\cite{{transunion_cps_sa_2025}} & 36\\% expect to miss a payment & "
+        f"4. Households without savings~\\citep{{transunion_cps_sa_2025}} & 36\\% expect to miss a payment & "
         f"{pct(zs_off, 1)}\\% & Same order \\\\",
         group_row("\\ac{BNPL} market", 4),
-        f"Owing two or more providers at once \\cite{{cfpb2025bnpl}} & 32--33\\% of borrowers in a year & "
+        f"Owing two or more providers at once~\\citep{{cfpb2025bnpl}} & 32--33\\% of borrowers in a year & "
         f"{pct(ev0, 1)}\\% of ever-holders & Close; different market \\\\",
-        f"Annual volume per eligible household \\cite{{weaver2025iar}} & {rand(lo_vol)}--{rand(hi_vol)} & "
+        f"Annual volume per eligible household~\\citep{{weaver2025iar}} & {rand(lo_vol)}--{rand(hi_vol)} & "
         f"{rand(N['vol_per_eligible_year'])} & {band(N['vol_per_eligible_year']).capitalize()} \\\\",
-        f"Annual volume per ever-holder \\cite{{weaver2025iar}} & {rand(lo_vol)}--{rand(hi_vol)} & "
+        f"Annual volume per ever-holder~\\citep{{weaver2025iar}} & {rand(lo_vol)}--{rand(hi_vol)} & "
         f"{rand(N['vol_per_adopter_year'])} & {band(N['vol_per_adopter_year']).capitalize()} \\\\",
-        f"Mean purchase \\cite{{weaver2025iar}} & {rand(target)} & {rand(mp0)} & "
+        f"Mean purchase~\\citep{{weaver2025iar}} & {rand(target)} & {rand(mp0)} & "
         f"{abs(gap0) * 100:.0f}\\% {'low' if gap0 < 0 else 'high'} \\\\",
     ]
     table(
@@ -426,7 +426,7 @@ def tab_bnpl_on_checks(rq0: pd.DataFrame) -> None:
         "is total debt over total monthly income in each quintile. The volume band runs from the "
         "provider's volume per signed-up customer to its volume per active customer, in 2017 Rands. "
         "The provider's 2024 report gives average spending of R7{,}000 per customer, about R5{,}000 in "
-        "2017 Rands and above the band \\cite{homechoice2024ir}, so the band's top is uncertain. "
+        "2017 Rands and above the band~\\citep{homechoice2024ir}, so the band's top is uncertain. "
         "The purchase target divides gross merchandise value by transaction count. Pattern~1: "
         "deHaan et al.\\ measure card late fees and interest; the model's counterpart to late fees is traditional arrears. Pattern~2, "
         "the calibration target, is in Table~\\ref{tab:arrears-fit}.",

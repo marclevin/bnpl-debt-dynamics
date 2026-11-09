@@ -31,6 +31,12 @@
 % --- references and acronyms ------------------------------------------------
 \usepackage{caption}
 \usepackage{xurl}           % long bibliography URLs break across lines
+% Harvard (author-date) citations, supervisor feedback item 4 (#103). natbib sorts
+% multi-key citations into reference-list order; agsm is the Harvard-family style.
+\usepackage[round,sort]{natbib}
+\setcitestyle{aysep={,}}
+% natbib typesets agsm URLs with \textit, which breaks on % and _; read them with \url.
+\renewcommand{\harvardurl}{Available at:~\url}
 \usepackage{hyperref}
 \usepackage[printonlyused]{acronym}
 
@@ -107,8 +113,8 @@ Screening \ac{BNPL} requests with the same test lowers default by 0.9 to 1.0 poi
 
 This study is a secondary analysis of licensed survey microdata. \ac{NIDS} Wave 5
 is produced by the Southern Africa Labour and Development Research Unit at the
-University of Cape Town and distributed by DataFirst \cite{nids_w5_2018}; the 2019
-\ac{FinScope} is produced by FinMark Trust \cite{finscope2019}. Both are used under
+University of Cape Town and distributed by DataFirst~\citep{nids_w5_2018}; the 2019
+\ac{FinScope} is produced by FinMark Trust~\citep{finscope2019}. Both are used under
 their access conditions, and no respondent is identifiable in the data or the
 results. The simulation code, the constructed population and the scripts that
 generate every table and figure are submitted with this thesis. The simulations were run in
@@ -167,7 +173,7 @@ version. The results are those of the commit tagged in the code release.
 % BACK MATTER
 % ============================================================================
 
-\bibliographystyle{plainurl}
+\bibliographystyle{agsm}
 \bibliography{main}
 
 \appendix
