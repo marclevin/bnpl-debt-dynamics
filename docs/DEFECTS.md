@@ -154,7 +154,7 @@ aggregate limit, which would separate platforms not seeing one another from extr
 (d) refitting the shock rate on another window and the effects at the QLFS upper bound.
 (a) and (c) are the likeliest viva questions. The thesis states each gap (Sections 4.2, 5 and 6).
 
-### B45 · The Sobol default indices are noise-dominated under the arrears rule · `MAJOR` · agent
+### B45 · The Sobol default indices are noise-dominated under the arrears rule · `MAJOR` · agent · RESOLVED
 
 New 2026-11-09. With 2 replicates per design point, the first-order indices for default are near zero
 for every parameter but the separation rate (0.67) and the total-order indices are about 0.4 for all
@@ -164,6 +164,14 @@ point before Table 22 is quoted, or report only the ranking. **Disclosed 2026-11
 4.5 and Appendix C (`app:sensitivity`) read only the separation-rate ranking and call the default
 indices provisional; the separation rate's direction is given (default 21.3% in the lowest fifth of
 its swept range, 22.3% in the highest; `sobol_runs.parquet`). Rerun is #104.
+
+**Resolved 2026-11-10 (#104):** rerun at 8 replicates per point (16,384 runs). Replicate noise fell
+from 37% to 14% of the variance of default across design points. The separation rate's first-order
+index is 0.84 ± 0.15; the other five have first-order indices indistinguishable from zero and
+total-order indices of 0.12–0.14, equal to the noise share, so none moves default detectably.
+`sensitivity.py` now writes the noise share and default by separation-rate fifth to
+`sobol_indices.json`, the table note reports the noise share, and `check_results_tables.py` checks
+the prose numbers. Section 4.5 and Appendix C no longer call the indices provisional.
 
 ### B44 · The arrears rule adds two assumptions and one fitted parameter · `MAJOR` · Marc
 

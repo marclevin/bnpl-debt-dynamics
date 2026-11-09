@@ -4,19 +4,19 @@
 \centering
 \caption{Sobol indices for the population default rate and \ac{BNPL} holding}
 \label{tab:sobol}
-\tabnote{First-order ($S_1$) and total-order ($S_T$) indices with 95\% bootstrap half-widths; Saltelli design, 256 base samples, 4{,}096 runs, \ac{BNPL} enabled. The indices apportion the variance of the \emph{level} of each outcome across the ranges shown; they do not decompose the \ac{BNPL} effect. Values outside zero to one are bootstrap noise.}
+\tabnote{First-order ($S_1$) and total-order ($S_T$) indices with 95\% bootstrap half-widths; Saltelli design, 256 base samples, 16{,}384 runs, \ac{BNPL} enabled. The indices apportion the variance of the \emph{level} of each outcome across the ranges shown; they do not decompose the \ac{BNPL} effect. Each design point is the mean of 8 replicates; replicate noise is 14\% of the variance of default across points and enters every $S_T$, so a default $S_T$ near 0.14 is noise. Values outside zero to one are bootstrap noise.}
 \begingroup\setlength{\tabcolsep}{4pt}\footnotesize
 \begin{tabular}{L{3.8cm}c rr rr}
 \toprule
 & & \multicolumn{2}{c}{Default rate} & \multicolumn{2}{c}{Holding} \\ \cmidrule(lr){3-4}\cmidrule(lr){5-6}
 \textbf{Parameter} & \textbf{Range} & \textbf{$S_1$} & \textbf{$S_T$} & \textbf{$S_1$} & \textbf{$S_T$} \\
 \midrule
-$q_{\text{base}}$ (Submodel 11) & 0.01--0.30 & $-0.04 \pm 0.10$ & $0.41 \pm 0.07$ & $0.90 \pm 0.15$ & $0.91 \pm 0.12$ \\
-$\beta$ (Submodel 11) & 0--0.3 & $-0.06 \pm 0.11$ & $0.44 \pm 0.08$ & $0.10 \pm 0.05$ & $0.11 \pm 0.02$ \\
-minimum-payment fraction (Submodel 6) & 0.025--0.10 & $0.12 \pm 0.11$ & $0.38 \pm 0.08$ & $0.00 \pm 0.01$ & $0.00 \pm 0.00$ \\
-$\kappa$ (Submodel 4) & 0.07--0.28 & $0.11 \pm 0.12$ & $0.44 \pm 0.07$ & $0.00 \pm 0.01$ & $0.00 \pm 0.00$ \\
-$\lambda$ (Submodel 12) & 0.10--1.00 & $0.00 \pm 0.10$ & $0.41 \pm 0.09$ & $0.00 \pm 0.01$ & $0.00 \pm 0.00$ \\
-separation rate (Submodel 1, derived) & 0.0013--0.0071 & $0.67 \pm 0.15$ & $1.12 \pm 0.16$ & $0.00 \pm 0.01$ & $0.00 \pm 0.00$ \\
+$q_{\text{base}}$ (Submodel 11) & 0.01--0.30 & $0.01 \pm 0.06$ & $0.12 \pm 0.02$ & $0.89 \pm 0.17$ & $0.90 \pm 0.13$ \\
+$\beta$ (Submodel 11) & 0--0.3 & $0.06 \pm 0.08$ & $0.14 \pm 0.02$ & $0.11 \pm 0.06$ & $0.10 \pm 0.02$ \\
+minimum-payment fraction (Submodel 6) & 0.025--0.10 & $0.02 \pm 0.07$ & $0.13 \pm 0.03$ & $0.00 \pm 0.00$ & $0.00 \pm 0.00$ \\
+$\kappa$ (Submodel 4) & 0.07--0.28 & $0.04 \pm 0.06$ & $0.12 \pm 0.03$ & $0.00 \pm 0.00$ & $0.00 \pm 0.00$ \\
+$\lambda$ (Submodel 12) & 0.10--1.00 & $0.04 \pm 0.06$ & $0.13 \pm 0.03$ & $0.00 \pm 0.00$ & $0.00 \pm 0.00$ \\
+separation rate (Submodel 1, derived) & 0.0013--0.0071 & $0.84 \pm 0.15$ & $0.97 \pm 0.13$ & $0.00 \pm 0.00$ & $0.00 \pm 0.00$ \\
 \bottomrule
 \end{tabular}
 \endgroup

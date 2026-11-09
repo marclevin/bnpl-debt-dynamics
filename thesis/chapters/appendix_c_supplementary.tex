@@ -258,11 +258,11 @@ purchase or a shortfall loan is refused.
 \label{app:sensitivity}
 
 Table~\ref{tab:sobol} gives a Sobol decomposition of the levels of default and \ac{BNPL}
-holding. With two replicates per design point, replicate noise in default swamps most parameter
-effects: the total-order indices are about 0.4 for every parameter, and only the separation rate
-has a first-order index clearly above zero. The default indices are therefore provisional, and we
-read only that ranking from them; the design would need more replicates per point before the
-other indices could be read. The separation rate is swept from 0.0013 to 0.0071, 0.3 to 1.6 times
+holding. Each design point is the mean of eight replicates. Replicate noise is still 14\% of the
+variance of default across points, and because independent noise enters every total-order index,
+the total-order indices of 0.12 to 0.14 for the five parameters other than the separation rate are
+that noise; their first-order indices do not differ from zero. An earlier run with two replicates
+per point left noise at 37\% of the variance and could give only a ranking. The separation rate is swept from 0.0013 to 0.0071, 0.3 to 1.6 times
 its derived value, and above the derived value employment falls through the run. Holding is set
 almost entirely by $q_{\text{base}}$.
 Table~\ref{tab:robustness-appendix} gives the remaining sensitivity arms, including the

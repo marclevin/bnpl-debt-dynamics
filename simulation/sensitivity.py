@@ -84,6 +84,26 @@ def build_param_sets(sample: np.ndarray, reps: int, base: ParamSet) -> list[Para
     return sets
 
 
+def run_diagnostics(df: pd.DataFrame, reps: int) -> dict:
+    """Replicate-noise share of each output and default by fifth of the separation rate.
+
+    The noise share is the replicate variance of a design-point mean (within-point variance
+    over `reps`) as a share of the variance of the means. Independent noise enters every
+    total-order index, so a parameter whose S_T is near this share has no detectable effect.
+    """
+    g = df.groupby("design")
+    noise = {}
+    for out in OUTPUTS:
+        between = g[out].mean().var()
+        noise[out] = float(g[out].var().mean() / reps / between) if between > 0 else None
+    pts = g.agg(sp=("shock_prob", "first"), y=("new_default_rate_final", "mean"))
+    fifths = pts.groupby(pd.qcut(pts["sp"], 5, labels=False))["y"].mean()
+    return {
+        "replicate_noise_share": noise,
+        "new_default_by_shock_prob_fifth": [float(v) for v in fifths],
+    }
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument(
@@ -151,6 +171,7 @@ def main() -> None:
                 "n_design_points": n_design,
                 "replicates": args.reps,
                 "indices": results,
+                **run_diagnostics(df, args.reps),
             },
             indent=2,
         ),

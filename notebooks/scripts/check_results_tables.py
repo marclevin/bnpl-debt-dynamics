@@ -197,7 +197,7 @@ def check_prose() -> None:
     cont = json.loads((SUMMARY / "contestable_default.json").read_text())
     dc = json.loads((SUMMARY / "defaulter_credit.json").read_text())
     ch = {n: (ROOT / "thesis" / "chapters" / f"{n}.tex").read_text(encoding="utf-8")
-          for n in ("03_calibration", "04_results", "05_policy", "06_conclusion")}
+          for n in ("03_calibration", "04_results", "05_policy", "06_conclusion", "appendix_c_supplementary")}
 
     def pmj(d: dict, key: str, dp: int = 2) -> str:
         return f"{d[key] * 100:+.{dp}f} \\pm {d[key + '_se'] * 100:.{dp}f}"
@@ -229,6 +229,18 @@ def check_prose() -> None:
     expect("ch3 level", ch["03_calibration"], f"about {lvl['ccmr_inflow_91plus_per_year_of_accounts'] * 100:.0f}\\%")
     expect("ch3 level", ch["03_calibration"], f"{lvl['off_defaulted_of_ever_active'] * 100:.1f}\\%")
     expect("ch4 level", ch["04_results"], f"{num['baseline_default'] * 100:.2f}\\%")
+    sobj = json.loads((SUMMARY / "sobol_indices.json").read_text(encoding="utf-8"))
+    shd = next(r for r in sobj["indices"]["default_rate_final"] if r["parameter"] == "shock_prob")
+    others = [r["ST"] for r in sobj["indices"]["default_rate_final"] if r["parameter"] != "shock_prob"]
+    fifths = sobj["new_default_by_shock_prob_fifth"]
+    noise = sobj["replicate_noise_share"]["default_rate_final"]
+    for name in ("04_results", "appendix_c_supplementary"):
+        expect(f"{name} sobol", ch[name], f"{noise * 100:.0f}\\% of the")
+        expect(f"{name} sobol", ch[name], f"{min(others):.2f} to {max(others):.2f}")
+    expect("ch4 sobol", ch["04_results"], f"${shd['S1']:.2f} \\pm {shd['S1_conf']:.2f}$")
+    expect("ch4 sobol", ch["04_results"], f"from {fifths[0] * 100:.1f}\\% in the lowest fifth")
+    expect("ch4 sobol", ch["04_results"], f"to {fifths[-1] * 100:.1f}\\% in the highest")
+    expect("ch3 sobol", ch["03_calibration"], f"Saltelli design & 0--0.3 & {sobj['replicates']} &")
     # Section 4.1 and the RQ2 answer: the pooled effect.
     for c in ("04_results", "06_conclusion"):
         expect(f"{c} pooled", ch[c], unsigned(pmj(num, "beta0_effect_pooled")))

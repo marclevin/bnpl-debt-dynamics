@@ -812,15 +812,19 @@ def tab_sobol() -> None:
     sh = idx["default_rate_final"]["shock_prob"]
     N.update(sobol_shock_s1=sh["S1"], sobol_shock_s1_conf=sh["S1_conf"],
              sobol_bnpl_st_max=max(r["ST"] for p, r in idx["default_rate_final"].items() if p != "shock_prob"),
-             sobol_n=data["n_base_samples"], sobol_runs=data["n_design_points"] * data["replicates"])
+             sobol_n=data["n_base_samples"], sobol_runs=data["n_design_points"] * data["replicates"],
+             sobol_reps=data["replicates"], sobol_noise=data["replicate_noise_share"]["default_rate_final"])
     table(
         "tab_sobol",
         "Sobol indices for the population default rate and \\ac{BNPL} holding",
         f"First-order ($S_1$) and total-order ($S_T$) indices with 95\\% bootstrap half-widths; "
         f"Saltelli design, {data['n_base_samples']} base samples, {num(N['sobol_runs'])} runs, "
         f"\\ac{{BNPL}} enabled. The indices apportion the variance of the \\emph{{level}} of each outcome "
-        f"across the ranges shown; they do not decompose the \\ac{{BNPL}} effect. Values outside "
-        f"zero to one are bootstrap noise.",
+        f"across the ranges shown; they do not decompose the \\ac{{BNPL}} effect. Each design point is the "
+        f"mean of {data['replicates']} replicates; replicate noise is "
+        f"{N['sobol_noise'] * 100:.0f}\\% of the variance of default across points and enters every "
+        f"$S_T$, so a default $S_T$ near {N['sobol_noise']:.2f} is noise. Values outside zero to one are "
+        f"bootstrap noise.",
         "L{3.8cm}c rr rr",
         r"& & \multicolumn{2}{c}{Default rate} & \multicolumn{2}{c}{Holding} \\ \cmidrule(lr){3-4}\cmidrule(lr){5-6}"
         "\n\\textbf{Parameter} & \\textbf{Range} & \\textbf{$S_1$} & \\textbf{$S_T$} & \\textbf{$S_1$} & \\textbf{$S_T$}",

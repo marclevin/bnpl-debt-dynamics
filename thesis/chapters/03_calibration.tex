@@ -44,7 +44,7 @@ the end of at least one of the 52 ticks.
 
 Table~\ref{tab:experiments} lists the experiments. Each arm has twenty replicates, except the
 four scenario arms, which have one hundred because twenty cannot resolve the differences
-between them, the $\beta$ sweep, which has 250, and the variance decomposition, which has two
+between them, the $\beta$ sweep, which has 250, and the variance decomposition, which has eight
 per design point. Every run uses
 the same 5{,}000 households (Section~\ref{sec:resample}). Arms in a block share seeds, so a
 replicate starts from the same draws in every arm, and differences between arms are taken seed
@@ -84,7 +84,7 @@ Access, linear rule & share of banked households eligible, 7 levels & 0--0.3 & 2
 Access, threshold rule & access $\times$ threshold dispersion; threshold mean & -- & 20 & 60{,}000; 61{,}000 & \ref{tab:access} \\
 Level sensitivity & one assumption at a time & 0 & 20 & 50{,}000--59{,}000 & \ref{tab:robustness}, \ref{tab:robustness-appendix} \\
 Effect sensitivity & each assumption, \ac{BNPL} off and on & 0, 0.3 & 20 & 70{,}000 & \ref{tab:effect} \\
-Variance decomposition & six parameters, Saltelli design & 0--0.3 & 2 & 100{,}000 & \ref{tab:sobol} \\
+Variance decomposition & six parameters, Saltelli design & 0--0.3 & 8 & 100{,}000 & \ref{tab:sobol} \\
 Scenarios & bureau visibility $\times$ screening & 0, 0.3 & 100 & 80{,}000 & \ref{tab:scenarios} \\
 Further levers & cooling-off window; platform cap & 0, 0.3 & 20 & 40{,}000; 43{,}000 & \ref{tab:cooloff}, \ref{tab:cap} \\
 \bottomrule
