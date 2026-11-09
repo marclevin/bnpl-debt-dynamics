@@ -2,8 +2,7 @@
 \label{app:pseudo-main}
 
 The main loop runs for $T$ ticks. Within a tick, households act in a random order redrawn every
-tick; the peer signal is recomputed once, after every household has acted, which is what makes
-Submodel~11 independent of activation order. Algorithm~\ref{alg:main} dispatches the tick.
+tick; the peer signal is recomputed once, after every household has acted. Algorithm~\ref{alg:main} dispatches the tick.
 
 \begin{algorithm}[H]
 \caption{Main simulation}
@@ -20,7 +19,7 @@ Submodel~11 independent of activation order. Algorithm~\ref{alg:main} dispatches
 \end{algorithmic}
 \end{algorithm}
 
-\subsection*{G.1 The household tick}
+\subsection{The Household Tick}\label{app:main-tick}
 
 Algorithm~\ref{alg:tick} is the seven-step sequence of Section~\ref{sec:sequence}, with the step
 numbers of that list marked. Credit is sought at step~4 for the shortfall realised at steps~2
@@ -80,7 +79,7 @@ The arrears age $\alpha_i$ maps onto the \ac{CCMR} bands of Table~\ref{tab:arrea
 14-day tick: one to two ticks is 1--30 days, three to four is 31--60, five to six is 61--90,
 seven to eight is 91--120, and nine or more is 120+.
 
-\subsection*{G.2 Credit applications and the Regulation 23A gate}
+\subsection{Credit Applications and the Regulation 23A Gate}\label{app:main-gate}
 
 Algorithm~\ref{alg:gate} is the shortfall path of Submodels~3 to~5 and~9. The household asks
 for the amount Submodel~4 specifies and takes \ac{BNPL} first where it can, up to $\kappa$ times
@@ -135,15 +134,15 @@ and repeated borrowing limits itself.
 \end{algorithmic}
 \end{algorithm}
 
-\subsection*{G.3 \ac{BNPL} origination and platform routing}
+\subsection{\texorpdfstring{\acs{BNPL}}{BNPL} Origination and Platform Routing}\label{app:main-bnpl}
 
 Algorithm~\ref{alg:bnpl} covers the want-driven purchase of Submodels~3 and~4 and the routing
 of any \ac{BNPL} request across platforms that cannot see one another (Submodels~12 and~13).
 The platform's screen is a per-order cap and a rolling limit expressed in receivable terms.
 The line marked screening applies the Regulation 23A test to the origination itself and is on
 only in the screening arms. The test is shown the household's traditional service and $o_i$, one
-instalment for each live \ac{BNPL} agreement on every platform plus any arrears, whether or not the
-bureau switch is on. A request goes to the platforms in a random order, redrawn for every request,
+instalment for each live \ac{BNPL} agreement on every platform plus any arrears, whether or not
+bureau visibility is on. A request goes to the platforms in a random order, redrawn for every request,
 and whatever one platform does not finance passes to the next. No rule assigns a household a
 number of platforms. A robustness arm, $\mathbb{1}^{\text{loyal}}$, tries the platforms the
 household already owes first, so it spreads across platforms only when a limit binds. The hypothetical cap $\bar n$ counts the platforms on which the household owes a
@@ -188,7 +187,7 @@ it may open at most $\bar n - n^{\text{owed}}_i$ further platforms in one reques
 \end{algorithmic}
 \end{algorithm}
 
-\subsection*{G.4 \ac{BNPL} collection, late fees and cut-off}
+\subsection{\texorpdfstring{\acs{BNPL}}{BNPL} Collection, Late Fees and Cut-Off}\label{app:main-collect}
 
 Algorithm~\ref{alg:collect} is Submodel~14. Nothing is collected on an agreement in the tick
 in which it is opened, because its first instalment was the checkout payment. From the next tick
@@ -225,11 +224,10 @@ is cut off by that platform only.
 \end{algorithmic}
 \end{algorithm}
 
-\subsection*{G.5 The peer signal}
+\subsection{The Peer Signal}\label{app:main-peer}
 
 Algorithm~\ref{alg:peer} is Submodel~11. The group share is computed once per tick from
-end-of-tick balances and read by every household in the next tick, so no household's decision
-depends on the order in which its group acted. With \ac{BNPL} disabled the signal is identically
+end-of-tick balances and read by every household in the next tick. With \ac{BNPL} disabled the signal is identically
 zero and the channel is inert, which is why the calibration baseline is untouched by it.
 
 \begin{algorithm}[H]

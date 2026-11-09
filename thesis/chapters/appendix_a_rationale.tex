@@ -7,7 +7,7 @@ The model's rules (Section~\ref{sec:model}) were chosen over the following alter
 
 \textbf{Statistical fusion of \ac{NIDS} and \ac{FinScope}.} A hot-deck or model-based fusion would
 recover finer joint structure between the two instruments than copying flags within an
-income-quintile-by-province cell, at the cost of its own validation burden and a real risk of
+income-quintile-by-province cell, at the cost of its own validation burden and a risk of
 fitting the idiosyncrasies of two surveys rather than the population behind them. The cell match
 reproduces the weighted within-cell distribution of flag combinations, which is what the servicing
 construction needs.
@@ -20,16 +20,17 @@ the 2017 anchor is independently required by the counterfactual injection design
 \subsection{Household Decision Rules}
 
 \textbf{A propensity-to-consume or buffer-stock consumption rule (Submodel~2).} Both require a
-calibrated propensity for which no South African estimate exists, and both discard the
+calibrated propensity, and we located no South African estimate suited to a fortnightly household
+rule; both also discard the
 committed-versus-discretionary expenditure split already observed in the survey data.
 
 \textbf{Cost ranking as the lender-choice rule (Submodel~5).} \ac{BNPL} is nominally
-interest-free, so a cost ranking would also send a shortfall to \ac{BNPL} first, but would
-attribute the choice to price. In the one experiment on the choice, \ac{BNPL} was interest-free and the card charged 24.99\%
-a year, so price is not ruled out, although the authors argue that neither option was clearly
-cheaper \cite{ackert2025bnpl}. For groceries, the one necessity, participants chose the two
-equally often, so the experiment does not show that \ac{BNPL} comes first for a shortfall. The
-order is therefore assumed, and the model's rule gives it either way.
+interest-free, so a cost ranking would also send a shortfall to \ac{BNPL} first, but it would
+attribute the order to price. The evidence does not support that attribution. In the one
+experiment on the choice, \ac{BNPL} was interest-free and the card charged 24.99\% a year,
+although the authors argue that neither option was clearly cheaper \cite{ackert2025bnpl}. For
+groceries, the one necessity, participants chose the two equally often. We therefore assume the
+order directly and attribute it to no motive.
 
 \textbf{Scheduled amortisation as the sole repayment rule (Submodel~6).} Keys and Wang
 \cite{Keys2019} find that 29\% of credit-card accounts regularly pay at or near the contractual minimum, and
@@ -42,7 +43,7 @@ threshold would be arbitrary, and the \ac{NCA} prescribes none. The model uses M
 test instead, which matches the residual-income basis of the lending gate and which Madeira
 compares with observed default rates in an emerging economy \cite{madeira2018chile}.
 
-\textbf{A continuous present-bias parameter (Submodel~8).} No South African distribution exists
+\textbf{A continuous present-bias parameter (Submodel~8).} We located no South African distribution
 against which to calibrate one, so it would add a free parameter with no discipline. The model
 carries a single binary behavioural type instead, whose share is sourced and swept.
 
@@ -65,14 +66,8 @@ shortfall borrowing had created balances, and never where \ac{BNPL} relieves no 
 additive form of Equation~\ref{eq:peer} lets $q_{\text{base}}$ start adoption and $\beta$ amplify
 it.
 
-\subsection{Environment and Scheduling}
-
-\textbf{Macroeconomic dynamics (Submodel~16).} A common macroeconomic shock could be added to
-both arms, but would require a broader experimental design (Table~\ref{tab:design-concepts}).
+\subsection{Scheduling}
 
 \textbf{Fixed activation order (Submodel~17).} A fixed order would let the same households act
-first in every tick. Little in the model depends on order: there is no shared credit pool for
-early households to exhaust, and every household reads the same lagged peer signal. Random order
-removes the residual dependence, and a fixed-order arm, prompted by Comer and Loerch
-\cite{comer2013activation} and Alizadeh and Cioffi-Revilla \cite{alizadeh2015activation},
-changes default by less than two standard errors (Appendix~\ref{app:activation}).
+first in every tick. A fixed-order arm changes default by less than two standard errors
+(Appendix~\ref{app:activation}).
