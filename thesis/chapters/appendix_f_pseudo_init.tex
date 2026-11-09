@@ -207,7 +207,8 @@ stream.
 \begin{algorithmic}
 \State Draw $H = 5{,}000$ records from the 10{,}841 with replacement, with probability $\propto w_i$ \Comment{offline, seed 20260818}
 \ForAll{drawn records, indexed $i = 1, \ldots, H$}
-    \State Join $y^w_i$ and $n_i$ from the \ac{NIDS} wage field and the employment roster
+    \State Join $y^w_i$, $n_i$ and $j_i$ from the \ac{NIDS} wage field and the employment roster;\quad $h_i(0) \gets 0$
+    \State $\bar w_{q(i)} \gets \chi \times$ median monthly take-home pay of employed adults in quintile $q(i)$ (Part~D.3)
     \State Recompute $\iota_i$, $\tau_i$ and monthly service as in Algorithm~\ref{alg:service}
     \State Scale flows to the tick: $y_i, y^w_i, e^c_i, e^d_i, r_i \gets \chi \times$ monthly value
     \State Keep $Y_i$, $E^d_i$, $\rho_i$ monthly; keep $a_i(0)$ and $D_i(0)$ unscaled
