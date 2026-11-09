@@ -73,7 +73,7 @@ has no South African evidence on either.
 % Routing shares and volumes: stack_*_random_beta*, stack_*_loyal_beta*, volume_*_beta*,
 % results/summary/results_numbers.json (seeds 70,000-70,019).
 
-Default does not change detectably with the routing rule ($+0.00 \pm 0.03$ points at
+Default does not change detectably with the routing rule ($0.00 \pm 0.03$ points at
 $\beta=0$ and $+0.09 \pm 0.06$ at $\beta=1$); differences of about 0.2 points at $\beta=1$
 cannot be excluded. Default does not rise with the number of platforms. Six platforms
 against one change it by $-0.05 \pm 0.06$ points at $\beta=0$ and $-0.15 \pm 0.06$ at
@@ -94,7 +94,7 @@ Appendix~\ref{app:levers}).
 \includegraphics[width=\textwidth]{figures/fig_stacking.png}
 \caption{Stacking and default by platform count}
 \label{fig:stacking}
-\tabnote{(a) Share of all households owing two or more platforms at the final tick. (b) Share of ever-holders who owed two or more platforms at some tick; the dashed line is the \ac{CFPB}'s 32\% for United States borrowers in 2021 \cite{cfpb2025bnpl}. Both shares are zero with one platform. (c) Default rate. Black: $\beta = 0$. Seeds as in Table~\ref{tab:stacking}.}
+\tabnote{(a) Share of all households, not of holders as in Table~\ref{tab:stacking}, owing two or more platforms at the final tick (values in Table~\ref{tab:stacking-full}). (b) Share of ever-holders who owed two or more platforms at some tick; the dashed line is the \ac{CFPB}'s 32\% for United States borrowers in 2021 \cite{cfpb2025bnpl}. Both shares are zero with one platform. (c) Default rate. Black: $\beta = 0$. Error bars: 95\% confidence intervals over 20 replicates. Seeds as in Table~\ref{tab:stacking}.}
 \end{figure}
 
 \subsection{BNPL Access, Peer Influence and Default}
@@ -152,7 +152,7 @@ just above the provider's range (Table~\ref{tab:bnpl-on-checks}).
 \includegraphics[width=\textwidth]{figures/fig_access_default.png}
 \caption{Holding and default against \ac{BNPL} access under two adoption rules}
 \label{fig:access-default}
-\tabnote{Access is the share of banked households eligible for \ac{BNPL}. (a) Default under the linear peer rule, by $\beta$; black: $\beta = 0$. (b) Holding at the final tick and (c) default under the threshold rule with $\gamma = 0.3$, by threshold dispersion $\sigma_\theta$; black: $\gamma = 0$. Changes from zero to full access are in Table~\ref{tab:access}.}
+\tabnote{Access is the share of banked households eligible for \ac{BNPL}. (a) Default under the linear peer rule, by $\beta$; black: $\beta = 0$. (b) Holding at the final tick and (c) default under the threshold rule with $\gamma = 0.3$, by threshold dispersion $\sigma_\theta$; black: $\gamma = 0$. Error bars: 95\% confidence intervals over 20 replicates. Changes from zero to full access are in Table~\ref{tab:access}.}
 \end{figure}
 
 \input{chapters/generated/tab_access}
@@ -217,7 +217,7 @@ do not change default detectably while the \ac{BNPL} share of a shortfall is cap
 \includegraphics[width=\textwidth]{figures/fig_tornado.png}
 \caption{Sensitivity of the population default rate}
 \label{fig:tornado}
-\tabnote{Change in default from each group's reference arm at $\beta = 1$, with 95\% confidence intervals. Hollow markers: assumptions with no empirical estimate. The cap-removed arms are compared with the exact-shortfall reference, not with the same rule capped as in Table~\ref{tab:robustness}. The remaining arms are in Table~\ref{tab:robustness-appendix}.}
+\tabnote{Change in default from each group's reference arm at $\beta = 1$, with 95\% confidence intervals. Hollow markers: assumptions with no empirical estimate. The uncapped arms are compared with the exact-shortfall reference, not with the same rule capped as in Table~\ref{tab:robustness}. The remaining arms are in Table~\ref{tab:robustness-appendix}.}
 \end{figure}
 
 \subsubsection*{What Moves the BNPL Effect}
@@ -239,8 +239,8 @@ $0.51 \pm 0.06$ without the cap. The remaining settings, including loyal routing
 and 0.28 points.
 
 Purchase size is poorly measured. The reference $\kappa$ gives a mean purchase of R616 at $\beta=1$, 38\% below the provider-based figure of
-R992. Two settings, $\kappa=0.28$ and income-based sizing, give mean purchases within that
-figure's tolerance at both values of $\beta$. At $\beta=1$ their effects are 2.5 to 2.7 times
+R992. Two settings, $\kappa=0.28$ and income-based sizing, give mean purchases within 35\% of
+that figure at both values of $\beta$. At $\beta=1$ their effects are 2.5 to 2.7 times
 the reference, but their volume, R19{,}000 to R21{,}000 per eligible household a year, is 4.5 to
 4.9 times the top of the provider's range. At $\beta=0$ their volume is R1{,}564 and
 R1{,}251, near the bottom of that range, and their effects, $+0.02 \pm 0.06$ and
@@ -253,7 +253,7 @@ a tick of committed spending to the amount borrowed, and it is never detectably 
 households borrow rarely, larger purchases have little to act on. The settings share a seed block and
 often a no-\ac{BNPL} arm, so these counts are not independent replicates.
 
-Under the single-tick shock, which also drops labour flows,
+Under the single-tick income shock, which also drops labour flows,
 the effect disappears at both values of $\beta$. That arm lowers default among households whose
 income covers their food and rent from 3.88\% to 1.19\%. It shows that the effect works through
 households in a spell of lost income but does not isolate persistence.
