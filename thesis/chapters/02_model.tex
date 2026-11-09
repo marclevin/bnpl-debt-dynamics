@@ -303,14 +303,13 @@ consumption emulation \cite{cardaci2018inequality} support the channel but do no
 identify its strength, so both parameters are swept. The defaults are
 $q_{\text{base}}=0.05$ and $\beta=0$, the no-peer control.
 
-A Granovetter-style threshold rule provides a structural alternative
-\cite{granovetter1978threshold}. Under this rule, the propensity rises to
-$q_i = \mathrm{clip}(q_{\text{base}} + \gamma,0,1)$ when the lagged group
-share reaches the household's threshold. Thresholds are drawn from
+The alternative is a threshold rule \cite{granovetter1978threshold}: once the lagged group
+share reaches the household's threshold, the propensity rises by a step $\gamma$, to
+$q_i = \mathrm{clip}(q_{\text{base}} + \gamma,0,1)$. Thresholds are drawn from
 $\mathcal{N}(\mu_\theta, \sigma_\theta^2)$, with defaults $\mu_\theta=0.30$ and
 $\sigma_\theta=0.20$, and clipped to $[0,1]$, so households with a negative draw
 respond immediately. The sweeps vary threshold dispersion ($\sigma_\theta$),
-and separate arms vary the mean. Setting $\gamma=0$ removes the threshold response; the threshold arms use $\gamma=0.3$.
+and separate arms vary the mean. The threshold arms use $\gamma=0.3$; $\gamma=0$ removes the response.
 
 \subsubsection*{Submodel 13: Stacking}
 \label{sec:stacking}
