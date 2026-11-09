@@ -202,6 +202,19 @@ is +4.12 pp in Q1 and nowhere else, and why mandatory screening (-4.68 pp in Q1)
 thesis no longer calls the group a survey artefact (#59: no source). Disclosed in Sections 3.5,
 4.1, 4.5, 5 and 6 and the limitations row "Households short from the start". No fix planned.
 
+### B48 · Is the default level plausible? · `MAJOR` · agent · checked, disclosed
+
+New 2026-11-09. Under D18 the baseline default rate is 20.73% of households, against 7.28% under
+6b0a4c7, because 6.36% start in default and the CCMR flow into 91+ days is large. Checked by
+`notebooks/scripts/check_default_level.py` (`results/summary/default_level.json`, rq0 seeds
+10,000-10,019, BNPL off): 0.83% of the credit-active book reaches 91 days per tick against the
+0.82% implied by the CCMR 91-120 band (about 19% a year; consistent, but that band is a target);
+43.7% of ever-credit-active households have defaulted by the end against the CBM's 39.3% of
+credit-active consumers with impaired records (not targeted; the CBM also counts judgments and
+adverse listings, and consumers rather than households). The thesis now reports default during
+the run (14.37%, 7.2% a year) as the level and the starting stock separately (abstract,
+Sections 1, 3.5, 4.1; `tab:baseline-arms`). The BNPL effect is about 7% of default during the run.
+
 ### B7 · Behavioural parameters are imported from the United States · `MINOR` · Marc
 
 **Updated 2026-11-09.** Under the arrears rule the minimum-payer share at 0.20 and 0.40 gives a BNPL
