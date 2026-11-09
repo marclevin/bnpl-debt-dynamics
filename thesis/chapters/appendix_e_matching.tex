@@ -4,7 +4,7 @@
 Figure~\ref{fig:cell-donor} illustrates the procedure, Algorithm~\ref{alg:match} specifies the
 steps, and Table~\ref{tab:notation} defines the notation.
 
-\subsection*{E.1 The procedure}
+\subsection{The Procedure}\label{app:match-procedure}
 
 Both surveys are partitioned by the same two variables, per-capita income quintile $q$ and
 province $p$, into $|\mathcal{C}| = 45$ cells $c = (q, p)$. For each \ac{NIDS} record $i$ with
@@ -24,7 +24,7 @@ and the most-used donor 20 times. Donor reuse is concentrated where \ac{NIDS} is
 recipients drew from 109 donors, and eleven cells have more than three recipients per donor.
 The most-used 1\% of donors supply 5.1\% of recipients.
 
-\subsection*{E.2 Assumptions under which the match is credible}
+\subsection{Assumptions Under Which the Match Is Credible}\label{app:match-assumptions}
 
 \begin{description}
 \item[A1. Cell sufficiency.] Conditional on income quintile and province, the six flags are
@@ -53,7 +53,7 @@ that survey's weighted cell marginals in expectation. Table~\ref{tab:imputation_
 gaps also absorb differences between the two surveys' cell compositions.
 \end{description}
 
-\subsection*{E.3 Circumstances under which the match is problematic}
+\subsection{Circumstances Under Which the Match Is Problematic}\label{app:match-problems}
 
 \begin{description}
 \item[P1. Within-cell heterogeneity.] Anything that predicts inclusion within a cell, such as urban or
@@ -65,7 +65,7 @@ effect are not established by the marginal checks.
 three cells are near the 30-donor floor, and in the densest cells outnumber donors nearly ten
 to one. A heavily reused donor's flag vector is copied to many recipients, which reduces the
 effective sample of flag vectors below the nominal 10{,}841. The 5.1\% concentration figure in
-E.1 is national and does not bound concentration within a cell.
+Appendix~\ref{app:match-procedure} is national and does not bound concentration within a cell.
 \item[P3. Matching-key error.] \ac{FinScope} income is banded and in 2019 Rands, so a donor's
 quintile rests on a band midpoint divided by household size and placed against 2017 cut points.
 Donors therefore do not split evenly into fifths, and misassignment across a quintile boundary
@@ -88,7 +88,7 @@ holding. Copying observed combinations supports plausibility but does not verify
 joint distribution in the recipient population.
 \end{description}
 
-\subsection*{E.4 Which of these would move a result}
+\subsection{Which of These Would Move a Result}\label{app:match-results}
 
 The vintage gap (P5) and the one-adult respondent (P4) can change the eligibility ceiling and
 adoption levels, in opposite directions.
@@ -102,7 +102,7 @@ reproduces relationships that were not observed.
 A statistical fusion on more matching variables would relax A1; Appendix~\ref{app:rationale}
 gives why we did not use it.
 
-\subsection*{E.5 Fidelity of the match and the resample}
+\subsection{Fidelity of the Match and the Resample}\label{app:match-fidelity}
 
 Table~\ref{tab:imputation_errors} and Figure~\ref{fig:inclusion-fidelity} compare the imputed
 indicators with their \ac{FinScope} targets, nationally and by quintile.
@@ -113,7 +113,7 @@ Figure~\ref{fig:pop-fidelity} compares the 5{,}000-agent resample with its sourc
 \centering
 \caption{National rates for the six imputed indicators}
 \label{tab:imputation_errors}
-\tabnote{This table compares the national rate of each imputed indicator in three populations: the \ac{FinScope} 2019 target, weighted by its survey weight; the 10{,}841-household synthetic population after matching, weighted by \ac{NIDS} survey weight; and the unweighted 5{,}000-agent resample used in the simulation. The difference column is synthetic less \ac{FinScope}, in percentage points, computed before rounding; the tolerance is 3 percentage points (Table~\ref{tab:validation}). Because the match draws donors within the same quintile-by-province cell in proportion to weight, agreement here is expected by construction: it tests the implementation, not the population's external validity (P6, Section E.3).}
+\tabnote{This table compares the national rate of each imputed indicator in three populations: the \ac{FinScope} 2019 target, weighted by its survey weight; the 10{,}841-household synthetic population after matching, weighted by \ac{NIDS} survey weight; and the unweighted 5{,}000-agent resample used in the simulation. The difference column is synthetic less \ac{FinScope}, in percentage points, computed before rounding; the tolerance is 3 percentage points (Table~\ref{tab:validation}). Because the match draws donors within the same quintile-by-province cell in proportion to weight, agreement here is expected by construction: it tests the implementation, not the population's external validity (P6, Appendix~\ref{app:match-problems}).}
 \begin{tabular}{lrrrr}
 \toprule
 \textbf{Imputed indicator} & \textbf{FinScope 2019} & \textbf{Synthetic} & \textbf{Agents} & \textbf{Difference} \\
@@ -145,7 +145,7 @@ Personal loan    &  2.1 &  2.3 &  2.3 & 0.2 \\
 \tabnote{Each panel compares the unweighted 5{,}000-agent resample, drawn with replacement in proportion to \ac{NIDS} survey weight (seed 20260818) from 3{,}221 unique source records, against the weighted 10{,}841-household source it is drawn from. Panels (a) and (b) cover the per-capita income distribution and its concentration; panels (c) to (f) cover income quintile, household size, province and primary income source, the categorical attributes that gate behaviour and define the reference groups in the simulation. The Kolmogorov--Smirnov distance in (a) is 0.016, the largest categorical deviation across the 24 sub-categories is 1.4 percentage points, and the Gini rises by 0.015, from 0.6514 to 0.6668.}
 \end{figure}
 
-\subsection*{E.6 Construction checks}
+\subsection{Construction Checks}\label{app:match-checks}
 
 Table~\ref{tab:validation} lists the checks that the constructed population reproduces its
 sources.

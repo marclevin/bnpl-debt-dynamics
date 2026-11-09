@@ -109,7 +109,7 @@ $\mathrm{clip}(x, 0, 1)$ & $\min(\max(x, 0), 1)$ & -- \\
 \end{longtable}
 \endgroup
 
-\subsection*{F.1 The master algorithm}
+\subsection{The Master Algorithm}\label{app:init-master}
 
 Initialisation has four stages, each a sub-algorithm. The first three and the draw of 5{,}000
 records that opens the fourth are the data layer of Section~\ref{sec:population}, run once
@@ -127,7 +127,7 @@ simulation and turns that file into agents. Algorithm~\ref{alg:init} dispatches 
 \end{algorithmic}
 \end{algorithm}
 
-\subsection*{F.2 Build the survey backbone}
+\subsection{Build the Survey Backbone}\label{app:init-backbone}
 
 Algorithm~\ref{alg:backbone} filters the \ac{NIDS} household file and derives the six core
 variables of Section~\ref{sec:backbone}; every rule is specified in Appendix~\ref{app:variables}.
@@ -151,7 +151,7 @@ variables of Section~\ref{sec:backbone}; every rule is specified in Appendix~\re
 \end{algorithmic}
 \end{algorithm}
 
-\subsection*{F.3 Cell-donor match}
+\subsection{Cell-Donor Match}\label{app:init-match}
 
 Algorithm~\ref{alg:match} is the procedure of Appendix~\ref{app:matching}. The quintile-only
 fallback exists for completeness and was never triggered.
@@ -174,10 +174,10 @@ fallback exists for completeness and was never triggered.
 \end{algorithmic}
 \end{algorithm}
 
-\subsection*{F.4 Construct debt service}
+\subsection{Construct Debt Service}\label{app:init-service}
 
 Algorithm~\ref{alg:service} converts the debt stock to a capped monthly flow
-(Appendix~\ref{app:variables}, Part~D.9). The function $\rho$ is the same one the lender applies
+(Appendix~\ref{app:var-servicing}). The function $\rho$ is the same one the lender applies
 in Algorithm~\ref{alg:gate}.
 
 \begin{algorithm}[H]
@@ -194,7 +194,7 @@ in Algorithm~\ref{alg:gate}.
 \end{algorithmic}
 \end{algorithm}
 
-\subsection*{F.5 Resample and instantiate}
+\subsection{Resample and Instantiate}\label{app:init-resample}
 
 Algorithm~\ref{alg:resample} draws the agent population and sets every state variable to its
 opening value. Eligibility and the repayment archetype are the two stochastic endowments drawn
@@ -208,7 +208,7 @@ stream.
 \State Draw $H = 5{,}000$ records from the 10{,}841 with replacement, with probability $\propto w_i$ \Comment{offline, seed 20260818}
 \ForAll{drawn records, indexed $i = 1, \ldots, H$}
     \State Join $y^w_i$, $n_i$ and $j_i$ from the \ac{NIDS} wage field and the employment roster;\quad $h_i(0) \gets 0$
-    \State $\bar w_{q(i)} \gets \chi \times$ median monthly take-home pay of employed adults in quintile $q(i)$ (Part~D.3)
+    \State $\bar w_{q(i)} \gets \chi \times$ median monthly take-home pay of employed adults in quintile $q(i)$ (Appendix~\ref{app:var-employed})
     \State Recompute $\iota_i$, $\tau_i$ and monthly service as in Algorithm~\ref{alg:service}
     \State Scale flows to the tick: $y_i, y^w_i, e^c_i, e^d_i, r_i \gets \chi \times$ monthly value
     \State Keep $Y_i$, $E^d_i$, $\rho_i$ monthly; keep $a_i(0)$ and $D_i(0)$ unscaled

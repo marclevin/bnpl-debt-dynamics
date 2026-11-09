@@ -1,7 +1,7 @@
 \section{Model Specification: Design Concepts and Parameter Register}
 \label{app:specification}
 
-\subsection*{B.1 Design concepts and exclusions}
+\subsection{Design Concepts and Exclusions}\label{app:design-concepts}
 
 Table~\ref{tab:design-concepts} gives the model's treatment of the eleven \ac{ODD} design concepts and the eight mechanisms it excludes by design.
 
@@ -44,7 +44,7 @@ Observation & Tracked per tick: population default rate; the \ac{CCMR} arrears d
 Exclusions & Eight mechanisms are excluded by design. \emph{No macroeconomic dynamics}: holding the environment fixed isolates the injection effect under baseline conditions. \emph{No contagion}: one aggregate lender with no balance sheet that can fail, and no feedback from household default to income, so default cannot spread through these channels. \emph{No competition among traditional lenders}, which suppresses the lender-conduct mechanism of Hamill et al. \emph{No learning and no scarring}. \emph{No peer effects on consumption}: peer influence acts only on \ac{BNPL} adoption. \emph{Static household composition}. \emph{No credit scores or risk pricing}: bureau visibility acts only through the Regulation 23A test. \emph{No other source of credit}: a household that the lender refuses has no informal or alternative lender. & \cite{hamill2023creditcard, cardaci2018inequality} \\
 \end{longtable}
 
-\subsection*{B.2 Parameter register}
+\subsection{Parameter Register}\label{app:register}
 
 Table~\ref{tab:param-register} gives every parameter with its value, provenance and sweep range.
 It was generated from the parameter declarations in \texttt{simulation/config.py} by

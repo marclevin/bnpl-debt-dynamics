@@ -41,7 +41,7 @@ SUBMODEL = {
 REGISTER: dict[str, tuple[str, str]] = {
     "n_ticks": (r"A 24-month horizon at a 14-day tick (Section~\ref{sec:sim-params}).", ""),
     "burn_in": (r"Arrears, savings and volume measures exclude the first 12 ticks; default is counted from the first tick (Section~\ref{sec:sim-params}).", ""),
-    "n_agents": (r"The full resampled population of 5{,}000 (Appendix~\ref{app:variables}, Part~D.10).",
+    "n_agents": (r"The full resampled population of 5{,}000 (Appendix~\ref{app:var-resample}).",
                  r"1{,}000 / 5{,}000 / 10{,}000"),
     "labour_flows": (r"Every employed member separates at \texttt{shock\_prob} and every unemployed member, including members strictly unemployed on the \ac{NIDS} roster at the start, finds work at \texttt{shock\_exit\_prob}. A hired jobseeker brings the median \ac{NIDS} take-home pay of employed adults in the household's income quintile. Expected employment is then constant.",
                      r"off reproduces the earlier rule, in which only members employed at the start can lose and regain work"),
@@ -162,7 +162,7 @@ def main() -> None:
         r"Provenance: sourced = a citation, statute or stated convention fixes the value; derived = the value is computed from",
         r"data; fitted = the value is chosen by calibration; assumed = no anchor exists. Rand",
         r"values are 2017 Rands; the three \ac{BNPL} money parameters, Payflex's published late fee and",
-        r"fee cap and the assumed order cap, are set at 2026 prices and deflated once (Appendix~\ref{app:variables}, Part~D.12).} \\",
+        r"fee cap and the assumed order cap, are set at 2026 prices and deflated once (Appendix~\ref{app:var-deflation}).} \\",
         r"\toprule",
         head,
         r"\midrule",
