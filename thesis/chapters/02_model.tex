@@ -125,7 +125,7 @@ Section~\ref{sec:background}.
 \end{tikzpicture}
 \caption{Information structure of the model}
 \label{fig:visibility}
-\tabnote{Boxes represent the five entity types. Solid arrows show the available information flows; dashed connections identify the benchmark's reporting gaps. The bureau excludes \ac{BNPL} unless the reporting switch in Submodel~15 is enabled. Households observe their own accounts and the lagged adoption share $s_g$ of their reference group (Submodel~11).}
+\tabnote{Boxes represent the five entity types. Solid arrows show the available information flows; dashed connections identify the benchmark's reporting gaps. The bureau excludes \ac{BNPL} unless bureau visibility (Submodel~15) is on. Households observe their own accounts and the lagged adoption share $s_g$ of their reference group (Submodel~11).}
 \end{figure}
 
 The traditional lender assesses an application on the household's surveyed gross income
@@ -137,12 +137,12 @@ the informal loans that \ac{NIDS} records, 2.7\% of traditional debt, are carrie
 bureau sees.
 % 2.7%: results/summary/reference_audit_checks.json (notebooks/scripts/check_reference_audit_figures.py).
 
-A switch, $\mathbb{1}^{\text{bur}}$, controls whether \ac{BNPL} obligations enter the
-test. It is off in the benchmark; switching it on represents one channel of the
+A switch, bureau visibility ($\mathbb{1}^{\text{bur}}$), controls whether \ac{BNPL} obligations enter the
+test. Switching it on represents one channel of the
 reporting arrangements of Section~\ref{sec:background}. A second switch,
-$\mathbb{1}^{\text{aff}}$, mandatory screening, applies the same test to each
+mandatory screening ($\mathbb{1}^{\text{aff}}$), applies the same test to each
 \ac{BNPL} request before it reaches a platform. That test sees the household's traditional
-service and its \ac{BNPL} obligations on every platform, whether or not the bureau switch is
+service and its \ac{BNPL} obligations on every platform, whether or not bureau visibility is
 on. No platform could see all of that without bureau reporting, so screening is the most
 complete check a platform could run. It still uses surveyed income.
 
@@ -153,7 +153,7 @@ counted the same way until paid, as if the household owed them again every month
 of a one-off arrear. Traditional arrears enter neither test, which sees only scheduled
 traditional service. Algorithms~\ref{alg:gate} and~\ref{alg:bnpl} give the details.
 
-The bureau switch acts only through the Regulation 23A test. The model has no credit
+Bureau visibility acts only through the Regulation 23A test. The model has no credit
 score and no risk-based pricing, so it cannot represent score-based refusals. This omission
 may matter, given the preliminary score reductions reported by \ac{FINASA}
 \cite{finasa_bnpl_2026}; the final paragraph of Section~\ref{sec:conclusion} discusses it as an extension.
@@ -243,7 +243,7 @@ Table~\ref{tab:submodels} sets out the seventeen submodels.
 \addlinespace
 9. Credit gate & Regulation 23A residual-income test on household income; a request is granted in full or refused. A new loan is priced as unsecured credit (repurchase rate plus 21 points, 25 months) and added to the household's balance. & Statutory expense table and rate; term derived from the \acs{CCMR} & \cite{sa_ncr_affordability_2015, sa_ncr_ratecaps_2016, ncr_ccmr_2017} \\
 \addlinespace
-10. Information & The bureau records traditional debt and defaults. The traditional lender does not see \acs{BNPL}. & Bureau switch, off in the benchmark & \cite{dcasa_bnpl_2026, finasa_bnpl_2026} \\
+10. Information & The bureau records traditional debt and defaults. The traditional lender does not see \acs{BNPL}. & Bureau visibility, off in the benchmark & \cite{dcasa_bnpl_2026, finasa_bnpl_2026} \\
 \addlinespace
 11. Peer influence & The probability of a want-driven purchase rises linearly with the lagged \acs{BNPL} share in the household's reference group (Equation~\ref{eq:peer}); a threshold rule is the alternative. & $q_{\text{base}} = 0.05$; $\beta = 0$, swept 0--3; threshold parameters swept & \cite{ackert2025bnpl, cardaci2018inequality, granovetter1978threshold} \\
 \addlinespace
