@@ -34,7 +34,7 @@ PROVENANCE_LABELS = {
 SUBMODEL = {
     "D1": "1", "D2": "2", "D3": "3", "D4": "4", "D5": "5", "D6": "6", "D7": "7", "D9": "9",
     "D10": "10", "D11": "12", "D12": "13", "D13": "14", "D14": "15", "D16": "17", "D17": "11",
-    "ODD": "design", "OVERVIEW 1a": "design", "P3": "data",
+    "D18": "7", "ODD": "design", "OVERVIEW 1a": "design", "P3": "data",
 }
 
 #: parameter -> (source, sweep). LaTeX, printed as written.
@@ -53,8 +53,8 @@ REGISTER: dict[str, tuple[str, str]] = {
     "discretionary_floor": (r"Discretionary spending can be compressed to zero.", ""),
     "q_base": (r"Probability of a want-driven purchase in a tick without peer influence. No source.",
                r"0.01--0.30 in the Sobol design; 0 in the shortfall-only arm (Table~\ref{tab:effect})"),
-    "beta": (r"Strength of peer influence under the linear rule (Equation~\ref{eq:peer}). No source. $\beta = 0$ is the control and $\beta = 1$ the illustrative setting reported beside it.",
-             r"0 / 0.5 / 1 / 2 / 3 in the platform and access experiments; 0--3 in the Sobol design; 1 in the level-sensitivity arms; 0 and 1 in the effect, scenario and lever arms"),
+    "beta": (r"Strength of peer influence under the linear rule (Equation~\ref{eq:peer}). No source. $\beta = 0$ is the control and the headline; the \ac{BNPL} effect on default is flat over 0--0.30 (Section~\ref{sec:results-beta}), and 0.30, the value at which volume enters the provider range, is reported beside it.",
+             r"0--0.30 at eight values, 250 replicates each (Section~\ref{sec:results-beta}); 0 / 0.1 / 0.2 / 0.3 in the platform and access experiments; 0--0.30 in the Sobol design; 0 and 0.3 in the effect, scenario and lever arms"),
     "peer_mechanism": (r"The rule by which adoption spreads: linear (Equation~\ref{eq:peer}) or heterogeneous thresholds \cite{granovetter1978threshold}.",
                        r"both rules on the same access grid"),
     "mu_theta": (r"Mean adoption threshold: the share of a household's reference group that must hold \ac{BNPL} before the household responds. No source.",
@@ -67,10 +67,10 @@ REGISTER: dict[str, tuple[str, str]] = {
                     r"exact shortfall / $+25\%$ / plus one tick of committed expenditure"),
     "shortfall_bnpl": (r"Whether \ac{BNPL} may relieve a shortfall. On in the benchmark; off sends every shortfall to the traditional lender, so \ac{BNPL} finances only want-driven purchases.",
                        r"off as an effect-robustness arm (Table~\ref{tab:effect})"),
-    "committed_shortfall_funded": (r"Whether credit raised in a tick with a committed-expenditure shortfall pays that shortfall first. Off by default, when the credit goes to debt service, then discretionary spending, then savings.",
-                                   r"on as an effect-robustness arm (Table~\ref{tab:effect})"),
-    "committed_shortfall_clears_distress": (r"With credit paying food and rent first, whether food and rent that a loan pays in full still count as distress. Off by default, when any committed shortfall is distress.",
-                                            r"on, with the switch above, as an effect-robustness arm (Table~\ref{tab:effect})"),
+    "committed_shortfall_funded": (r"Credit raised in a tick with a food or rent shortfall pays that shortfall first; what stays unpaid is reported as consumption distress (Section~\ref{sec:sequence}). On in the baseline. Off, the earlier rule, spends the credit on debt service, then discretionary spending, then savings.",
+                                   ""),
+    "committed_shortfall_clears_distress": (r"Under the earlier streak rule, whether food and rent that a loan pays in full still count as distress. Inert under the arrears rule, in which food and rent cannot cause default.",
+                                            ""),
     "shortfall_bnpl_capped": (r"Limits the \ac{BNPL} share of a shortfall request to $\kappa$ times the household's monthly discretionary budget, the quantity that sizes a want-driven purchase.",
                               r"capped / uncapped, crossed with the three amount rules"),
     "bnpl_purchase_base": (r"The budget against which a purchase is sized. \ac{BNPL} finances discretionary consumption, so the reference is the household's discretionary budget.",
@@ -78,13 +78,21 @@ REGISTER: dict[str, tuple[str, str]] = {
     "bnpl_purchase_ratio": (r"$\kappa$: the share of discretionary spending in the categories that \ac{BNPL} finances, derived from \ac{IES} 2022/23 microdata \cite{statssa_ies_2023}.",
                             r"0.07--0.28, half to twice the derived share"),
     "bnpl_purchase_cv": (r"Dispersion of purchase size around its mean, which is lognormal. No source.", ""),
-    "min_payer_share": (r"29\% of United States card accounts pay at or near the minimum \cite{Keys2019}.",
+    "min_payer_share": (r"29\% of United States card accounts regularly pay at or near the minimum \cite{Keys2019}.",
                         r"0.20--0.40"),
-    "payment_friction": (r"Probability per tick of missing a traditional instalment that the household could pay \cite{Kuchler2021}. Fitted to the \ac{CCMR} 1--30 day band.",
-                         r"calibration grid"),
+    "payment_friction": (r"Probability per tick of missing a traditional instalment that the household could pay, motivated by evidence that borrowers depart from planned repayment \cite{Kuchler2021}. Fitted jointly with \texttt{arrears\_persistence} to the five \ac{CCMR} arrears bands (Section~\ref{sec:lim-calibration}).",
+                         r"calibration grid 0.05--0.06"),
+    "arrears_persistence": (r"Probability per tick that a household already in traditional arrears pays nothing again, whatever its cash. No source; fitted jointly with \texttt{payment\_friction} to the five \ac{CCMR} arrears bands (Section~\ref{sec:lim-calibration}).",
+                            r"calibration grid 0.70--0.74"),
+    "distress_rule": (r"A household defaults when its oldest unpaid instalment on any facility, traditional or \ac{BNPL}, is \texttt{k\_default} ticks old (Section~\ref{sec:sequence}). The earlier rule, \texttt{streak}, defaulted a household after \texttt{k\_default} consecutive ticks of unpaid food, rent or debt service; it is kept only for the comparison in Appendix~\ref{app:calibration}.",
+                      r"streak in that comparison"),
+    "initial_arrears": (r"The run starts from the 2017-Q1 \ac{CCMR} age profile \cite{ncr_ccmr_2017}: credit-active households are placed in each band at its share, those with the least income left after food, rent and debt service in the oldest bands. Ages in the 120+ band are drawn over 9--26 ticks, an assumption. Households placed at 91+ days start in default.",
+                        r"off starts every household current"),
+    "write_off_rate": (r"Probability per tick that a defaulted account leaves the book. Derived from the \ac{CCMR} profile: accounts enter the 120+ band at half the 91--120 share per tick, so a stationary 120+ stock needs $(1.76/2)/12.45 = 0.0707$ \cite{ncr_ccmr_2017}.",
+                       ""),
     "min_payment_frac": (r"Minimum payment as a share of the balance per month. The \ac{NCA} prescribes no formula.",
                          r"0.025--0.10"),
-    "k_default": (r"Seven ticks are 98 days, the first tick boundary past the 90-day impairment convention; a consecutive-period rule follows \cite{hamill2023creditcard}.",
+    "k_default": (r"Seven ticks are 98 days, the first tick boundary past 90 days past due: the impairment convention and the \ac{NCR}'s ``three or more months in arrears'' \cite{ncr_cbm_2017}. It defines the outcome.",
                   r"four ticks (56 days)"),
     "bnpl_bureau_visible": (r"\ac{BNPL} agreements were not displayed on bureau profiles before the 2026 arrangements \cite{dcasa_bnpl_2026, finasa_bnpl_2026}; off is the benchmark.",
                             r"on / off (Section~\ref{sec:scenarios})"),
@@ -118,7 +126,8 @@ def escape_param(name: str) -> str:
 
 
 def fmt_rule(rule: str) -> str:
-    return "/".join(SUBMODEL[r] for r in rule.split("/"))
+    # D7 and D18 are both Submodel 7, so a rule spanning them prints once.
+    return "/".join(dict.fromkeys(SUBMODEL[r] for r in rule.split("/")))
 
 
 def fmt_value(name: str, value: object) -> str:
@@ -156,7 +165,7 @@ def main() -> None:
         r"table and the code cannot drift apart. Columns: the parameter name in the code; the",
         r"submodel of Table~\ref{tab:submodels} that it belongs to (``design'' marks the",
         r"experimental design and ``data'' the data layer); its default value, that of the",
-        r"\ac{BNPL}-free baseline with payment friction at its fitted value and the separation rate at its derived value (the benchmark",
+        r"\ac{BNPL}-free baseline with payment friction and arrears persistence at their fitted values and the separation and write-off rates at their derived values (the benchmark",
         r"differs only in setting \texttt{bnpl\_enabled} on); its provenance; the",
         r"source that fixes or motivates the value; and the range swept where one applies.",
         r"Provenance: sourced = a citation, statute or stated convention fixes the value; derived = the value is computed from",
