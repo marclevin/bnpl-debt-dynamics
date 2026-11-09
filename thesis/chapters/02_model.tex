@@ -227,7 +227,7 @@ ticks, and we report it separately as consumption distress.
 \addlinespace
 3. Borrowing trigger & Traditional credit is sought only for a shortfall. \acs{BNPL} also finances want-driven purchases, whose probability can rise with peer adoption. & See Submodel~11 & \citet{ackert2025bnpl,dehaan2024bnpl} \\
 \addlinespace
-4. Borrowing amount & Shortfall: the household requests the exact shortfall. Want-driven purchase: lognormal, with mean $\kappa$ times the household's monthly discretionary budget. & Shortfall rule assumed, swept; $\kappa = 0.139$ (\acs{IES}), swept 0.07--0.28; dispersion 0.6, assumed & \citet{statssa_ies_2023} \\
+4. Borrowing amount & Shortfall: the household requests the exact shortfall. Want-driven purchase: lognormal, with mean $\kappa$ times the household's monthly discretionary budget. & Shortfall rule assumed, swept; $\kappa = 0.139$ (\acs{IES}), swept 0.07--0.28; coefficient of variation 0.6, assumed & \citet{statssa_ies_2023} \\
 \addlinespace
 5. Lender choice & An eligible household uses \acs{BNPL} first, up to the shortfall cap, and asks the traditional lender for the rest (Section~\ref{sec:amount}). Without \acs{BNPL}, it uses traditional credit only. & Order and shortfall cap assumed; shortfall cap removed in a sweep & Appendix~\ref{app:rationale} \\
 \addlinespace
@@ -241,7 +241,7 @@ ticks, and we report it separately as consumption distress.
 \addlinespace
 10. Information & The bureau records traditional debt and defaults. The traditional lender does not see \acs{BNPL}. & Bureau visibility, off in the benchmark & \citet{dcasa_bnpl_2026,finasa_bnpl_2026} \\
 \addlinespace
-11. Peer influence & The probability of a want-driven purchase rises linearly with the lagged \acs{BNPL} share in the household's reference group (Equation~\ref{eq:peer}); a threshold rule is the alternative. & $q_{\text{base}} = 0.05$; $\beta = 0$, swept 0--0.30; threshold parameters swept & \citet{ackert2025bnpl,cardaci2018inequality,granovetter1978threshold} \\
+11. Peer influence & The probability of a want-driven purchase rises linearly with the lagged \acs{BNPL} share in the household's reference group (Equation~\ref{eq:peer}); a threshold rule is the alternative. & $q_{\text{base}} = 0.05$, assumed, swept 0.01--0.30; $\beta = 0$, swept 0--0.30; threshold parameters swept & \citet{ackert2025bnpl,cardaci2018inequality,granovetter1978threshold} \\
 \addlinespace
 12. \acs{BNPL} eligibility & Banked households only, with a light screen; defaulted households are refused. Each platform limits a household's balance to $\lambda$ times its monthly income and each order to R9{,}927. & $\lambda = 0.10$, assumed, swept 0.10--1.00; order cap assumed & \citet{payflex_terms,payjustnow_terms,homechoice2024ir} \\
 \addlinespace

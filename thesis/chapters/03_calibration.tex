@@ -8,20 +8,22 @@ provenance; Appendix~\ref{app:specification} gives every parameter.
 \centering
 \caption{Provenance of model inputs}
 \label{tab:param-taxonomy}
-\tabnote{Imported: estimated on a foreign population and applied to South African households. Swept: no source fixes the value, so a range is tested. The order does not rank reliability.}
+\tabnote{Imported: estimated on a foreign population and applied to South African households. Assumed: no source gives the value, which is chosen. Swept: no source fixes the value, so a range is tested; every swept input is also assumed. In the register (Appendix~\ref{app:register}), sourced covers Observed, Constructed and Imported. The order does not rank reliability.}
 \begin{tabular}{L{2.2cm}L{6.9cm}L{4.3cm}}
 \toprule
 \textbf{Class} & \textbf{Principal members} & \textbf{Documented in} \\
 \midrule
 Observed & Household income, expenditure, savings and debt (\ac{NIDS} 2017); financial-inclusion flags (\acs{FinScope} 2019); statutory rate ceilings and the Regulation 23A expense table; \ac{BNPL} contract terms and late fees; the re-employment rate (\ac{QLFS} 2017); the 2017 \ac{CCMR} arrears profile, from which the run starts & Sections~\ref{sec:population}, \ref{sec:servicing} and~\ref{sec:lim-calibration}; Appendix~\ref{app:variables} \\
 \addlinespace
-Constructed & Scheduled debt service; income quintiles and reference groups; the purchase ratio $\kappa$ (\ac{IES} 2022/23); 2017-Rand values of \ac{BNPL} amounts & Section~\ref{sec:servicing}; Appendix~\ref{app:variables} \\
+Constructed & Scheduled debt service; income quintiles and reference groups; 2017-Rand values of \ac{BNPL} amounts & Section~\ref{sec:servicing}; Appendix~\ref{app:variables} \\
 \addlinespace
 Imported & Minimum-payer share of 0.29; the evidence behind payment friction and want-driven borrowing (all United States) & Section~\ref{sec:lim-transfer} \\
 \addlinespace
-Derived & The separation rate, set so that expected employment is constant; the write-off rate, set so that the \ac{CCMR} 120+ stock is stationary & Section~\ref{sec:lim-calibration} \\
+Derived & The separation rate, set so that expected employment is constant; the write-off rate, set so that the \ac{CCMR} 120+ stock is stationary; the purchase ratio $\kappa$, from \ac{IES} 2022/23 microdata & Section~\ref{sec:lim-calibration} \\
 \addlinespace
 Fitted & Payment friction and arrears persistence & Section~\ref{sec:lim-calibration} \\
+\addlinespace
+Assumed & Not varied: purchase-size dispersion, the order cap, the payment order and three smaller rules. Varied in one arm: four platforms and random routing & Appendix~\ref{app:register} \\
 \addlinespace
 Swept & Peer parameters $q_{\text{base}}$, $\beta$ and the threshold parameters; the shortfall borrowing rule and the shortfall cap; the minimum-payment fraction; the platform limit $\lambda$ & Section~\ref{sec:results-robustness} \\
 \bottomrule
