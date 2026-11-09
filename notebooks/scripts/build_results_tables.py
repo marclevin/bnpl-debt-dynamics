@@ -285,7 +285,7 @@ def tab_stacking(rq1: pd.DataFrame) -> None:
         six = rq1[(rq1.n_platforms == 6) & (rq1.beta == b)]
         dd, se = delta(six, one, "default_rate_final")
         N[f"n6_minus_n1_beta{b:g}"], N[f"n6_minus_n1_beta{b:g}_se"] = dd, se
-        contrasts.append(f"{pm(dd, se)}pp at $\\beta = {b:g}$")
+        contrasts.append(f"{pm(dd, se)}{'' if contrasts else ' points'} at $\\beta = {b:g}$")
         # the largest contrast with one platform, over two to six
         best = max(
             (delta(rq1[(rq1.n_platforms == n) & (rq1.beta == b)], one, "default_rate_final") + (n,)
