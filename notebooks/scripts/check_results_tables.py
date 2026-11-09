@@ -15,6 +15,11 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+#: Milestone 2 (#98): the peer-influence arm beside beta = 0. Table text prints it as 0.3.
+from simulation.experiments import BETA_PEER as BP  # noqa: E402
+assert BP == 0.30, "table text prints the peer arm as beta = 0.3; update it with BETA_PEER"
+
+
 ROOT = Path(__file__).resolve().parents[2]
 RAW = ROOT / "results" / "raw"
 GEN = ROOT / "thesis" / "chapters" / "generated"
@@ -63,7 +68,7 @@ def pmp(a: pd.DataFrame, b: pd.DataFrame, col: str, d: int = 2) -> str:
 
 def main() -> None:
     rq0, rq1, rq2, rq2t, rq3, rob = (pd.read_parquet(RAW / f"{n}.parquet") for n in ("rq0", "rq1", "rq2", "rq2t", "rq3", "robustness"))
-    off, b0, b1 = (rq0[rq0.label == l] for l in ("baseline_no_bnpl", "bnpl_on_beta0", "bnpl_on_beta1"))
+    off, b0, b1 = (rq0[rq0.label == l] for l in ("baseline_no_bnpl", "bnpl_on_beta0", "bnpl_on_peer"))
 
     t = frag("tab_baseline_arms")
     expect("baseline_arms", t, cell(off.default_rate_final))
@@ -72,17 +77,17 @@ def main() -> None:
 
     t = frag("tab_stacking")
     n4b0 = rq1[(rq1.n_platforms == 4) & (rq1.beta == 0.0)]
-    n1b1 = rq1[(rq1.n_platforms == 1) & (rq1.beta == 1.0)]
-    n6b1 = rq1[(rq1.n_platforms == 6) & (rq1.beta == 1.0)]
+    n1b1 = rq1[(rq1.n_platforms == 1) & (rq1.beta == BP)]
+    n6b1 = rq1[(rq1.n_platforms == 6) & (rq1.beta == BP)]
     expect("stacking", t, f"4 & {(n4b0.stacking_2plus_final / n4b0.bnpl_adoption_final).mean() * 100:.1f} &")
     expect("stacking", t, f"& {n1b1.default_rate_final.mean() * 100:.2f} \\\\")
     expect("stacking", t, pmp(n6b1, n1b1, "default_rate_final"))
 
     t = frag("tab_stacking_full")
-    n3b2 = rq1[(rq1.n_platforms == 3) & (rq1.beta == 2.0)]
+    n3b2 = rq1[(rq1.n_platforms == 3) & (rq1.beta == 0.2)]
     expect("stacking_full", t, f"& {n3b2.stacking_2plus_final.mean() * 100:.1f} &")
     expect("stacking_full", t, f"& {n3b2.default_rate_final.mean() * 100:.2f} &")
-    expect("stacking_full", t, f"& {rq1[(rq1.n_platforms == 6) & (rq1.beta == 0.5)].default_rate_final.mean() * 100:.2f} &")
+    expect("stacking_full", t, f"& {rq1[(rq1.n_platforms == 6) & (rq1.beta == 0.1)].default_rate_final.mean() * 100:.2f} &")
 
     t = frag("tab_bnpl_on_checks")
     mp = b0.bnpl_purchase_mean_realised.mean()
@@ -94,15 +99,15 @@ def main() -> None:
     rq3s = pd.read_parquet(RAW / "rq3s.parquet")
     bur0 = rq3s[rq3s.label == "rq3s_bureau_b0.0"]
     sben0 = rq3s[rq3s.label == "rq3s_bench_b0.0"]
-    aff1 = rq3s[rq3s.label == "rq3s_afford_b1.0"]
+    aff1 = rq3s[rq3s.label == f"rq3s_afford_b{BP}"]
     ben0 = rq3[rq3.label == "rq3_kcool0_b0.0"]
     assert len(bur0) == len(sben0) == len(aff1) == 100, "scenario arms need 100 replicates"
     expect("scenarios", t, f"& {sben0.default_rate_final.mean() * 100:.2f} &")
     expect("scenarios", t, core(pmp(bur0, sben0, "default_rate_final")))
-    expect("scenarios", t, core(pmp(aff1, rq3s[rq3s.label == "rq3s_bench_b1.0"], "default_rate_final_Q1")))
+    expect("scenarios", t, core(pmp(aff1, rq3s[rq3s.label == f"rq3s_bench_b{BP}"], "default_rate_final_Q1")))
 
     t = frag("tab_distribution")
-    expect("distribution", t, core(pmp(rq0[rq0.label == "bnpl_on_beta1"], off, "default_rate_final_Q4")))
+    expect("distribution", t, core(pmp(rq0[rq0.label == "bnpl_on_peer"], off, "default_rate_final_Q4")))
     expect("distribution", t, f"& {b0.bnpl_rolling_bind_Q5.mean() * 100:.1f} &")
     expect("distribution", t, f"& {b0.bnpl_purchase_mean_realised_Q3.mean():.0f} \\\\")
 
@@ -112,15 +117,15 @@ def main() -> None:
     expect("access", t, pmp(rq2[(rq2.beta == 0.0) & (rq2.bnpl_access_rate == 1.0)],
                             rq2[(rq2.beta == 0.0) & (rq2.bnpl_access_rate == 0.0)], "default_rate_final"))
     # the linear fit is printed only where the end-to-end change exceeds two standard errors
-    z = (rq2[(rq2.beta == 3.0) & (rq2.bnpl_access_rate == 1.0)].set_index("seed").default_rate_final
-         - rq2[(rq2.beta == 3.0) & (rq2.bnpl_access_rate == 0.0)].set_index("seed").default_rate_final)
+    z = (rq2[(rq2.beta == BP) & (rq2.bnpl_access_rate == 1.0)].set_index("seed").default_rate_final
+         - rq2[(rq2.beta == BP) & (rq2.bnpl_access_rate == 0.0)].set_index("seed").default_rate_final)
     if abs(z.mean()) > 2 * z.std(ddof=1) / math.sqrt(len(z)):
-        g = rq2[rq2.beta == 3.0].groupby("bnpl_access_rate").default_rate_final.mean().sort_index()
+        g = rq2[rq2.beta == BP].groupby("bnpl_access_rate").default_rate_final.mean().sort_index()
         xs = np.asarray(g.index, dtype=float)
         slope, icpt = np.polyfit(xs, g.values, 1)
         r2 = 1 - ((g.values - (slope * xs + icpt)) ** 2).sum() / ((g.values - g.values.mean()) ** 2).sum()
         expect("access", t, f"& {r2:.2f} \\\\")
-    h = rq2[rq2.beta == 1.0].groupby("bnpl_access_rate").bnpl_adoption_final.mean().sort_index()
+    h = rq2[rq2.beta == BP].groupby("bnpl_access_rate").bnpl_adoption_final.mean().sort_index()
     expect("access", t, f"& {(h.iloc[-1] - h.iloc[0]) * 100:+.1f} &")
 
     t = frag("tab_robustness")
@@ -145,8 +150,8 @@ def main() -> None:
     expect("sobol", t, f"${qb['S1']:.2f} \\pm {qb['S1_conf']:.2f}$")
 
     t = frag("tab_cooloff")
-    k4 = rq3[rq3.label == "rq3_kcool4_b1.0"]
-    ben1 = rq3[rq3.label == "rq3_kcool0_b1.0"]
+    k4 = rq3[rq3.label == f"rq3_kcool4_b{BP}"]
+    ben1 = rq3[rq3.label == f"rq3_kcool0_b{BP}"]
     expect("cooloff", t, cell(k4.default_rate_final))
     expect("cooloff", t, f"{(k4.bnpl_volume_cumulative.mean() / ben1.bnpl_volume_cumulative.mean() - 1) * 100:+.1f}")
     expect("cooloff", t, core(pmp(k4, ben1, "default_rate_final")))

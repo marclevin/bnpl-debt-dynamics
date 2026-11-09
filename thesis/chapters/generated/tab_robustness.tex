@@ -4,30 +4,30 @@
 \centering
 \caption{Sensitivity of the default rate: principal arms}
 \label{tab:robustness}
-\tabnote{Default rate at $\beta = 1$. Each group has its own reference arm and seed block (50{,}000, 54{,}000, 57{,}000 and 59{,}000), so references differ by seed noise. Difference: arm less its group's reference. $\dagger$: arm less the same rule with the cap. Remaining arms: Table~\ref{tab:robustness-appendix}.}
+\tabnote{Default rate at $\beta = 0$. Each group has its own reference arm and seed block (50{,}000, 54{,}000, 57{,}000 and 59{,}000), so references differ by seed noise. Difference: arm less its group's reference. $\dagger$: arm less the same rule with the cap. Remaining arms: Table~\ref{tab:robustness-appendix}.}
 \begingroup\setlength{\tabcolsep}{4pt}\footnotesize
 \begin{tabular}{L{7.2cm}rr}
 \toprule
 \textbf{Arm} & \textbf{Default (\%)} & \textbf{Difference (pp)} \\
 \midrule
 \multicolumn{3}{l}{\emph{Borrowing-amount rule (Submodel 4), \ac{BNPL} share of a shortfall capped}} \\
-exact shortfall & 7.54 (0.29) & reference \\
-shortfall $+25\%$ & 7.39 (0.25) & $-0.15 \pm 0.08$ \\
-shortfall $+$ one tick of committed spending & 7.48 (0.22) & $-0.06 \pm 0.08$ \\
+exact shortfall & 21.90 (0.51) & reference \\
+shortfall $+25\%$ & 21.39 (0.40) & $\boldsymbol{-0.51 \pm 0.14}$ \\
+shortfall $+$ one tick of committed spending & 21.51 (0.41) & $\boldsymbol{-0.39 \pm 0.15}$ \\
 \multicolumn{3}{l}{\emph{The same rules with the cap removed (paired with the row above by seed)}} \\
-exact shortfall, uncapped & 7.39 (0.24) & $-0.15 \pm 0.08^\dagger$ \\
-shortfall $+25\%$, uncapped & 7.25 (0.17) & $\boldsymbol{-0.14 \pm 0.07}^\dagger$ \\
-shortfall $+$ one tick of committed spending, uncapped & 7.62 (0.23) & $\boldsymbol{+0.14 \pm 0.05}^\dagger$ \\
+exact shortfall, uncapped & 22.01 (0.45) & $+0.12 \pm 0.14^\dagger$ \\
+shortfall $+25\%$, uncapped & 21.25 (0.31) & $-0.14 \pm 0.09^\dagger$ \\
+shortfall $+$ one tick of committed spending, uncapped & 21.50 (0.31) & $-0.01 \pm 0.12^\dagger$ \\
 \multicolumn{3}{l}{\emph{Default threshold $k$ (Submodel 7)}} \\
-$k = 7$ ticks, 98 days & 7.47 (0.21) & reference \\
-$k = 4$ ticks, 56 days & 7.88 (0.25) & $\boldsymbol{+0.41 \pm 0.06}$ \\
+$k = 7$ ticks, 98 days & 21.71 (0.51) & reference \\
+$k = 4$ ticks, 56 days & 34.85 (0.40) & $\boldsymbol{+13.13 \pm 0.13}$ \\
 \multicolumn{3}{l}{\emph{Purchase size $\kappa$ (Submodel 4)}} \\
-$\kappa = 0.139$ (IES-derived) & 7.36 (0.22) & reference \\
-$\kappa = 0.07$ & 7.37 (0.31) & $+0.01 \pm 0.08$ \\
-$\kappa = 0.28$ & 7.52 (0.21) & $\boldsymbol{+0.17 \pm 0.07}$ \\
+$\kappa = 0.139$ (IES-derived) & 21.86 (0.35) & reference \\
+$\kappa = 0.07$ & 21.70 (0.37) & $-0.15 \pm 0.11$ \\
+$\kappa = 0.28$ & 21.88 (0.41) & $+0.02 \pm 0.12$ \\
 \multicolumn{3}{l}{\emph{Purchase sizing base, $\kappa$ matched (Submodel 4)}} \\
-sized on discretionary budget & 7.33 (0.23) & reference \\
-sized on income & 7.51 (0.25) & $\boldsymbol{+0.18 \pm 0.08}$ \\
+sized on discretionary budget & 21.69 (0.39) & reference \\
+sized on income & 21.70 (0.44) & $+0.01 \pm 0.11$ \\
 \bottomrule
 \end{tabular}
 \endgroup

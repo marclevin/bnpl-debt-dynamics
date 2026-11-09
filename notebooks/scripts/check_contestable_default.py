@@ -32,6 +32,11 @@ from results_common import delta, paired_diff  # noqa: E402
 
 from simulation import experiments as ex  # noqa: E402
 
+#: Milestone 2 (#98): the peer-influence arm beside beta = 0. Table text prints it as 0.3.
+from simulation.experiments import BETA_PEER as BP  # noqa: E402
+assert BP == 0.30, "table text prints the peer arm as beta = 0.3; update it with BETA_PEER"
+
+
 QUINTILES = ("Q1", "Q2", "Q3", "Q4", "Q5")
 
 
@@ -62,12 +67,12 @@ def one(params):
 def arms():
     out = list(ex.rq0_baseline(20))
     out += [p for p in ex.rq2_surface(20)
-            if p.beta in (0.0, 1.0) and p.bnpl_access_rate in (0.0, 1.0)]
+            if p.beta in (0.0, BP) and p.bnpl_access_rate in (0.0, 1.0)]
     thr = [p for p in ex.rq2_threshold(20) if p.label.startswith("rq2t_a") and p.gamma == 0]
     smin = min(p.sigma_theta for p in thr)
     out += [p for p in thr if p.sigma_theta == smin and p.bnpl_access_rate in (0.0, 1.0)]
     out += [p for p in ex.effect_robustness(20)
-            if p.label in ("eff_ref_off", "eff_ref_b0.0", "eff_ref_b1.0")
+            if p.label in ("eff_ref_off", "eff_ref_b0.0", f"eff_ref_b{BP}")
             or p.label.startswith("eff_shock_single_tick_")]
     out += [p for p in ex.rq3_scenarios(20) if "_bench_" in p.label or "_bureau_" in p.label]
     return out
@@ -117,39 +122,41 @@ if __name__ == "__main__":
         out[f"baseline_contestable_default_rate_{q}"] = base[f"contestable_default_rate_{q}"].mean()
 
     col = "contestable_default_rate"
-    for b, keys in ((0, ("rq0", "access", "threshold_control", "effect")), (1, ("rq0", "access", "effect"))):
+    for b, keys in ((0.0, ("rq0", "access", "threshold_control", "effect")), (BP, ("rq0", "access", "effect"))):
+        rq0_label = "bnpl_on_beta0" if b == 0 else "bnpl_on_peer"
+        tag_b = "beta0" if b == 0 else "peer"
         blocks = {
-            "rq0": delta(lab(f"bnpl_on_beta{b}"), base, col),
+            "rq0": delta(lab(rq0_label), base, col),
             "access": delta(rq2[(rq2.beta == b) & (rq2.bnpl_access_rate == 1.0)],
                             rq2[(rq2.beta == b) & (rq2.bnpl_access_rate == 0.0)], col),
             "threshold_control": delta(thr[thr.bnpl_access_rate == 1.0],
                                        thr[thr.bnpl_access_rate == 0.0], col),
-            "effect": paired_diff(lab(f"eff_ref_b{b}.0"), lab("eff_ref_off"), col),
+            "effect": paired_diff(lab(f"eff_ref_b{b}"), lab("eff_ref_off"), col),
         }
         blocks = {k: blocks[k] for k in keys}
         est, se = pooled(blocks)
         # The same pooling on the population rate, which must reproduce results_numbers.json.
         pop = {
-            "rq0": delta(lab(f"bnpl_on_beta{b}"), base, "default_rate_final"),
+            "rq0": delta(lab(rq0_label), base, "default_rate_final"),
             "access": delta(rq2[(rq2.beta == b) & (rq2.bnpl_access_rate == 1.0)],
                             rq2[(rq2.beta == b) & (rq2.bnpl_access_rate == 0.0)], "default_rate_final"),
             "threshold_control": delta(thr[thr.bnpl_access_rate == 1.0],
                                        thr[thr.bnpl_access_rate == 0.0], "default_rate_final"),
-            "effect": paired_diff(lab(f"eff_ref_b{b}.0"), lab("eff_ref_off"), "default_rate_final"),
+            "effect": paired_diff(lab(f"eff_ref_b{b}"), lab("eff_ref_off"), "default_rate_final"),
         }
         pest, pse = pooled({k: pop[k] for k in keys})
-        out[f"beta{b}_effect_pooled_population"] = pest
-        out[f"beta{b}_effect_pooled_population_se"] = pse
-        out[f"beta{b}_effect_pooled_contestable"] = est
-        out[f"beta{b}_effect_pooled_contestable_se"] = se
-        out[f"beta{b}_effect_relative_to_contestable_baseline"] = est / out["baseline_contestable_default_rate"]
-        out[f"beta{b}_effect_relative_to_full_baseline"] = pest / out["baseline_default_rate"]
+        out[f"{tag_b}_effect_pooled_population"] = pest
+        out[f"{tag_b}_effect_pooled_population_se"] = pse
+        out[f"{tag_b}_effect_pooled_contestable"] = est
+        out[f"{tag_b}_effect_pooled_contestable_se"] = se
+        out[f"{tag_b}_effect_relative_to_contestable_baseline"] = est / out["baseline_contestable_default_rate"]
+        out[f"{tag_b}_effect_relative_to_full_baseline"] = pest / out["baseline_default_rate"]
         for k, (d, s) in blocks.items():
-            out[f"beta{b}_effect_contestable_{k}"], out[f"beta{b}_effect_contestable_{k}_se"] = d, s
+            out[f"{tag_b}_effect_contestable_{k}"], out[f"{tag_b}_effect_contestable_{k}_se"] = d, s
 
-    for b in (0.0, 1.0):
+    for b in (0.0, BP):
         bench, bur = lab(f"rq3s_bench_b{b}"), lab(f"rq3s_bureau_b{b}")
-        tag = f"b{int(b)}"
+        tag = "b0" if b == 0 else "peer"
         out[f"rq3s_bench_default_{tag}"] = bench.default_rate_final.mean()
         out[f"rq3s_bench_contestable_{tag}"] = bench[col].mean()
         d, s = paired_diff(bur, bench, "default_rate_final")
@@ -168,9 +175,9 @@ if __name__ == "__main__":
         out[f"eff_{name}_off_struct_default_rate"] = off.struct_default_rate.mean()
         out[f"eff_{name}_off_contestable"] = off[col].mean()
         out[f"eff_{name}_off_contestable_pop"] = off.contestable_default_pop.mean()
-        for b in (0, 1):
-            d, s_ = paired_diff(lab(f"eff_{name}_b{b}.0"), off, col)
-            out[f"eff_{name}_effect_contestable_b{b}"], out[f"eff_{name}_effect_contestable_b{b}_se"] = d, s_
+        for b in (0.0, BP):
+            d, s_ = paired_diff(lab(f"eff_{name}_b{b}"), off, col)
+            out[f"eff_{name}_effect_contestable_b{b:g}"], out[f"eff_{name}_effect_contestable_b{b:g}_se"] = d, s_
     out["single_tick_removes_contestable_share"] = 1.0 - (
         out["eff_shock_single_tick_off_contestable"] / out["eff_ref_off_contestable"])
 

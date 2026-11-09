@@ -69,12 +69,23 @@ to `tab:ccmr`. Closes only with household-level arrears data for 2017.
 
 ### B8 · `q_base` and beta are uncalibrated · `MAJOR` · Marc
 
+**Updated 2026-11-09 (Milestone 2).** beta = 1 is gone. Swept over 0-0.30 at 250 replicates under the
+arrears rule (`results/summary/beta_sweep.json`): the BNPL effect is flat, +1.05 +/- 0.03 pp at beta = 0,
+slope +0.003 +/- 0.014 pp per 0.1 of beta; verdict linear under the pre-registered test (#97). The peer
+arm downstream is beta = 0.30, where volume first enters the provider range; stacking among
+ever-holders is already 70.6% there against the CFPB's 32-33%, so the two anchors still conflict.
+The text below describes 6b0a4c7.
+
 Neither has an empirical estimate (Section 3.4). beta = 1 is labelled illustrative: there 98.6%
 of ever-holders stack, against the CFPB's 32% and 33%, so Section 4.1 treats beta = 0 as the
 guide to magnitudes. The 2026-10-06 audit added the level-sensitivity justification at beta = 1
 (Section 4.5). Closes only with South African adoption data.
 
 ### B20 · The fitted shock rate is 1.4 times the QLFS band · `MAJOR` · Marc
+
+**Stale since 2026-10-12.** The separation rate is no longer fitted: it is derived at 0.00446 per tick from
+the stable-employment condition, 17% below the bottom of the QLFS 2017 band (0.0054-0.0117). The
+text below describes the earlier fit.
 
 Fitted 0.016 per tick against an observed separation band of 0.0054 to 0.0117. The text reads it
 as a reduced-form hazard of income loss and other distress (Section 3.4). Was 4.1x before the
@@ -103,6 +114,14 @@ write-off rule and a recalibration.
 
 ### B37 · The shortfall path: liquidity without a matching purchase, and unspent credit · `MAJOR` · Marc · tested, disclosed
 
+**Updated 2026-11-09 (D18): now the main qualification of the headline.** Part (2) is gone: credit raised
+against a food or rent shortfall pays it first (`committed_shortfall_funded` is the baseline). Part (1)
+now carries the BNPL effect: with BNPL kept out of the shortfall path the effect is -0.05 +/- 0.16 pp at
+beta = 0 and +0.11 +/- 0.13 at beta = 0.3, against +0.98 +/- 0.13 and +1.07 +/- 0.15 in the reference
+row; with only the shortfall path (want-driven purchases off) it is +0.93 +/- 0.12 (`tab:effect`). Most
+of the effect is households defaulting on BNPL taken against a shortfall. The figures below are from
+6b0a4c7.
+
 New 2026-10-06; the second half was first recorded under DECISIONS D7 on 2026-09-21. Two
 assumptions on the shortfall path. (1) A BNPL agreement taken for a shortfall frees three
 quarters of its value in cash, as though the household financed a purchase it would otherwise
@@ -125,6 +144,14 @@ aggregate limit, which would separate platforms not seeing one another from extr
 (d) refitting the shock rate on another window and the effects at the QLFS upper bound.
 (a) and (c) are the likeliest viva questions. The thesis states each gap (Sections 4.2, 5 and 6).
 
+### B45 · The Sobol default indices are noise-dominated under the arrears rule · `MAJOR` · agent
+
+New 2026-11-09. With 2 replicates per design point, the first-order indices for default are near zero
+for every parameter but the separation rate (0.67) and the total-order indices are about 0.4 for all
+six (1.12 for the separation rate). The replicate SD of default is larger under the arrears rule, so
+run-to-run noise swamps the parameter effects. Rerun `simulation.sensitivity` with more replicates per
+point before Table 22 is quoted, or report only the ranking.
+
 ### B44 · The arrears rule adds two assumptions and one fitted parameter · `MAJOR` · Marc
 
 New 2026-11-09 (D18). (1) Initial arrears are placed on the least able households by a
@@ -137,6 +164,10 @@ profile is a steady state. CCMR shares are of accounts, applied to households (B
 Sections 3.4 and 3.5 and the limitations index (#95).
 
 ### B7 · Behavioural parameters are imported from the United States · `MINOR` · Marc
+
+**Updated 2026-11-09.** Under the arrears rule the minimum-payer share at 0.20 and 0.40 gives a BNPL
+effect of +1.14 +/- 0.12 and +1.08 +/- 0.14 pp at beta = 0 (`tab:effect`). Payment friction is now
+fitted jointly with arrears persistence (D18). The figures below are from 6b0a4c7.
 
 The 0.29 minimum-payer share and the evidence behind payment friction and want-driven borrowing
 are US. Stated in Section 3.3 (`sec:lim-transfer`); the share is swept 0.20 to 0.40 and moves the

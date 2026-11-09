@@ -23,6 +23,11 @@ from results_common import (  # noqa: E402
 )
 from simulation.config import load_ccmr_target  # noqa: E402
 
+#: Milestone 2 (#98): the peer-influence arm beside beta = 0. Table text prints it as 0.3.
+from simulation.experiments import BETA_PEER as BP  # noqa: E402
+assert BP == 0.30, "table text prints the peer arm as beta = 0.3; update it with BETA_PEER"
+
+
 N = {}  # the numbers the prose quotes; dumped to results_numbers.json at the end
 
 # Section 3.1 states the shared conventions once (20 replicates, standard deviation in brackets,
@@ -56,7 +61,7 @@ def holders_share(d: pd.DataFrame, col: str = "stacking_2plus_final") -> pd.Seri
 
 # ============================================================ 4 opening: the three arms
 def tab_baseline_arms(rq0: pd.DataFrame) -> None:
-    off, b0, b1 = (arm(rq0, l) for l in ("baseline_no_bnpl", "bnpl_on_beta0", "bnpl_on_beta1"))
+    off, b0, b1 = (arm(rq0, l) for l in ("baseline_no_bnpl", "bnpl_on_beta0", "bnpl_on_peer"))
     rows_spec = [
         ("Distress", None, 0, 0),
         ("Default rate (\\%)", "default_rate_final", 100, 2),
@@ -90,11 +95,11 @@ def tab_baseline_arms(rq0: pd.DataFrame) -> None:
     d1, se1 = delta(b1, off, "default_rate_final")
     d10, se10 = delta(b1, b0, "default_rate_final")
     N.update(
-        injection_beta1_less_beta0=d10, injection_beta1_less_beta0_se=se10,
-        lending_beta1=ms(b1.trad_granted_value)[0],
-        refused_beta1=ms(b1.trad_refused_gate)[0],
+        injection_peer_less_beta0=d10, injection_peer_less_beta0_se=se10,
+        lending_peer=ms(b1.trad_granted_value)[0],
+        refused_peer=ms(b1.trad_refused_gate)[0],
         volume_beta0=ms(b0.bnpl_volume_cumulative)[0],
-        volume_beta1=ms(b1.bnpl_volume_cumulative)[0],
+        volume_peer=ms(b1.bnpl_volume_cumulative)[0],
         baseline_default=ms(off.default_rate_final)[0],
         baseline_default_sd=ms(off.default_rate_final)[1],
         baseline_90plus_active=ms(off.active_90_plus_mean)[0],
@@ -102,17 +107,17 @@ def tab_baseline_arms(rq0: pd.DataFrame) -> None:
         baseline_credit_active=ms(off.n_credit_active_final)[0] / off.n_agents.iloc[0],
         banked_ceiling=off.n_banked.iloc[0] / off.n_agents.iloc[0],
         injection_beta0=d0, injection_beta0_se=se0,
-        injection_beta1=d1, injection_beta1_se=se1,
+        injection_peer=d1, injection_peer_se=se1,
         adoption_beta0=ms(b0.bnpl_adoption_final)[0],
-        adoption_beta1=ms(b1.bnpl_adoption_final)[0],
+        adoption_peer=ms(b1.bnpl_adoption_final)[0],
         ever_adopted_beta0=ms(b0.ever_adopted)[0],
-        ever_adopted_beta1=ms(b1.ever_adopted)[0],
+        ever_adopted_peer=ms(b1.ever_adopted)[0],
         stack2_all_beta0=ms(b0.stacking_2plus_final)[0],
-        stack2_all_beta1=ms(b1.stacking_2plus_final)[0],
+        stack2_all_peer=ms(b1.stacking_2plus_final)[0],
         stack2_holders_beta0=ms(holders_share(b0))[0],
-        stack2_holders_beta1=ms(holders_share(b1))[0],
+        stack2_holders_peer=ms(holders_share(b1))[0],
         ever_stack2_adopters_beta0=ms(b0.ever_stacked_2plus_of_adopters)[0],
-        ever_stack2_adopters_beta1=ms(b1.ever_stacked_2plus_of_adopters)[0],
+        ever_stack2_adopters_peer=ms(b1.ever_stacked_2plus_of_adopters)[0],
         refused_off=ms(off.trad_refused_gate)[0],
         refused_beta0=ms(b0.trad_refused_gate)[0],
         lending_off=ms(off.trad_granted_value)[0],
@@ -129,7 +134,7 @@ def tab_baseline_arms(rq0: pd.DataFrame) -> None:
         "the final tick. Ever: at any tick of the two-year run. Arrears, interest, savings and "
         "volume cover the post-burn-in ticks; default, lending and refusals cover the whole run.",
         "L{5.6cm}rrr",
-        r"\textbf{Outcome} & \textbf{No \ac{BNPL}} & \textbf{\ac{BNPL}, $\beta=0$} & \textbf{\ac{BNPL}, $\beta=1$}",
+        r"\textbf{Outcome} & \textbf{No \ac{BNPL}} & \textbf{\ac{BNPL}, $\beta=0$} & \textbf{\ac{BNPL}, $\beta=0.3$}",
         rows,
         size=r"\footnotesize",
     )
@@ -211,14 +216,14 @@ def tab_stacking(rq1: pd.DataFrame) -> None:
     n1, n6 = {}, {}
     sd_def = 0.0
     for n in range(1, 7):
-        sub = {b: rq1[(rq1.n_platforms == n) & (rq1.beta == b)] for b in (0.0, 1.0)}
+        sub = {b: rq1[(rq1.n_platforms == n) & (rq1.beta == b)] for b in (0.0, BP)}
         cells = [str(n)]
         # grouped by outcome, so each pair compares beta = 0 with beta = 1 side by side
-        cells += [pct(ms(holders_share(sub[b]))[0], 1) for b in (0.0, 1.0)]
-        cells += [pct(ms(sub[b].ever_stacked_2plus_of_adopters)[0], 1) for b in (0.0, 1.0)]
-        cells += [rm(ms(sub[b].bnpl_volume_cumulative)[0], 2) for b in (0.0, 1.0)]
-        cells += [pct(ms(sub[b].default_rate_final)[0], 2) for b in (0.0, 1.0)]
-        for b in (0.0, 1.0):
+        cells += [pct(ms(holders_share(sub[b]))[0], 1) for b in (0.0, BP)]
+        cells += [pct(ms(sub[b].ever_stacked_2plus_of_adopters)[0], 1) for b in (0.0, BP)]
+        cells += [rm(ms(sub[b].bnpl_volume_cumulative)[0], 2) for b in (0.0, BP)]
+        cells += [pct(ms(sub[b].default_rate_final)[0], 2) for b in (0.0, BP)]
+        for b in (0.0, BP):
             d = sub[b]
             sd_def = max(sd_def, ms(d.default_rate_final)[1])
             N[f"volume_n{n}_beta{b:g}"] = ms(d.bnpl_volume_cumulative)[0]
@@ -230,9 +235,9 @@ def tab_stacking(rq1: pd.DataFrame) -> None:
                 N[f"stack2_all_n{n}_beta{b:g}"] = ms(d.stacking_2plus_final)[0]
         rows.append(" & ".join(cells) + r" \\")
     d0, se0 = delta(n6[0.0], n1[0.0], "default_rate_final")
-    d1, se1 = delta(n6[1.0], n1[1.0], "default_rate_final")
+    d1, se1 = delta(n6[BP], n1[BP], "default_rate_final")
     N.update(n6_minus_n1_beta0=d0, n6_minus_n1_beta0_se=se0,
-             n6_minus_n1_beta1=d1, n6_minus_n1_beta1_se=se1,
+             n6_minus_n1_peer=d1, n6_minus_n1_peer_se=se1,
              default_n1_beta0=ms(n1[0.0].default_rate_final)[0])
     table(
         "tab_stacking",
@@ -244,13 +249,13 @@ def tab_stacking(rq1: pd.DataFrame) -> None:
         "undercount by its own account \\cite{cfpb2025bnpl}. "
         "Volume: cumulative post-burn-in \\ac{BNPL} lending. Replicate standard deviations of default "
         f"are at most {sd_def * 100:.2f} points. Default with six platforms less one: "
-        f"{pm(d0, se0)} points at $\\beta = 0$ and {pm(d1, se1)} at $\\beta = 1$.",
+        f"{pm(d0, se0)} points at $\\beta = 0$ and {pm(d1, se1)} at $\\beta = 0.3$.",
         "c rr rr rr rr",
         r"& \multicolumn{2}{c}{\textbf{Holders (\%)}} & \multicolumn{2}{c}{\textbf{Ever-holders (\%)}} "
         r"& \multicolumn{2}{c}{\textbf{Volume (R m)}} & \multicolumn{2}{c}{\textbf{Default (\%)}} \\ "
         r"\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(lr){8-9}"
-        "\n\\textbf{Platforms} & $\\beta=0$ & $\\beta=1$ & $\\beta=0$ & $\\beta=1$ & $\\beta=0$ & $\\beta=1$ "
-        "& $\\beta=0$ & $\\beta=1$",
+        "\n\\textbf{Platforms} & $\\beta=0$ & $\\beta=0.3$ & $\\beta=0$ & $\\beta=0.3$ & $\\beta=0$ & $\\beta=0.3$ "
+        "& $\\beta=0$ & $\\beta=0.3$",
         rows,
         size=r"\small",
         colsep="4pt",
@@ -308,7 +313,7 @@ def tab_stacking(rq1: pd.DataFrame) -> None:
 
 # ============================================================ 3.5 the unfitted BNPL-on checks
 def tab_bnpl_on_checks(rq0: pd.DataFrame) -> None:
-    off, b0, b1 = (arm(rq0, l) for l in ("baseline_no_bnpl", "bnpl_on_beta0", "bnpl_on_beta1"))
+    off, b0, b1 = (arm(rq0, l) for l in ("baseline_no_bnpl", "bnpl_on_beta0", "bnpl_on_peer"))
     anchors = json.loads((ROOT / "data/config/bnpl_anchors_2017.json").read_text(encoding="utf-8"))["model_target"]
     target = anchors["mean_purchase_2017_rands"]
     lo_band, hi_band = target * 0.65, target * 1.35
@@ -348,7 +353,7 @@ def tab_bnpl_on_checks(rq0: pd.DataFrame) -> None:
         if words[0] == words[1]:
             text = words[0]
         else:
-            text = f"{words[0]} at $\\beta = 0$, {words[1]} at $\\beta = 1$"
+            text = f"{words[0]} at $\\beta = 0$, {words[1]} at $\\beta = 0.3$"
         ok = all(w == "rises" for w in words)
         return text if ok else f"{text}: the pattern is not reproduced on {what}"
     # pattern 3
@@ -364,14 +369,14 @@ def tab_bnpl_on_checks(rq0: pd.DataFrame) -> None:
         stack2_holders_check=sh0, ever_stack2_adopters_check=ev0, cfpb_cross_firm=0.32,
         vol_per_eligible_year=ms(v_elig)[0], vol_per_adopter_year=ms(v_adopt)[0],
         vol_band_lo=lo_vol, vol_band_hi=hi_vol,
-        mean_purchase_beta0=mp0, mean_purchase_beta0_sd=mp0_sd, mean_purchase_beta1=mp1,
+        mean_purchase_beta0=mp0, mean_purchase_beta0_sd=mp0_sd, mean_purchase_peer=mp1,
         mean_purchase_target=target, mean_purchase_gap=gap0, mean_purchase_margin=margin,
-        mean_purchase_inside_beta0=inside0, mean_purchase_inside_beta1=inside1,
+        mean_purchase_inside_beta0=inside0, mean_purchase_inside_peer=inside1,
         mean_purchase_q345=br35, mean_purchase_q45=br45,
         p1_arrears_beta0=d_arr0, p1_arrears_beta0_se=se_arr0,
-        p1_arrears_beta1=d_arr1, p1_arrears_beta1_se=se_arr1,
-        p1_interest_beta0=r_int0, p1_interest_beta1=r_int1,
-        p1_interest_beta0_se=r_int0_se, p1_interest_beta1_se=r_int1_se,
+        p1_arrears_peer=d_arr1, p1_arrears_peer_se=se_arr1,
+        p1_interest_beta0=r_int0, p1_interest_peer=r_int1,
+        p1_interest_beta0_se=r_int0_se, p1_interest_peer_se=r_int1_se,
         p1_arrears_reproduced=bool(all(detectable(d, e) and d > 0 for d, e in ((d_arr0, se_arr0), (d_arr1, se_arr1)))),
         p1_interest_reproduced=bool(all(detectable(d, e) and d > 0 for d, e in ((r_int0, r_int0_se), (r_int1, r_int1_se)))),
         p3_middle_peak=bool(peak in ("Q2", "Q3", "Q4") and second in ("Q2", "Q3", "Q4")),
@@ -384,7 +389,7 @@ def tab_bnpl_on_checks(rq0: pd.DataFrame) -> None:
         words = ["no change" if not detectable(d, se) else ("rises" if d > 0 else "falls")
                  for d, se in pairs]
         return words[0].capitalize() if words[0] == words[1] else \
-            f"{words[0].capitalize()} ($\\beta=0$); {words[1]} ($\\beta=1$)"
+            f"{words[0].capitalize()} ($\\beta=0$); {words[1]} ($\\beta=0.3$)"
 
     def band(v):
         return "inside" if lo_vol <= v <= hi_vol else ("below" if v < lo_vol else "above")
@@ -417,7 +422,7 @@ def tab_bnpl_on_checks(rq0: pd.DataFrame) -> None:
         "Comparisons with external evidence",
         "No parameter was fitted to these quantities. Model values are from the $\\beta = 0$ arm of "
         "Table~\\ref{tab:baseline-arms}; Pattern~1 shows the change from the no-\\ac{BNPL} arm at "
-        "$\\beta = 0$ and $\\beta = 1$, and Patterns 3 and 4 use the no-\\ac{BNPL} arm. Debt-to-income "
+        "$\\beta = 0$ and $\\beta = 0.3$, and Patterns 3 and 4 use the no-\\ac{BNPL} arm. Debt-to-income "
         "is total debt over total monthly income in each quintile. The volume band runs from the "
         "provider's volume per signed-up customer to its volume per active customer, in 2017 Rands. "
         "The provider's 2024 report gives average spending of R7{,}000 per customer, about R5{,}000 in "
@@ -438,7 +443,7 @@ def tab_scenarios(rq3s: pd.DataFrame) -> None:
     """One table for RQ3: the benchmark level and each arm's change from it, at both betas."""
     keys = [("bench", "Benchmark"), ("bureau", "Bureau visibility"), ("afford", "Screening"),
             ("both", "Both")]
-    arms = {b: {k: arm(rq3s, f"rq3s_{k}_b{b}") for k, _ in keys} for b in (0.0, 1.0)}
+    arms = {b: {k: arm(rq3s, f"rq3s_{k}_b{b}") for k, _ in keys} for b in (0.0, BP)}
     # (label, column, kind, scale, decimals): kind 'pp' is a difference in points, 'rel' a
     # relative change in per cent, 'abs' a difference in the column's own unit
     outcomes = [
@@ -450,9 +455,9 @@ def tab_scenarios(rq3s: pd.DataFrame) -> None:
         ("\\ac{BNPL} volume (R m)", "bnpl_volume_cumulative", "rel", 1e-6, 2),
     ] + [(f"Default rate, {q} (\\%)", f"default_rate_final_{q}", "pp", 100, 2) for q in Q]  # noqa
     rows = []
-    for b in (0.0, 1.0):
+    for b in (0.0, BP):
         rows.append(group_row("No peer influence ($\\beta = 0$)" if b == 0 else
-                              "Peer influence ($\\beta = 1$)", 5))
+                              "Peer influence ($\\beta = 0.3$)", 5))
         bench = arms[b]["bench"]
         for name, col, kind, scale, dd in outcomes:
             cells = [name, num(ms(bench[col])[0] * scale, dd)]
@@ -507,7 +512,7 @@ def tab_scenarios(rq3s: pd.DataFrame) -> None:
 
 # ============================================================ 4.3 distribution
 def tab_distribution(rq0: pd.DataFrame) -> None:
-    off, b0, b1 = (arm(rq0, l) for l in ("baseline_no_bnpl", "bnpl_on_beta0", "bnpl_on_beta1"))
+    off, b0, b1 = (arm(rq0, l) for l in ("baseline_no_bnpl", "bnpl_on_beta0", "bnpl_on_peer"))
     rows = []
     sd_share, sd_dti, sd_purchase = 0.0, 0.0, 0.0
     sizes: list[str] = []
@@ -533,7 +538,7 @@ def tab_distribution(rq0: pd.DataFrame) -> None:
         rows.append(" & ".join(cells) + r" \\")
         N[f"default_{q}_off"] = ms(off[f"default_rate_final_{q}"])[0]
         N[f"default_{q}_beta0"] = ms(b0[f"default_rate_final_{q}"])[0]
-        N[f"default_{q}_beta1"] = ms(b1[f"default_rate_final_{q}"])[0]
+        N[f"default_{q}_peer"] = ms(b1[f"default_rate_final_{q}"])[0]
         N[f"adoption_{q}_beta0"] = ms(b0[f"bnpl_adoption_final_{q}"])[0]
         N[f"arrears_{q}_beta0"] = ms(b0[f"trad_arrears_final_{q}"])[0]
         N[f"dti_{q}"] = ms(off[f"dti_{q}"])[0]
@@ -542,13 +547,13 @@ def tab_distribution(rq0: pd.DataFrame) -> None:
         d, se = delta(b0, off, f"default_rate_final_{q}")
         N[f"injection_{q}_beta0"], N[f"injection_{q}_beta0_se"] = d, se
         d, se = delta(b1, off, f"default_rate_final_{q}")
-        N[f"injection_{q}_beta1"], N[f"injection_{q}_beta1_se"] = d, se
+        N[f"injection_{q}_peer"], N[f"injection_{q}_peer_se"] = d, se
     N["order_cap_bind_beta0"] = ms(b0.bnpl_order_cap_bind_rate)[0]
-    N["order_cap_bind_beta1"] = ms(b1.bnpl_order_cap_bind_rate)[0]
+    N["order_cap_bind_peer"] = ms(b1.bnpl_order_cap_bind_rate)[0]
     N["injection_quintiles_detectable_beta0"] = [
         q for q in Q if detectable(N[f"injection_{q}_beta0"], N[f"injection_{q}_beta0_se"])]
-    N["injection_quintiles_detectable_beta1"] = [
-        q for q in Q if detectable(N[f"injection_{q}_beta1"], N[f"injection_{q}_beta1_se"])]
+    N["injection_quintiles_detectable_peer"] = [
+        q for q in Q if detectable(N[f"injection_{q}_peer"], N[f"injection_{q}_peer_se"])]
     table(
         "tab_distribution",
         "Outcomes by income quintile",
@@ -561,7 +566,7 @@ def tab_distribution(rq0: pd.DataFrame) -> None:
         "c R{1.4cm} R{2.3cm} R{2.3cm} R{1.4cm} R{1.3cm} R{1.4cm} R{1.4cm}",
         r"& \textbf{Default (\%)} & \multicolumn{2}{c}{\textbf{Change in default (pp)}} & "
         r"\textbf{Holding (\%)} & \textbf{Debt/ income} & \textbf{Limit binds (\%)} & \textbf{Purchase (R)} \\ \cmidrule(lr){3-4}"
-        "\n\\textbf{Quintile} & No \\ac{BNPL} & $\\beta=0$ & $\\beta=1$ & $\\beta=0$ & No \\ac{BNPL} & $\\beta=0$ & $\\beta=0$",
+        "\n\\textbf{Quintile} & No \\ac{BNPL} & $\\beta=0$ & $\\beta=0.3$ & $\\beta=0$ & No \\ac{BNPL} & $\\beta=0$ & $\\beta=0$",
         rows,
         size=r"\footnotesize",
         colsep="3pt",
@@ -717,7 +722,7 @@ def tab_robustness(rob: pd.DataFrame) -> None:
     table(
         "tab_robustness",
         "Sensitivity of the default rate: principal arms",
-        "Default rate at $\\beta = 1$. Each group has its own reference arm and seed block "
+        "Default rate at $\\beta = 0$. Each group has its own reference arm and seed block "
         "(50{,}000, 54{,}000, 57{,}000 and 59{,}000), so references differ by seed noise. "
         "Difference: arm less its group's reference. $\\dagger$: arm less the same rule with the "
         "cap. Remaining arms: Table~\\ref{tab:robustness-appendix}.",
@@ -765,7 +770,7 @@ def tab_robustness(rob: pd.DataFrame) -> None:
     table(
         "tab_robustness_appendix",
         "Sensitivity of the default rate: remaining arms",
-        "Default rate at $\\beta = 1$, laid out as Table~\\ref{tab:robustness}; seed blocks "
+        "Default rate at $\\beta = 0$, laid out as Table~\\ref{tab:robustness}; seed blocks "
         "53{,}000 (activation), 55{,}000 (population), 51{,}000 (minimum-payer share), 52{,}000 "
         "(minimum payment), 56{,}000 (limit) and 58{,}000 (single-tick shock, against the "
         "exact-shortfall reference on 50{,}000). $\\ddagger$: unpaired, because seeds or population "
@@ -832,7 +837,7 @@ def lever_table(rq3: pd.DataFrame, name: str, caption: str, arms: list[tuple[str
     paired_any, unpaired_any = False, False
     for key, label in arms:
         cells = [label]
-        for b in (0.0, 1.0):
+        for b in (0.0, BP):
             d = arm(rq3, f"{prefix}_{key}_b{b}")
             bench = arm(rq3, f"{prefix}_{bench_key}_b{b}")
             dv, dv_se = ratio_change(d, bench, "bnpl_volume_cumulative")
@@ -868,7 +873,7 @@ def lever_table(rq3: pd.DataFrame, name: str, caption: str, arms: list[tuple[str
         f"the final tick (\\%). Vol.: change in cumulative post-burn-in \\ac{{BNPL}} volume (\\%). "
         f"Trad.: new traditional lending (R m). {note_extra}",
         "L{1.9cm} rrrrr rrrrr",
-        r"& \multicolumn{5}{c}{$\beta = 0$} & \multicolumn{5}{c}{$\beta = 1$} \\ \cmidrule(lr){2-6}\cmidrule(lr){7-11}"
+        r"& \multicolumn{5}{c}{$\beta = 0$} & \multicolumn{5}{c}{$\beta = 0.3$} \\ \cmidrule(lr){2-6}\cmidrule(lr){7-11}"
         "\n\\textbf{Arm} & \\textbf{Default} & \\textbf{$\\Delta$ (pp)} & \\textbf{Hold.} & \\textbf{Vol.} & \\textbf{Trad.} "
         "& \\textbf{Default} & \\textbf{$\\Delta$ (pp)} & \\textbf{Hold.} & \\textbf{Vol.} & \\textbf{Trad.}",
         rows,
@@ -920,8 +925,6 @@ EFFECT_ROWS = [
     ("Routing and the shortfall path (Submodels 5, 7 and 13)", [
         ("routing_loyal", "loyal routing", "ref"),
         ("no_shortfall_bnpl", "no \\ac{BNPL} for shortfalls", "ref"),
-        ("committed_funded", "credit pays food and rent, still distress", "committed_funded"),
-        ("committed_relief", "credit pays food and rent, not distress", "committed_relief"),
     ]),
     ("Other assumptions (Submodels 1, 6, 7 and 12)", [
         ("shock_single_tick", "single-tick income shock", "shock_single_tick"),
@@ -955,7 +958,7 @@ def tab_effect(eff: pd.DataFrame) -> None:
         for key, name, off_key in items:
             off = a(f"eff_{off_key}_off")
             d0, s0 = paired_diff(a(f"eff_{key}_b0.0"), off, "default_rate_final")
-            d1, s1 = paired_diff(a(f"eff_{key}_b1.0"), off, "default_rate_final")
+            d1, s1 = paired_diff(a(f"eff_{key}_b{BP}"), off, "default_rate_final")
             effects0[key], effects1[key] = (d0, s0), (d1, s1)
             # Three decimals where a standard error would round to 0.01 at two, which would make
             # an effect of under 2 SE look like 2 SE; the note names the rows.
@@ -963,9 +966,9 @@ def tab_effect(eff: pd.DataFrame) -> None:
             if dd == 3:
                 fine.append(name)
             p0 = ms(a(f"eff_{key}_b0.0").bnpl_purchase_mean_realised)[0]
-            p1 = ms(a(f"eff_{key}_b1.0").bnpl_purchase_mean_realised)[0]
+            p1 = ms(a(f"eff_{key}_b{BP}").bnpl_purchase_mean_realised)[0]
             N[f"eff_{key}_purchase_b1"], N[f"eff_{key}_purchase_b0"] = p1, p0
-            v0, v1 = volume(f"eff_{key}_b0.0"), volume(f"eff_{key}_b1.0")
+            v0, v1 = volume(f"eff_{key}_b0.0"), volume(f"eff_{key}_b{BP}")
             N[f"eff_{key}_volume_elig_b0"], N[f"eff_{key}_volume_elig_b1"] = v0, v1
             name_ = f"\\textbf{{{name}}}" if key == "ref" else name
             rows.append(f"{name_} & {pct(ms(off.default_rate_final)[0])} & {num(p0)} & {num(p1)} & "
@@ -1008,7 +1011,7 @@ def tab_effect(eff: pd.DataFrame) -> None:
         r"& \multicolumn{2}{c}{\textbf{Effect (pp)}} \\ "
         r"\cmidrule(lr){3-4}\cmidrule(lr){5-6}\cmidrule(lr){7-8}"
         "\n\\textbf{Setting} & \\textbf{No \\ac{BNPL} (\\%)} & "
-        "$\\beta=0$ & $\\beta=1$ & $\\beta=0$ & $\\beta=1$ & $\\beta=0$ & $\\beta=1$",
+        "$\\beta=0$ & $\\beta=0.3$ & $\\beta=0$ & $\\beta=0.3$ & $\\beta=0$ & $\\beta=0.3$",
         rows,
         size=r"\footnotesize",
         colsep="1.8pt",
@@ -1040,16 +1043,16 @@ def derived_numbers(rq0, rq2, rq2t, rq3, eff) -> None:
     N["beta0_effect_pooled_detectable"] = bool(detectable(pooled, pooled_se))
     # the same at beta = 1, three blocks
     blocks1 = {
-        "rq0": delta(arm(rq0, "bnpl_on_beta1"), arm(rq0, "baseline_no_bnpl"), "default_rate_final"),
-        "access": delta(rq2[(rq2.beta == 1) & (rq2.bnpl_access_rate == 1.0)],
-                        rq2[(rq2.beta == 1) & (rq2.bnpl_access_rate == 0.0)], "default_rate_final"),
-        "effect": paired_diff(arm(eff, "eff_ref_b1.0"), arm(eff, "eff_ref_off"), "default_rate_final"),
+        "rq0": delta(arm(rq0, "bnpl_on_peer"), arm(rq0, "baseline_no_bnpl"), "default_rate_final"),
+        "access": delta(rq2[(rq2.beta == BP) & (rq2.bnpl_access_rate == 1.0)],
+                        rq2[(rq2.beta == BP) & (rq2.bnpl_access_rate == 0.0)], "default_rate_final"),
+        "effect": paired_diff(arm(eff, f"eff_ref_b{BP}"), arm(eff, "eff_ref_off"), "default_rate_final"),
     }
     w1 = {k: 1.0 / se**2 for k, (_, se) in blocks1.items()}
-    N["beta1_effect_pooled"] = sum(w1[k] * blocks1[k][0] for k in blocks1) / sum(w1.values())
-    N["beta1_effect_pooled_se"] = (1.0 / sum(w1.values())) ** 0.5
-    N["beta1_effect_min"] = min(d for d, _ in blocks1.values())
-    N["beta1_effect_max"] = max(d for d, _ in blocks1.values())
+    N["peer_effect_pooled"] = sum(w1[k] * blocks1[k][0] for k in blocks1) / sum(w1.values())
+    N["peer_effect_pooled_se"] = (1.0 / sum(w1.values())) ** 0.5
+    N["peer_effect_min"] = min(d for d, _ in blocks1.values())
+    N["peer_effect_max"] = max(d for d, _ in blocks1.values())
 
     # --- the access response step by step: is any single step a jump? -------------------
     levels = sorted(rq2.bnpl_access_rate.unique())
@@ -1066,9 +1069,9 @@ def derived_numbers(rq0, rq2, rq2t, rq3, eff) -> None:
     N["access_max_step_all"] = max(N[f"access_max_step_beta{b:g}"] for b in rq2.beta.unique())
 
     # --- volume and saving beside the effect ---------------------------------------------
-    off, b0, b1 = (arm(rq0, l) for l in ("baseline_no_bnpl", "bnpl_on_beta0", "bnpl_on_beta1"))
-    N["volume_ratio_beta1_over_beta0"] = ms(b1.bnpl_volume_cumulative)[0] / ms(b0.bnpl_volume_cumulative)[0]
-    for name, d_ in (("beta0", b0), ("beta1", b1)):
+    off, b0, b1 = (arm(rq0, l) for l in ("baseline_no_bnpl", "bnpl_on_beta0", "bnpl_on_peer"))
+    N["volume_ratio_peer_over_beta0"] = ms(b1.bnpl_volume_cumulative)[0] / ms(b0.bnpl_volume_cumulative)[0]
+    for name, d_ in (("beta0", b0), ("peer", b1)):
         x, se = delta(d_, off, "zero_savings_rate_mean")
         N[f"zero_savings_change_{name}"], N[f"zero_savings_change_{name}_se"] = x, se
         x, se = delta(d_, off, "trad_granted_value")
@@ -1077,21 +1080,21 @@ def derived_numbers(rq0, rq2, rq2t, rq3, eff) -> None:
         N[f"refused_change_{name}"], N[f"refused_change_{name}_se"] = x, se
         x, se = delta(d_, off, "active_90_plus_mean")
         N[f"arrears90_change_{name}"], N[f"arrears90_change_{name}_se"] = x, se
-    N["zero_savings_beta1"] = ms(b1.zero_savings_rate_mean)[0]
+    N["zero_savings_peer"] = ms(b1.zero_savings_rate_mean)[0]
     # Why lending falls at beta=0 but not at beta=1: applications against the mean loan.
-    for name, d_ in (("beta0", b0), ("beta1", b1)):
+    for name, d_ in (("beta0", b0), ("peer", b1)):
         x, se = delta(d_, off, "trad_applications")
         N[f"applications_change_{name}"], N[f"applications_change_{name}_se"] = x, se
         x, se = delta(d_, off, lambda d: d.trad_granted_value / d.trad_granted.clip(lower=1))
         N[f"mean_grant_change_{name}"], N[f"mean_grant_change_{name}_se"] = x, se
     # Stacking under the two routing rules, on the effect suite's seeds (added 2026-10-06).
     for rule, key in (("random", "ref"), ("loyal", "routing_loyal")):
-        for b in (0.0, 1.0):
+        for b in (0.0, BP):
             d_ = arm(eff, f"eff_{key}_b{b}")
             N[f"stack_holders_{rule}_beta{b:g}"] = ms(holders_share(d_))[0]
             N[f"stack_ever_{rule}_beta{b:g}"] = ms(d_.ever_stacked_2plus_of_adopters)[0]
             N[f"volume_{rule}_beta{b:g}"] = ms(d_.bnpl_volume_cumulative)[0]
-    for b in (0.0, 1.0):
+    for b in (0.0, BP):
         x, se = paired_diff(arm(eff, f"eff_routing_loyal_b{b}"), arm(eff, f"eff_ref_b{b}"), "default_rate_final")
         N[f"routing_default_diff_beta{b:g}"], N[f"routing_default_diff_beta{b:g}_se"] = x, se
     N["volume_want_off"] = ms(arm(eff, "eff_want_off_b0.0").bnpl_volume_cumulative)[0]
@@ -1099,7 +1102,7 @@ def derived_numbers(rq0, rq2, rq2t, rq3, eff) -> None:
     N["lending_eff_ref_b0"] = ms(arm(eff, "eff_ref_b0.0").trad_granted_value)[0]
 
     # --- how often holders borrow: want-driven purchases per household that ever held BNPL --
-    for name, d_ in (("beta0", b0), ("beta1", b1)):
+    for name, d_ in (("beta0", b0), ("peer", b1)):
         N[f"want_per_everholder_{name}"] = ms(d_.bnpl_want_purchases / (d_.ever_adopted * d_.n_agents))[0]
     # --- volume under the threshold rule against its control, at full access -------------
     full = surf[surf.bnpl_access_rate == 1.0]
@@ -1107,10 +1110,10 @@ def derived_numbers(rq0, rq2, rq2t, rq3, eff) -> None:
     thr_vol = full[full.gamma > 0].groupby("sigma_theta").bnpl_volume_cumulative.mean() / ctrl_vol
     N["thr_volume_ratio_min"], N["thr_volume_ratio_max"] = float(thr_vol.min()), float(thr_vol.max())
     lin_full = rq2[rq2.bnpl_access_rate == 1.0].groupby("beta").bnpl_volume_cumulative.mean()
-    N["access_volume_ratio_beta0.5"] = float(lin_full[0.5] / lin_full[0.0])
+    N["access_volume_ratio_peer"] = float(lin_full[BP] / lin_full[0.0])
 
     # --- does the effect differ between quintiles? the largest against the smallest ------
-    for name, d_ in (("beta0", b0), ("beta1", b1)):
+    for name, d_ in (("beta0", b0), ("peer", b1)):
         eff_q = {q: (d_.set_index("seed")[f"default_rate_final_{q}"]
                      - off.set_index("seed")[f"default_rate_final_{q}"]) for q in Q}
         hi_q = max(Q, key=lambda q: eff_q[q].mean())
@@ -1121,14 +1124,14 @@ def derived_numbers(rq0, rq2, rq2t, rq3, eff) -> None:
         N[f"injection_gap_{name}_se"] = float(gap.std(ddof=1) / len(gap) ** 0.5)
 
     # --- the smallest change each scenario comparison could have detected ----------------
-    ses = [N[f"lever_{k}_beta{b:g}_diff_se"] for k in ("bureau", "afford", "both") for b in (0.0, 1.0)]
+    ses = [N[f"lever_{k}_beta{b:g}_diff_se"] for k in ("bureau", "afford", "both") for b in (0.0, BP)]
     N["switch_se_max"] = max(ses)
     N["switch_detectable_min"] = 2 * max(ses)
     N["switch_n_detectable"] = sum(
         detectable(N[f"lever_{k}_beta{b:g}_diff"], N[f"lever_{k}_beta{b:g}_diff_se"])
-        for k in ("bureau", "afford", "both") for b in (0.0, 1.0))
+        for k in ("bureau", "afford", "both") for b in (0.0, BP))
     # --- what the prose of Section 5 quotes beyond the two tables ------------------------
-    for b in (0.0, 1.0):
+    for b in (0.0, BP):
         arms = {k: arm(rq3, f"rq3s_{k}_b{b}") for k in ("bench", "bureau", "afford", "both")}
         for k in ("bureau", "afford", "both"):
             for col, tag in (("active_90_plus_mean", "90plus"), ("trad_refused_gate", "refused"),
@@ -1144,28 +1147,11 @@ def derived_numbers(rq0, rq2, rq2t, rq3, eff) -> None:
         # peer influence and the switches: the beta = 1 less beta = 0 gap in each arm
     for k in ("bench", "bureau", "afford", "both"):
         N[f"switch_{k}_beta_gap"], N[f"switch_{k}_beta_gap_se"] = delta(
-            arm(rq3, f"rq3s_{k}_b1.0"), arm(rq3, f"rq3s_{k}_b0.0"), "default_rate_final")
+            arm(rq3, f"rq3s_{k}_b{BP}"), arm(rq3, f"rq3s_{k}_b0.0"), "default_rate_final")
     for k in ("bureau", "afford", "both"):
-        x = (arm(rq3, f"rq3s_{k}_b1.0").set_index("seed").default_rate_final - arm(rq3, "rq3s_bench_b1.0").set_index("seed").default_rate_final) \
+        x = (arm(rq3, f"rq3s_{k}_b{BP}").set_index("seed").default_rate_final - arm(rq3, f"rq3s_bench_b{BP}").set_index("seed").default_rate_final) \
             - (arm(rq3, f"rq3s_{k}_b0.0").set_index("seed").default_rate_final - arm(rq3, "rq3s_bench_b0.0").set_index("seed").default_rate_final)
         N[f"switch_{k}_interaction"], N[f"switch_{k}_interaction_se"] = float(x.mean()), float(x.std(ddof=1) / len(x) ** 0.5)
-
-
-def scenarios_under_relief(rq3r: pd.DataFrame) -> None:
-    """RQ3 under the committed-relief distress rule (suite rq3r, added 2026-10-12): numbers
-    for Section 5 only, no table. Same arms, seeds and replicate count as tab_scenarios."""
-    for b in (0.0, 1.0):
-        bench = arm(rq3r, f"rq3r_bench_b{b}")
-        N[f"rq3r_bench_default_b{b:g}"] = ms(bench.default_rate_final)[0]
-        for key in ("bureau", "afford", "both"):
-            d = arm(rq3r, f"rq3r_{key}_b{b}")
-            N[f"rq3r_{key}_default_diff_b{b:g}"], N[f"rq3r_{key}_default_diff_se_b{b:g}"] = paired_diff(
-                d, bench, "default_rate_final")
-            N[f"rq3r_{key}_refused_diff_b{b:g}"] = paired_diff(d, bench, "trad_refused_gate")[0]
-        d = arm(rq3r, f"rq3r_bureau_b{b}")
-        for q in range(1, 6):
-            N[f"rq3r_bureau_default_diff_Q{q}_b{b:g}"], N[f"rq3r_bureau_default_diff_Q{q}_se_b{b:g}"] = paired_diff(
-                d, bench, f"default_rate_final_Q{q}")
 
 
 def main() -> None:
@@ -1187,9 +1173,6 @@ def main() -> None:
     tab_levers(rq3, rq3s)
     tab_effect(eff)
     derived_numbers(rq0, rq2, rq2t, rq3s, eff)
-    rq3r = load("rq3r")
-    assert rq3r.groupby("label").seed.nunique().eq(100).all(), "every relief scenario arm needs 100 seeds"
-    scenarios_under_relief(rq3r)
     out = {k: (round(float(v), 6) if isinstance(v, (float, np.floating)) else
                (int(v) if isinstance(v, np.integer) else v)) for k, v in N.items()}
     (SUMMARY / "results_numbers.json").write_text(json.dumps(out, indent=2), encoding="utf-8")

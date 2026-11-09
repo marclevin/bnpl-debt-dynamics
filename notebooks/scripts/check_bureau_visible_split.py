@@ -36,6 +36,11 @@ from joblib import Parallel, delayed
 warnings.simplefilter("ignore")
 from simulation.experiments import calibrated  # noqa: E402
 
+#: Milestone 2 (#98): the peer-influence arm beside beta = 0. Table text prints it as 0.3.
+from simulation.experiments import BETA_PEER as BP  # noqa: E402
+assert BP == 0.30, "table text prints the peer arm as beta = 0.3; update it with BETA_PEER"
+
+
 QUINTILES = ("Q1", "Q2", "Q3", "Q4", "Q5")
 SEEDS = range(80_000, 80_020)
 
@@ -176,7 +181,7 @@ if __name__ == "__main__":
         "BNPL added and passes on traditional service alone; pass_if_live_only: it would pass if only "
         "live instalments were shown (one-decision counterfactual). Script: "
         "notebooks/scripts/check_bureau_visible_split.py.")}
-    for b in (0.0, 1.0):
+    for b in (0.0, BP):
         ps = [calibrated(bnpl_enabled=True, beta=b, bnpl_bureau_visible=True,
                          label=f"rq3s_bureau_b{b}").replace(seed=s) for s in SEEDS]
         rows = Parallel(n_jobs=-2)(delayed(one)(p) for p in ps)

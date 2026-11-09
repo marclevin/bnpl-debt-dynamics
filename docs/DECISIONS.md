@@ -981,6 +981,12 @@ Four levers, three of which correspond to instruments that actually exist:
 ## Part F. Social structure
 
 ### D17. Peer influence and the reference group
+- **UPDATED 2026-11-09 (Milestone 2, issues #97 to #99).** The supervisor judged beta = 1 unrealistically
+  strong. beta was swept over [0, 0.025, 0.05, 0.075, 0.10, 0.15, 0.20, 0.30] at 250 replicates under
+  the D18 rule. The BNPL effect is flat (+1.05 +/- 0.03 pp at beta = 0; slope +0.003 +/- 0.014 per 0.1),
+  linear under the pre-registered test, so beta = 0 is the headline and `BETA_PEER` = 0.30 the one peer
+  arm reported beside it. `BETA_GRID` is [0, 0.1, 0.2, 0.3] and the Sobol range 0-0.30. The figures
+  quoted below (0.60, 0.95 and the grid to 3) describe 6b0a4c7.
 - **Governs:** whether households influence one another at all. Without this the model has no
   agent-to-agent interaction, which makes it closer to a dynamic microsimulation than an ABM, and
   more seriously leaves **RQ2 asking for a non-linear threshold the topology cannot produce**:

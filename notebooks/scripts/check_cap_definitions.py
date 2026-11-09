@@ -22,7 +22,7 @@ from joblib import Parallel, delayed
 
 from simulation.affordability import nca_gate
 from simulation.config import MONTHLY_TO_TICK, ParamSet
-from simulation.experiments import calibrated
+from simulation.experiments import BETA_PEER, calibrated
 
 
 
@@ -79,7 +79,7 @@ def run(definition: str, params: ParamSet) -> dict:
 
 if __name__ == "__main__":
     jobs = []
-    for beta in (0.0, 1.0):
+    for beta in (0.0, BETA_PEER):
         for seed in range(43_000, 43_020):
             base = dict(bnpl_enabled=True, beta=beta, seed=seed)
             jobs.append(("model", calibrated(**base, label=f"none_b{beta:g}")))
@@ -90,7 +90,7 @@ if __name__ == "__main__":
     names = {"model": "(a) platforms, freeze at cap [the model]", "platforms_topup": "(b) platforms, top-ups allowed",
              "agreements": "(c) agreements"}
     rows = []
-    for beta in (0.0, 1.0):
+    for beta in (0.0, BETA_PEER):
         bench = df[df.label == f"none_b{beta:g}"].set_index("seed")
         for cap in (1, 2, 3):
             for d in ("model", "platforms_topup", "agreements"):
@@ -106,7 +106,7 @@ if __name__ == "__main__":
     # The model's cap against the agreements cap, paired by seed: one being detectable and
     # the other not does not show that they differ, so the difference is tested directly.
     diffs = []
-    for beta in (0.0, 1.0):
+    for beta in (0.0, BETA_PEER):
         for cap in (1, 2, 3):
             a = df[(df.label == f"cap{cap}_b{beta:g}") & (df.definition == "model")].set_index("seed")
             c = df[(df.label == f"cap{cap}_b{beta:g}") & (df.definition == "agreements")].set_index("seed")

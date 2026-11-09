@@ -36,9 +36,14 @@ from results_common import (  # noqa: E402
 )
 from simulation.config import load_ccmr_bands  # noqa: E402
 
+#: Milestone 2 (#98): the peer-influence arm beside beta = 0. Table text prints it as 0.3.
+from simulation.experiments import BETA_PEER as BP  # noqa: E402
+assert BP == 0.30, "table text prints the peer arm as beta = 0.3; update it with BETA_PEER"
+
+
 plt.rcParams.update(RC)
 CTRL_LBL = r"$\beta = 0$ (control)"
-BETA1_LBL = r"$\beta = 1$"
+BETA1_LBL = r"$\beta = 0.3$"
 
 
 def half_ci(x: pd.Series) -> float:
@@ -95,7 +100,7 @@ def fig_stacking(rq1: pd.DataFrame) -> None:
     # Panels (a) and (b) start at two platforms: with one platform no household can hold
     # facilities on two platforms, so the share is zero by construction and is not a result.
     fig, axes = plt.subplots(1, 3, figsize=(TW, 2.45))
-    series = [(0.0, INK, CTRL_LBL, "s"), (1.0, SRC, BETA1_LBL, "o")]
+    series = [(0.0, INK, CTRL_LBL, "s"), (BP, SRC, BETA1_LBL, "o")]
     cols = ("stacking_2plus_final", "ever_stacked_2plus_of_adopters", "default_rate_final")
     for b, colour, label, marker in series:
         sub = rq1[rq1.beta == b]
@@ -184,7 +189,7 @@ def fig_scenarios(rq3s: pd.DataFrame) -> None:
     fig, (ax_a, ax_b) = plt.subplots(1, 2, figsize=(TW, 2.5))
     x = np.arange(len(SCENARIOS))
     w = 0.36
-    for j, (b, colour, label) in enumerate([(0.0, INK, CTRL_LBL), (1.0, SRC, BETA1_LBL)]):
+    for j, (b, colour, label) in enumerate([(0.0, INK, CTRL_LBL), (BP, SRC, BETA1_LBL)]):
         means, sds, vols = [], [], []
         bench = arm(rq3s, f"rq3s_bench_b{b}").bnpl_volume_cumulative.mean()
         for key, _ in SCENARIOS:
@@ -315,7 +320,7 @@ def fig_scenarios_appendix(rq3: pd.DataFrame, rq3s: pd.DataFrame) -> None:
     frames = {"rq3": (rq3, "kcool0"), "rq3s": (rq3s, "bench")}
     fig, axes = plt.subplots(1, 2, figsize=(TW, 2.9), sharey=True)
     y = np.arange(len(arms))
-    for ax, b in zip(axes, (0.0, 1.0)):
+    for ax, b in zip(axes, (0.0, BP)):
         for yi, (suite, k, _) in zip(y, arms):
             df, bench_key = frames[suite]
             d = arm(df, f"{suite}_{k}_b{b}")
