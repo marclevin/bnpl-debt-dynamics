@@ -51,7 +51,7 @@ It was generated from the parameter declarations in \texttt{simulation/config.py
 \texttt{notebooks/scripts/generate\_param\_register.py}; two source notes were then edited by
 hand.
 
-Four groups of entries carry standing flags:
+Four groups of entries call for caution:
 \begin{itemize}
     \item \textbf{The fitted and derived parameters.} Payment friction (Submodel~6) is fitted to
     the \ac{CCMR} 1--30 day band. The separation rate (Submodel~1) is derived from the
@@ -59,10 +59,12 @@ Four groups of entries carry standing flags:
     \item \textbf{The uncited rules.} The shortfall borrowing amount (Submodel~4), \ac{BNPL} relief
     of a shortfall and its cap (Submodel~5), the minimum-payment fraction (Submodel~6), the use of
     credit raised against a committed shortfall (Submodel~7) and platform routing (Submodel~13)
-    have no literature anchor. Each is varied in at least one arm. Three assumptions are not
-    varied: purchase-size dispersion, the order cap, which binds on 0.3\% of platform requests
-    at $\beta=0$, and the payment of \ac{BNPL} instalments before traditional debt
-    (Section~\ref{sec:sequence}).
+    have no literature anchor. Each is varied in at least one arm. Six assumptions are not
+    varied: purchase-size dispersion; the order cap, which binds on 0.3\% of platform requests
+    at $\beta=0$; the discretionary floor of zero (Submodel~2); the payment order, food and rent
+    first, then \ac{BNPL}, then traditional debt (Section~\ref{sec:sequence}); the cut of a
+    want-driven order to what the household can pay at checkout; and refusal at the fee cap
+    (Submodel~14).
     \item \textbf{The uncalibrated peer coefficients.} $q_{\text{base}}$, $\beta$ and the
     threshold parameters of Submodel~11 have no South African estimate. The
     $\beta = 0$ and $\gamma = 0$ control arms are reported beside every peer-influence result;
