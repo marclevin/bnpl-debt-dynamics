@@ -181,6 +181,63 @@ def main() -> None:
     expect("effect", t, paired("eff_want_off_b0.0", "eff_ref_off"))
 
     print(f"OK: {checked} numbers re-derived from results/raw match the generated fragments")
+    check_prose()
+
+
+def check_prose() -> None:
+    """Typed numbers in the results prose (#95, #100): each must match its JSON source, as printed.
+
+    Covers the headline numbers that are typed rather than \\input from a fragment. A number is
+    formatted from the JSON exactly as the text prints it and must appear in the named chapter.
+    """
+    global checked
+    start = checked
+    num = json.loads((SUMMARY / "results_numbers.json").read_text())
+    sweep = json.loads((SUMMARY / "beta_sweep.json").read_text())
+    cont = json.loads((SUMMARY / "contestable_default.json").read_text())
+    dc = json.loads((SUMMARY / "defaulter_credit.json").read_text())
+    ch = {n: (ROOT / "thesis" / "chapters" / f"{n}.tex").read_text(encoding="utf-8")
+          for n in ("03_calibration", "04_results", "05_policy", "06_conclusion")}
+
+    def pmj(d: dict, key: str, dp: int = 2) -> str:
+        return f"{d[key] * 100:+.{dp}f} \\pm {d[key + '_se'] * 100:.{dp}f}"
+
+    def unsigned(s: str) -> str:
+        return s.lstrip("+")
+
+    # Section 3.4: the fit.
+    for key, txt in (("fit_friction", "0.0575"), ("fit_persistence", "0.72"), ("derived_write_off", "0.0707")):
+        assert f"{num[key]:g}" == txt, key
+        expect("ch3 fit", ch["03_calibration"], txt)
+    expect("ch3 fit", ch["03_calibration"], f"{num['fit_90plus'] * 100:.2f}\\%")
+    expect("ch3 fit", ch["03_calibration"], f"{num['fit_90plus_final'] * 100:.2f}\\%")
+    expect("ch3 book", ch["03_calibration"], f"{num['baseline_credit_active'] * 5000:,.0f}".replace(",", "{,}"))
+    # Section 3.5: default and the households short from the start.
+    expect("ch3 default", ch["03_calibration"], f"{num['baseline_default'] * 100:.2f}\\%")
+    expect("ch3 default", ch["03_calibration"], f"{dc['no BNPL']['default_rate'] * 100:.2f}\\%")
+    expect("ch3 short", ch["03_calibration"], f"{dc['no BNPL']['income_below_committed_who_default'] * 100:.0f}\\%")
+    expect("ch3 short", ch["03_calibration"], f"{dc['BNPL beta=0']['income_below_committed_who_default'] * 100:.0f}\\%")
+    expect("ch3 short", ch["03_calibration"], pmj(cont, "beta0_effect_pooled_contestable"))
+    expect("ch3 short", ch["03_calibration"], pmj(cont, "peer_effect_pooled_contestable"))
+    expect("ch3 short", ch["03_calibration"], unsigned(pmj(cont, "rq3s_bureau_diff_contestable_b0")))
+    # Section 4.1 and the RQ2 answer: the pooled effect.
+    for c in ("04_results", "06_conclusion"):
+        expect(f"{c} pooled", ch[c], unsigned(pmj(num, "beta0_effect_pooled")))
+    expect("ch4 pooled", ch["04_results"], unsigned(pmj(num, "peer_effect_pooled")))
+    expect("ch4 shortfall", ch["04_results"], pmj(num, "eff_no_shortfall_bnpl_b0"))
+    # Section 4.2: the beta sweep.
+    h = sweep["headline_linear"]
+    expect("ch4 beta", ch["04_results"], f"{h['beta0_effect_pp']:+.2f} \\pm {h['beta0_effect_se']:.2f}")
+    expect("ch4 beta", ch["04_results"], f"{h['beta0_effect_sd']:.2f}")
+    slope = f"{h['slope_pp_per_0.1_beta']:+.3f} \\pm {h['slope_se_per_0.1_beta']:.3f}"
+    for c in ("04_results", "06_conclusion"):
+        expect(f"{c} slope", ch[c], slope)
+    assert sweep["verdict"] == "linear"
+    # Section 5: the switches at beta = 0.
+    expect("ch5 bureau", ch["05_policy"], unsigned(pmj(num, "lever_bureau_beta0_diff")))
+    expect("ch5 screening", ch["05_policy"], f"{-num['lever_afford_beta0_diff'] * 100:.2f} \\pm "
+           f"{num['lever_afford_beta0_diff_se'] * 100:.2f}")
+    print(f"OK: {checked - start} typed prose numbers match results/summary")
 
 
 if __name__ == "__main__":

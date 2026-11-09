@@ -65,16 +65,21 @@ The derivation and its 0.8% check are stated in the index of limitations (Append
 The CCMR counts accounts; the model counts households. Arrears are compared over credit-active
 households (B18, closed), which removes the definitional undershoot but not the unit mismatch.
 This also limits what the fitted shock probability means. Disclosed in Section 3.5 and the note
-to `tab:ccmr`. Closes only with household-level arrears data for 2017.
+to `tab:ccmr`. Closes only with household-level arrears data for 2017. **Disclose only** (Marc,
+2026-11-09). Under D18 the CCMR account shares also place households in arrears at the start
+(B44); disclosed in Sections 3.4 and 3.5 and the limitations index.
 
 ### B8 · `q_base` and beta are uncalibrated · `MAJOR` · Marc
 
 **Updated 2026-11-09 (Milestone 2).** beta = 1 is gone. Swept over 0-0.30 at 250 replicates under the
 arrears rule (`results/summary/beta_sweep.json`): the BNPL effect is flat, +1.05 +/- 0.03 pp at beta = 0,
 slope +0.003 +/- 0.014 pp per 0.1 of beta; verdict linear under the pre-registered test (#97). The peer
-arm downstream is beta = 0.30, where volume first enters the provider range; stacking among
-ever-holders is already 70.6% there against the CFPB's 32-33%, so the two anchors still conflict.
-The text below describes 6b0a4c7.
+arm downstream is beta = 0.30, the largest value swept: volume per eligible household enters the
+provider range at beta = 0.2 (R1,411) and is still inside it at 0.3 (R2,014). Stacking among
+ever-holders is 70.6% there against the CFPB's 32-33%; Marc's decision (2026-11-09) is to put that
+gap down to the CFPB figure being United States data. **Disclose only.** Disclosed in Sections 3.5
+("Behaviour with BNPL") and 4.2 (`sec:results-beta`, Table `tab:beta`), and the register's beta
+row (#95, #100). The text below describes 6b0a4c7.
 
 Neither has an empirical estimate (Section 3.4). beta = 1 is labelled illustrative: there 98.6%
 of ever-holders stack, against the CFPB's 32% and 33%, so Section 4.1 treats beta = 0 as the
@@ -114,7 +119,12 @@ write-off rule and a recalibration.
 
 ### B37 · The shortfall path: liquidity without a matching purchase, and unspent credit · `MAJOR` · Marc · tested, disclosed
 
-**Updated 2026-11-09 (D18): now the main qualification of the headline.** Part (2) is gone: credit raised
+**Updated 2026-11-09 (D18): now the description of the mechanism, not a flaw (Marc, 2026-11-09).**
+The thesis states it as "the effect runs through households using BNPL to bridge cash shortfalls,
+substituting for purchases they would otherwise pay in cash, and then falling 91+ days behind on
+it", with the no-shortfall-BNPL row as evidence of the channel (Sections 4.1, 4.4 "What Moves the
+BNPL Effect", 4.6 and 6; limitations index row "The shortfall path carries the effect"). See also
+B47. Part (2) is gone: credit raised
 against a food or rent shortfall pays it first (`committed_shortfall_funded` is the baseline). Part (1)
 now carries the BNPL effect: with BNPL kept out of the shortfall path the effect is -0.05 +/- 0.16 pp at
 beta = 0 and +0.11 +/- 0.13 at beta = 0.3, against +0.98 +/- 0.13 and +1.07 +/- 0.15 in the reference
@@ -150,7 +160,10 @@ New 2026-11-09. With 2 replicates per design point, the first-order indices for 
 for every parameter but the separation rate (0.67) and the total-order indices are about 0.4 for all
 six (1.12 for the separation rate). The replicate SD of default is larger under the arrears rule, so
 run-to-run noise swamps the parameter effects. Rerun `simulation.sensitivity` with more replicates per
-point before Table 22 is quoted, or report only the ranking.
+point before Table 22 is quoted, or report only the ranking. **Disclosed 2026-11-09 (#95):** Section
+4.5 and Appendix C (`app:sensitivity`) read only the separation-rate ranking and call the default
+indices provisional; the separation rate's direction is given (default 21.3% in the lowest fifth of
+its swept range, 22.3% in the highest; `sobol_runs.parquet`). Rerun is #104.
 
 ### B44 · The arrears rule adds two assumptions and one fitted parameter · `MAJOR` · Marc
 
@@ -160,8 +173,11 @@ households were in arrears in 2017. (2) A defaulted account is non-performing: t
 collections, debt review or partial recovery. (3) Arrears persistence (0.72) is fitted, so the
 model now has two fitted parameters and five targeted bands; agreement on those bands is not
 evidence. The write-off rate is derived from the CCMR, not fitted, but it assumes the 2017
-profile is a steady state. CCMR shares are of accounts, applied to households (B5). Disclose in
-Sections 3.4 and 3.5 and the limitations index (#95).
+profile is a steady state. CCMR shares are of accounts, applied to households (B5). **Disclose
+only** (Marc, 2026-11-09). Disclosed 2026-11-09 (#95) in Section 3.4 (`sec:lim-calibration`: the
+three steps and "This agreement is by construction"), Section 3.5 ("What the Validation
+Supports" and the RQ1 answer), Appendix B.2, Appendix C (`app:calibration` and the limitations
+row "The baseline is calibrated, not validated") and Algorithm `alg:seed` (Appendix F).
 
 ### B46 · The credit-active population halves over the run · `MAJOR` · Marc
 
@@ -170,8 +186,21 @@ at the final tick (`docs/ARREARS_RULE_2026-11.md`). Written-off accounts leave, 
 repay leave, and the only new traditional borrowing is against shortfalls; the CCMR stock is
 replenished by new accounts, the model's is not. The 90+ share is stationary, but it is the
 share of a shrinking book, so "the profile holds for two years" is a statement about ratios, not
-about a steady-state population. Disclose beside B44 in Sections 3.4 and 3.5 and the limitations
-index (#95). Fixing it needs an origination flow and a recalibration; not planned.
+about a steady-state population. Fixing it needs an origination flow and a recalibration; not
+planned. **Disclose only** (Marc, 2026-11-09). Disclosed 2026-11-09 (#95) in Section 3.4 (last
+paragraph of `sec:lim-calibration`), Section 3.5 ("What the Validation Supports", RQ1 answer),
+Section 6 (RQ1 and the extensions), and the limitations row "The credit-active book halves".
+
+### B47 · Most of the BNPL effect comes from households whose income is below their food and rent · `MAJOR` · Marc · disclosed
+
+New 2026-11-09 (#95). The 3.6% of agents (182) whose surveyed income is below committed
+expenditure default during the run at 31% without BNPL and 56% with it at beta = 0
+(`defaulter_credit.json`), about 0.9 of the 1.08-point effect on the rq0 seeds. Among the other
+households the pooled effect is +0.11 +/- 0.07 pp at beta = 0 (not detectable) and +0.18 +/- 0.08 at
+beta = 0.3 (`contestable_default.json`). Two-thirds of the group are in Q1, which is why the effect
+is +4.12 pp in Q1 and nowhere else, and why mandatory screening (-4.68 pp in Q1) removes it. The
+thesis no longer calls the group a survey artefact (#59: no source). Disclosed in Sections 3.5,
+4.1, 4.5, 5 and 6 and the limitations row "Households short from the start". No fix planned.
 
 ### B7 · Behavioural parameters are imported from the United States · `MINOR` · Marc
 

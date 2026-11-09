@@ -35,11 +35,11 @@ Sensing & Agents know their own balance sheets and observe the lagged adoption s
 \addlinespace
 Interaction & Households interact with lenders through credit applications, and with each other indirectly through reference-group adoption shares. & \cite{ackert2025bnpl} \\
 \pagebreak
-Stochasticity & Income shocks and re-employment, archetype and eligibility assignment, want-driven purchases and their size, platform routing order, payment friction, activation order, and threshold endowments (drawn from a separate stream so control arms reproduce exactly across threshold dispersion). Runs are seeded and replicated, with dispersion reported. & None \\
+Stochasticity & Income shocks and re-employment, archetype and eligibility assignment, want-driven purchases and their size, platform routing order, payment friction, arrears persistence, write-off, the ages of the initial arrears, activation order, and threshold endowments (drawn from a separate stream so control arms reproduce exactly across threshold dispersion). Runs are seeded and replicated, with dispersion reported. & None \\
 \addlinespace
 Collectives & Reference groups (income quintile $\times$ province) aggregate individual adoption into the peer signal. The groups are this model's construction; Cardaci models peer effects on consumption. & \cite{cardaci2018inequality} \\
 \addlinespace
-Observation & Tracked per tick: population default rate; the \ac{CCMR} arrears distribution of credit-active households; traditional debt, arrears and interest; \ac{BNPL} balances, holding, volume and fees; the number of platforms each household owes; reference-group adoption shares; and the share with no liquid savings. Per run: the traditional lender's applications, grants and refusals, order-cap and limit binding rates, and default, purchase size and debt-to-income by income quintile. & None \\
+Observation & Tracked per tick: population default rate, at the start and during the run; the \ac{CCMR} arrears distribution of credit-active households; consumption distress; traditional debt, arrears and interest; \ac{BNPL} balances, holding, volume and fees; the number of platforms each household owes; reference-group adoption shares; and the share with no liquid savings. Per run: the traditional lender's applications, grants and refusals, order-cap and limit binding rates, and default, purchase size and debt-to-income by income quintile. & None \\
 \addlinespace
 Exclusions & Eight mechanisms are excluded by design. \emph{No macroeconomic dynamics}: holding the environment fixed isolates the injection effect under baseline conditions. \emph{No contagion}: one aggregate lender with no balance sheet that can fail, and no feedback from household default to income, so default cannot spread through these channels. \emph{No competition among traditional lenders}, which suppresses the lender-conduct mechanism of Hamill et al. \emph{No learning and no scarring}. \emph{No peer effects on consumption}: peer influence acts only on \ac{BNPL} adoption. \emph{Static household composition}. \emph{No credit scores or risk pricing}: bureau visibility acts only through the Regulation 23A test. \emph{No other source of credit}: a household that the lender refuses has no informal or alternative lender. & \cite{hamill2023creditcard, cardaci2018inequality} \\
 \end{longtable}
@@ -47,20 +47,22 @@ Exclusions & Eight mechanisms are excluded by design. \emph{No macroeconomic dyn
 \subsection{Parameter Register}\label{app:register}
 
 Table~\ref{tab:param-register} gives every parameter with its value, provenance and sweep range.
-It was generated from the parameter declarations in \texttt{simulation/config.py} by
-\texttt{notebooks/scripts/generate\_param\_register.py}; two source notes were then edited by
-hand.
+It is generated from the parameter declarations in \texttt{simulation/config.py} by
+\texttt{notebooks/scripts/generate\_param\_register.py}.
 
 Four groups of entries call for caution:
 \begin{itemize}
-    \item \textbf{The fitted and derived parameters.} Payment friction (Submodel~6) is fitted to
-    the \ac{CCMR} 1--30 day band. The separation rate (Submodel~1) is derived from the
-    stable-employment condition and is not fitted (Section~\ref{sec:lim-calibration}).
+    \item \textbf{The fitted and derived parameters.} Payment friction and arrears persistence
+    (Submodel~6) are fitted jointly to the five \ac{CCMR} arrears bands. The separation rate
+    (Submodel~1) is derived from the stable-employment condition, and the write-off rate
+    (Submodel~7) from the stationarity of the \ac{CCMR} 120+ stock; neither is fitted
+    (Section~\ref{sec:lim-calibration}). Which households start in arrears, and the 120+ ages,
+    are assumed.
     \item \textbf{The uncited rules.} The shortfall borrowing amount (Submodel~4), \ac{BNPL} relief
-    of a shortfall and its cap (Submodel~5), the minimum-payment fraction (Submodel~6), the use of
-    credit raised against a committed shortfall (Submodel~7) and platform routing (Submodel~13)
+    of a shortfall and its cap (Submodel~5), the minimum-payment fraction (Submodel~6), arrears persistence
+    (Submodel~6), non-performing default with no collections (Submodel~7) and platform routing (Submodel~13)
     have no literature anchor. Each is varied in at least one arm. Six assumptions are not
-    varied: purchase-size dispersion; the order cap, which binds on 0.3\% of platform requests
+    varied: purchase-size dispersion; the order cap, which binds on 0.44\% of platform requests
     at $\beta=0$; the discretionary floor of zero (Submodel~2); the payment order, food and rent
     first, then \ac{BNPL}, then traditional debt (Section~\ref{sec:sequence}); the cut of a
     want-driven order to what the household can pay at checkout; and refusal at the fee cap
@@ -68,7 +70,7 @@ Four groups of entries call for caution:
     \item \textbf{The uncalibrated peer coefficients.} $q_{\text{base}}$, $\beta$ and the
     threshold parameters of Submodel~11 have no South African estimate. The
     $\beta = 0$ and $\gamma = 0$ control arms are reported beside every peer-influence result;
-    the level-sensitivity arms run at $\beta = 1$ only.
+    the level-sensitivity arms run at $\beta = 0$ only.
     \item \textbf{The rolling limit.} No South African provider publishes a limit. We set
     $\lambda = 0.10$ so that four platform limits sum to about Woolard's illustrative
     \pounds1{,}000 of credit amassed across several lenders \cite{woolard2021}, which is 39\% of United

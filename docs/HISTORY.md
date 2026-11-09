@@ -11,6 +11,19 @@ Earlier history (model build, 2026-08-05 to 2026-09-28) is in the closed rows of
 
 ---
 
+## 2026-11-09: thesis text for the arrears rule and the beta result (#95, #100)
+
+Sections 2 to 6, the appendices and the parameter register now describe D18 and the beta sweep;
+the abstract and Section 1 had only their now-false sentences corrected (#102 owns the rewrite).
+Framing: the CCMR bands are calibrated and the profile stable, not reproduced (B44, B46). New
+findings stated: about 0.9 of the 1.08-point BNPL effect comes from the 3.6% of households whose
+surveyed income is below their food and rent (B47); among the others it is +0.11 +/- 0.07 pp.
+Pattern 3 is reproduced only through write-offs. Screening lowers default by 0.93 pp, almost all
+in Q1. New generated table `tab:beta` (`beta_sweep_analysis.py`); the register generator is back
+in step with the code; `check_results_tables.py` now also checks 23 typed prose numbers.
+
+---
+
 ## 2026-11-09: arrears-based distress (supervisor feedback; Milestone 1, branch `arrears-rule`)
 
 The supervisor asked that a household be distressed only after three months in arrears, that

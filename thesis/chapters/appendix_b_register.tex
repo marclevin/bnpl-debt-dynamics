@@ -11,7 +11,7 @@ provenance and values are taken from the parameter declarations in the code. Col
 the parameter name in the code; the
 submodel of Table~\ref{tab:submodels} that it belongs to (``design'' marks the
 experimental design and ``data'' the data layer); its default value, that of the
-\ac{BNPL}-free baseline with payment friction at its fitted value and the separation rate at its derived value (the benchmark
+\ac{BNPL}-free baseline with payment friction and arrears persistence at their fitted values and the separation and write-off rates at their derived values (the benchmark
 differs only in setting \texttt{bnpl\_enabled} on); its provenance; the
 source that fixes or motivates the value; and the range swept where one applies.
 Provenance: sourced = a citation, statute or stated convention fixes the value; derived = the value is computed from
@@ -36,17 +36,17 @@ fee cap and the assumed order cap, are set at 2026 prices and deflated once (App
 \addlinespace
 \texttt{shock\_\allowbreak{}prob} & 1 & 0.00446 & derived & Derived, not fitted: the separation rate at which expected employment is constant, the re-employment rate times the ratio of strictly unemployed to employed members in the population (1{,}113 to 4{,}670). The \ac{QLFS} 2017 job-separation band is 0.54--1.17\% per tick \cite{statssa_lmd_2022}. Fitting the rate to the \ac{CCMR} 90+ band without labour flows, as an earlier version did, chose 0.016. & 0.0013--0.0071 in the Sobol design \\
 \addlinespace
-\texttt{labour\_\allowbreak{}flows} & 1 & on & assumed & Every employed member separates at \texttt{shock\_prob} and every unemployed member, including members strictly unemployed on the \ac{NIDS} roster at the start, finds work at \texttt{shock\_exit\_prob}. A hired jobseeker brings the median \ac{NIDS} take-home pay of employed adults in the household's income quintile. Expected employment is then constant. & off reproduces the earlier rule, in which only members employed at the start can lose and regain work \\
-\addlinespace
 \texttt{shock\_\allowbreak{}persistent} & 1 & on & sourced & An unemployment spell lasts until re-employment. In the \ac{QLFS} 2017, 68.4\% of the unemployed were still unemployed a quarter later \cite{statssa_lmd_2022}. & single-tick shock as a robustness arm \\
 \addlinespace
 \texttt{shock\_\allowbreak{}exit\_\allowbreak{}prob} & 1 & 0.018724 & sourced & Re-employment hazard per tick. In the \ac{QLFS} 2017, 11.6\% of the unemployed moved into employment in a quarter, which is 1.87\% per tick \cite{statssa_lmd_2022}. & -- \\
+\addlinespace
+\texttt{labour\_\allowbreak{}flows} & 1 & on & assumed & Every employed member separates at \texttt{shock\_prob} and every unemployed member, including members strictly unemployed on the \ac{NIDS} roster at the start, finds work at \texttt{shock\_exit\_prob}. A hired jobseeker brings the median \ac{NIDS} take-home pay of employed adults in the household's income quintile. Expected employment is then constant. & off reproduces the earlier rule, in which only members employed at the start can lose and regain work \\
 \addlinespace
 \texttt{discretionary\_\allowbreak{}floor} & 2 & 0 & sourced & Discretionary spending can be compressed to zero. & -- \\
 \addlinespace
 \texttt{q\_\allowbreak{}base} & 3/11 & 0.05 & assumed & Probability of a want-driven purchase in a tick without peer influence. No source. & 0.01--0.30 in the Sobol design; 0 in the shortfall-only arm (Table~\ref{tab:effect}) \\
 \addlinespace
-\texttt{beta} & 11 & 0 & assumed & Strength of peer influence under the linear rule (Equation~\ref{eq:peer}). No source. $\beta = 0$ is the control and $\beta = 1$ the illustrative setting reported beside it. & 0 / 0.5 / 1 / 2 / 3 in the platform and access experiments; 0--3 in the Sobol design; 1 in the level-sensitivity arms; 0 and 1 in the effect, scenario and lever arms \\
+\texttt{beta} & 11 & 0 & assumed & Strength of peer influence under the linear rule (Equation~\ref{eq:peer}). No source. $\beta = 0$ is the control and the headline; the \ac{BNPL} effect on default is flat over 0--0.30 (Section~\ref{sec:results-beta}), and 0.30, the value at which volume enters the provider range, is reported beside it. & 0--0.30 at eight values, 250 replicates each (Section~\ref{sec:results-beta}); 0 / 0.1 / 0.2 / 0.3 in the platform and access experiments; 0--0.30 in the Sobol design; 0 and 0.3 in the effect, scenario and lever arms \\
 \addlinespace
 \texttt{peer\_\allowbreak{}mechanism} & 11 & linear & sourced & The rule by which adoption spreads: linear (Equation~\ref{eq:peer}) or heterogeneous thresholds \cite{granovetter1978threshold}. & both rules on the same access grid \\
 \addlinespace
@@ -60,9 +60,9 @@ fee cap and the assumed order cap, are set at 2026 prices and deflated once (App
 \addlinespace
 \texttt{shortfall\_\allowbreak{}bnpl} & 5 & on & assumed & Whether \ac{BNPL} may relieve a shortfall. On in the benchmark; off sends every shortfall to the traditional lender, so \ac{BNPL} finances only want-driven purchases. & off as an effect-robustness arm (Table~\ref{tab:effect}) \\
 \addlinespace
-\texttt{committed\_\allowbreak{}shortfall\_\allowbreak{}funded} & 7 & off & assumed & Whether credit raised in a tick with a committed-expenditure shortfall pays that shortfall first. Off by default, when the credit goes to debt service, then discretionary spending, then savings. & on as an effect-robustness arm (Table~\ref{tab:effect}) \\
+\texttt{committed\_\allowbreak{}shortfall\_\allowbreak{}funded} & 7 & on & assumed & Credit raised in a tick with a food or rent shortfall pays that shortfall first; what stays unpaid is reported as consumption distress (Section~\ref{sec:sequence}). On in the baseline. Off, the earlier rule, spends the credit on debt service, then discretionary spending, then savings. & -- \\
 \addlinespace
-\texttt{committed\_\allowbreak{}shortfall\_\allowbreak{}clears\_\allowbreak{}distress} & 7 & off & assumed & With credit paying food and rent first, whether food and rent that a loan pays in full still count as distress. Off by default, when any committed shortfall is distress. & on, with the switch above, as an effect-robustness arm (Table~\ref{tab:effect}) \\
+\texttt{committed\_\allowbreak{}shortfall\_\allowbreak{}clears\_\allowbreak{}distress} & 7 & off & assumed & Under the earlier streak rule, whether food and rent that a loan pays in full still count as distress. Inert under the arrears rule, in which food and rent cannot cause default. & -- \\
 \addlinespace
 \texttt{shortfall\_\allowbreak{}bnpl\_\allowbreak{}capped} & 5 & on & assumed & Limits the \ac{BNPL} share of a shortfall request to $\kappa$ times the household's monthly discretionary budget, the quantity that sizes a want-driven purchase. & capped / uncapped, crossed with the three amount rules \\
 \addlinespace
@@ -74,11 +74,19 @@ fee cap and the assumed order cap, are set at 2026 prices and deflated once (App
 \addlinespace
 \texttt{min\_\allowbreak{}payer\_\allowbreak{}share} & 6 & 0.29 & sourced & 29\% of United States card accounts regularly pay at or near the minimum \cite{Keys2019}. & 0.20--0.40 \\
 \addlinespace
-\texttt{payment\_\allowbreak{}friction} & 6 & 0.09 & fitted & Probability per tick of missing a traditional instalment that the household could pay, motivated by evidence that borrowers depart from planned repayment \cite{Kuchler2021}. Fitted to the \ac{CCMR} 1--30 day band. & calibration grid \\
+\texttt{payment\_\allowbreak{}friction} & 6 & 0.0575 & fitted & Probability per tick of missing a traditional instalment that the household could pay, motivated by evidence that borrowers depart from planned repayment \cite{Kuchler2021}. Fitted jointly with \texttt{arrears\_persistence} to the five \ac{CCMR} arrears bands (Section~\ref{sec:lim-calibration}). & calibration grid 0.05--0.06 \\
 \addlinespace
 \texttt{min\_\allowbreak{}payment\_\allowbreak{}frac} & 6 & 0.05 & assumed & Minimum payment as a share of the balance per month. The \ac{NCA} prescribes no formula. & 0.025--0.10 \\
 \addlinespace
-\texttt{k\_\allowbreak{}default} & 7 & 7 & assumed & Seven ticks are 98 days, the first tick boundary past the 90-day impairment convention; a consecutive-period rule follows \cite{hamill2023creditcard}. & four ticks (56 days) \\
+\texttt{distress\_\allowbreak{}rule} & 7 & arrears & sourced & A household defaults when its oldest unpaid instalment on any facility, traditional or \ac{BNPL}, is \texttt{k\_default} ticks old (Section~\ref{sec:sequence}). The earlier rule, \texttt{streak}, defaulted a household after \texttt{k\_default} consecutive ticks of unpaid food, rent or debt service; it is kept only for the comparison in Appendix~\ref{app:calibration}. & streak in that comparison \\
+\addlinespace
+\texttt{initial\_\allowbreak{}arrears} & 7 & on & sourced & The run starts from the 2017-Q1 \ac{CCMR} age profile \cite{ncr_ccmr_2017}: credit-active households are placed in each band at its share, those with the least income left after food, rent and debt service in the oldest bands. Ages in the 120+ band are drawn over 9--26 ticks, an assumption. Households placed at 91+ days start in default. & off starts every household current \\
+\addlinespace
+\texttt{arrears\_\allowbreak{}persistence} & 7 & 0.72 & fitted & Probability per tick that a household already in traditional arrears pays nothing again, whatever its cash. No source; fitted jointly with \texttt{payment\_friction} to the five \ac{CCMR} arrears bands (Section~\ref{sec:lim-calibration}). & calibration grid 0.70--0.74 \\
+\addlinespace
+\texttt{write\_\allowbreak{}off\_\allowbreak{}rate} & 7 & 0.0707 & derived & Probability per tick that a defaulted account leaves the book. Derived from the \ac{CCMR} profile: accounts enter the 120+ band at half the 91--120 share per tick, so a stationary 120+ stock needs $(1.76/2)/12.45 = 0.0707$ \cite{ncr_ccmr_2017}. & -- \\
+\addlinespace
+\texttt{k\_\allowbreak{}default} & 7 & 7 & assumed & Seven ticks are 98 days, the first tick boundary past 90 days past due: the impairment convention and the \ac{NCR}'s ``three or more months in arrears'' \cite{ncr_cbm_2017}. It defines the outcome. & four ticks (56 days) \\
 \addlinespace
 \texttt{bnpl\_\allowbreak{}bureau\_\allowbreak{}visible} & 10/15 & off & sourced & \ac{BNPL} agreements were not displayed on bureau profiles before the 2026 arrangements \cite{dcasa_bnpl_2026, finasa_bnpl_2026}; off is the benchmark. & on / off (Section~\ref{sec:scenarios}) \\
 \addlinespace

@@ -2,12 +2,10 @@
 \label{app:pseudo-init}
 
 This appendix and Appendix~\ref{app:pseudo-main} give the model as pseudocode, following the
-convention of a master algorithm that dispatches to sub-algorithms. The algorithms are the
-normative statement of the pipeline: where prose elsewhere in the thesis and an algorithm here
-differ, the algorithm governs, and each has been checked line by line against the module that
-implements it (\texttt{simulation/}). Three robustness arms change a rule without a switch shown
-here: the single-tick income shock (Submodel~1), purchases sized on $Y_i$ in place of $E^d_i$
-(Submodel~4) and a fixed activation order (Submodel~17). Table~\ref{tab:notation} fixes the notation used throughout.
+convention of a master algorithm that dispatches to sub-algorithms. Each algorithm
+has been checked line by line against the module that implements it (\texttt{simulation/}). Two
+robustness arms change a rule without a switch shown here: purchases sized on $Y_i$ in place of
+$E^d_i$ (Submodel~4) and a fixed activation order (Submodel~17). Table~\ref{tab:notation} fixes the notation used throughout.
 Sets are in script capitals, $H$ and $P$ are the sizes of $\mathcal{H}$ and $\mathcal{P}$, and
 elements are in lower case; a
 subscript indexes an element, a superscript identifies a variant. Random draws are written
@@ -69,8 +67,11 @@ $B_{ip}(t)$ & \ac{BNPL} receivable owed by $i$ to platform $p$ & \texttt{exposur
 $b_i(t)$ & \ac{BNPL} instalments and arrears falling due this tick, all platforms; an agreement opened this tick is excluded & \texttt{bnpl\_due\_per\_tick} \\
 $o_i(t)$ & one instalment for each live \ac{BNPL} agreement plus arrears, all platforms, including agreements opened this tick; what a gate that sees \ac{BNPL} is shown & \texttt{bnpl\_obligations\_per\_tick} \\
 $n^{\text{owed}}_i(t)$ & platforms on which $i$ owes a balance & \texttt{stacking\_depth} \\
-$\alpha_i(t)$ & ticks in traditional arrears & \texttt{arrears\_age\_ticks} \\
-$\delta_i(t)$ & consecutive distressed ticks & \texttt{distress\_streak} \\
+$\mathcal{U}_i(t)$, $\mathcal{U}_\ell(t)$ & unpaid traditional instalments of $i$, and unpaid instalments and fees of \ac{BNPL} agreement $\ell$, each an amount with the tick it fell due & \texttt{trad\_unpaid}, \texttt{BNPLLoan.unpaid} \\
+$\text{age}(\mathcal{U}, t)$ & ticks since the oldest amount in $\mathcal{U}$ fell due, counting its own tick; 0 if $\mathcal{U}$ is empty & \texttt{arrears\_age} \\
+$\alpha_i(t)$ & arrears age: the largest $\text{age}$ over $i$'s traditional debt and \ac{BNPL} agreements & \texttt{arrears\_age\_max} \\
+$\delta_i(t)$ & consecutive distressed ticks (streak rule only) & \texttt{distress\_streak} \\
+$c_i(t)$ & consumption distress: food or rent left unpaid after credit & \texttt{consumption\_distress\_tick} \\
 $d_i(t)$ & default indicator & \texttt{defaulted} \\
 $\bar t_i$ & tick until which want-driven purchases are blocked & \texttt{cool\_off\_until} \\
 $s_g(t)$ & share of the eligible members of $g$ holding a \ac{BNPL} balance at the end of $t$ & \texttt{group\_share\_lagged} \\
@@ -84,13 +85,19 @@ $\phi$, $\bar\phi$ & late fee per missed tick; fee cap per agreement in Rand. Th
 \multicolumn{3}{l}{\emph{Parameters}} \\
 $p^{\text{sep}}$, $p^{\text{exit}}$ & per-earner separation and re-employment probabilities per tick & \texttt{shock\_prob}, \texttt{shock\_exit\_prob} \\
 $\pi$ & payment friction: probability of skipping an affordable traditional instalment & \texttt{payment\_friction} \\
+$\pi^{\text{arr}}$ & arrears persistence: probability that a household in traditional arrears pays nothing again & \texttt{arrears\_persistence} \\
+$\omega$ & write-off rate of a defaulted account per tick & \texttt{write\_off\_rate} \\
 $f^{\min}$ & minimum-payment fraction of balance per month & \texttt{min\_payment\_frac} \\
-$k$ & distressed ticks that trigger default (7) & \texttt{k\_default} \\
+$k$ & arrears age in ticks at which a household defaults (7); under the streak rule, consecutive distressed ticks & \texttt{k\_default} \\
 $\varphi$ & discretionary floor as a share of target (0 by default) & \texttt{discretionary\_floor} \\
 $\kappa$, $\nu$ & purchase-size ratio to $E^d_i$; its coefficient of variation & \texttt{bnpl\_purchase\_ratio}, \texttt{\_cv} \\
 $\mathbb{1}^{\text{cap}}$ & cap on the \ac{BNPL} share of a shortfall request at $\kappa E^d_i$ (off only in the three uncapped robustness arms) & \texttt{shortfall\_bnpl\_capped} \\
 $\mathbb{1}^{\text{short}}$ & \ac{BNPL} may relieve a shortfall (off only in one robustness arm) & \texttt{shortfall\_bnpl} \\
-$\mathbb{1}^{\text{fund}}$ & credit raised against a committed shortfall pays it first (on only in one robustness arm) & \texttt{committed\_shortfall\_funded} \\
+$\mathbb{1}^{\text{fund}}$ & credit raised against a committed shortfall pays it first (on in the baseline) & \texttt{committed\_shortfall\_funded} \\
+$\mathbb{1}^{\text{clear}}$ & food and rent a loan pays in full are not distress (streak rule only; off) & \texttt{committed\_shortfall\_clears\_distress} \\
+$\mathbb{1}^{\text{streak}}$ & the earlier rule: default after $k$ consecutive distressed ticks (off; on only in the comparison of Appendix~\ref{app:calibration}) & \texttt{distress\_rule} \\
+$\mathbb{1}^{\text{init}}$ & the run starts from the \ac{CCMR} arrears profile (on) & \texttt{initial\_arrears} \\
+$\mathbb{1}^{\text{pers}}$, $\mathbb{1}^{\text{flow}}$ & job loss lasts until re-employment; labour flows with hires (both on; off together in the single-tick arm) & \texttt{shock\_persistent}, \texttt{labour\_flows} \\
 $\mathbb{1}^{\text{loyal}}$ & platforms already owed are tried first (on only in one robustness arm) & \texttt{platform\_routing} \\
 $\lambda$ & rolling limit as a multiple of monthly income & \texttt{bnpl\_limit\_income\_multiple} \\
 $q_{\text{base}}$, $\beta$ & base propensity; peer weight (linear rule) & \texttt{q\_base}, \texttt{beta} \\
@@ -219,5 +226,31 @@ stream.
 \If{threshold rule} $\theta_i \gets \mathrm{clip}\bigl(\mathcal{N}(\mu_\theta, \sigma_\theta^2), 0, 1\bigr)$ from the initialisation stream \EndIf
 \State $B_{ip}(0), A_i(0), \delta_i(0), \alpha_i(0), d_i(0), u_i(0), \bar t_i \gets 0$;\quad $s_g(0) \gets 0$ for all $g$
 \State Create the bureau with visibility $\mathbb{1}^{\text{bur}}$, the lender, and, if $\mathbb{1}^{\text{bnpl}}$, $P$ platforms with $L_{ip} = \lambda Y_i$
+\If{$\mathbb{1}^{\text{init}}$} execute Algorithm~\ref{alg:seed} \EndIf
+\end{algorithmic}
+\end{algorithm}
+
+Algorithm~\ref{alg:seed} places the 2017-Q1 \ac{CCMR} age profile on the households that owe
+traditional debt at the start (Section~\ref{sec:lim-calibration}). It fills the oldest band first,
+with the households that have least income left after food, rent and debt service, and draws each
+age within its band from the initialisation stream, so the simulation stream is unchanged. Each
+tick of age is one unpaid instalment. The bands in ticks are those of
+Appendix~\ref{app:main-tick}, with 120+ ages drawn up to 26 ticks, an assumption.
+
+\begin{algorithm}[H]
+\caption{Initial arrears from the \ac{CCMR} profile}
+\label{alg:seed}
+\begin{algorithmic}
+\State $\mathcal{C} \gets \{i : D_i(0) > 0\}$ \Comment{nobody holds \ac{BNPL} at the start}
+\State $\text{due}_i \gets m_i \cdot \max(D_i \iota_i / 26,\ f^{\min} D_i \chi) + (1 - m_i)\, r_i$ for each $i \in \mathcal{C}$
+\State Rank $\mathcal{C}$ by $y_i - e^c_i - \text{due}_i$, lowest first
+\ForAll{arrears bands $b$, from 120+ down to 1--30 days, with ages $[l_b, h_b]$ in ticks and \ac{CCMR} share $s_b$}
+    \ForAll{the next $\mathrm{round}(s_b\, |\mathcal{C}|)$ households $i$ in the ranking}
+        \State $a \gets$ uniform integer on $[l_b, h_b]$, $h_b = 26$ for 120+ \Comment{initialisation stream}
+        \State $v \gets \text{due}_i > 0 \;?\; \min(\text{due}_i,\ D_i / a) : D_i / a$
+        \State $\mathcal{U}_i \gets \{(v \text{ due at } {-a}), \ldots, (v \text{ due at } {-1})\}$;\quad $A_i \gets a v$;\quad $\alpha_i \gets a$
+        \If{$a \geq k$ and not $\mathbb{1}^{\text{streak}}$} $d_i \gets 1$; the bureau records the default \EndIf
+    \EndFor
+\EndFor
 \end{algorithmic}
 \end{algorithm}
