@@ -84,8 +84,14 @@ def calibrated(**kw) -> ParamSet:
     })
 
 
-#: beta = 0 first and always. The control arm.
-BETA_GRID = [0.0, 0.5, 1.0, 2.0, 3.0]
+#: The one peer-influence arm reported beside the beta = 0 control (Milestone 2, #98). The
+#: beta sweep (results/summary/beta_sweep.json) found the BNPL effect flat over 0-0.30 and
+#: set X = 0.30, the first grid values with volume inside the provider range being 0.20 and
+#: 0.30. Replaced beta = 1, which the supervisor judged unrealistically strong.
+BETA_PEER = 0.30
+
+#: beta = 0 first and always. The control arm. Was [0, 0.5, 1, 2, 3] to 6b0a4c7.
+BETA_GRID = [0.0, 0.1, 0.2, BETA_PEER]
 ACCESS_GRID = [0.0, 0.15, 0.30, 0.50, 0.70, 0.85, 1.0]
 PLATFORM_GRID = [1, 2, 3, 4, 5, 6]
 
@@ -100,7 +106,7 @@ def rq0_baseline(reps: int) -> list[ParamSet]:
     arms = [
         calibrated(bnpl_enabled=False, label="baseline_no_bnpl"),
         calibrated(bnpl_enabled=True, beta=0.0, label="bnpl_on_beta0"),
-        calibrated(bnpl_enabled=True, beta=1.0, label="bnpl_on_beta1"),
+        calibrated(bnpl_enabled=True, beta=BETA_PEER, label="bnpl_on_peer"),
     ]
     return [p for a in arms for p in replicate(a, reps, seed0=10_000)]
 
@@ -223,7 +229,7 @@ def rq3_interventions(reps: int) -> list[ParamSet]:
     cumulative volume means they desist.
     """
     out: list[ParamSet] = []
-    for b in (0.0, 1.0):
+    for b in (0.0, BETA_PEER):
         # Lever 3: cool-off length. k_cool=1 is the CCA s.66A statutory 14 days.
         for k in (0, 1, 2, 3, 4):
             out += replicate(
@@ -260,7 +266,7 @@ def rq3_scenarios(reps: int) -> list[ParamSet]:
     """
     n = SCENARIO_REPS_FACTOR * reps
     out: list[ParamSet] = []
-    for b in (0.0, 1.0):
+    for b in (0.0, BETA_PEER):
         arms = [
             calibrated(bnpl_enabled=True, beta=b, label=f"rq3s_bench_b{b}"),
             # Bureau visibility. The comparison the model was built to make.
@@ -295,7 +301,8 @@ def robustness(reps: int) -> list[ParamSet]:
     the D4 amount rule, the D6 minimum-payment formula, and the D16 activation order.
     """
     out: list[ParamSet] = []
-    base = dict(bnpl_enabled=True, beta=1.0)
+    # At the headline beta = 0 since Milestone 2 (#98); was beta = 1.
+    base = dict(bnpl_enabled=True, beta=0.0)
 
     # D4 amount rule -- MANDATORY. The model's first uncited rule.
     for rule in ("shortfall", "shortfall_125", "shortfall_plus_committed"):
@@ -413,9 +420,8 @@ EFFECT_SETTINGS: list[tuple[str, dict, bool]] = [
     # Added 2026-10-06. None changes the stored rows above.
     ("routing_loyal", dict(platform_routing="loyal"), False),
     ("no_shortfall_bnpl", dict(shortfall_bnpl=False), False),
-    ("committed_funded", dict(committed_shortfall_funded=True), True),
-    # Added 2026-10-12: credit that pays food and rent in full also clears that tick's distress.
-    ("committed_relief", dict(committed_shortfall_funded=True, committed_shortfall_clears_distress=True), True),
+    # committed_funded and committed_relief were dropped on 2026-11-09 (#91 C7): under the
+    # arrears rule the first is the baseline and the second cannot change distress.
 ]
 
 
@@ -447,13 +453,36 @@ def effect_robustness(reps: int) -> list[ParamSet]:
     for name, kw, touches_off in EFFECT_SETTINGS:
         if touches_off:
             out += replicate(calibrated(bnpl_enabled=False, **kw, label=f"eff_{name}_off"), reps, seed0)
-        for b in (0.0, 1.0):
+        for b in (0.0, BETA_PEER):
             out += replicate(
                 calibrated(bnpl_enabled=True, beta=b, **kw, label=f"eff_{name}_b{b}"), reps, seed0
             )
     out += replicate(
         calibrated(bnpl_enabled=True, beta=0.0, q_base=0.0, label="eff_want_off_b0.0"), reps, seed0
     )
+    return out
+
+
+#: Milestone 2 (issues #97 and #98, signed off 2026-11-09): the realistic peer-influence
+#: range. The supervisor judged beta = 1 unrealistically strong. beta = 0 first, then a fine
+#: grid to 0.30, with a no-BNPL arm on the same seed block so each effect is paired.
+BETA_SWEEP_GRID = [0.0, 0.025, 0.05, 0.075, 0.10, 0.15, 0.20, 0.30]
+#: 250 replicates per arm: 80% power to detect 0.05 points at 2 SE with a replicate SD of
+#: about 0.2 points (#97). Fixed here, not taken from --reps.
+BETA_SWEEP_REPS = 250
+
+
+def beta_sweep(reps: int) -> list[ParamSet]:
+    """Milestone 2: the BNPL effect on default over beta in [0, 0.30], under the D18 rule.
+
+    `reps` is ignored: the replicate count is pre-registered (BETA_SWEEP_REPS). Labels
+    rqb_off and rqb_b<beta>; seeds 90,000 onwards. The verdict (linear or not) is computed
+    by notebooks/scripts/beta_sweep_analysis.py under the test fixed in #97.
+    """
+    n = BETA_SWEEP_REPS
+    out = replicate(calibrated(bnpl_enabled=False, label="rqb_off"), n, seed0=90_000)
+    for b in BETA_SWEEP_GRID:
+        out += replicate(calibrated(bnpl_enabled=True, beta=b, label=f"rqb_b{b}"), n, seed0=90_000)
     return out
 
 
@@ -466,7 +495,7 @@ SUITES = {
     "rq3s": rq3_scenarios,
     "robustness": robustness,
     "effect": effect_robustness,
-    "rq3r": rq3_relief,
+    "rqb": beta_sweep,
 }
 
 

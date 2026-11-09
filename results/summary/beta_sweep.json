@@ -1,0 +1,290 @@
+{
+  "_note": "Milestone 2 beta sweep; test pre-registered in issue #97. Effects in percentage points of default during the run, paired by seed against rqb_off (seeds 90,000+).",
+  "verdict": "linear",
+  "tests": {
+    "quadratic": {
+      "extra_term_t": 0.812370360449181,
+      "condition1": false,
+      "max_diff_over_se": 0.8123703604501791,
+      "condition2_points": [],
+      "condition2": false
+    },
+    "hinge": {
+      "extra_term_t": 0.23160182064790152,
+      "condition1": false,
+      "max_diff_over_se": 0.23160182064792725,
+      "condition2_points": [],
+      "condition2": false
+    }
+  },
+  "fits": {
+    "linear": {
+      "coef": [
+        1.0540940926619746,
+        0.027030121365685167
+      ],
+      "se": [
+        0.019981678886146235,
+        0.1395272387404318
+      ],
+      "chi2": 2.8986476924752216,
+      "pred": [
+        1.0540940926619746,
+        1.0547698456961168,
+        1.055445598730259,
+        1.056121351764401,
+        1.0567971047985432,
+        1.0581486108668274,
+        1.0595001169351117,
+        1.0622031290716802
+      ],
+      "pred_se": [
+        0.019981678886146232,
+        0.017495852929791392,
+        0.015403800223025475,
+        0.013884670173217342,
+        0.013138716956588442,
+        0.014328780721766132,
+        0.01831232597001856,
+        0.029789489566115036
+      ]
+    },
+    "quadratic": {
+      "coef": [
+        1.0675672385885977,
+        -0.33605215711441616,
+        1.2587454589504752
+      ],
+      "se": [
+        0.02596784631689157,
+        0.4682145138566304,
+        1.5494724084400144
+      ],
+      "chi2": 2.2387020899388883,
+      "pred": [
+        1.0675672385885977,
+        1.0599526505725814,
+        1.053911494380253,
+        1.049443770011613,
+        1.0465494774666608,
+        1.045481187847821,
+        1.0507066255237336,
+        1.0800386827598156
+      ],
+      "pred_se": [
+        0.02596784631689156,
+        0.01862276606622308,
+        0.015519124595172133,
+        0.016135376949627363,
+        0.018214030759132672,
+        0.021176890066586483,
+        0.021272300645278415,
+        0.037005860111482033
+      ]
+    },
+    "hinge": {
+      "coef": [
+        1.058197565228467,
+        -0.06366944168964483,
+        0.13513973134742696
+      ],
+      "se": [
+        0.026705572372123038,
+        0.4157317865448966,
+        0.5835002979224266
+      ],
+      "chi2": 2.8450082891478026,
+      "pred": [
+        1.058197565228467,
+        1.056605829186226,
+        1.0550140931439846,
+        1.0534223571017436,
+        1.0518306210595025,
+        1.0554041355423915,
+        1.0589776500252808,
+        1.0661246789910588
+      ],
+      "pred_se": [
+        0.02670557237212304,
+        0.019208003321454926,
+        0.015516067008140632,
+        0.01812706338972095,
+        0.025149029142266653,
+        0.018593972608913444,
+        0.018450753274147413,
+        0.03426537960753265
+      ]
+    }
+  },
+  "x_rule": {
+    "x": 0.3,
+    "volume_top": 4261.0,
+    "beta_in_provider_volume_range": [
+      0.2,
+      0.3
+    ]
+  },
+  "headline_linear": {
+    "beta0_effect_pp": 1.0501599999999998,
+    "beta0_effect_se": 0.03357877355912422,
+    "beta0_effect_sd": 0.5309270274093558,
+    "slope_pp_per_0.1_beta": 0.0027030121365685168,
+    "slope_se_per_0.1_beta": 0.01395272387404318
+  },
+  "baseline_default_no_bnpl": 0.2072072,
+  "replicates_per_arm": 250,
+  "table": [
+    {
+      "beta": 0.0,
+      "n": 250,
+      "effect_pp": 1.0501599999999998,
+      "effect_se": 0.03357877355912422,
+      "effect_sd": 0.5309270274093558,
+      "effect_90plus_all_pp": 0.234952,
+      "effect_90plus_all_se": 0.014450783346980384,
+      "effect_consumption_ever_pp": 0.057040000000000014,
+      "effect_consumption_ever_se": 0.014532174302554981,
+      "default_rate": 0.2177088,
+      "volume_per_eligible_year": 862.1913465854553,
+      "stacking_ever_holders": 0.2803735544351402,
+      "adoption_final": 0.09878559999999999,
+      "ever_adopted": 0.6291648,
+      "s_g_final": 0.11924867213906326,
+      "appetite_multiplier": 1.0,
+      "mean_purchase": 660.630437978732
+    },
+    {
+      "beta": 0.025,
+      "n": 250,
+      "effect_pp": 1.06152,
+      "effect_se": 0.0377285639343215,
+      "effect_sd": 0.5965409743986965,
+      "effect_90plus_all_pp": 0.2508099999999999,
+      "effect_90plus_all_se": 0.01682236784282633,
+      "effect_consumption_ever_pp": 0.05416,
+      "effect_consumption_ever_se": 0.015527911700131099,
+      "default_rate": 0.2178224,
+      "volume_per_eligible_year": 906.5041959603415,
+      "stacking_ever_holders": 0.2963906226360288,
+      "adoption_final": 0.1032256,
+      "ever_adopted": 0.6379199999999999,
+      "s_g_final": 0.1246084017382907,
+      "appetite_multiplier": 1.0623042008691452,
+      "mean_purchase": 661.0036788501947
+    },
+    {
+      "beta": 0.05,
+      "n": 250,
+      "effect_pp": 1.0616799999999997,
+      "effect_se": 0.03527090667719396,
+      "effect_sd": 0.5576820011958709,
+      "effect_90plus_all_pp": 0.252002,
+      "effect_90plus_all_se": 0.015449866195077001,
+      "effect_consumption_ever_pp": 0.07031999999999998,
+      "effect_consumption_ever_se": 0.01595343344093104,
+      "default_rate": 0.21782400000000002,
+      "volume_per_eligible_year": 956.5007625582472,
+      "stacking_ever_holders": 0.3156958511806388,
+      "adoption_final": 0.1096392,
+      "ever_adopted": 0.6455352000000001,
+      "s_g_final": 0.1323505552873008,
+      "appetite_multiplier": 1.1323505552873008,
+      "mean_purchase": 663.1368341503706
+    },
+    {
+      "beta": 0.075,
+      "n": 250,
+      "effect_pp": 1.0642400000000003,
+      "effect_se": 0.03813042626602691,
+      "effect_sd": 0.6028949757687725,
+      "effect_90plus_all_pp": 0.24193599999999996,
+      "effect_90plus_all_se": 0.01635503802168503,
+      "effect_consumption_ever_pp": 0.04776000000000001,
+      "effect_consumption_ever_se": 0.015302332341849124,
+      "default_rate": 0.2178496,
+      "volume_per_eligible_year": 1003.4337558628866,
+      "stacking_ever_holders": 0.33744891717867587,
+      "adoption_final": 0.1150408,
+      "ever_adopted": 0.6523543999999999,
+      "s_g_final": 0.13887107677450508,
+      "appetite_multiplier": 1.2083066151617576,
+      "mean_purchase": 661.1426384552109
+    },
+    {
+      "beta": 0.1,
+      "n": 250,
+      "effect_pp": 1.07552,
+      "effect_se": 0.03969582790941202,
+      "effect_sd": 0.6276461489991104,
+      "effect_90plus_all_pp": 0.269462,
+      "effect_90plus_all_se": 0.017121922530738024,
+      "effect_consumption_ever_pp": 0.05023999999999997,
+      "effect_consumption_ever_se": 0.0160414050601941,
+      "default_rate": 0.2179624,
+      "volume_per_eligible_year": 1071.58088248538,
+      "stacking_ever_holders": 0.3628418661472963,
+      "adoption_final": 0.12252800000000001,
+      "ever_adopted": 0.6590344,
+      "s_g_final": 0.14790922259777883,
+      "appetite_multiplier": 1.2958184451955579,
+      "mean_purchase": 663.3432813080857
+    },
+    {
+      "beta": 0.15,
+      "n": 250,
+      "effect_pp": 1.04248,
+      "effect_se": 0.039017257514281325,
+      "effect_sd": 0.6169170089922433,
+      "effect_90plus_all_pp": 0.23668399999999998,
+      "effect_90plus_all_se": 0.016385442180110708,
+      "effect_consumption_ever_pp": 0.04847999999999999,
+      "effect_consumption_ever_se": 0.014059667685321965,
+      "default_rate": 0.217632,
+      "volume_per_eligible_year": 1214.983540240227,
+      "stacking_ever_holders": 0.4230676507608232,
+      "adoption_final": 0.13744640000000002,
+      "ever_adopted": 0.6697664,
+      "s_g_final": 0.165917914051183,
+      "appetite_multiplier": 1.4977537421535492,
+      "mean_purchase": 665.4354086828985
+    },
+    {
+      "beta": 0.2,
+      "n": 250,
+      "effect_pp": 1.014,
+      "effect_se": 0.03555571452441035,
+      "effect_sd": 0.5621852086593361,
+      "effect_90plus_all_pp": 0.22922199999999998,
+      "effect_90plus_all_se": 0.015192097358581222,
+      "effect_consumption_ever_pp": 0.039279999999999975,
+      "effect_consumption_ever_se": 0.014730058550447057,
+      "default_rate": 0.2173472,
+      "volume_per_eligible_year": 1411.1515379419652,
+      "stacking_ever_holders": 0.5032977235380302,
+      "adoption_final": 0.15737040000000002,
+      "ever_adopted": 0.6785240000000001,
+      "s_g_final": 0.18996909705456302,
+      "appetite_multiplier": 1.7598763882182522,
+      "mean_purchase": 669.8675139785468
+    },
+    {
+      "beta": 0.3,
+      "n": 250,
+      "effect_pp": 1.0956799999999998,
+      "effect_se": 0.038527293699913014,
+      "effect_sd": 0.6091700008699044,
+      "effect_90plus_all_pp": 0.257362,
+      "effect_90plus_all_se": 0.01587898613345657,
+      "effect_consumption_ever_pp": 0.06967999999999999,
+      "effect_consumption_ever_se": 0.014929754878191792,
+      "default_rate": 0.218164,
+      "volume_per_eligible_year": 2013.9032328769877,
+      "stacking_ever_holders": 0.7045306835853541,
+      "adoption_final": 0.2125992,
+      "ever_adopted": 0.6888,
+      "s_g_final": 0.25663833896668276,
+      "appetite_multiplier": 2.5398300338000968,
+      "mean_purchase": 676.2247989949847
+    }
+  ]
+}

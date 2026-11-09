@@ -142,7 +142,7 @@ if __name__ == "__main__":
     arms = {
         "no BNPL": dict(bnpl_enabled=False),
         "BNPL beta=0": dict(bnpl_enabled=True, beta=0.0),
-        "BNPL beta=1": dict(bnpl_enabled=True, beta=1.0),
+        "BNPL beta=0.3": dict(bnpl_enabled=True, beta=0.30),
     }
     out = {}
     for name, kw in arms.items():

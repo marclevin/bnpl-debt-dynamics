@@ -78,7 +78,7 @@ def baseline_and_pattern1() -> None:
 
     print("\n=== PATTERN 1 (deHaan): enabling BNPL must RAISE traditional stress ===")
     print("  Direction is partly designed in via the want-driven trigger; the MAGNITUDE is not.")
-    for arm in ("bnpl_on_beta0", "bnpl_on_beta1"):
+    for arm in ("bnpl_on_beta0", "bnpl_on_peer"):
         on = df[df.label == arm]
         if on.empty:
             continue

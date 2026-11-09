@@ -55,7 +55,7 @@ PROBLEM = {
     ],
     "bounds": [
         [0.01, 0.30],      # spontaneous want-driven BNPL propensity
-        [0.0, 3.0],        # peer imitation strength; 0 is the control arm
+        [0.0, 0.30],       # peer imitation strength; 0 is the control arm (0-3 to 6b0a4c7; #98)
         [0.025, 0.10],     # contractual minimum payment (mandatory sweep)
         [0.07, 0.28],      # kappa: half to double the IES-derived budget share
         [0.10, 1.00],      # lambda: months of income per provider; band is 0.10-0.26
