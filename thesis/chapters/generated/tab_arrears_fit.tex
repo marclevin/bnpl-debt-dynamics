@@ -4,21 +4,22 @@
 \centering
 \caption{Baseline arrears profile: model and \ac{CCMR}}
 \label{tab:arrears-fit}
-\tabnote{\ac{CCMR}: share of unsecured and credit-facility accounts by days in arrears, first quarter of 2017 \cite{ncr_ccmr_2017}. Model: share of credit-active households (those owing traditional debt or arrears), \ac{BNPL} disabled, averaged over the post-burn-in ticks; seeds 1{,}000--1{,}019. Fitted: the band that payment friction was chosen to match, so agreement there is by construction. The separation rate is derived from the stable-employment condition, not fitted, and the other bands, including 90+, were not targeted.}
+\tabnote{\ac{CCMR}: share of unsecured and credit-facility accounts by days in arrears, first quarter of 2017 \cite{ncr_ccmr_2017}. Model: share of credit-active households (those owing traditional or \ac{BNPL} debt or arrears), by the age of the oldest unpaid instalment, \ac{BNPL} disabled, averaged over the post-burn-in ticks; seeds 1{,}000--1{,}019. The run starts from the \ac{CCMR} profile. Fitted: the five bands to which payment friction and arrears persistence were jointly fitted, so agreement there is by construction. The separation and write-off rates are derived, not fitted. The final-tick 90+ share was not targeted.}
 \begingroup\setlength{\tabcolsep}{4pt}\small
 \begin{tabular}{lrrl}
 \toprule
 \textbf{Days in arrears} & \textbf{\ac{CCMR} (\%)} & \textbf{Model (\%)} &  \\
 \midrule
-Current & 71.63 & 81.83 & \\
-1--30 days & 8.24 & 8.27 & fitted \\
-31--60 days & 3.59 & 0.39 & \\
-61--90 days & 2.32 & 0.41 & \\
-91--120 days & 1.76 & 0.46 & \\
-120+ days & 12.45 & 8.64 & \\
+Current & 71.63 & 70.87 & \\
+1--30 days & 8.24 & 8.01 & fitted \\
+31--60 days & 3.59 & 4.50 & fitted \\
+61--90 days & 2.32 & 2.54 & fitted \\
+91--120 days & 1.76 & 1.59 & fitted \\
+120+ days & 12.45 & 12.49 & fitted \\
 \midrule
-90+ days & 14.21 & 9.10 & \\
-60+ days & 16.54 & 9.50 & \\
+90+ days & 14.21 & 14.08 & \\
+60+ days & 16.54 & 16.62 & \\
+90+ days, final tick & -- & 13.84 & not targeted \\
 \bottomrule
 \end{tabular}
 \endgroup

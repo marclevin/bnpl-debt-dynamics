@@ -29,7 +29,11 @@ def frag(name: str) -> str:
 
 def expect(name: str, text: str, needle: str) -> None:
     global checked
-    assert needle in text, f"{name}: expected {needle!r} in the fragment"
+    # A difference beyond two standard errors is printed bold, so match it without its
+    # math delimiters too (core).
+    assert needle in text or (needle.startswith("$") and core(needle) in text), (
+        f"{name}: expected {needle!r} in the fragment"
+    )
     checked += 1
 
 

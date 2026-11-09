@@ -139,14 +139,17 @@ def tab_baseline_arms(rq0: pd.DataFrame) -> None:
 def tab_arrears_fit() -> None:
     """The calibrated baseline against the CCMR bands, from the calibration run itself.
 
-    Revised 2026-10-12: the separation rate is derived (labour flows on) and only friction
-    is fitted, to the 1-30 band; the 90+ band is unfitted."""
+    Revised 2026-11-09 (D18): arrears rule, CCMR initial arrears, derived write-off.
+    Friction and arrears persistence are fitted jointly to the five arrears bands; the
+    90+ share at the final tick (stationarity) is not targeted."""
     from simulation.config import load_ccmr_bands
 
     cal = json.loads((SUMMARY / "calibration.json").read_text(encoding="utf-8"))
     runs = pd.read_parquet(SUMMARY / "calibration_runs.parquet")
     p, f = cal["derived_shock_prob"], cal["fitted_payment_friction"]
-    fit = runs[(runs.shock_prob == p) & (runs.payment_friction == f)].drop_duplicates("seed")
+    pi = cal["fitted_arrears_persistence"]
+    fit = runs[(runs.shock_prob == p) & (runs.payment_friction == f)
+               & (runs.arrears_persistence == pi)].drop_duplicates("seed")
     assert len(fit) == 20, len(fit)
     ccmr = load_ccmr_bands()
     target = load_ccmr_target()
@@ -161,17 +164,21 @@ def tab_arrears_fit() -> None:
     rows = [
         f"Current & {ccmr['current']:.2f} & {pct(model['current'])} & \\\\",
         f"1--30 days & {ccmr['d30']:.2f} & {pct(model['d30'])} & fitted \\\\",
-        f"31--60 days & {ccmr['d31_60']:.2f} & {pct(model['d31_60'])} & \\\\",
-        f"61--90 days & {ccmr['d61_90']:.2f} & {pct(model['d61_90'])} & \\\\",
-        f"91--120 days & {ccmr['d91_120']:.2f} & {pct(model['d91_120'])} & \\\\",
-        f"120+ days & {ccmr['d120_plus']:.2f} & {pct(model['d120_plus'])} & \\\\",
+        f"31--60 days & {ccmr['d31_60']:.2f} & {pct(model['d31_60'])} & fitted \\\\",
+        f"61--90 days & {ccmr['d61_90']:.2f} & {pct(model['d61_90'])} & fitted \\\\",
+        f"91--120 days & {ccmr['d91_120']:.2f} & {pct(model['d91_120'])} & fitted \\\\",
+        f"120+ days & {ccmr['d120_plus']:.2f} & {pct(model['d120_plus'])} & fitted \\\\",
         "\\midrule",
         f"90+ days & {target['pct_90_plus']:.2f} & {pct(model['90'])} & \\\\",
         f"60+ days & {target['pct_60_plus']:.2f} & {pct(model['60'])} & \\\\",
+        f"90+ days, final tick & -- & {pct(model['90_final'])} & not targeted \\\\",
     ]
     qlfs = cal["qlfs_band"]
     N.update(
-        derived_shock_prob=p, fit_shock_prob=p, fit_friction=f, fit_90plus=model["90"],
+        derived_shock_prob=p, fit_shock_prob=p, fit_friction=f, fit_persistence=pi,
+        derived_write_off=cal["derived_write_off_rate"], fit_error_points=cal["fit_error_points"],
+        fit_new_default=cal["unfitted"]["new_default_rate"],
+        fit_initial_default=cal["unfitted"]["initial_default_rate"], fit_90plus=model["90"],
         fit_90plus_sd=ms(fit.active_90_plus_mean)[1], fit_90plus_final=model["90_final"],
         fit_d30=model["d30"], fit_d31_60=model["d31_60"], fit_d61_90=model["d61_90"],
         fit_d91_120=model["d91_120"], fit_d120_plus=model["d120_plus"],
@@ -187,11 +194,12 @@ def tab_arrears_fit() -> None:
         "Baseline arrears profile: model and \\ac{CCMR}",
         "\\ac{CCMR}: share of unsecured and credit-facility accounts by days in arrears, first "
         "quarter of 2017 \\cite{ncr_ccmr_2017}. Model: share of credit-active households (those "
-        "owing traditional debt or arrears), \\ac{BNPL} disabled, averaged over the post-burn-in "
-        f"ticks; seeds {num(fit.seed.min())}--{num(fit.seed.max())}. Fitted: the band that payment "
-        "friction was chosen to match, so agreement there is by construction. The separation rate "
-        "is derived from the stable-employment condition, not fitted, and the other bands, including "
-        "90+, were not targeted.",
+        "owing traditional or \\ac{BNPL} debt or arrears), by the age of the oldest unpaid "
+        "instalment, \\ac{BNPL} disabled, averaged over the post-burn-in "
+        f"ticks; seeds {num(fit.seed.min())}--{num(fit.seed.max())}. The run starts from the "
+        "\\ac{CCMR} profile. Fitted: the five bands to which payment friction and arrears "
+        "persistence were jointly fitted, so agreement there is by construction. The separation "
+        "and write-off rates are derived, not fitted. The final-tick 90+ share was not targeted.",
         "lrrl",
         r"\textbf{Days in arrears} & \textbf{\ac{CCMR} (\%)} & \textbf{Model (\%)} & ",
         rows,
