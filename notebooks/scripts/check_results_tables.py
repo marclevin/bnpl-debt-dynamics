@@ -26,19 +26,26 @@ GEN = ROOT / "thesis" / "chapters" / "generated"
 SUMMARY = ROOT / "results" / "summary"
 
 checked = 0
+#: Prose expectations that are not met, listed together at the end (QA 2026-11-10) so that a
+#: revision that changes several numbers sees every sentence it has to change in one run.
+missing: list[str] = []
 
 
 def frag(name: str) -> str:
     return (GEN / f"{name}.tex").read_text(encoding="utf-8")
 
 
-def expect(name: str, text: str, needle: str) -> None:
+def expect(name: str, text: str, needle: str, prose: bool = False) -> None:
+    """Assert that `needle` appears in `text`. A generated fragment must match at once; a prose
+    expectation that fails is recorded and reported with the others at the end."""
     global checked
     # A difference beyond two standard errors is printed bold, so match it without its
     # math delimiters too (core).
-    assert needle in text or (needle.startswith("$") and core(needle) in text), (
-        f"{name}: expected {needle!r} in the fragment"
-    )
+    ok = needle in text or (needle.startswith("$") and core(needle) in text)
+    if not ok and prose:
+        missing.append(f"{name}: expected {needle!r}")
+        return
+    assert ok, f"{name}: expected {needle!r} in the fragment"
     checked += 1
 
 
@@ -82,6 +89,8 @@ def main() -> None:
     expect("stacking", t, f"4 & {(n4b0.stacking_2plus_final / n4b0.bnpl_adoption_final).mean() * 100:.1f} &")
     expect("stacking", t, f"& {n1b1.default_rate_final.mean() * 100:.2f} \\\\")
     expect("stacking", t, pmp(n6b1, n1b1, "default_rate_final"))
+    expect("stacking", t, "1 & -- & -- & -- & -- &")
+    expect("stacking_full", frag("tab_stacking_full"), "1 & -- & -- & -- & -- &")
 
     t = frag("tab_stacking_full")
     n3b2 = rq1[(rq1.n_platforms == 3) & (rq1.beta == 0.2)]
@@ -92,7 +101,10 @@ def main() -> None:
     t = frag("tab_bnpl_on_checks")
     mp = b0.bnpl_purchase_mean_realised.mean()
     expect("bnpl_on_checks", t, "R" + f"{mp:,.0f}".replace(",", "{,}") + " &")
-    expect("bnpl_on_checks", t, f"{off.zero_savings_rate_mean.mean() * 100:.1f}\\%")
+    pop = pd.read_parquet(ROOT / "data" / "processed" / "synthetic_population_5000.parquet")
+    q4 = pop[pop.income_quintile == "Q4"]
+    expect("bnpl_on_checks", t, f"(start: Q4 {q4.D_trad.sum() / q4.w5_hhincome.sum():.2f};")
+    assert "Pattern~4" not in t and "Patterns 3 and 4" not in t, "Pattern 4 was dropped (#29)"
     expect("bnpl_on_checks", t, core(pmp(b0, off, "trad_arrears_rate_mean")))
 
     t = frag("tab_scenarios")
@@ -135,6 +147,10 @@ def main() -> None:
     unc = rob[rob.label == "rob_amount_shortfall_uncapped"].set_index("seed").default_rate_final
     d = (unc - cap.reindex(unc.index)) * 100
     expect("robustness", t, f"{d.mean():+.2f} \\pm {d.std(ddof=1) / math.sqrt(len(d)):.2f}")
+    k4n = rob[rob.label == "rob_k4"].set_index("seed").new_default_rate_final
+    k7n = rob[rob.label == "rob_k7"].set_index("seed").new_default_rate_final
+    dn = (k4n - k7n.reindex(k4n.index)) * 100
+    expect("robustness", t, f"rises by ${dn.mean():.2f} \\pm {dn.std(ddof=1) / math.sqrt(len(dn)):.2f}$")
 
     t = frag("tab_robustness_appendix")
     expect("robustness_appendix", t, cell(rob[rob.label == "rob_n1000"].default_rate_final))
@@ -166,6 +182,12 @@ def main() -> None:
     both0 = rq3s[rq3s.label == "rq3s_both_b0.0"]
     expect("scenarios", t, core(pmp(both0, sben0, "default_rate_final")))
     expect("scenarios", t, core(pmp(both0, sben0, "active_90_plus_mean")))
+    # Food and rent left unpaid (QA 2026-11-10), changes at three decimals.
+    t = frag("tab_scenarios_distress")
+    expect("scenarios_distress", t, f"& {sben0.consumption_distress_mean.mean() * 100:.2f} &")
+    expect("scenarios_distress", t, core(pmp(bur0, sben0, "consumption_distress_mean", 3)))
+    expect("scenarios_distress", t, core(pmp(both0, sben0, "ever_consumption_distress_final", 3)))
+    assert "not the Rand amount unpaid" in t
 
     t = frag("tab_effect")
     eff = pd.read_parquet(RAW / "effect.parquet")
@@ -192,6 +214,10 @@ def check_prose() -> None:
     """
     global checked
     start = checked
+
+    def expect_p(name: str, text: str, needle: str) -> None:
+        expect(name, text, needle, prose=True)
+
     num = json.loads((SUMMARY / "results_numbers.json").read_text())
     sweep = json.loads((SUMMARY / "beta_sweep.json").read_text())
     cont = json.loads((SUMMARY / "contestable_default.json").read_text())
@@ -208,56 +234,71 @@ def check_prose() -> None:
     # Section 3.4: the fit.
     for key, txt in (("fit_friction", "0.0575"), ("fit_persistence", "0.72"), ("derived_write_off", "0.0707")):
         assert f"{num[key]:g}" == txt, key
-        expect("ch3 fit", ch["03_calibration"], txt)
-    expect("ch3 fit", ch["03_calibration"], f"{num['fit_90plus'] * 100:.2f}\\%")
-    expect("ch3 fit", ch["03_calibration"], f"{num['fit_90plus_final'] * 100:.2f}\\%")
-    expect("ch3 book", ch["03_calibration"], f"{num['baseline_credit_active'] * 5000:,.0f}".replace(",", "{,}"))
+        expect_p("ch3 fit", ch["03_calibration"], txt)
+    expect_p("ch3 fit", ch["03_calibration"], f"{num['fit_90plus'] * 100:.2f}\\%")
+    expect_p("ch3 fit", ch["03_calibration"], f"{num['fit_90plus_final'] * 100:.2f}\\%")
+    expect_p("ch3 book", ch["03_calibration"], f"{num['baseline_credit_active'] * 5000:,.0f}".replace(",", "{,}"))
     # Section 3.5: default and the households short from the start.
-    expect("ch3 default", ch["03_calibration"], f"{num['baseline_default'] * 100:.2f}\\%")
-    expect("ch3 default", ch["03_calibration"], f"{dc['no BNPL']['default_rate'] * 100:.2f}\\%")
-    expect("ch3 short", ch["03_calibration"], f"{dc['no BNPL']['income_below_committed_who_default'] * 100:.0f}\\%")
-    expect("ch3 short", ch["03_calibration"], f"{dc['BNPL beta=0']['income_below_committed_who_default'] * 100:.0f}\\%")
-    expect("ch3 short", ch["03_calibration"], pmj(cont, "beta0_effect_pooled_contestable"))
-    expect("ch3 short", ch["03_calibration"], pmj(cont, "peer_effect_pooled_contestable"))
-    expect("ch3 short", ch["03_calibration"], unsigned(pmj(cont, "rq3s_bureau_diff_contestable_b0")))
+    expect_p("ch3 default", ch["03_calibration"], f"{num['baseline_default'] * 100:.2f}\\%")
+    expect_p("ch3 default", ch["03_calibration"], f"{dc['no BNPL']['default_rate'] * 100:.2f}\\%")
+    expect_p("ch3 short", ch["03_calibration"], f"{dc['no BNPL']['income_below_committed_who_default'] * 100:.0f}\\%")
+    expect_p("ch3 short", ch["03_calibration"], f"{dc['BNPL beta=0']['income_below_committed_who_default'] * 100:.0f}\\%")
+    expect_p("ch3 short", ch["03_calibration"], pmj(cont, "beta0_effect_pooled_contestable"))
+    expect_p("ch3 short", ch["03_calibration"], pmj(cont, "peer_effect_pooled_contestable"))
+    expect_p("ch3 short", ch["03_calibration"], unsigned(pmj(cont, "rq3s_bureau_diff_contestable_b0")))
     # Section 3.5: the default level against the bureau figures (check_default_level.py).
     lvl = json.loads((SUMMARY / "default_level.json").read_text())
-    expect("ch3 level", ch["03_calibration"], f"{lvl['off_new_default_rate_final'] * 100:.2f}\\%")
-    expect("ch3 level", ch["03_calibration"], f"{lvl['off_new_defaults_per_year_of_all_households'] * 100:.1f}\\%")
-    expect("ch3 level", ch["03_calibration"], f"{lvl['off_inflow_per_tick_of_book'] * 100:.2f}\\%")
-    expect("ch3 level", ch["03_calibration"], f"{lvl['ccmr_inflow_91plus_per_tick_of_accounts'] * 100:.2f}\\%")
-    expect("ch3 level", ch["03_calibration"], f"about {lvl['ccmr_inflow_91plus_per_year_of_accounts'] * 100:.0f}\\%")
-    expect("ch3 level", ch["03_calibration"], f"{lvl['off_defaulted_of_ever_active'] * 100:.1f}\\%")
-    expect("ch4 level", ch["04_results"], f"{num['baseline_default'] * 100:.2f}\\%")
+    expect_p("ch3 level", ch["03_calibration"], f"{lvl['off_new_default_rate_final'] * 100:.2f}\\%")
+    expect_p("ch3 level", ch["03_calibration"], f"{lvl['off_new_defaults_per_year_of_all_households'] * 100:.1f}\\%")
+    expect_p("ch3 level", ch["03_calibration"], f"{lvl['off_inflow_per_tick_of_book'] * 100:.2f}\\%")
+    expect_p("ch3 level", ch["03_calibration"], f"{lvl['ccmr_inflow_91plus_per_tick_of_accounts'] * 100:.2f}\\%")
+    expect_p("ch3 level", ch["03_calibration"], f"about {lvl['ccmr_inflow_91plus_per_year_of_accounts'] * 100:.0f}\\%")
+    expect_p("ch3 level", ch["03_calibration"], f"{lvl['off_defaulted_of_ever_active'] * 100:.1f}\\%")
+    expect_p("ch4 level", ch["04_results"], f"{num['baseline_default'] * 100:.2f}\\%")
     sobj = json.loads((SUMMARY / "sobol_indices.json").read_text(encoding="utf-8"))
     shd = next(r for r in sobj["indices"]["default_rate_final"] if r["parameter"] == "shock_prob")
     others = [r["ST"] for r in sobj["indices"]["default_rate_final"] if r["parameter"] != "shock_prob"]
     fifths = sobj["new_default_by_shock_prob_fifth"]
     noise = sobj["replicate_noise_share"]["default_rate_final"]
     for name in ("04_results", "appendix_c_supplementary"):
-        expect(f"{name} sobol", ch[name], f"{noise * 100:.0f}\\% of the")
-        expect(f"{name} sobol", ch[name], f"{min(others):.2f} to {max(others):.2f}")
-    expect("ch4 sobol", ch["04_results"], f"${shd['S1']:.2f} \\pm {shd['S1_conf']:.2f}$")
-    expect("ch4 sobol", ch["04_results"], f"from {fifths[0] * 100:.1f}\\% in the lowest fifth")
-    expect("ch4 sobol", ch["04_results"], f"to {fifths[-1] * 100:.1f}\\% in the highest")
-    expect("ch3 sobol", ch["03_calibration"], f"Saltelli design & 0--0.3 & {sobj['replicates']} &")
+        expect_p(f"{name} sobol", ch[name], f"{noise * 100:.0f}\\% of the")
+        expect_p(f"{name} sobol", ch[name], f"{min(others):.2f} to {max(others):.2f}")
+    # A1 (2026-11-10): S1_conf is a 95% bootstrap half-width, not one standard error.
+    expect_p("ch4 sobol", ch["04_results"],
+             f"{shd['S1']:.2f}, with a 95\\% interval of $\\pm {shd['S1_conf']:.2f}$")
+    snc = json.loads((SUMMARY / "sobol_noise_check.json").read_text(encoding="utf-8"))
+    ub = max(r["ST_noise_corrected_ci"][1] for r in snc["rows"] if r["parameter"] != "shock_prob")
+    expect_p("ch4 sobol noise", ch["04_results"], f"within {math.ceil(ub * 100) / 100:.2f} of zero")
+    expect_p("ch4 sobol", ch["04_results"], f"from {fifths[0] * 100:.1f}\\% in the lowest fifth")
+    expect_p("ch4 sobol", ch["04_results"], f"to {fifths[-1] * 100:.1f}\\% in the highest")
+    expect_p("ch3 sobol", ch["03_calibration"], f"Saltelli design & 0--0.3 & {sobj['replicates']} &")
     # Section 4.1 and the RQ2 answer: the pooled effect.
     for c in ("04_results", "06_conclusion"):
-        expect(f"{c} pooled", ch[c], unsigned(pmj(num, "beta0_effect_pooled")))
-    expect("ch4 pooled", ch["04_results"], unsigned(pmj(num, "peer_effect_pooled")))
-    expect("ch4 shortfall", ch["04_results"], pmj(num, "eff_no_shortfall_bnpl_b0"))
+        expect_p(f"{c} pooled", ch[c], unsigned(pmj(num, "beta0_effect_pooled")))
+    expect_p("ch4 pooled", ch["04_results"], unsigned(pmj(num, "peer_effect_pooled")))
+    expect_p("ch4 shortfall", ch["04_results"], pmj(num, "eff_no_shortfall_bnpl_b0"))
     # Section 4.2: the beta sweep.
     h = sweep["headline_linear"]
-    expect("ch4 beta", ch["04_results"], f"{h['beta0_effect_pp']:+.2f} \\pm {h['beta0_effect_se']:.2f}")
-    expect("ch4 beta", ch["04_results"], f"{h['beta0_effect_sd']:.2f}")
+    expect_p("ch4 beta", ch["04_results"], f"{h['beta0_effect_pp']:+.2f} \\pm {h['beta0_effect_se']:.2f}")
+    expect_p("ch4 beta", ch["04_results"], f"{h['beta0_effect_sd']:.2f}")
     slope = f"{h['slope_pp_per_0.1_beta']:+.3f} \\pm {h['slope_se_per_0.1_beta']:.3f}"
     for c in ("04_results", "06_conclusion"):
-        expect(f"{c} slope", ch[c], slope)
+        expect_p(f"{c} slope", ch[c], slope)
     assert sweep["verdict"] == "linear"
+    # A1 (2026-11-10): the detectable difference between two values of beta, with the no-BNPL
+    # arm cancelling seed by seed (between_beta_difference_detected_half_the_time_pp).
+    expect_p("ch4 beta power", ch["04_results"],
+             f"difference of {sweep['between_beta_difference_detected_half_the_time_pp']:.2f} points between two values")
     # Section 5: the switches at beta = 0.
-    expect("ch5 bureau", ch["05_policy"], unsigned(pmj(num, "lever_bureau_beta0_diff")))
-    expect("ch5 screening", ch["05_policy"], f"{-num['lever_afford_beta0_diff'] * 100:.2f} \\pm "
+    expect_p("ch5 bureau", ch["05_policy"], unsigned(pmj(num, "lever_bureau_beta0_diff")))
+    expect_p("ch5 screening", ch["05_policy"], f"{-num['lever_afford_beta0_diff'] * 100:.2f} \\pm "
            f"{num['lever_afford_beta0_diff_se'] * 100:.2f}")
+    if missing:
+        print(f"{checked - start} typed prose numbers match; {len(missing)} do not. Each needle is "
+              "formatted from results/ and must appear in the named chapter:")
+        for m in missing:
+            print("  MISSING", m)
+        raise SystemExit(1)
     print(f"OK: {checked - start} typed prose numbers match results/summary")
 
 

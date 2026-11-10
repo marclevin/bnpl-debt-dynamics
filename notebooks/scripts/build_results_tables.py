@@ -128,12 +128,30 @@ def tab_baseline_arms(rq0: pd.DataFrame) -> None:
         "\\midrule",
         f"Default, change from no \\ac{{BNPL}} (pp) & -- & {pmb(d0, se0)} & {pmb(d1, se1)} \\\\",
     ]
+    # QA 2026-11-10 (Astra 3): both default measures and their denominators, stated once here.
+    init = {round(float(v), 6) for x in (off, b0, b1) for v in x.initial_default_rate}
+    assert len(init) == 1, f"the starting stock should be the same in every arm: {init}"
+    init = init.pop()
+    at_risk = ms(off.new_default_rate_final / (1 - off.initial_default_rate))[0]
+    N.update(
+        baseline_initial_default=init,
+        baseline_new_default=ms(off.new_default_rate_final)[0],
+        baseline_new_default_of_not_initially_defaulted=at_risk,
+        new_default_beta0=ms(b0.new_default_rate_final)[0],
+        new_default_peer=ms(b1.new_default_rate_final)[0],
+    )
     table(
         "tab_baseline_arms",
         "The baseline and the \\ac{BNPL} injection",
-        "Seeds 10{,}000--10{,}019 in every arm. Holders: households owing a \\ac{BNPL} balance at "
+        "Seeds 10{,}000--10{,}019 in every arm. Default during the run: households that enter "
+        "default after the start, as a share of all 5{,}000 households "
+        f"({pct(at_risk)}\\% of the households not in default at the start, without \\ac{{BNPL}}). "
+        f"Including the starting stock: also the {pct(init)}\\% placed in default at the start, the "
+        "same households in every arm, so the change in default is a change in default during the "
+        "run. Holders: households owing a \\ac{BNPL} balance at "
         "the final tick. Ever: at any tick of the two-year run. Arrears, interest, savings and "
-        "volume cover the post-burn-in ticks; default, lending and refusals cover the whole run.",
+        "volume cover the post-burn-in ticks; default, lending and refusals cover the whole run. "
+        "$\\pm$: one standard error, paired by seed.",
         "L{5.6cm}rrr",
         r"\textbf{Outcome} & \textbf{No \ac{BNPL}} & \textbf{\ac{BNPL}, $\beta=0$} & \textbf{\ac{BNPL}, $\beta=0.3$}",
         rows,
@@ -219,9 +237,14 @@ def tab_stacking(rq1: pd.DataFrame) -> None:
     for n in range(1, 7):
         sub = {b: rq1[(rq1.n_platforms == n) & (rq1.beta == b)] for b in (0.0, BP)}
         cells = [str(n)]
-        # grouped by outcome, so each pair compares beta = 0 with beta = 1 side by side
-        cells += [pct(ms(holders_share(sub[b]))[0], 1) for b in (0.0, BP)]
-        cells += [pct(ms(sub[b].ever_stacked_2plus_of_adopters)[0], 1) for b in (0.0, BP)]
+        # grouped by outcome, so each pair compares beta = 0 with beta = 1 side by side. With one
+        # platform no household can owe two, so the stacking cells are blank, not a result.
+        if n == 1:
+            assert all((sub[b].stacking_2plus_final == 0).all() for b in (0.0, BP))
+            cells += ["--"] * 4
+        else:
+            cells += [pct(ms(holders_share(sub[b]))[0], 1) for b in (0.0, BP)]
+            cells += [pct(ms(sub[b].ever_stacked_2plus_of_adopters)[0], 1) for b in (0.0, BP)]
         cells += [rm(ms(sub[b].bnpl_volume_cumulative)[0], 2) for b in (0.0, BP)]
         cells += [pct(ms(sub[b].default_rate_final)[0], 2) for b in (0.0, BP)]
         for b in (0.0, BP):
@@ -243,15 +266,20 @@ def tab_stacking(rq1: pd.DataFrame) -> None:
     table(
         "tab_stacking",
         "Stacking, volume and default by number of platforms",
-        "Seeds 20{,}000--20{,}019. Holders: share of households holding \\ac{BNPL} at the final "
-        "tick that owe two or more platforms. Ever-holders: share of households that ever held "
-        "\\ac{BNPL} that owed two or more platforms at some tick; the \\ac{CFPB} reports that 32 to 33\\% "
+        "Seeds 20{,}000--20{,}019. Owing two or more platforms, holders: share of the households "
+        "holding \\ac{BNPL} at the final tick that owe two or more platforms; ever-holders: share of "
+        "the households that ever held \\ac{BNPL} that owed two or more platforms at some tick. "
+        "With one platform no household can owe two (--). The \\ac{CFPB} reports that 32 to 33\\% "
         "of United States borrowers in a year held simultaneous loans at two or more firms, an "
         "undercount by its own account~\\citep{cfpb2025bnpl}. "
         "Volume: cumulative post-burn-in \\ac{BNPL} lending. Replicate standard deviations of default "
-        f"are at most {sd_def * 100:.2f} points. Default with six platforms less one: "
-        f"{pm(d0, se0)} points at $\\beta = 0$ and {pm(d1, se1)} at $\\beta = 0.3$.",
+        f"are at most {sd_def * 100:.2f} points. Default: including the households placed in default "
+        f"at the start. Default with six platforms less one: "
+        f"{pm(d0, se0)} points at $\\beta = 0$ and {pm(d1, se1)} at $\\beta = 0.3$, $\\pm$ one "
+        "standard error, paired by seed.",
         "c rr rr rr rr",
+        r"& \multicolumn{4}{c}{\textbf{Owing two or more platforms}} & & & & \\ \cmidrule(lr){2-5}"
+        "\n"
         r"& \multicolumn{2}{c}{\textbf{Holders (\%)}} & \multicolumn{2}{c}{\textbf{Ever-holders (\%)}} "
         r"& \multicolumn{2}{c}{\textbf{Volume (R m)}} & \multicolumn{2}{c}{\textbf{Default (\%)}} \\ "
         r"\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(lr){8-9}"
@@ -271,6 +299,10 @@ def tab_stacking(rq1: pd.DataFrame) -> None:
             d = rq1[(rq1.n_platforms == n) & (rq1.beta == b)]
             m, s, _ = ms(d.stacking_2plus_final)
             sd_max = max(sd_max, s)
+            if n == 1:  # no household can owe two platforms when there is one
+                assert m == 0
+                cells.append("--")
+                continue
             cells.append(pct(m, 1))
         for b in betas:
             d = rq1[(rq1.n_platforms == n) & (rq1.beta == b)]
@@ -296,13 +328,14 @@ def tab_stacking(rq1: pd.DataFrame) -> None:
     table(
         "tab_stacking_full",
         "Platform count by peer-influence strength: the full grid",
-        f"Seeds 20{{,}}000--20{{,}}019. 2+ platforms: share of all households, not of holders as in "
-        f"Table~\\ref{{tab:stacking}}, owing two or more platforms at the final tick. Replicate "
-        f"standard deviations are at most {sd_max * 100:.1f} "
+        f"Seeds 20{{,}}000--20{{,}}019. Owing two or more platforms: share of all households, not of "
+        f"holders as in Table~\\ref{{tab:stacking}}, at the final tick; with one platform no household "
+        f"can owe two (--). Default: including the households placed in default at the start. "
+        f"Replicate standard deviations are at most {sd_max * 100:.1f} "
         f"points for that share and {sd_def * 100:.2f} for default. Default with six platforms less "
-        f"one: {', '.join(contrasts)}.",
+        f"one: {', '.join(contrasts)}, $\\pm$ one standard error, paired by seed.",
         "c " + "r" * k + " " + "r" * k,
-        f"& \\multicolumn{{{k}}}{{c}}{{2+ platforms (\\% of households)}} & \\multicolumn{{{k}}}{{c}}{{Default rate (\\%)}} \\\\ "
+        f"& \\multicolumn{{{k}}}{{c}}{{Owing two or more platforms (\\% of households)}} & \\multicolumn{{{k}}}{{c}}{{Default rate (\\%)}} \\\\ "
         f"\\cmidrule(lr){{2-{k + 1}}}\\cmidrule(lr){{{k + 2}-{2 * k + 1}}}\n\\textbf{{Platforms}} & "
         + " & ".join(f"$\\beta={b:g}$" for b in betas) + " & "
         + " & ".join(f"$\\beta={b:g}$" for b in betas),
@@ -363,8 +396,17 @@ def tab_bnpl_on_checks(rq0: pd.DataFrame) -> None:
     second = sorted(dti, key=dti.get)[-2]
     dti_mean = {q: ms(off[f"dti_mean_{q}"])[0] for q in Q}
     peak_mean = max(dti_mean, key=dti_mean.get)
-    # pattern 4
-    zs_off, zs_b0 = ms(off.zero_savings_rate_mean)[0], ms(b0.zero_savings_rate_mean)[0]
+    # Pattern 3 at the start, from the population itself: is the mid-distribution peak already
+    # there, or does it appear during the run? (QA 2026-11-10: the result column must not read
+    # as validation when Section 3.5 does not count the pattern.)
+    popn = pd.read_parquet(ROOT / "data/processed/synthetic_population_5000.parquet")
+    g = popn.groupby("income_quintile", observed=True)
+    dti0 = (g.D_trad.sum() / g.w5_hhincome.sum()).to_dict()
+    peak0 = max(dti0, key=dti0.get)
+    second0 = sorted(dti0, key=dti0.get)[-2]
+    mid = ("Q2", "Q3", "Q4")
+    p3_at_start = peak0 in mid and second0 in mid
+    # Pattern 4 (households without savings against TransUnion) was dropped on 2026-11-10 (#29).
 
     N.update(
         stack2_holders_check=sh0, ever_stack2_adopters_check=ev0, cfpb_cross_firm=0.32,
@@ -382,8 +424,9 @@ def tab_bnpl_on_checks(rq0: pd.DataFrame) -> None:
         p1_interest_reproduced=bool(all(detectable(d, e) and d > 0 for d, e in ((r_int0, r_int0_se), (r_int1, r_int1_se)))),
         p3_middle_peak=bool(peak in ("Q2", "Q3", "Q4") and second in ("Q2", "Q3", "Q4")),
         p3_peak=peak, p3_peak_value=dti[peak], p3_second=second, p3_second_value=dti[second],
-        p3_mean_peak=peak_mean, p4_zero_savings_off=zs_off, p4_zero_savings_beta0=zs_b0,
-        p4_target=0.36,
+        p3_mean_peak=peak_mean, p3_start_peak=peak0, p3_start_peak_value=dti0[peak0],
+        p3_start_second=second0, p3_start_second_value=dti0[second0],
+        p3_start_q1=dti0["Q1"], p3_final_q1=dti["Q1"], p3_middle_peak_at_start=bool(p3_at_start),
     )
     def verdict(pairs):
         """The direction each (difference, se) supports, under the two-standard-error rule."""
@@ -395,8 +438,14 @@ def tab_bnpl_on_checks(rq0: pd.DataFrame) -> None:
     def band(v):
         return "inside" if lo_vol <= v <= hi_vol else ("below" if v < lo_vol else "above")
 
-    p3_reading = ("Reproduced" if N["p3_middle_peak"] else
-                  f"Not reproduced: peak in {peak}, {second} second")
+    # Section 3.5 does not count Pattern 3 as evidence, so the column says so. If the pattern
+    # is absent at the start and appears as Q1's ratio falls, it is not a behavioural result.
+    if N["p3_middle_peak"] and not p3_at_start and dti["Q1"] < dti0["Q1"]:
+        p3_reading = "Not counted: absent at the start; appears as Q1's debt falls"
+    elif N["p3_middle_peak"]:
+        p3_reading = "Matches; not counted"
+    else:
+        p3_reading = f"Not reproduced: peak in {peak}, {second} second"
     rows = [
         group_row("Behavioural patterns", 4),
         f"1. Traditional arrears rise~\\citep{{dehaan2024bnpl}} & Rise & {pmb(d_arr0, se_arr0)}; "
@@ -405,9 +454,8 @@ def tab_bnpl_on_checks(rq0: pd.DataFrame) -> None:
         f"{pmb(r_int0, r_int0_se, 1)}; {pmb(r_int1, r_int1_se, 1)}\\% & "
         f"{verdict(((r_int0, r_int0_se), (r_int1, r_int1_se)))} \\\\",
         f"3. Debt-to-income peaks mid-distribution~\\citep{{hamill2023creditcard}} & Peak in Q2--Q4 & "
-        f"{peak} {dti[peak]:.2f}; {second} {dti[second]:.2f} & {p3_reading} \\\\",
-        f"4. Households without savings~\\citep{{transunion_cps_sa_2025}} & 36\\% expect to miss a payment & "
-        f"{pct(zs_off, 1)}\\% & Same order \\\\",
+        f"{peak} {dti[peak]:.2f}; {second} {dti[second]:.2f} (start: {peak0} {dti0[peak0]:.2f}; "
+        f"{second0} {dti0[second0]:.2f}) & {p3_reading} \\\\",
         group_row("\\ac{BNPL} market", 4),
         f"Owing two or more providers at once~\\citep{{cfpb2025bnpl}} & 32--33\\% of borrowers in a year & "
         f"{pct(ev0, 1)}\\% of ever-holders & Close; different market \\\\",
@@ -423,8 +471,9 @@ def tab_bnpl_on_checks(rq0: pd.DataFrame) -> None:
         "Comparisons with external evidence",
         "No parameter was fitted to these quantities. Model values are from the $\\beta = 0$ arm of "
         "Table~\\ref{tab:baseline-arms}; Pattern~1 shows the change from the no-\\ac{BNPL} arm at "
-        "$\\beta = 0$ and $\\beta = 0.3$, and Patterns 3 and 4 use the no-\\ac{BNPL} arm. Debt-to-income "
-        "is total debt over total monthly income in each quintile. The volume band runs from the "
+        "$\\beta = 0$ and $\\beta = 0.3$, $\\pm$ one standard error paired by seed, and Pattern~3 uses "
+        "the no-\\ac{BNPL} arm at the final tick. Debt-to-income is total debt over total monthly "
+        "income in each quintile; start: the population before the first tick. The volume band runs from the "
         "provider's volume per signed-up customer to its volume per active customer, in 2017 Rands. "
         "The provider's 2024 report gives average spending of R7{,}000 per customer, about R5{,}000 in "
         "2017 Rands and above the band~\\citep{homechoice2024ir}, so the band's top is uncertain. "
@@ -493,13 +542,20 @@ def tab_scenarios(rq3s: pd.DataFrame) -> None:
                          ("trad_granted_value", "lending"), ("bnpl_adoption_final", "adoption"),
                          ("bnpl_volume_cumulative", "volume")):
             N[f"scen_bench_beta{b:g}_{tag}"] = ms(bench[col])[0]
+    init = {round(float(v), 6) for b in (0.0, BP) for k, _ in keys for v in arms[b][k].initial_default_rate}
+    assert len(init) == 1, f"the starting stock should be the same in every scenario arm: {init}"
+    N["scen_initial_default"] = init = init.pop()
     table(
         "tab_scenarios",
         "Bureau visibility and mandatory screening",
-        f"One hundred replicates per arm, {SEEDS_S}. The first column is the benchmark's mean; the "
-        "others are each arm's change from it, paired by seed, in the row's unit except for "
-        "\\ac{BNPL} volume, whose change is in per cent. Refused applications and lending: the traditional lender's. Holding: at the "
-        "final tick. Quintiles are of per-capita income.",
+        f"One hundred replicates per arm, {SEEDS_S}. The first column is the benchmark's mean, without "
+        "its replicate standard deviation; the "
+        "others are each arm's change from it $\\pm$ one standard error, paired by seed, in the row's "
+        "unit except for \\ac{BNPL} volume, whose change is in per cent. Default rate: share of all "
+        f"households in default at the final tick, including the {pct(init)}\\% placed in default at "
+        "the start, the same households in every arm. Refused applications and lending: the "
+        "traditional lender's. Holding: at the final tick. Quintiles are of per-capita income. "
+        "Food and rent left unpaid: Table~\\ref{tab:scenarios-distress}.",
         "L{3.5cm}R{2.05cm}R{2.4cm}R{2.3cm}R{2.3cm}",
         r"& & \multicolumn{3}{c}{\textbf{Change from benchmark}} \\ \cmidrule(lr){3-5}"
         "\n\\textbf{Outcome} & \\textbf{Benchmark} & \\textbf{Bureau visibility} & "
@@ -507,6 +563,55 @@ def tab_scenarios(rq3s: pd.DataFrame) -> None:
         rows,
         size=r"\footnotesize",
         colsep="4pt",
+    )
+
+
+def tab_scenarios_distress(rq3s: pd.DataFrame) -> None:
+    """QA 2026-11-10 (Astra 2): food and rent left unpaid under the switches, beside default.
+
+    A separate table because Table scenarios fills its page. Two measures, never substituted for
+    each other: the mean per-tick share short (post-burn-in) and the share ever short (all ticks).
+    The changes are a tenth of a point or less, so they print at three decimals, where two would
+    round a change of just over two standard errors to one that looks like less. The runs record
+    whether a household is short, not by how much, so there is no Rand column.
+    """
+    keys = ["bench", "bureau", "afford", "both"]
+    measures = [("Short in a tick, mean (\\%)", "consumption_distress_mean", "cdist_tick"),
+                ("Ever short (\\%)", "ever_consumption_distress_final", "cdist_ever")]
+    rows = []
+    for b in (0.0, BP):
+        arms = {k: arm(rq3s, f"rq3s_{k}_b{b}") for k in keys}
+        bench = arms["bench"]
+        rows.append(group_row("No peer influence ($\\beta = 0$)" if b == 0 else
+                              "Peer influence ($\\beta = 0.3$)", 5))
+        for name, col, tag in measures:
+            cells = [name, pct(ms(bench[col])[0])]
+            N[f"scen_bench_beta{b:g}_{tag}"] = ms(bench[col])[0]
+            for k in keys[1:]:
+                assert shares_seeds(arms[k], bench)
+                x, se = delta(arms[k], bench, col)
+                N[f"scen_{k}_beta{b:g}_{tag}_diff"], N[f"scen_{k}_beta{b:g}_{tag}_diff_se"] = x, se
+                cells.append(pmb(x, se, 3))
+            rows.append(" & ".join(cells) + r" \\")
+    burn, ticks = int(rq3s.burn_in.iloc[0]), int(rq3s.n_ticks.iloc[0])
+    assert not any("unmet" in c or "unpaid" in c for c in rq3s.columns), "a Rand amount is now recorded"
+    table(
+        "tab_scenarios_distress",
+        "Food and rent left unpaid under the two switches",
+        f"Arms, seeds and layout as in Table~\\ref{{tab:scenarios}}: the benchmark's mean, then each "
+        "arm's change from it $\\pm$ one standard error, paired by seed, at three decimals. A household "
+        "is short when its income and savings, with any credit raised in the tick, which pays food and "
+        "rent first, do not cover its food and rent; a household in default cannot borrow. Short in a "
+        f"tick: the share of all households short in a tick, averaged over the {ticks - burn} "
+        f"post-burn-in ticks. Ever short: the share of all households short in at least one of the "
+        f"{ticks} ticks. The runs record whether a household is short, not the Rand amount unpaid.",
+        "L{2.8cm}R{2.1cm}R{2.7cm}R{2.7cm}R{2.7cm}",
+        r"& & \multicolumn{3}{c}{\textbf{Change from benchmark}} \\ \cmidrule(lr){3-5}"
+        "\n\\textbf{Outcome} & \\textbf{Benchmark} & \\textbf{Bureau visibility} & "
+        "\\textbf{Screening} & \\textbf{Both}",
+        rows,
+        size=r"\footnotesize",
+        colsep="3pt",
     )
 
 
@@ -558,7 +663,9 @@ def tab_distribution(rq0: pd.DataFrame) -> None:
         "tab_distribution",
         "Outcomes by income quintile",
         f"Per-capita income quintiles of {', '.join(sizes[:-1])} and {sizes[-1]} households; seeds "
-        "10{,}000--10{,}019. Change: default with \\ac{BNPL} less default without. Holding: share "
+        "10{,}000--10{,}019. Default: including the households placed in default at the start. "
+        "Change: default with \\ac{BNPL} less default without, $\\pm$ one standard error, paired by "
+        "seed. Holding: share "
         "holding \\ac{BNPL} at the final tick. Debt/income: the quintile's total debt over its total "
         "monthly income. Limit binds: share of the quintile's platform requests that a platform's "
         "limit for that household reduced or refused. Purchase: mean want-driven purchase, in 2017 "
@@ -655,6 +762,7 @@ def tab_access(rq2: pd.DataFrame, rq2t: pd.DataFrame) -> None:
         "Each row compares full access (every banked household eligible) with zero access, over "
         "seven access levels; seeds 30{,}000--30{,}019 for the linear rule and 60{,}000--60{,}019 "
         "for the threshold rule. Holding: change in the share holding \\ac{BNPL} at the final tick. "
+        "Default: change in the default rate, $\\pm$ one standard error, paired by seed. "
         "$R^2$: fit of a straight line to default at the seven access levels, given only where the "
         "change in default is detectable.",
         "L{4.4cm}rrr",
@@ -716,6 +824,18 @@ def tab_robustness(rob: pd.DataFrame) -> None:
     )
     dd, se = delta(a("rob_k4"), a("rob_k7"), "default_rate_final")
     N["rob_k4_minus_k7"], N["rob_k4_minus_k7_se"] = dd, se
+    # QA 2026-11-10: the 56-day threshold moves when default happens, not only how it is counted.
+    # Default triggers freezing, a bureau record that cuts off credit, and write-off eligibility
+    # (simulation/agents.py), so the two arms differ in their dynamics as well as their counts.
+    N["rob_k4_initial"] = ms(a("rob_k4").initial_default_rate)[0]
+    N["rob_k7_initial"] = ms(a("rob_k7").initial_default_rate)[0]
+    N["rob_k4_new_minus_k7"], N["rob_k4_new_minus_k7_se"] = delta(a("rob_k4"), a("rob_k7"), "new_default_rate_final")
+    N["rob_k4_initial_minus_k7"] = N["rob_k4_initial"] - N["rob_k7_initial"]
+    for col, tag in (("trad_granted_value", "lending"), ("trad_applications", "applications"),
+                     ("n_credit_active_final", "credit_active"), ("bnpl_volume_cumulative", "volume"),
+                     ("consumption_distress_mean", "cdist_tick"), ("active_90_plus_mean", "90plus")):
+        N[f"rob_k4_{tag}"], N[f"rob_k7_{tag}"] = ms(a("rob_k4")[col])[0], ms(a("rob_k7")[col])[0]
+        N[f"rob_k4_minus_k7_{tag}"], N[f"rob_k4_minus_k7_{tag}_se"] = delta(a("rob_k4"), a("rob_k7"), col)
     for key, _ in rules:
         du, su = paired_diff(a(f"rob_amount_{key}_uncapped"), a(f"rob_amount_{key}"), "default_rate_final")
         N[f"rob_amount_{key}_uncapped_diff"], N[f"rob_amount_{key}_uncapped_diff_se"] = du, su
@@ -724,8 +844,14 @@ def tab_robustness(rob: pd.DataFrame) -> None:
         "Sensitivity of the default rate: principal arms",
         "Default rate at $\\beta = 0$. Each group has its own reference arm and seed block "
         "(50{,}000, 54{,}000, 57{,}000 and 59{,}000), so references differ by seed noise. "
-        "Difference: arm less its group's reference. $\\dagger$: arm less the same rule with the "
-        "cap. Remaining arms: Table~\\ref{tab:robustness-appendix}.",
+        "Default: including the households placed in default at the start. Difference: arm less "
+        "its group's reference, $\\pm$ one standard error, paired by seed. $\\dagger$: arm less the "
+        "same rule with the cap. At $k = 4$ a household's accounts are frozen, its credit cut off "
+        f"and its debt open to write-off six weeks sooner, so the arm changes the dynamics as well "
+        f"as the definition: {pct(N['rob_k4_initial'])}\\% start in default against "
+        f"{pct(N['rob_k7_initial'])}\\%, and default during the run rises by "
+        f"{pm(N['rob_k4_new_minus_k7'], N['rob_k4_new_minus_k7_se']).replace('$+', '$')} points. "
+        "Remaining arms: Table~\\ref{tab:robustness-appendix}.",
         "L{7.2cm}rr",
         r"\textbf{Arm} & \textbf{Default (\%)} & \textbf{Difference (pp)}",
         rows,
@@ -773,8 +899,8 @@ def tab_robustness(rob: pd.DataFrame) -> None:
         "Default rate at $\\beta = 0$, laid out as Table~\\ref{tab:robustness}; seed blocks "
         "53{,}000 (activation), 55{,}000 (population), 51{,}000 (minimum-payer share), 52{,}000 "
         "(minimum payment), 56{,}000 (limit) and 58{,}000 (single-tick shock, against the "
-        "exact-shortfall reference on 50{,}000). $\\ddagger$: unpaired, because seeds or population "
-        "size differ.",
+        "exact-shortfall reference on 50{,}000). $\\pm$: one standard error, paired by seed except "
+        "where marked $\\ddagger$: unpaired, because seeds or population size differ.",
         "L{7.2cm}rr",
         r"\textbf{Arm} & \textbf{Default (\%)} & \textbf{Difference (pp)}",
         rows,
@@ -823,8 +949,8 @@ def tab_sobol() -> None:
         f"across the ranges shown; they do not decompose the \\ac{{BNPL}} effect. Each design point is the "
         f"mean of {data['replicates']} replicates; replicate noise is "
         f"{N['sobol_noise'] * 100:.0f}\\% of the variance of default across points and enters every "
-        f"$S_T$, so a default $S_T$ near {N['sobol_noise']:.2f} is noise. Values outside zero to one are "
-        f"bootstrap noise.",
+        f"$S_T$, so a default $S_T$ near {N['sobol_noise']:.2f} is no larger than noise. Values outside "
+        f"zero to one are estimation noise.",
         "L{3.8cm}c rr rr",
         r"& & \multicolumn{2}{c}{Default rate} & \multicolumn{2}{c}{Holding} \\ \cmidrule(lr){3-4}\cmidrule(lr){5-6}"
         "\n\\textbf{Parameter} & \\textbf{Range} & \\textbf{$S_1$} & \\textbf{$S_T$} & \\textbf{$S_1$} & \\textbf{$S_T$}",
@@ -873,7 +999,8 @@ def lever_table(rq3: pd.DataFrame, name: str, caption: str, arms: list[tuple[str
     table(
         name,
         caption,
-        f"$\\Delta$: default less the benchmark's, {se_text}. Hold.: share holding \\ac{{BNPL}} at "
+        f"Default: including the households placed in default at the start. $\\Delta$: default "
+        f"less the benchmark's, $\\pm$ one standard error, {se_text}. Hold.: share holding \\ac{{BNPL}} at "
         f"the final tick (\\%). Vol.: change in cumulative post-burn-in \\ac{{BNPL}} volume (\\%). "
         f"Trad.: new traditional lending (R m). {note_extra}",
         "L{1.9cm} rrrrr rrrrr",
@@ -1001,8 +1128,9 @@ def tab_effect(eff: pd.DataFrame) -> None:
     table(
         "tab_effect",
         "The \\ac{BNPL} effect on default under alternative assumptions",
-        "Effect: default with \\ac{BNPL} less default without, paired by seed over one block "
-        "(70{,}000--70{,}019). No \\ac{BNPL}: the setting's default rate without \\ac{BNPL}. "
+        "Effect: default with \\ac{BNPL} less default without, $\\pm$ one standard error, paired by "
+        "seed over one block (70{,}000--70{,}019). No \\ac{BNPL}: the setting's default rate without "
+        "\\ac{BNPL}, including the households placed in default at the start. "
         "Purchase: mean want-driven purchase, in 2017 Rands, against a provider-based figure of "
         "R992. Volume: annual \\ac{BNPL} volume per eligible household, "
         f"in 2017 Rands, against a provider range of {rand(lo_vol)}--{rand(hi_vol)} "
@@ -1070,7 +1198,22 @@ def derived_numbers(rq0, rq2, rq2t, rq3, eff) -> None:
         N[f"access_max_step_beta{b:g}"], N[f"access_max_step_beta{b:g}_se"] = big[0], big[1]
         N[f"access_max_step_beta{b:g}_from"], N[f"access_max_step_beta{b:g}_to"] = big[2], big[3]
         N[f"access_steps_detectable_beta{b:g}"] = sum(detectable(d, se) for d, se, _, _ in steps)
+        # QA 2026-11-10 (Astra 6, "no step is followed by a level"): each step against the step a
+        # straight line through the two ends implies, in standard errors of the step, and the
+        # rise over the lower, middle and upper parts of the access range.
+        sub = rq2[rq2.beta == b]
+        tot = delta(sub[sub.bnpl_access_rate == 1.0], sub[sub.bnpl_access_rate == 0.0], "default_rate_final")[0]
+        devs = [(d - tot * (hi - lo)) / se for d, se, lo, hi in steps]
+        N[f"access_min_step_beta{b:g}"] = min(d for d, _, _, _ in steps)
+        N[f"access_step_dev_se_min_beta{b:g}"], N[f"access_step_dev_se_max_beta{b:g}"] = min(devs), max(devs)
+        N[f"access_step_dev_beyond_2se_beta{b:g}"] = sum(abs(x) > 2 for x in devs)
+        for lo, hi, tag in ((0.0, 0.3, "0_30"), (0.3, 0.7, "30_70"), (0.7, 1.0, "70_100")):
+            d, se = delta(sub[sub.bnpl_access_rate == hi], sub[sub.bnpl_access_rate == lo], "default_rate_final")
+            N[f"access_rise_{tag}_beta{b:g}"], N[f"access_rise_{tag}_beta{b:g}_se"] = d, se
+            N[f"access_rise_{tag}_beta{b:g}_linear"] = tot * (hi - lo)
     N["access_max_step_all"] = max(N[f"access_max_step_beta{b:g}"] for b in rq2.beta.unique())
+    N["access_min_step_all"] = min(N[f"access_min_step_beta{b:g}"] for b in rq2.beta.unique())
+    N["access_step_dev_beyond_2se_all"] = sum(N[f"access_step_dev_beyond_2se_beta{b:g}"] for b in rq2.beta.unique())
 
     # --- volume and saving beside the effect ---------------------------------------------
     off, b0, b1 = (arm(rq0, l) for l in ("baseline_no_bnpl", "bnpl_on_beta0", "bnpl_on_peer"))
@@ -1170,6 +1313,7 @@ def main() -> None:
     tab_stacking(rq1)
     tab_bnpl_on_checks(rq0)
     tab_scenarios(rq3s)
+    tab_scenarios_distress(rq3s)
     tab_distribution(rq0)
     tab_access(rq2, rq2t)
     tab_robustness(rob)

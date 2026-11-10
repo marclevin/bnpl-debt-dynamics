@@ -8,7 +8,8 @@ width so nothing is rescaled:
   fig_stacking           2+ platform shares (final tick; ever, the CFPB analogue) and default
   fig_access_default     default against access: linear coupling, and thresholds (adoption, default)
   fig_scenarios          the three body scenarios at both betas, default and volume
-  fig_tornado            each sensitivity arm's change from its reference, with 95% intervals
+  fig_tornado            each behavioural sensitivity arm's change from its reference, with 95%
+                         intervals (the 56-day default threshold is tabulated, not drawn)
   fig_scenarios_appendix every lever at both betas, the cap marked hypothetical
 
 Palette: categorical slots 1 and 8 of the validated default (blue, red) plus black for the
@@ -229,7 +230,11 @@ def fig_scenarios(rq3s: pd.DataFrame) -> None:
 # the value: the "Swept" class of Table 3.1). Arms are matched by exact label; a prefix match
 # once pooled the default-horizon arms with the kappa arms ("rob_k" is a prefix of "rob_kappa").
 # Population size and activation order are numerical checks, not model assumptions, and the
-# single-tick shock arm (-2.76pp) is off any shared scale; all three stay in the appendix table.
+# single-tick shock arm changes the shock process itself; all three stay in the appendix table.
+# The 56-day default threshold (rob_k4 against rob_k7) was taken out on 2026-11-10: it changes
+# the definition and the timing of default (freezing, cut-off from credit, write-off), not a
+# behavioural assumption, and its +13 points compressed every other arm. It stays in
+# Table tab:robustness.
 TORNADO_GROUPS = [
     ("Borrowing amount on a shortfall (exact)", "rob_amount_shortfall", [
         ("shortfall +25%", "rob_amount_shortfall_125"),
@@ -238,7 +243,6 @@ TORNADO_GROUPS = [
         ("shortfall +25%, uncapped", "rob_amount_shortfall_125_uncapped"),
         ("shortfall + one tick of committed spending, uncapped", "rob_amount_shortfall_plus_committed_uncapped"),
     ], True),
-    ("Default threshold (98 days)", "rob_k7", [("56 days", "rob_k4")], False),
     ("Purchase size κ (0.139)", "rob_kappa0.1387", [("0.07", "rob_kappa0.07"), ("0.28", "rob_kappa0.28")], False),
     ("Purchase sizing base (discretionary)", "rob_base_discretionary", [("sized on income", "rob_base_income")], False),
     ("Minimum-payment fraction (0.05)", "rob_minpay0.05",

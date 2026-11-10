@@ -1,0 +1,120 @@
+{
+  "_note": "Noise correction of the total-order indices for default_rate_final; see the script docstring (notebooks/scripts/check_sobol_noise.py). Shares are fractions.",
+  "noise_share": 0.13873339124279033,
+  "noise_share_ci": [
+    0.1259471583544148,
+    0.154043865409222
+  ],
+  "noise_share_in_sobol_indices_json": 0.1424191949687998,
+  "bootstrap_draws": 2000,
+  "rows": [
+    {
+      "parameter": "q_base",
+      "ST_salib": 0.1242869362184787,
+      "ST_salib_conf": 0.02311735339501698,
+      "ST_reproduced": 0.12428693621847874,
+      "ST_noise_corrected": -0.016498882740075896,
+      "ST_noise_corrected_ci": [
+        -0.04091516745217962,
+        0.009407609773841828
+      ],
+      "ST_noise_corrected_of_noise_free_var": -0.01915653361260975,
+      "ST_noise_corrected_of_noise_free_var_ci": [
+        -0.04785744709810762,
+        0.01097799811680927
+      ],
+      "S1_salib": 0.008612491145203672,
+      "S1_salib_conf": 0.061783093271679565
+    },
+    {
+      "parameter": "beta",
+      "ST_salib": 0.14042561942381784,
+      "ST_salib_conf": 0.023798300866600397,
+      "ST_reproduced": 0.14042561942381776,
+      "ST_noise_corrected": -0.0039738737825331626,
+      "ST_noise_corrected_ci": [
+        -0.02806129711818945,
+        0.02110989737842119
+      ],
+      "ST_noise_corrected_of_noise_free_var": -0.004613987982498686,
+      "ST_noise_corrected_of_noise_free_var_ci": [
+        -0.03278216671781718,
+        0.024523747985760087
+      ],
+      "S1_salib": 0.060773778908551006,
+      "S1_salib_conf": 0.07583635624008037
+    },
+    {
+      "parameter": "min_payment_frac",
+      "ST_salib": 0.1310815647690553,
+      "ST_salib_conf": 0.026836543274987825,
+      "ST_reproduced": 0.13108156476905525,
+      "ST_noise_corrected": -0.015032769194104944,
+      "ST_noise_corrected_ci": [
+        -0.041078636594710796,
+        0.011732225456826343
+      ],
+      "ST_noise_corrected_of_noise_free_var": -0.01745425753332865,
+      "ST_noise_corrected_of_noise_free_var_ci": [
+        -0.04765017073519053,
+        0.013627558466889204
+      ],
+      "S1_salib": 0.023497935268336587,
+      "S1_salib_conf": 0.0712940867422441
+    },
+    {
+      "parameter": "bnpl_purchase_ratio",
+      "ST_salib": 0.12079292064764283,
+      "ST_salib_conf": 0.02692365336882506,
+      "ST_reproduced": 0.12079292064764276,
+      "ST_noise_corrected": -0.02108780078745639,
+      "ST_noise_corrected_ci": [
+        -0.04318610727471773,
+        0.002456331302489466
+      ],
+      "ST_noise_corrected_of_noise_free_var": -0.0244846375942586,
+      "ST_noise_corrected_of_noise_free_var_ci": [
+        -0.05040855527622625,
+        0.002844531715516967
+      ],
+      "S1_salib": 0.042750772789799885,
+      "S1_salib_conf": 0.060137517686146176
+    },
+    {
+      "parameter": "bnpl_limit_income_multiple",
+      "ST_salib": 0.13126212056967843,
+      "ST_salib_conf": 0.025553829943550717,
+      "ST_reproduced": 0.13126212056967843,
+      "ST_noise_corrected": -0.012747642167995338,
+      "ST_noise_corrected_ci": [
+        -0.036418826218139175,
+        0.012779598264683147
+      ],
+      "ST_noise_corrected_of_noise_free_var": -0.01480104074438684,
+      "ST_noise_corrected_of_noise_free_var_ci": [
+        -0.04248842152067014,
+        0.014968424254734984
+      ],
+      "S1_salib": 0.04314410926019125,
+      "S1_salib_conf": 0.06371620481081205
+    },
+    {
+      "parameter": "shock_prob",
+      "ST_salib": 0.9710129788691024,
+      "ST_salib_conf": 0.13477162420886155,
+      "ST_reproduced": 0.9710129788691025,
+      "ST_noise_corrected": 0.8297553100877153,
+      "ST_noise_corrected_ci": [
+        0.7052716126903065,
+        0.9674593390295309
+      ],
+      "ST_noise_corrected_of_noise_free_var": 0.9634128406359972,
+      "ST_noise_corrected_of_noise_free_var_ci": [
+        0.8167781413356919,
+        1.1311089034191018
+      ],
+      "S1_salib": 0.8414954024907482,
+      "S1_salib_conf": 0.1458308771486016
+    }
+  ]
+}

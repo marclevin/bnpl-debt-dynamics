@@ -4,14 +4,15 @@
 \centering
 \caption{Stacking, volume and default by number of platforms}
 \label{tab:stacking}
-\tabnote{Seeds 20{,}000--20{,}019. Holders: share of households holding \ac{BNPL} at the final tick that owe two or more platforms. Ever-holders: share of households that ever held \ac{BNPL} that owed two or more platforms at some tick; the \ac{CFPB} reports that 32 to 33\% of United States borrowers in a year held simultaneous loans at two or more firms, an undercount by its own account~\citep{cfpb2025bnpl}. Volume: cumulative post-burn-in \ac{BNPL} lending. Replicate standard deviations of default are at most 0.53 points. Default with six platforms less one: $+0.13 \pm 0.13$ points at $\beta = 0$ and $+0.17 \pm 0.12$ at $\beta = 0.3$.}
+\tabnote{Seeds 20{,}000--20{,}019. Owing two or more platforms, holders: share of the households holding \ac{BNPL} at the final tick that owe two or more platforms; ever-holders: share of the households that ever held \ac{BNPL} that owed two or more platforms at some tick. With one platform no household can owe two (--). The \ac{CFPB} reports that 32 to 33\% of United States borrowers in a year held simultaneous loans at two or more firms, an undercount by its own account~\citep{cfpb2025bnpl}. Volume: cumulative post-burn-in \ac{BNPL} lending. Replicate standard deviations of default are at most 0.53 points. Default: including the households placed in default at the start. Default with six platforms less one: $+0.13 \pm 0.13$ points at $\beta = 0$ and $+0.17 \pm 0.12$ at $\beta = 0.3$, $\pm$ one standard error, paired by seed.}
 \begingroup\setlength{\tabcolsep}{4pt}\small
 \begin{tabular}{c rr rr rr rr}
 \toprule
+& \multicolumn{4}{c}{\textbf{Owing two or more platforms}} & & & & \\ \cmidrule(lr){2-5}
 & \multicolumn{2}{c}{\textbf{Holders (\%)}} & \multicolumn{2}{c}{\textbf{Ever-holders (\%)}} & \multicolumn{2}{c}{\textbf{Volume (R m)}} & \multicolumn{2}{c}{\textbf{Default (\%)}} \\ \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(lr){8-9}
 \textbf{Platforms} & $\beta=0$ & $\beta=0.3$ & $\beta=0$ & $\beta=0.3$ & $\beta=0$ & $\beta=0.3$ & $\beta=0$ & $\beta=0.3$ \\
 \midrule
-1 & 0.0 & 0.0 & 0.0 & 0.0 & 4.47 & 11.03 & 21.57 & 21.65 \\
+1 & -- & -- & -- & -- & 4.47 & 11.03 & 21.57 & 21.65 \\
 2 & 19.6 & 16.9 & 23.8 & 60.9 & 5.21 & 12.52 & 21.79 & 21.74 \\
 3 & 19.8 & 19.0 & 26.5 & 67.7 & 5.26 & 12.55 & 21.75 & 21.76 \\
 4 & 21.6 & 20.4 & 28.3 & 70.4 & 5.45 & 12.77 & 21.81 & 21.78 \\
