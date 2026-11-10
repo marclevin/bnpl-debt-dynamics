@@ -544,3 +544,13 @@ Applied items A1 to A13 of `docs/reviews/2026-10-13/04_adversarial_synthesis.md`
 - **New sentences.** The 90+ change under BNPL (A3, `arrears90_change_beta*`); a findings preview in the introduction (A4); the threshold-rule result in the RQ2 answer and the uniform-hazard steady state in 3.4 (A11); Python 3.14.4 and Mesa 3.5.1 in Data and Code (A13).
 - **Rewrites and cuts.** Conclusion RQ paragraphs compressed, with the combined arm and where refused households borrow next (A5); one BNPL effect at β = 1 in 3.5, relative to each comparison arm (A6); the 3.5 failure taxonomy (A7); cap wording "mainly through the volume" (A8); the untested-explanation template broken up (A9); repeats cut (A10); parse fixes (A12).
 - **Length.** Body 9,898 words (`wc_prose.py`). Abstract 298 typeset words.
+
+### 2026-11-10, after release: three sources checked
+
+- **Repo rate 7.00%**: now cited to the SARB MPC statement of 30 March 2017 (p. 9, "keep the
+  repurchase rate unchanged at 7.0% per annum"), new key `sarb_mpc_2017_03`, in the
+  tab:credit-terms note and Submodel 16. The rate was cut to 6.75% from 21 July 2017.
+- **CFPB 32-33%** (`cfpb2025bnpl`): re-read. Table 4, p. 18: 31.7% (2021) and 32.6% (2022), per
+  year. Its "simultaneous" means a further loan within 42 days of the first.
+- **Community Survey 2016** (`statssa_cs_2016`): archive copy opened; identical to a copy of the
+  original PDF; p. 68 gives the 3,3 household size.
