@@ -43,6 +43,13 @@ SHORTFALL_COMMITTED = "shortfall $+$ one tick of committed spending"
 CAP_REMOVED = ", uncapped"
 
 
+# Body-chapter tables (issue #89): here if they fit, otherwise at the top or bottom of the next
+# page, so a table that does not fit leaves no half-empty page as [H] did; "!" lets a tall table
+# take a top slot. Floating tables also keep their numbered order, which mixing [H] with floating
+# tables does not. Appendix tables keep [H].
+FLOAT_NEAR = "!htb"
+
+
 def se_note(a: pd.DataFrame, b: pd.DataFrame) -> str:
     return SE_P if shares_seeds(a, b) else SE_U
 
@@ -156,6 +163,7 @@ def tab_baseline_arms(rq0: pd.DataFrame) -> None:
         r"\textbf{Outcome} & \textbf{No \ac{BNPL}} & \textbf{\ac{BNPL}, $\beta=0$} & \textbf{\ac{BNPL}, $\beta=0.3$}",
         rows,
         size=r"\footnotesize",
+        placement=FLOAT_NEAR,
     )
 
 
@@ -228,6 +236,7 @@ def tab_arrears_fit() -> None:
         r"\textbf{Days in arrears} & \textbf{\ac{CCMR} (\%)} & \textbf{Model (\%)} & ",
         rows,
         size=r"\small",
+        placement=FLOAT_NEAR,
     )
 
 def tab_stacking(rq1: pd.DataFrame) -> None:
@@ -287,6 +296,7 @@ def tab_stacking(rq1: pd.DataFrame) -> None:
         "& $\\beta=0$ & $\\beta=0.3$",
         rows,
         size=r"\small",
+        placement=FLOAT_NEAR,
         colsep="4pt",
     )
     # appendix: every beta, two outcomes
@@ -484,6 +494,7 @@ def tab_bnpl_on_checks(rq0: pd.DataFrame) -> None:
         r"\textbf{Comparison} & \textbf{Expected} & \textbf{Model} & \textbf{Result}",
         rows,
         size=r"\footnotesize",
+        placement=FLOAT_NEAR,
         colsep="3pt",
     )
 
@@ -562,6 +573,7 @@ def tab_scenarios(rq3s: pd.DataFrame) -> None:
         "\\textbf{Screening} & \\textbf{Both}",
         rows,
         size=r"\footnotesize",
+        placement=FLOAT_NEAR,
         colsep="4pt",
     )
 
@@ -611,6 +623,7 @@ def tab_scenarios_distress(rq3s: pd.DataFrame) -> None:
         "\\textbf{Screening} & \\textbf{Both}",
         rows,
         size=r"\footnotesize",
+        placement=FLOAT_NEAR,
         colsep="3pt",
     )
 
@@ -676,6 +689,7 @@ def tab_distribution(rq0: pd.DataFrame) -> None:
         "\n\\textbf{Quintile} & No \\ac{BNPL} & $\\beta=0$ & $\\beta=0.3$ & $\\beta=0$ & No \\ac{BNPL} & $\\beta=0$ & $\\beta=0$",
         rows,
         size=r"\footnotesize",
+        placement=FLOAT_NEAR,
         colsep="2.8pt",
     )
 
@@ -769,6 +783,7 @@ def tab_access(rq2: pd.DataFrame, rq2t: pd.DataFrame) -> None:
         r"\textbf{Arm} & \textbf{Holding (pp)} & \textbf{Default (pp)} & \textbf{$R^2$}",
         rows,
         size=r"\footnotesize",
+        placement=FLOAT_NEAR,
     )
 
 
@@ -856,6 +871,7 @@ def tab_robustness(rob: pd.DataFrame) -> None:
         r"\textbf{Arm} & \textbf{Default (\%)} & \textbf{Difference (pp)}",
         rows,
         size=r"\footnotesize",
+        placement=FLOAT_NEAR,
     )
 
     # appendix: the rest
@@ -1146,6 +1162,7 @@ def tab_effect(eff: pd.DataFrame) -> None:
         "$\\beta=0$ & $\\beta=0.3$ & $\\beta=0$ & $\\beta=0.3$ & $\\beta=0$ & $\\beta=0.3$",
         rows,
         size=r"\footnotesize",
+        placement="p",  # a full page: a float page right after the page that cites it
         colsep="1.8pt",
     )
 

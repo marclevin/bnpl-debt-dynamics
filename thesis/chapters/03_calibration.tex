@@ -4,7 +4,7 @@
 This section answers RQ1. Table~\ref{tab:param-taxonomy} classifies the model's inputs by
 provenance; Appendix~\ref{app:specification} gives every parameter.
 
-\begin{table}[tbp]
+\begin{table}[p]
 \centering\small
 \caption{Provenance of model inputs}
 \label{tab:param-taxonomy}
@@ -77,7 +77,7 @@ the data, the drawn population or the assumptions. Error bars in figures are 95\
 % over the scenario arms (lever_bureau/afford/both_*_diff_se) and 0.034-0.040 over the beta sweep
 % (effect_se in results/summary/beta_sweep.json).
 
-\begin{table}[H]
+\begin{table}[!htb]
 \centering
 \caption{Experiments}
 \label{tab:experiments}
@@ -147,7 +147,7 @@ with several adults. The 2019 banking data may overstate access in 2017. Appendi
 reuse. National imputed rates differ from their \ac{FinScope} targets by at most 1.8
 percentage points, and by at most 2.3 points within any quintile.
 
-\begin{figure}[H]
+\begin{figure}[!htb]
 \centering
 \begin{tikzpicture}[font=\footnotesize, >=Stealth,
   cell/.style={draw, minimum width=0.46cm, minimum height=0.34cm, inner sep=0pt},
@@ -221,7 +221,7 @@ clothing-account, hire-purchase and vehicle payments, so these are counted twice
 and as discretionary spending, with an unknown effect on default. On net, constructed service is
 above the range households report (Section~\ref{sec:data-validation}).
 
-\begin{table}[H]
+\begin{table}[!htb]
 \centering
 \caption{Interest rates and repayment horizons by product class}
 \label{tab:credit-terms}
@@ -370,7 +370,7 @@ imputing missing balances at the mean for holders would give 111\% of the book, 
 underreporting may explain part of the gap. Debt service is the one clear failure. It lies
 above \ac{FinScope}'s range, as the construction in Section~\ref{sec:servicing} predicts.
 
-\begin{table}[H]
+\begin{table}[!htb]
 \centering
 \caption{The constructed population against external figures}
 \label{tab:pop-external}

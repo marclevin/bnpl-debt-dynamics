@@ -108,7 +108,7 @@ Appendix~\ref{app:levers}).
 
 \input{chapters/generated/tab_stacking}
 
-\begin{figure}[H]
+\begin{figure}[!htb]
 \centering
 \includegraphics[width=\textwidth]{figures/fig_stacking.png}
 \caption{Stacking and default by platform count}
@@ -147,7 +147,7 @@ peer influence, under either rule, raises \ac{BNPL} use without changing the eff
 detectably.
 % thr_*, mu_adoption_hi/_lo, mu_default_diff (+ _se) and thr_volume_ratio_min/_max, results_numbers.json.
 
-\begin{figure}[H]
+\begin{figure}[!htb]
 \centering
 \includegraphics[width=\textwidth]{figures/fig_access_default.png}
 \caption{Holding and default against \ac{BNPL} access under two adoption rules}
@@ -210,7 +210,7 @@ minimum-payer share do not change default detectably.
 
 \input{chapters/generated/tab_robustness}
 
-\begin{figure}[H]
+\begin{figure}[!htb]
 \centering
 \includegraphics[width=\textwidth]{figures/fig_tornado.png}
 \caption{Sensitivity of the population default rate}
@@ -227,6 +227,8 @@ The effect is detectable under every setting but one, at both values of $\beta$,
 are not independent replicates. The reference effect on this block is $+0.98 \pm 0.13$ points at
 $\beta=0$ and $+1.07 \pm 0.15$ at $\beta=0.3$.
 
+{\renewcommand{\arraystretch}{0.94}\input{chapters/generated/tab_effect}}
+
 Purchase size barely moves the effect. Halving or doubling $\kappa$, which halves or doubles
 volume, leaves it between 0.89 and 1.09 points at both values of $\beta$, and income-based
 sizing, whose mean purchase is closest to the provider-based R992, gives $+1.13 \pm 0.13$ and
@@ -238,8 +240,6 @@ that path (Section~\ref{sec:amount}). An agreement frees three quarters of its v
 though the household financed a purchase it would otherwise have paid for in cash, and the
 \ac{BNPL} share of a shortfall is capped at the mean purchase. No study measures either for South
 Africa.
-
-{\renewcommand{\arraystretch}{0.94}\input{chapters/generated/tab_effect}}
 
 \subsection{Answer to RQ2}
 \label{sec:results-answer}

@@ -6,6 +6,7 @@
 \usepackage{algorithm}       % after float: both patch the float mechanism
 \usepackage{algpseudocode}
 \usepackage{afterpage}
+\usepackage{needspace}       % keeps a heading with the unbreakable table or text after it
 \usepackage{pdfpages}
 \setlength{\emergencystretch}{2em}
 \usepackage{hyphenat}
@@ -38,6 +39,9 @@
 % natbib typesets agsm URLs with \textit, which breaks on % and _; read them with \url.
 \renewcommand{\harvardurl}{Available at:~\url}
 \usepackage{hyperref}
+% Links work but carry no coloured border or text colour, on screen or in print.
+\hypersetup{hidelinks, pdftitle={Buy Now, Pay Later and Household Credit Distress in South
+    Africa: An Agent-Based Model}, pdfauthor={Marc Levin}}
 \usepackage[printonlyused]{acronym}
 
 % --- float notes and pseudocode conventions ---------------------------------
@@ -49,6 +53,12 @@
 \AtBeginEnvironment{algorithmic}{\small}   % compact, as in the reference paper
 \algrenewcommand\alglinenumber[1]{}
 \captionsetup[algorithm]{labelsep=space}
+% acronym v1.50 ends each printonlyused entry with \\, which leaves a blank line between
+% entries; drop it so the list has the package's normal description-list spacing.
+\makeatletter
+\expandafter\patchcmd\csname AC@\AC@prefix{}@acro\endcsname{\fi\\}{\fi}{}%
+    {\PackageWarning{main}{acronym list patch failed}}
+\makeatother
 
 % NOTE (template): class, geometry and the title page below are provisional.
 % Confirm the UCT / departmental mini-dissertation specification and adjust.
@@ -124,8 +134,11 @@ version. The results are those of the commit tagged in the code release.
 % Versions: simulation/requirements.txt and the project .venv (checked 2026-10-13).
 
 \acresetall
+\clearpage
 \tableofcontents
 
+% The contents, the acronym list and the body each start on a new page.
+\clearpage
 \section*{Acronyms}
 \addcontentsline{toc}{section}{Acronyms}
 
@@ -158,6 +171,7 @@ version. The results are those of the commit tagged in the code release.
 % ============================================================================
 
 % Each body section starts on a new page.
+\clearpage
 \input{chapters/01_introduction}
 \clearpage
 \input{chapters/02_model}

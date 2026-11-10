@@ -30,6 +30,37 @@ Appendices~\ref{app:pseudo-init} and~\ref{app:pseudo-main} the pseudocode.
 \subsection{Agents and Institutions}
 \label{sec:entities}
 
+\begin{table}[!tb]
+\centering
+\caption{Data-to-agent mapping}
+\label{tab:agent-mapping}
+\tabnote{The state initialised for each agent. Money is in 2017 Rands. Fields ending in \texttt{tick} are monthly survey amounts converted to fortnightly amounts. Every agent starts without \ac{BNPL}, and its repayment archetype is assigned at random. Appendix~\ref{app:variables} gives the construction of each field and Section~\ref{sec:match} the imputed flags.}
+\begingroup\small
+\begin{tabular}{L{4.6cm}L{5.3cm}L{3.5cm}}
+\toprule
+\textbf{Agent field} & \textbf{Description} & \textbf{Source} \\
+\midrule
+\texttt{income\_monthly} & Total monthly liquidity inflows & NIDS \\
+\texttt{income\_wage\_tick} & Wage income exposed to shocks & NIDS \\
+\texttt{n\_earners} & Employed members on the roster & NIDS individual file \\
+\texttt{income\_source} & Dominant component: wage, grant, other & NIDS, derived \\
+\texttt{committed\_tick} & Incompressible food and rent costs & NIDS, derived \\
+\texttt{discretionary\_tick} & Non-food expenditure & NIDS, derived \\
+\texttt{liquid\_savings} & Proxy for immediate cash buffer & NIDS, winsorised \\
+\texttt{d\_trad} & Outstanding traditional debt balance & NIDS \\
+\texttt{apr\_annual}, \texttt{term\_months} & Rate and horizon pricing that balance & Product mix (Section~\ref{sec:servicing}) \\
+\texttt{scheduled\_service\_tick} & Debt servicing obligation per tick & Constructed (Section~\ref{sec:servicing}) \\
+\texttt{nca\_capacity\_monthly} & Regulation 23A affordable residual & Statutory (Section~\ref{sec:servicing}) \\
+\texttt{banked} & Eligibility gate for \ac{BNPL} & FinScope, imputed \\
+\texttt{income\_quintile} & Income quintile; match key & NIDS, weighted \\
+\texttt{province} & Geographic tag; donor match key & NIDS \\
+\texttt{reference\_group} & Group for peer adoption & Derived (quintile $\times$ province) \\
+\texttt{household\_size} & Total household members & NIDS \\
+\bottomrule
+\end{tabular}
+\endgroup
+\end{table}
+
 The model contains five types of entity:
 \begin{itemize}
     \item \textbf{Households}: each is based on a \ac{NIDS} Wave 5 household
@@ -52,35 +83,6 @@ The model contains five types of entity:
     Each household belongs to the group formed by its income quintile and province.
 \end{itemize}
 
-\begin{table}[H]
-\centering
-\caption{Data-to-agent mapping}
-\label{tab:agent-mapping}
-\tabnote{The state initialised for each agent. Money is in 2017 Rands. Fields ending in \texttt{tick} are monthly survey amounts converted to fortnightly amounts. Every agent starts without \ac{BNPL}, and its repayment archetype is assigned at random. Appendix~\ref{app:variables} gives the construction of each field and Section~\ref{sec:match} the imputed flags.}
-\begin{tabular}{L{4.8cm}L{4.4cm}L{4.2cm}}
-\toprule
-\textbf{Agent field} & \textbf{Description} & \textbf{Source} \\
-\midrule
-\texttt{income\_monthly} & Total monthly liquidity inflows & NIDS \\
-\texttt{income\_wage\_tick} & Wage income exposed to shocks & NIDS \\
-\texttt{n\_earners} & Employed members on the roster & NIDS individual file \\
-\texttt{income\_source} & Dominant component: wage, grant, other & NIDS, derived \\
-\texttt{committed\_tick} & Incompressible food and rent costs & NIDS, derived \\
-\texttt{discretionary\_tick} & Non-food expenditure & NIDS, derived \\
-\texttt{liquid\_savings} & Proxy for immediate cash buffer & NIDS, winsorised \\
-\texttt{d\_trad} & Outstanding traditional debt balance & NIDS \\
-\texttt{apr\_annual}, \texttt{term\_months} & Rate and horizon pricing that balance & Product mix (Section~\ref{sec:servicing}) \\
-\texttt{scheduled\_service\_tick} & Debt servicing obligation per tick & Constructed (Section~\ref{sec:servicing}) \\
-\texttt{nca\_capacity\_monthly} & Regulation 23A affordable residual & Statutory (Section~\ref{sec:servicing}) \\
-\texttt{banked} & Eligibility gate for \ac{BNPL} & FinScope, imputed \\
-\texttt{income\_quintile} & Income quintile; match key & NIDS, weighted \\
-\texttt{province} & Geographic tag; donor match key & NIDS \\
-\texttt{reference\_group} & Group for peer adoption & Derived (quintile $\times$ province) \\
-\texttt{household\_size} & Total household members & NIDS \\
-\bottomrule
-\end{tabular}
-\end{table}
-
 \subsection{Balance Sheets and Information}
 \label{sec:asymmetry}
 
@@ -92,7 +94,7 @@ information about them.
 
 Figure~\ref{fig:visibility} shows this information structure.
 
-\begin{figure}[H]
+\begin{figure}[!htb]
 \centering
 \begin{tikzpicture}[
     font=\small,
@@ -202,13 +204,15 @@ Food and rent are not debts, so failing to pay them cannot cause default. Credit
 with a food or rent shortfall pays that shortfall first. What stays unpaid is not owed in later
 ticks, and we report it separately as consumption distress.
 
+% Keep the heading with the first rows of Table~\ref{tab:submodels}, which cannot break.
+\needspace{16\baselineskip}
 \subsection{Credit and Adoption Mechanisms}
 \label{sec:submodels}
 
 \begingroup
 \setlength{\tabcolsep}{4pt}
 \footnotesize
-\begin{longtable}{L{2.3cm}L{5.35cm}L{3.9cm}L{2.0cm}}
+\begin{longtable}{L{2.3cm}L{5.35cm}L{3.3cm}L{2.6cm}}
 \caption{Submodels}
 \label{tab:submodels} \\
 \multicolumn{4}{p{14.2cm}}{\footnotesize Fitted: chosen jointly to match the five \acs{CCMR} arrears bands. Assumed: no empirical source. Swept: varied in the sensitivity analysis. Appendix~\ref{app:specification} gives every parameter's value, source and range, and Appendix~\ref{app:pseudo-main} the pseudocode.} \\
