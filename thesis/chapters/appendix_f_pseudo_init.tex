@@ -71,7 +71,7 @@ $\mathcal{U}_i(t)$, $\mathcal{U}_\ell(t)$ & unpaid traditional instalments of $i
 $\text{age}(\mathcal{U}, t)$ & ticks since the oldest amount in $\mathcal{U}$ fell due, counting its own tick; 0 if $\mathcal{U}$ is empty & \texttt{arrears\_age} \\
 $\alpha_i(t)$ & arrears age: the largest $\text{age}$ over $i$'s traditional debt and \ac{BNPL} agreements & \texttt{arrears\_age\_max} \\
 $\delta_i(t)$ & consecutive distressed ticks (streak rule only) & \texttt{distress\_streak} \\
-$c_i(t)$ & consumption distress: food or rent left unpaid after credit & \texttt{consumption\_distress\_tick} \\
+$c_i(t)$ & consumption distress: food and rent left unpaid after credit & \texttt{consumption\_distress\_tick} \\
 $d_i(t)$ & default indicator & \texttt{defaulted} \\
 $\bar t_i$ & tick until which want-driven purchases are blocked & \texttt{cool\_off\_until} \\
 $s_g(t)$ & share of the eligible members of $g$ holding a \ac{BNPL} balance at the end of $t$ & \texttt{group\_share\_lagged} \\

@@ -231,7 +231,8 @@ def tab_arrears_fit() -> None:
         f"ticks; seeds {num(fit.seed.min())}--{num(fit.seed.max())}. The run starts from the "
         "\\ac{CCMR} profile. Fitted: the five bands to which payment friction and arrears "
         "persistence were jointly fitted, so agreement there is by construction. The separation "
-        "and write-off rates are derived, not fitted. The final-tick 90+ share was not targeted.",
+        "rate is derived from the labour market and the write-off rate from the \\ac{CCMR} "
+        "profile. The final-tick 90+ share was not targeted.",
         "lrrl",
         r"\textbf{Days in arrears} & \textbf{\ac{CCMR} (\%)} & \textbf{Model (\%)} & ",
         rows,
@@ -479,7 +480,8 @@ def tab_bnpl_on_checks(rq0: pd.DataFrame) -> None:
     table(
         "tab_bnpl_on_checks",
         "Comparisons with external evidence",
-        "No parameter was fitted to these quantities. Model values are from the $\\beta = 0$ arm of "
+        "No parameter was fitted to these quantities. Pattern~1 informed the design "
+        "(Section~\\ref{sec:lim-validation}). Model values are from the $\\beta = 0$ arm of "
         "Table~\\ref{tab:baseline-arms}; Pattern~1 shows the change from the no-\\ac{BNPL} arm at "
         "$\\beta = 0$ and $\\beta = 0.3$, $\\pm$ one standard error paired by seed, and Pattern~3 uses "
         "the no-\\ac{BNPL} arm at the final tick. Debt-to-income is total debt over total monthly "
@@ -1154,7 +1156,8 @@ def tab_effect(eff: pd.DataFrame) -> None:
         + (f" The {' and '.join(fine)} row{'s are' if len(fine) > 1 else ' is'} at three decimals "
            f"because at two {'their' if len(fine) > 1 else 'its'} standard errors round to 0.01."
            if fine else ""),
-        "L{3.75cm}R{1.15cm}rrrrrr",
+        # 6pt before each column pair and between the two effects, so the blocks read apart at 1.8pt.
+        r"L{3.5cm}R{1.15cm}@{\hspace{6pt}}rr@{\hspace{6pt}}rr@{\hspace{6pt}}r@{\hspace{6pt}}r",
         r"& & \multicolumn{2}{c}{\textbf{Purchase (R)}} & \multicolumn{2}{c}{\textbf{Volume (R)}} "
         r"& \multicolumn{2}{c}{\textbf{Effect (pp)}} \\ "
         r"\cmidrule(lr){3-4}\cmidrule(lr){5-6}\cmidrule(lr){7-8}"

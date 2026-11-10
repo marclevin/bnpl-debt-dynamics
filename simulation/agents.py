@@ -299,7 +299,8 @@ class HouseholdAgent(Agent):
             and self.model.rng.random() < p.arrears_persistence
         ):
             # D18 arrears persistence: a household already behind stays behind, paying
-            # nothing this tick, with probability pi (fitted to the CCMR 31-60 band).
+            # nothing this tick, with probability pi (fitted jointly with payment friction
+            # to the five CCMR arrears bands).
             # `arrears_trad` still holds last tick's arrears here.
             skipped_payment = True
         paid_trad = 0.0 if skipped_payment else min(cash, due_trad)

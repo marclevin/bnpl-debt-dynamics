@@ -12,8 +12,7 @@ Regulation 23A test, which is how we model the reported bureau arrangements
 \ac{BNPL} request, a stricter version of the \ac{FCA}'s affordability check
 \citep{fca_ps26_1,woolard2021}. A third arm combines both (Section~\ref{sec:asymmetry}). Each
 arm runs at $\beta=0$ and $\beta=0.3$ with one hundred replicates on shared seeds, so a
-difference of 0.13 points in default is detected about half the time and one of 0.2 points
-usually.
+difference of 0.13 points in default is detected about half the time.
 % switch_se_max = 0.00065 in results_numbers.json; 2 x 0.065 = 0.13.
 
 The two switches move default in opposite directions (Table~\ref{tab:scenarios};
@@ -45,7 +44,7 @@ reporting with a lag would not show.
 % over lever_bench_beta{0,0.3}_lending (-0.119, -0.150).
 A refused household in the model has no other source of credit, so the debt service it cannot
 meet becomes arrears, and the food and rent the loan would have paid first go unpaid. At
-$\beta=0$ the share of households short of food or rent in a tick rises by $0.125 \pm 0.016$
+$\beta=0$ the share of households short of food and rent in a tick rises by $0.125 \pm 0.016$
 points and the share ever short by $0.091 \pm 0.024$ (Table~\ref{tab:scenarios-distress}).
 Default rises detectably in Q1 and Q3 at $\beta=0$, by $0.17 \pm 0.08$ and
 $0.43 \pm 0.13$ points, and in no quintile at $\beta=0.3$. If these ten quintile comparisons
@@ -73,7 +72,7 @@ at $\beta=0$ including the starting stock, is close to the 20.73\% of the baseli
 \ac{BNPL} on other seeds. Screening leaves slightly more households short of food and rent: at
 $\beta=0$ the share short in a tick rises by $0.036 \pm 0.015$ points and the share ever short by
 $0.055 \pm 0.027$, both just detectable, and at $\beta=0.3$ neither change is detectable. The runs
-record only whether food or rent goes unpaid, with no Rand amount, so the fall in default does
+record only whether households are short of food and rent, with no Rand amount, so the fall in default does
 not by itself show that households are better off.
 % lever_afford_beta0_default (results_numbers.json); baseline_default (seeds 10,000-10,019).
 % Food and rent: scen_{bureau,afford}_beta{0,0.3}_cdist_{tick,ever}_diff (+ _se),
@@ -90,7 +89,7 @@ influence does not detectably change the benchmark or the effect of either switc
 
 Two further levers, a cooling-off window of one to four ticks after a want-driven purchase and
 a hypothetical cap on platforms owed, are reported in Appendix~\ref{app:levers}. None of their
-fourteen contrasts with the benchmark, which share one benchmark arm, is detectable, although
+fourteen contrasts with the benchmark, which share the benchmark arm at each $\beta$, is detectable, although
 the window removes up to 41\% of \ac{BNPL} volume at $\beta=0.3$ and a cap of one platform removes 35 to 40\%. The window does not
 act on borrowing for a shortfall, which is where the \ac{BNPL} effect arises.
 
@@ -101,6 +100,7 @@ Making \ac{BNPL} instalments visible to the traditional lender raises its
 refusals by about 13\% and default by $0.20 \pm 0.07$ points without peer influence, because in
 the model refused households have nowhere else to borrow; with peer influence the rise is not
 detectable. Mandatory screening lowers default by 0.93 to 1.03 points, almost all in the poorest
-quintile, about as much as \ac{BNPL} adds. Each switch raises the share of households short of food and rent in a
-tick, visibility by 0.125 points and screening by 0.036 at $\beta=0$. The runs record no amount
+quintile, about as much as \ac{BNPL} adds. At $\beta=0$ each switch raises the share of households
+short of food and rent in a tick, visibility by $0.125 \pm 0.016$ points and screening by
+$0.036 \pm 0.015$; at $\beta=0.3$ only visibility does. The runs record no amount
 unpaid, so neither result shows whether households end up better or worse off.

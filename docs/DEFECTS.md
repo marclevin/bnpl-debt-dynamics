@@ -202,8 +202,11 @@ row "The baseline is calibrated, not validated") and Algorithm `alg:seed` (Appen
 
 ### B46 · The credit-active population halves over the run · `MAJOR` · Marc
 
-New 2026-11-09 (D18). With BNPL off, credit-active households fall from 2,285 at tick 0 to 1,175
-at the final tick (`docs/ARREARS_RULE_2026-11.md`). Written-off accounts leave, households that
+New 2026-11-09 (D18). With BNPL off, credit-active households fall from 2,237 at the start to 1,175
+at the final tick (`docs/ARREARS_RULE_2026-11.md`). (Corrected 2026-11-10: the start is the 2,237
+households with `D_trad > 0` in `data/processed/synthetic_population_5000.parquet`, the 44.74% of
+`default_level.json`; the 2,285 first recorded here was probably the count at the end of the first
+tick, after its shortfall loans, which no saved output holds.) Written-off accounts leave, households that
 repay leave, and the only new traditional borrowing is against shortfalls; the CCMR stock is
 replenished by new accounts, the model's is not. The 90+ share is stationary, but it is the
 share of a shrinking book, so "the profile holds for two years" is a statement about ratios, not

@@ -93,6 +93,47 @@ the pooled estimates were checked and are correct (B49 in DEFECTS).
   group in Section 3.5, with reminders elsewhere. Null results are stated as "not detectably" with
   estimates. Body prose 9,991 words (was 9,875).
 
+**Addendum: corrections from the independent verification (E1 to E12).** No simulation was run;
+every changed number is read from results/ and checked by `check_results_tables.py`.
+- *RQ3 food and rent (E1).* Abstract, conclusion and RQ3 answer no longer say "each switch": bureau
+  visibility leaves more households short at both beta, screening only at beta = 0. The RQ3
+  answer gives the SEs (+0.125 +/- 0.016, +0.036 +/- 0.015).
+- *Other households (E2).* +0.18 +/- 0.08 at beta = 0.3 is detectable; Section 3.5 says so and the
+  RQ2 answer quotes it beside the beta = 0 null.
+- *Starting book (E3).* 2,285 -> 2,237 (households with D_trad > 0; the 44.74% of
+  default_level.json, and the only count that reproduces the 6.36% starting stock), in Section 3.4,
+  Appendix C, B46 and docs/ARREARS_RULE_2026-11.md. The 2,285 was probably the count at the end
+  of the first tick; no saved output holds it.
+- *Third default comparison (E4).* 13.84% (calibration seeds) -> 14.16% (off_active_90_plus_final,
+  seeds 10,000-10,019), so "all on seeds 10,000-10,019" holds.
+- *Dating convention (E5).* Section 2.3 states that instalments fall due at the start of a tick and
+  are aged at its end, so each unpaid tick adds 14 days and age 7 is 98 days. Code unchanged.
+- *Section 4.1 side measures (E6).* The 90+ share of all households (post-burn-in mean) and "ever
+  short" now come from the 250-replicate sweep, beta = 0 arm (beta_sweep.json, seeds
+  90,000-90,249): +0.23 +/- 0.01 and +0.06 +/- 0.01, replacing the 20-seed +0.33 and +0.13.
+- *Pattern 1 (E7).* RQ1 answer and Table 9 note say the design was chosen with Pattern 1 in view.
+- *Stock comparison (E8).* The 43.7% now says 13.4 points of it were placed in default at the
+  start; "which was not targeted" dropped.
+- *Stacking (E9).* Conclusion: routing and how often households borrow.
+- *Smaller points (E10).* 71% -> 70%; "share the benchmark arm at each beta"; the CCMR 19% a year
+  sentence deleted; Hamill result "not counted as evidence" in the introduction; "2.4 times as
+  high"; "food and rent" throughout (body, Appendices C and F, parameter register via its
+  generator); "tables and figures report it". Stale comments in simulation/config.py
+  (payment_friction source string) and simulation/agents.py (persistence) now say both parameters
+  are fitted jointly to the five bands; no behaviour change.
+- *Voice (E11).* "consistency rather than an independent check", "inputs rather than the model"
+  and "derived, not fitted" (text and Table 7 note) reworded; "barely moves" -> "does not move
+  detectably"; the 0.2-point power clause dropped; "smaller beside the assumptions" reworded;
+  beta reported "as linear" under the rule (text and tab:beta note, via beta_sweep_analysis.py;
+  beta_sweep.json unchanged).
+- *Layout (E12).* Table 3 (longtable) now follows the first subsubsection of Section 2.4, since
+  lowering the \needspace alone stranded the heading (the first row cannot fit below it); pages
+  17 to 21 are full. tab:effect has 6pt between column pairs and between the two effects.
+- To stay within the limit: dropped "Error bars in figures are 95% confidence intervals" (each
+  figure note says so), the Section 4 conventions pointer, "Two measures move differently", the
+  cash-substitution clause in Section 4.1 (Section 4.5 explains it) and "so it is not evidence
+  that..." after "by construction" in Section 3.4. Body prose 9,991 words.
+
 ---
 
 ## 2026-11-09: thesis text for the arrears rule and the beta result (#95, #100)

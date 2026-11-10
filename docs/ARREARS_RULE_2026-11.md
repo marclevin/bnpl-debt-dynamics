@@ -106,7 +106,7 @@ until #96.
 1. **The headline effect is now large and detectable at beta = 0.** At about +1.1 points it is ten times the old effect, and it runs mainly through BNPL arrears. The thesis story changes from "BNPL adds little" to "BNPL default is a channel of its own".
 2. **The credit-active denominator.**
    - It now includes BNPL holders, so effects should be read on all-household measures.
-   - It also shrinks over the run (2,285 at tick 0 to 1,175 at the final tick with BNPL off), because defaulted accounts are written off and the model has no new borrowers other than through shortfalls.
+   - It also shrinks over the run (2,237 at the start to 1,175 at the final tick with BNPL off; corrected 2026-11-10 from 2,285, probably the count at the end of the first tick, after its shortfall loans; 2,237 is the count with `D_trad > 0` in the population and the only one that reproduces the 6.36% starting stock), because defaulted accounts are written off and the model has no new borrowers other than through shortfalls.
 3. **Pattern 3** moved to "reproduced", probably through write-offs. Check before claiming it.
 4. **The bands are no longer evidence.** The starting profile and the five bands are inputs or targets. What the model now shows is that the profile is stable over two years with two fitted parameters (B44).
 5. **beta = 1 in these tables will be replaced by the range from Milestone 2 (#97 to #100).**

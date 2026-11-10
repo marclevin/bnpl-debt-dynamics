@@ -45,7 +45,7 @@ enter default after the start over all 5{,}000 households: without \ac{BNPL}, 14
 15.35\% of the households not in default at the start. \emph{Default including the starting
 stock} adds the 6.36\% of households placed in default at the start
 (Section~\ref{sec:lim-calibration}), 20.73\% in all. Default is permanent, so this is also the
-share ever in default, and tables report it unless they say otherwise. Within a seed block the
+share ever in default, and tables and figures report it unless they say otherwise. Within a seed block the
 starting stock is the same households in every arm, except under the 56-day default threshold
 (Section~\ref{sec:results-robustness}), so it cancels from differences between arms.
 % 14.37%, 15.35%, 6.36%, 20.73%: baseline_new_default, baseline_new_default_of_not_initially_defaulted,
@@ -71,7 +71,7 @@ points, so a true change of 0.26 points would be missed about half the time; the
 is about 0.06 points with one hundred replicates and 0.04 with 250. We judge many contrasts this way, so about one in twenty would pass
 by chance, and a single detectable difference carries less weight than one that repeats
 across seed blocks. The standard errors measure simulation variance only, not uncertainty in
-the data, the drawn population or the assumptions. Error bars in figures are 95\% confidence intervals.
+the data, the drawn population or the assumptions.
 % 0.13, 0.06 and 0.04: median standard error of the default differences, 0.130 points over the
 % effect arms (eff_*_se in results_numbers.json; 0.12 over lever_cap*/lever_kcool*_diff_se), 0.057
 % over the scenario arms (lever_bureau/afford/both_*_diff_se) and 0.034-0.040 over the beta sweep
@@ -283,7 +283,7 @@ of the population at the start, are placed in each band at its \ac{CCMR} share, 
 the households that have least income left after food, rent and debt service in the oldest
 bands. Those placed at 91 days or more, 6.4\% of all households, start in default. No source
 says which households were in arrears in 2017, so this placement is an assumption. Second, the
-write-off rate is derived, not fitted. Accounts enter the 120+ band at half the 91--120 share
+write-off rate is derived. Accounts enter the 120+ band at half the 91--120 share
 per tick, so a stationary 120+ stock of 12.45\% needs a write-off rate of
 $(1.76/2)/12.45 = 0.0707$ per tick, which assumes the 2017 profile was a steady state. Third, two
 parameters are fitted jointly to the five arrears bands: payment friction, the chance of
@@ -295,17 +295,17 @@ and the selected values, 0.0575 and 0.72, stay fixed in every experiment.
 
 Table~\ref{tab:arrears-fit} reports the fit. Every band is within one point of the \ac{CCMR},
 and the 90+ share averages 14.08\% after burn-in against 14.21\%. This agreement is by
-construction, because the run starts from these shares and two parameters were fitted to them,
-so it is not evidence that the model generates arrears as the market does. What the run can show
-is stability: the 90+ share at the final tick, which was not a target, is 13.84\%, so after two
+construction, because the run starts from these shares and two parameters were fitted to them.
+What the run can show is stability: the 90+ share at the final tick, which was not a target, is 13.84\%, so after two
 years the profile has not drifted.
 
 The profile is stable as a share but not as a book. Without \ac{BNPL}, credit-active households
-fall from 2{,}285 at the start to 1{,}175 at the final tick, because written-off and repaid
+fall from 2{,}237 at the start to 1{,}175 at the final tick, because written-off and repaid
 accounts leave and the only new traditional borrowing is against shortfalls, whereas new
 accounts replenish the \ac{CCMR} book. The stable 90+ share is a ratio of two shrinking counts.
-% About 45%, 2,285 and 1,175: credit-active households at tick 0 and at the final tick, BNPL off
-% (docs/ARREARS_RULE_2026-11.md; baseline_credit_active 0.235 x 5,000 in results_numbers.json).
+% About 45% and 2,237: households with D_trad > 0 in data/processed/synthetic_population_5000.parquet
+% (off_start_active_share 0.4474 in results/summary/default_level.json); 1,175: credit-active at the
+% final tick, BNPL off (baseline_credit_active 0.235 x 5,000 in results_numbers.json).
 % 6.4%: fit_initial_default; 0.0575, 0.72, 0.0707: fit_friction, fit_persistence, derived_write_off;
 % 14.08% and 13.84%: fit_90plus and fit_90plus_final (results_numbers.json, seeds 1,000-1,019).
 
@@ -342,17 +342,17 @@ level. With \ac{BNPL} off, default during the run is 14.37\%, about 7.2\% a year
 the level, and the starting stock separately, because the stock is an input. Three comparisons place the level, all on seeds 10{,}000--10{,}019.
 The first is the flow. Each tick 0.83\% of the credit-active book reaches 91 days, against the
 0.82\% implied by the \ac{CCMR} 91--120 day band, which holds 1.76\% of accounts for 30 days.
-That is about 19\% of the book a year. The band was a target, so this is consistency rather than
-an independent check.
-The second is the stock, which was not targeted. By the final tick 43.7\% of the households that
-held credit at any tick have defaulted, against the 39.3\% of credit-active consumers with
+The band was a target, so this checks consistency only.
+The second is the stock. By the final tick 43.7\% of the households that held credit at any tick
+have defaulted, 13.4 points of them placed in default at the start, against the 39.3\% of credit-active consumers with
 impaired records in the \ac{NCR}'s Credit Bureau Monitor for March 2017 \citep{ncr_cbm_2017}.
 Impaired records also include judgments and adverse listings, and the Monitor counts consumers
 where the model counts households.
-The third is arrears at the final tick: 13.84\% of credit-active households are 91 or more days
+The third is arrears at the final tick: 14.16\% of credit-active households are 91 or more days
 behind, below the Monitor's 21.7\% of consumers three or more months in arrears, which also
 covers mortgage, vehicle and service-provider accounts the model does not hold.
-% 0.83%, 0.82%, 19%, 43.7%, 7.2%: results/summary/default_level.json
+% 0.83%, 0.82%, 43.7%, 7.2%, 13.4 points (off_initial_default_rate over off_ever_active_share),
+% 14.16% (off_active_90_plus_final): results/summary/default_level.json
 % (notebooks/scripts/check_default_level.py, rq0 seeds 10,000-10,019 checked against results/raw).
 Of those who default during the run, 88.3\% held traditional debt at the start and 12.5\%
 have an earner out of work when they default. Food and rent left unpaid are reported
@@ -405,8 +405,8 @@ service, so all of them start in default (Section~\ref{sec:lim-calibration}), an
 120 can default during the run. Without \ac{BNPL}, 47\% of those 120 default during the run;
 with \ac{BNPL} at $\beta=0$, 85\% do. The group therefore accounts for about 0.9 of the
 1.08-point effect of Table~\ref{tab:baseline-arms}. Among the other households the pooled
-effect is $+0.11 \pm 0.07$ points at $\beta=0$, which is not detectable, and $+0.18 \pm 0.08$ at
-$\beta=0.3$. Bureau visibility raises their default by $0.19 \pm 0.07$ points at $\beta=0$
+effect is $+0.11 \pm 0.07$ points at $\beta=0$, not detectable, and $+0.18 \pm 0.08$ at
+$\beta=0.3$, which is. Bureau visibility raises their default by $0.19 \pm 0.07$ points at $\beta=0$
 (Section~\ref{sec:scenarios}).
 % Group: results/summary/short_group.json (notebooks/scripts/check_short_group.py): 182 agents,
 % 109 source households, share_q1, share_paying_rent, share_no_employed_member,
@@ -437,7 +437,7 @@ The share of ever-holders owing more than one platform at once over the two year
 close to the \ac{CFPB}'s 32 to 33\% of United States borrowers in a year, but the routing assumption largely sets it
 (Section~\ref{sec:results-stacking}), so the agreement is weak evidence. Without peer influence,
 volume is below the provider's range and the mean purchase is 33\% below the provider-based
-figure. At $\beta=0.3$ volume is 2.4 times higher and inside the provider's range, while 70.6\%
+figure. At $\beta=0.3$ volume is 2.4 times as high and inside the provider's range, while 70.6\%
 of ever-holders stack (Section~\ref{sec:results-beta}). The provider's range is per customer of one
 provider~\citep{weaver2025iar} and the model's volume per household across four platforms, so
 the comparison supports orders of magnitude only.
@@ -470,9 +470,8 @@ profile.
 \label{sec:calibration-answer}
 
 The population built from survey microdata reproduces household size,
-income inequality and the order of magnitude of household debt, which supports the inputs
-rather than the model. With two parameters fitted to its five bands, the baseline holds the 2017
+income inequality and the order of magnitude of household debt, which supports the inputs. With two parameters fitted to its five bands, the baseline holds the 2017
 arrears profile as a share for two years while the credit-active book halves, which shows
 stability. Of the comparisons not used in fitting, traditional arrears rise with \ac{BNPL} as
-Pattern~1 expects, and stacking and volume agree in order of magnitude only. Debt service
+Pattern~1 expects, though the design was chosen with that pattern in view, and stacking and volume agree in order of magnitude only. Debt service
 exceeds what households report, and bureau figures can only bound the default rate.

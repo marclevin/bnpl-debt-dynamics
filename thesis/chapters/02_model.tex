@@ -191,7 +191,8 @@ agreement is as old as its oldest unpaid instalment. A household's arrears age i
 across its agreements and places it in a \ac{CCMR} age band. Credit-active households are those
 owing any traditional or \ac{BNPL} balance or arrears.
 
-A household defaults when its arrears age reaches seven ticks, or 98 days, the first tick
+Instalments fall due at the start of a tick and are aged at its end, so each unpaid tick
+adds 14 days. A household defaults when its arrears age reaches seven ticks, or 98 days, the first tick
 boundary past 90 days past due. This matches the threshold at which the \ac{NCR}'s Credit Bureau
 Monitor classes a record as impaired, ``three or more payments or months in
 arrears''~\citep{ncr_cbm_2017}, so a household two months behind that catches up in the third
@@ -201,14 +202,38 @@ collected, no interest accrues, and each tick they are written off with a probab
 Section~\ref{sec:lim-calibration}. A written-off household leaves the book but stays in default.
 
 Food and rent are not debts, so failing to pay them cannot cause default. Credit raised in a tick
-with a food or rent shortfall pays that shortfall first. What stays unpaid is not owed in later
+with a food and rent shortfall pays that shortfall first. What stays unpaid is not owed in later
 ticks, and we report it separately as consumption distress.
 
-% Keep the heading with the first rows of Table~\ref{tab:submodels}, which cannot break.
-\needspace{16\baselineskip}
 \subsection{Credit and Adoption Mechanisms}
 \label{sec:submodels}
 
+
+\subsubsection*{Submodels 4 and 5: Borrowing on a Shortfall}
+\label{sec:amount}
+
+Under Submodel~4 a household short of cash requests exactly its shortfall. Two
+alternatives add 25\% or one tick of committed expenditure. We found no study that
+identifies the right rule, so the sensitivity analysis compares all three
+(Section~\ref{sec:results-robustness}).
+
+Under Submodel~5 an eligible household uses \ac{BNPL} first. Because \ac{BNPL} finances retail
+purchases, the amount it finances for a shortfall is capped at the mean want-driven purchase,
+$\kappa$ times the monthly discretionary budget; this is the shortfall cap. \ac{BNPL} cannot pay rent or an instalment directly; it
+relieves a shortfall because the household finances a purchase it would otherwise have
+paid for in cash. An agreement of value $F$ takes $F/4$ at checkout and leaves $3F/4$ in
+the household's hands, so it covers $3F/4$ of the shortfall. The household asks the
+traditional lender for the rest, an assumption, and the lender grants or refuses that
+amount in full under Submodel~9. A refused household leaves the remainder unpaid: food and
+rent it cannot pay are consumption distress, and instalments it cannot pay become arrears.
+
+The shortfall path reflects evidence that \ac{BNPL} users are disproportionately
+liquidity-constrained~\citep{hayashi2025constraints}. No study measures how much of a shortfall users finance with \ac{BNPL}, so the
+sensitivity analysis repeats each borrowing-amount rule with the shortfall cap removed, and a further
+arm removes \ac{BNPL} from the shortfall path altogether.
+
+% Table~\ref{tab:submodels} follows the first subsubsection so that its prose fills the page on which
+% the section starts; the table's rows cannot break (QA 2026-11-10, E12a).
 \begingroup
 \setlength{\tabcolsep}{4pt}
 \footnotesize
@@ -261,29 +286,6 @@ ticks, and we report it separately as consumption distress.
 17. Activation order & Random, redrawn each tick; applications are decided as each household acts. & Random order assumed; fixed order swept & \citet{comer2013activation,alizadeh2015activation} \\
 \end{longtable}
 \endgroup
-
-\subsubsection*{Submodels 4 and 5: Borrowing on a Shortfall}
-\label{sec:amount}
-
-Under Submodel~4 a household short of cash requests exactly its shortfall. Two
-alternatives add 25\% or one tick of committed expenditure. We found no study that
-identifies the right rule, so the sensitivity analysis compares all three
-(Section~\ref{sec:results-robustness}).
-
-Under Submodel~5 an eligible household uses \ac{BNPL} first. Because \ac{BNPL} finances retail
-purchases, the amount it finances for a shortfall is capped at the mean want-driven purchase,
-$\kappa$ times the monthly discretionary budget; this is the shortfall cap. \ac{BNPL} cannot pay rent or an instalment directly; it
-relieves a shortfall because the household finances a purchase it would otherwise have
-paid for in cash. An agreement of value $F$ takes $F/4$ at checkout and leaves $3F/4$ in
-the household's hands, so it covers $3F/4$ of the shortfall. The household asks the
-traditional lender for the rest, an assumption, and the lender grants or refuses that
-amount in full under Submodel~9. A refused household leaves the remainder unpaid: food and
-rent it cannot pay are consumption distress, and instalments it cannot pay become arrears.
-
-The shortfall path reflects evidence that \ac{BNPL} users are disproportionately
-liquidity-constrained~\citep{hayashi2025constraints}. No study measures how much of a shortfall users finance with \ac{BNPL}, so the
-sensitivity analysis repeats each borrowing-amount rule with the shortfall cap removed, and a further
-arm removes \ac{BNPL} from the shortfall path altogether.
 
 \subsubsection*{Submodel 11: Peer Influence}
 \label{sec:peer-influence}

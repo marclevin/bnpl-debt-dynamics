@@ -265,6 +265,12 @@ def check_prose() -> None:
     expect_p("ch3 short", c3, f"{sg['default_during_run_bnpl_beta0_of_at_risk'] * 100:.0f}\\% do")
     expect_p("ch3 short", ch["03_calibration"], pmj(cont, "beta0_effect_pooled_contestable"))
     expect_p("ch3 short", ch["03_calibration"], pmj(cont, "peer_effect_pooled_contestable"))
+    # QA 2026-11-10 (E2): beta = 0 not detectable, beta = 0.3 detectable; both in the RQ2 answer.
+    assert abs(cont["beta0_effect_pooled_contestable"]) < 2 * cont["beta0_effect_pooled_contestable_se"]
+    assert abs(cont["peer_effect_pooled_contestable"]) > 2 * cont["peer_effect_pooled_contestable_se"]
+    expect_p("ch3 short", ch["03_calibration"], f"${pmj(cont, 'peer_effect_pooled_contestable')}$ at $\\beta=0.3$, which is")
+    expect_p("ch4 RQ2 others", ch["04_results"], f"it is ${pmj(cont, 'beta0_effect_pooled_contestable')}$ points at $\\beta=0$ "
+             f"and ${pmj(cont, 'peer_effect_pooled_contestable')}$ at $\\beta=0.3$")
     expect_p("ch3 short", ch["03_calibration"], unsigned(pmj(cont, "rq3s_bureau_diff_contestable_b0")))
     # Section 3.5: the default level against the bureau figures (check_default_level.py).
     lvl = json.loads((SUMMARY / "default_level.json").read_text())
@@ -272,8 +278,20 @@ def check_prose() -> None:
     expect_p("ch3 level", ch["03_calibration"], f"{lvl['off_new_defaults_per_year_of_all_households'] * 100:.1f}\\%")
     expect_p("ch3 level", ch["03_calibration"], f"{lvl['off_inflow_per_tick_of_book'] * 100:.2f}\\%")
     expect_p("ch3 level", ch["03_calibration"], f"{lvl['ccmr_inflow_91plus_per_tick_of_accounts'] * 100:.2f}\\%")
-    expect_p("ch3 level", ch["03_calibration"], f"about {lvl['ccmr_inflow_91plus_per_year_of_accounts'] * 100:.0f}\\%")
     expect_p("ch3 level", ch["03_calibration"], f"{lvl['off_defaulted_of_ever_active'] * 100:.1f}\\%")
+    # QA 2026-11-10 (E8): the share of the stock placed in default at the start, in points of the
+    # households that ever held credit; (E4): the final-tick 90+ share on the same seeds.
+    expect_p("ch3 level", ch["03_calibration"],
+             f"{lvl['off_initial_default_rate'] / lvl['off_ever_active_share'] * 100:.1f} points of them placed in default at the start")
+    expect_p("ch3 level", ch["03_calibration"],
+             f"arrears at the final tick: {lvl['off_active_90_plus_final'] * 100:.2f}\\% of credit-active households")
+    # QA 2026-11-10 (E3): households holding traditional debt at the start, from the population.
+    pop = pd.read_parquet(ROOT / "data" / "processed" / "synthetic_population_5000.parquet", columns=["D_trad"])
+    n_start = int((pop.D_trad > 0).sum())
+    assert n_start == round(lvl["off_start_active_share"] * len(pop)), "start book against default_level.json"
+    start_txt = f"{n_start:,}".replace(",", "{,}")
+    expect_p("ch3 book", ch["03_calibration"], f"fall from {start_txt} at the start")
+    expect_p("appC book", ch["appendix_c_supplementary"], f"fall from {start_txt} to")
     expect_p("ch4 level", ch["04_results"], f"{num['baseline_default'] * 100:.2f}\\%")
     sobj = json.loads((SUMMARY / "sobol_indices.json").read_text(encoding="utf-8"))
     shd = next(r for r in sobj["indices"]["default_rate_final"] if r["parameter"] == "shock_prob")
@@ -305,6 +323,15 @@ def check_prose() -> None:
     for c in ("04_results", "06_conclusion"):
         expect_p(f"{c} slope", ch[c], slope)
     assert sweep["verdict"] == "linear"
+    # QA 2026-11-10 (E6): Section 4.1's side measures from the sweep's beta = 0 arm (post-burn-in
+    # mean of the 90+ share of all households; ever short of food and rent), seeds 90,000-90,249.
+    s0 = next(r for r in sweep["table"] if r["beta"] == 0.0)
+    s3 = next(r for r in sweep["table"] if abs(r["beta"] - BP) < 1e-9)
+    assert sweep["table"][0]["n"] == 250
+    expect_p("ch4 side", ch["04_results"], f"rises by ${s0['effect_90plus_all_pp']:.2f} \\pm {s0['effect_90plus_all_se']:.2f}$ points at $\\beta=0$")
+    expect_p("ch4 side", ch["04_results"], f"short of food and rent by ${s0['effect_consumption_ever_pp']:.2f} \\pm {s0['effect_consumption_ever_se']:.2f}$")
+    # QA 2026-11-10 (E10a): stacking among ever-holders across the sweep.
+    expect_p("ch4 stack", ch["04_results"], f"who stack from {s0['stacking_ever_holders'] * 100:.0f}\\% to {s3['stacking_ever_holders'] * 100:.0f}\\%")
     # A1 (2026-11-10): the detectable difference between two values of beta, with the no-BNPL
     # arm cancelling seed by seed (between_beta_difference_detected_half_the_time_pp).
     expect_p("ch4 beta power", ch["04_results"],
@@ -328,8 +355,12 @@ def check_prose() -> None:
         expect_p("ch5 distress", c5, pm3(key))
     for key in ("scen_afford_beta0.3_cdist_tick_diff", "scen_afford_beta0.3_cdist_ever_diff"):
         assert abs(num[key]) < 2 * num[key + "_se"], f"{key}: text says not detectable"
-    expect_p("ch5 distress", c5, f"visibility by {num['scen_bureau_beta0_cdist_tick_diff'] * 100:.3f} points "
-             f"and screening by {num['scen_afford_beta0_cdist_tick_diff'] * 100:.3f}")
+    # QA 2026-11-10 (E1): the RQ3 answer, with standard errors; at beta = 0.3 only visibility.
+    expect_p("ch5 distress", c5, f"visibility by ${pm3('scen_bureau_beta0_cdist_tick_diff')}$ points "
+             f"and screening by ${pm3('scen_afford_beta0_cdist_tick_diff')}$; at $\\beta=0.3$ only visibility does")
+    for key in ("scen_bureau_beta0_cdist_tick_diff", "scen_afford_beta0_cdist_tick_diff",
+                "scen_bureau_beta0.3_cdist_tick_diff", "scen_bureau_beta0.3_cdist_ever_diff"):
+        assert abs(num[key]) > 2 * num[key + "_se"], f"{key}: text says detectable"
     # Section 5: the switches at beta = 0.
     expect_p("ch5 bureau", ch["05_policy"], unsigned(pmj(num, "lever_bureau_beta0_diff")))
     expect_p("ch5 screening", ch["05_policy"], f"{-num['lever_afford_beta0_diff'] * 100:.2f} \\pm "

@@ -60,7 +60,7 @@ fee cap and the assumed order cap, are set at 2026 prices and deflated once (App
 \addlinespace
 \texttt{shortfall\_\allowbreak{}bnpl} & 5 & on & assumed & Whether \ac{BNPL} may relieve a shortfall. On in the benchmark; off sends every shortfall to the traditional lender, so \ac{BNPL} finances only want-driven purchases. & off as an effect-robustness arm (Table~\ref{tab:effect}) \\
 \addlinespace
-\texttt{committed\_\allowbreak{}shortfall\_\allowbreak{}funded} & 7 & on & assumed & Credit raised in a tick with a food or rent shortfall pays that shortfall first; what stays unpaid is reported as consumption distress (Section~\ref{sec:sequence}). On in the baseline. Off, the earlier rule, spends the credit on debt service, then discretionary spending, then savings. & -- \\
+\texttt{committed\_\allowbreak{}shortfall\_\allowbreak{}funded} & 7 & on & assumed & Credit raised in a tick with a food and rent shortfall pays that shortfall first; what stays unpaid is reported as consumption distress (Section~\ref{sec:sequence}). On in the baseline. Off, the earlier rule, spends the credit on debt service, then discretionary spending, then savings. & -- \\
 \addlinespace
 \texttt{committed\_\allowbreak{}shortfall\_\allowbreak{}clears\_\allowbreak{}distress} & 7 & off & assumed & Under the earlier streak rule, whether food and rent that a loan pays in full still count as distress. Inert under the arrears rule, in which food and rent cannot cause default. & -- \\
 \addlinespace

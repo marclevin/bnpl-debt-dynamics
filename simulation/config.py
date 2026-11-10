@@ -452,8 +452,9 @@ class ParamSet:
             "Per-tick probability of missing a traditional instalment DESPITE having the "
             "cash. Kuchler & Pagel (2021): present-biased borrowers fail to execute "
             "planned paydown. Applies to traditional debt only, since BNPL auto-debits a "
-            "card. CALIBRATED to the CCMR 1-30 day band, which the unemployment channel "
-            "alone leaves nearly empty (DEFECTS.md B21)."
+            "card. Fitted jointly with arrears persistence to the five CCMR arrears bands "
+            "(calibrate.py); the unemployment channel alone leaves the 1-30 day band nearly "
+            "empty (DEFECTS.md B21)."
         ),
         sweep="calibration grid; second fitted parameter",
     )

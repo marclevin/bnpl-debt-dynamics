@@ -67,7 +67,7 @@ REGISTER: dict[str, tuple[str, str]] = {
                     r"exact shortfall / $+25\%$ / plus one tick of committed expenditure"),
     "shortfall_bnpl": (r"Whether \ac{BNPL} may relieve a shortfall. On in the benchmark; off sends every shortfall to the traditional lender, so \ac{BNPL} finances only want-driven purchases.",
                        r"off as an effect-robustness arm (Table~\ref{tab:effect})"),
-    "committed_shortfall_funded": (r"Credit raised in a tick with a food or rent shortfall pays that shortfall first; what stays unpaid is reported as consumption distress (Section~\ref{sec:sequence}). On in the baseline. Off, the earlier rule, spends the credit on debt service, then discretionary spending, then savings.",
+    "committed_shortfall_funded": (r"Credit raised in a tick with a food and rent shortfall pays that shortfall first; what stays unpaid is reported as consumption distress (Section~\ref{sec:sequence}). On in the baseline. Off, the earlier rule, spends the credit on debt service, then discretionary spending, then savings.",
                                    ""),
     "committed_shortfall_clears_distress": (r"Under the earlier streak rule, whether food and rent that a loan pays in full still count as distress. Inert under the arrears rule, in which food and rent cannot cause default.",
                                             ""),
