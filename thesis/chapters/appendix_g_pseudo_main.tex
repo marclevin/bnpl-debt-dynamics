@@ -15,7 +15,7 @@ tick; the peer signal is recomputed once, after every household has acted. Algor
     \State Record the observables of Table~\ref{tab:design-concepts}
     \State Update the peer signal for tick $t+1$: execute Algorithm~\ref{alg:peer}
 \EndFor
-\State Summarise: average per-tick observables over ticks $T_0$ to $T$; count default, lender counters and ``ever'' measures over all ticks
+\State Summarise: average per-tick observables over the last $T - T_0$ ticks; count default, lender counters and ``ever'' measures over all ticks
 \end{algorithmic}
 \end{algorithm}
 

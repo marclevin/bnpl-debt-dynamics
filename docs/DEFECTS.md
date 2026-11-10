@@ -173,6 +173,19 @@ total-order indices of 0.12–0.14, equal to the noise share, so none moves defa
 `sobol_indices.json`, the table note reports the noise share, and `check_results_tables.py` checks
 the prose numbers. Section 4.5 and Appendix C no longer call the indices provisional.
 
+**Wording corrected 2026-11-10 (QA pass, A1).** "Total-order indices of 0.12-0.14, equal to the
+noise share" claimed too much: each estimate carries +/-0.02-0.03, so the five are *no larger
+than* the noise, not equal to it. Jansen's total-order estimator adds the replicate noise of both
+design points to every S_T; the first-order estimator is not biased by it, only widened.
+`notebooks/scripts/check_sobol_noise.py` (`results/summary/sobol_noise_check.json`) reproduces
+SALib's S_T, removes each pair's replicate variance and bootstraps over the 256 base samples:
+with noise removed each of the five is within 0.03 of zero (upper 95% bound 0.021), and the
+separation rate's S_T falls to 0.83 against S1 0.84, so its S_T - S1 gap is noise, not
+interaction. The S1 "0.84 +/- 0.15" is SALib's 95% bootstrap half-width, not one SE; Section 4.6
+now says "0.84, with a 95% interval of +/-0.15". Section 4.6, Appendix C (`app:sensitivity`) and
+the tab:sobol note ("no larger than noise"; "estimation noise") now carry this wording, and
+`check_results_tables.py` checks "within 0.03 of zero".
+
 ### B44 · The arrears rule adds two assumptions and one fitted parameter · `MAJOR` · Marc
 
 New 2026-11-09 (D18). (1) Initial arrears are placed on the least able households by a
@@ -209,6 +222,43 @@ beta = 0.3 (`contestable_default.json`). Two-thirds of the group are in Q1, whic
 is +4.12 pp in Q1 and nowhere else, and why mandatory screening (-4.68 pp in Q1) removes it. The
 thesis no longer calls the group a survey artefact (#59: no source). Disclosed in Sections 3.5,
 4.1, 4.5, 5 and 6 and the limitations row "Households short from the start". No fix planned.
+
+**Corrected 2026-11-10 (QA pass, A2; `notebooks/scripts/check_short_group.py`,
+`results/summary/short_group.json`).** *Definition:* NIDS W5 derived monthly household income
+(`w5_hhincome`, with imputations, including implied rent of owner-occupied housing) below monthly
+food plus rent paid (`w5_expf + w5_rentexpend`); 182 agents from 109 source households; none has
+missing or zero income (missing-income records are dropped at the backbone). *Make-up:* 66% Q1,
+67% pay rent, 55% no employed member, 60% no liquid savings, 62 hold traditional debt.
+*Denominators:* all 62 debt-holders start in default on every rq0 seed (they have the least
+income left after food, rent and service and are placed in the 91+ bands), so only 120 can default
+during the run. The "31%" and "56%" were shares of all 182; over the 120 at risk they are **47%
+and 85%**. The thesis now reports 47% and 85% and names the denominator. The 0.9-of-1.08
+arithmetic is unchanged. *One-shot income:* the household questionnaire's single income question
+(`w5_hhq_incb`) was answered for 143 of the 182; for **97 (68%)** it covers food and rent, so the
+survey cannot separate persistent hardship from under-recorded income, timing or reporting
+differences. Section 3.5 states this once; Appendix C (limitations row) and Section 6 carry short
+reminders. Marc accepts the concentration as a finding (2026-11-10); the group is not altered.
+*Smallest test, specified, not run (needs Marc's approval, input change):* rerun the rq0 three arms
+on seeds 10,000-10,019 (60 runs) with the 109 source households' income set to
+max(`w5_hhincome`, `w5_hhq_incb`) where the one-shot value exists, and report the effect at
+beta = 0 and 0.3 beside Table 4. Section 6 names it as further work. Stale: the header of
+`check_contestable_default.py` ("about 96% of them default in every arm", "beta = 1") was from the
+streak rule and before #98; its docstring now says so (no code change, not rerun).
+
+### B49 · Beta-sweep slope and curvature SEs ignored the shared no-BNPL arm · `MAJOR` · agent · RESOLVED
+
+Found 2026-11-10 (QA pass, A1). `beta_sweep_analysis.py` fitted WLS with weights 1/SE^2 and took
+the coefficient covariance as (X'WX)^-1, treating the eight beta effects as independent. All eight
+are differences against the same `rqb_off` arm on seeds 90,000-90,249, so they correlate at about
+0.5; the common shift cancels in a slope or curvature term, and the independence formula
+overstated the slope SE and understated the curvature t-values. **Fixed** (commit 7da0484): every SE
+is now the sandwich A C A' with C the across-seed covariance of the eight mean effects (equivalent
+to seed clustering; a seed bootstrap and a seed-clustered per-seed OLS agree). Slope +0.003 +/-
+0.014 -> **+0.003 +/- 0.010** pp per 0.1 of beta; quadratic and hinge t 0.81/0.23 -> 1.23/0.34;
+verdict still linear; the beta = 0 effect (+1.05 +/- 0.03) is unchanged. The power sentence used
+2 x SD x sqrt(2/250) = 0.095; between two beta values the no-BNPL arm cancels seed by seed, so
+the difference detected half the time is **0.07** points (median paired SE 0.037). Thesis updated
+(Sections 4.2 and 4.8, Section 6, tab:beta note) and checked by `check_results_tables.py`.
 
 ### B48 · Is the default level plausible? · `MAJOR` · agent · checked, disclosed
 

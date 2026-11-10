@@ -458,7 +458,7 @@ def tab_bnpl_on_checks(rq0: pd.DataFrame) -> None:
         f"{second0} {dti0[second0]:.2f}) & {p3_reading} \\\\",
         group_row("\\ac{BNPL} market", 4),
         f"Owing two or more providers at once~\\citep{{cfpb2025bnpl}} & 32--33\\% of borrowers in a year & "
-        f"{pct(ev0, 1)}\\% of ever-holders & Close; different market \\\\",
+        f"{pct(ev0, 1)}\\% of ever-holders over two years & Close; different market \\\\",
         f"Annual volume per eligible household~\\citep{{weaver2025iar}} & {rand(lo_vol)}--{rand(hi_vol)} & "
         f"{rand(N['vol_per_eligible_year'])} & {band(N['vol_per_eligible_year']).capitalize()} \\\\",
         f"Annual volume per ever-holder~\\citep{{weaver2025iar}} & {rand(lo_vol)}--{rand(hi_vol)} & "

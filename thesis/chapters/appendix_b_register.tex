@@ -86,7 +86,7 @@ fee cap and the assumed order cap, are set at 2026 prices and deflated once (App
 \addlinespace
 \texttt{write\_\allowbreak{}off\_\allowbreak{}rate} & 7 & 0.0707 & derived & Probability per tick that a defaulted account leaves the book. Derived from the \ac{CCMR} profile: accounts enter the 120+ band at half the 91--120 share per tick, so a stationary 120+ stock needs $(1.76/2)/12.45 = 0.0707$~\citep{ncr_ccmr_2017}. & -- \\
 \addlinespace
-\texttt{k\_\allowbreak{}default} & 7 & 7 & sourced & Seven ticks are 98 days, the first tick boundary past 90 days past due: the impairment convention and the \ac{NCR}'s ``three or more months in arrears''~\citep{ncr_cbm_2017}. It defines the outcome. & four ticks (56 days) \\
+\texttt{k\_\allowbreak{}default} & 7 & 7 & sourced & Seven ticks are 98 days, the first tick boundary past 90 days past due: the threshold at which the \ac{NCR}'s Credit Bureau Monitor classes a record as impaired, ``three or more payments or months in arrears''~\citep{ncr_cbm_2017}. It defines the outcome. & four ticks (56 days) \\
 \addlinespace
 \texttt{bnpl\_\allowbreak{}bureau\_\allowbreak{}visible} & 10/15 & off & sourced & \ac{BNPL} agreements were not displayed on bureau profiles before the 2026 arrangements~\citep{dcasa_bnpl_2026,finasa_bnpl_2026}; off is the benchmark. & on / off (Section~\ref{sec:scenarios}) \\
 \addlinespace
@@ -98,7 +98,7 @@ fee cap and the assumed order cap, are set at 2026 prices and deflated once (App
 \addlinespace
 \texttt{bnpl\_\allowbreak{}order\_\allowbreak{}cap} & 12 & 9{,}926.83 & assumed & A per-order cap of R15{,}000 at 2026 prices, deflated to 2017 Rands. Payflex's terms state no maximum order value~\citep{payflex_terms}. & -- \\
 \addlinespace
-\texttt{bnpl\_\allowbreak{}limit\_\allowbreak{}income\_\allowbreak{}multiple} & 12 & 0.1 & assumed & $\lambda$: the limit per platform as a multiple of monthly income. No South African provider publishes a limit; the value is set against Woolard's illustrative stacked exposure~\citep{woolard2021,ons_income_fye2020}. & 0.10--1.0 \\
+\texttt{bnpl\_\allowbreak{}limit\_\allowbreak{}income\_\allowbreak{}multiple} & 12 & 0.1 & assumed & $\lambda$: the limit per platform as a multiple of monthly income. Payflex sets limits by its own assessment~\citep{payflex_limits} and we found no South African provider that publishes one; the value is set against Woolard's illustrative stacked exposure~\citep{woolard2021,ons_income_fye2020}. & 0.10--1.0 \\
 \addlinespace
 \texttt{bnpl\_\allowbreak{}instalments} & 14 & 4 & sourced & Pay-in-four: a quarter at checkout and a quarter at each of the next three ticks~\citep{payflex_terms}. & -- \\
 \addlinespace

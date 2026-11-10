@@ -134,8 +134,8 @@
   doi     = {10.1108/IJBM-02-2024-0082},
   annote    = {NatWest Group / UCL. UK credit-card market ABM, calibrated to 2019--2020
              benchmarks. Source of the non-monotonic income-to-debt-burden profile
-             used as Pattern 3 (a cross-model plausibility check, not an empirical
-             validation target). Published version of arXiv:2311.01901}
+             used as Pattern 3 (a cross-model comparison, not counted as evidence
+             because the peak appears only through write-offs; QA 2026-11-10). Published version of arXiv:2311.01901}
 }
 
 
@@ -192,6 +192,19 @@
                  12 months.}
 }
 
+@misc{statssa_cpi_history,
+  author       = {{Statistics South Africa}},
+  title        = {{CPI} Headline Index Numbers ({Dec} 2024 = 100), Table {B1}},
+  year         = {2026},
+  howpublished = {Statistics South Africa, Consumer Price Index historical tables},
+  url          = {https://www.statssa.gov.za/publications/P0141/CPIHistory.pdf},
+  note         = {Accessed 10 November 2026.},
+  lastchecked  = {10 November 2026},
+  annote       = {Table B1: 2017 average 71,4; June 2026 107,5 (read 12 October 2026 per
+                  statssa\_cpi annote; re-read 10 November 2026, QA pass). Cited in Appendix D
+                  for the 107.5/71.4 check of the chained deflator}
+}
+
 @techreport{transunion_cps_sa_2025,
   title       = {{Consumer Pulse Study}: {South Africa} {Q4} 2025},
   author      = {{TransUnion}},
@@ -203,7 +216,7 @@
   note        = {Online survey of 992 adults, fielded 25 September to 9 October 2025. Summarised in a media release of 13 January 2026, \url{https://newsroom.transunion.co.za/south-africans-show-determined-optimism-as-they-adapt-to-financial-pressures/}. Accessed 29 September 2026.},
   lastchecked = {29 September 2026},
   annote        = {Fielded 25 September to 9 October 2025. 36\% anticipate being unable to meet at least one bill or
-                 loan payment (Pattern 4); \ac{BNPL} payment histories listed as
+                 loan payment (cited in Section 1 only); \ac{BNPL} payment histories listed as
                  alternative data absent from the standard South African credit
                  report -- the PRE-reporting position, cited as such after the 2026 NCR
                  instruction. \textbf{Corrected 2026-10-12 (REFERENCE\_AUDIT R31):} the full report's Fig.~11
@@ -544,8 +557,8 @@
   type        = {Statistical release},
   number      = {P0301},
   year        = {2016},
-  url         = {https://cs2016.statssa.gov.za/wp-content/uploads/2016/07/NT-30-06-2016-RELEASE-for-CS-2016-_Statistical-releas_1-July-2016.pdf},
-  note        = {Accessed 29 September 2026.},
+  url         = {http://web.archive.org/web/20260810022713/https://cs2016.statssa.gov.za/wp-content/uploads/2016/07/NT-30-06-2016-RELEASE-for-CS-2016-_Statistical-releas_1-July-2016.pdf},
+  note        = {Internet Archive copy of 10 August 2026. The original URL was accessed 29 September 2026 and returned HTTP 404 on 10 November 2026.},
   lastchecked = {29 September 2026},
   annote        = {National household count of 16.9 million in 2016 (up from 14.5
                  million in 2011). Benchmark for validation check A on mean
@@ -778,7 +791,7 @@
 % --- Deflator and expenditure microdata (Submodels 4 and 12) -----------------
 
 @techreport{statssa_cpi,
-  title       = {{Consumer Price Index}},
+  title       = {{Consumer Price Index}: {June} 2026},
   author      = {{Statistics South Africa}},
   institution = {Statistics South Africa},
   type        = {Statistical release},
@@ -853,6 +866,7 @@
   howpublished = {Version 1.0.0. Cape Town: Southern Africa Labour and Development Research
                   Unit [implementer]; Cape Town: DataFirst [distributor]},
   doi          = {10.25828/fw3h-v708},
+  url          = {https://doi.org/10.25828/fw3h-v708},
   annote         = {The backbone source for the entire data layer. Fielded 2017, which
                   fixes the model's single monetary reference year. 13,719 household
                   records, of which 10,841 are valid after dropping missing or unusable

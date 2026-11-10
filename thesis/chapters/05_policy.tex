@@ -25,6 +25,8 @@ for effects.
 
 \input{chapters/generated/tab_scenarios}
 
+\input{chapters/generated/tab_scenarios_distress}
+
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{figures/fig_scenarios.png}
@@ -42,7 +44,10 @@ reporting with a lag would not show.
 % seeds 80,000-80,019). 13%: +124/954 and +121/954; 12 to 15%: lever_bureau_beta{0,0.3}_lending_diff
 % over lever_bench_beta{0,0.3}_lending (-0.119, -0.150).
 A refused household in the model has no other source of credit, so the debt service it cannot
-meet becomes arrears. Default rises detectably in Q1 and Q3 at $\beta=0$, by $0.17 \pm 0.08$ and
+meet becomes arrears, and the food and rent the loan would have paid first go unpaid. At
+$\beta=0$ the share of households short of food or rent in a tick rises by $0.125 \pm 0.016$
+points and the share ever short by $0.091 \pm 0.024$ (Table~\ref{tab:scenarios-distress}).
+Default rises detectably in Q1 and Q3 at $\beta=0$, by $0.17 \pm 0.08$ and
 $0.43 \pm 0.13$ points, and in no quintile at $\beta=0.3$. If these ten quintile comparisons
 were independent, chance alone would make two or more detectable about 7\% of the time.
 \ac{BNPL} volume falls by 1.3 to 1.5\%, because the switch acts on traditional lending and not on
@@ -64,8 +69,15 @@ applies the same test. Its refusals rise by 1{,}827, close to their level withou
 (Table~\ref{tab:baseline-arms}). Screening lowers \ac{BNPL} holding by 0.3 points at $\beta=0$
 and 0.7 at $\beta=0.3$, and volume by about 3\%, so it lowers default by about as much as
 \ac{BNPL} raises it while leaving most \ac{BNPL} use in place. Default under screening, 20.88\%
-at $\beta=0$, is close to the 20.73\% of the baseline without \ac{BNPL} on other seeds.
+at $\beta=0$ including the starting stock, is close to the 20.73\% of the baseline without
+\ac{BNPL} on other seeds. Screening leaves slightly more households short of food and rent: at
+$\beta=0$ the share short in a tick rises by $0.036 \pm 0.015$ points and the share ever short by
+$0.055 \pm 0.027$, both just detectable, and at $\beta=0.3$ neither change is detectable. The runs
+record only whether food or rent goes unpaid, with no Rand amount, so the fall in default does
+not by itself show that households are better off.
 % lever_afford_beta0_default (results_numbers.json); baseline_default (seeds 10,000-10,019).
+% Food and rent: scen_{bureau,afford}_beta{0,0.3}_cdist_{tick,ever}_diff (+ _se),
+% results_numbers.json; tab_scenarios_distress.
 
 With both switches, default is $0.90 \pm 0.05$ points below the benchmark at $\beta=0$ and
 $0.85 \pm 0.05$ at $\beta=0.3$. Against visibility alone, adding screening lowers default by
@@ -89,5 +101,6 @@ Making \ac{BNPL} instalments visible to the traditional lender raises its
 refusals by about 13\% and default by $0.20 \pm 0.07$ points without peer influence, because in
 the model refused households have nowhere else to borrow; with peer influence the rise is not
 detectable. Mandatory screening lowers default by 0.93 to 1.03 points, almost all in the poorest
-quintile, about as much as \ac{BNPL} adds. With both switches default is 0.85 to 0.90 points
-below the benchmark.
+quintile, about as much as \ac{BNPL} adds. Each switch raises the share of households short of food and rent in a
+tick, visibility by 0.125 points and screening by 0.036 at $\beta=0$. The runs record no amount
+unpaid, so neither result shows whether households end up better or worse off.

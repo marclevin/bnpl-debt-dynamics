@@ -1,0 +1,24 @@
+{
+  "n_agents": 182,
+  "share_of_agents": 0.0364,
+  "n_source_households": 109,
+  "share_q1": 0.6648351648351648,
+  "share_paying_rent": 0.6703296703296703,
+  "share_no_employed_member": 0.554945054945055,
+  "share_no_liquid_savings": 0.6043956043956044,
+  "n_with_traditional_debt": 62,
+  "n_in_default_at_start_every_seed": 62,
+  "n_at_risk": 120,
+  "seeds": [
+    10000,
+    10019
+  ],
+  "zero_or_missing_income": 0,
+  "one_shot_answered": 143,
+  "one_shot_covers_food_rent": 97,
+  "one_shot_covers_share_of_answered": 0.6783216783216783,
+  "default_during_run_no_bnpl_of_all": 0.31153846153846154,
+  "default_during_run_no_bnpl_of_at_risk": 0.47250000000000003,
+  "default_during_run_bnpl_beta0_of_all": 0.5629120879120879,
+  "default_during_run_bnpl_beta0_of_at_risk": 0.85375
+}

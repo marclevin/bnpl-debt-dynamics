@@ -190,9 +190,10 @@ across its agreements and places it in a \ac{CCMR} age band. Credit-active house
 owing any traditional or \ac{BNPL} balance or arrears.
 
 A household defaults when its arrears age reaches seven ticks, or 98 days, the first tick
-boundary past 90 days past due. This is the impairment convention and the \ac{NCR}'s ``three or
-more months in arrears''~\citep{ncr_cbm_2017}, so a household two months behind that catches up
-in the third never defaults. Default is permanent and recorded by the bureau, and a defaulted
+boundary past 90 days past due. This matches the threshold at which the \ac{NCR}'s Credit Bureau
+Monitor classes a record as impaired, ``three or more payments or months in
+arrears''~\citep{ncr_cbm_2017}, so a household two months behind that catches up in the third
+never defaults. Default is permanent and recorded by the bureau, and a defaulted
 household receives no further credit. Its accounts are non-performing: nothing more is due or
 collected, no interest accrues, and each tick they are written off with a probability derived in
 Section~\ref{sec:lim-calibration}. A written-off household leaves the book but stays in default.
@@ -225,7 +226,7 @@ ticks, and we report it separately as consumption distress.
 \addlinespace
 2. Consumption & Food and rent cannot be reduced. Discretionary spending falls to zero before an instalment is missed for lack of cash. & None & Section~\ref{sec:population} \\
 \addlinespace
-3. Borrowing trigger & Traditional credit is sought only for a shortfall. \acs{BNPL} also finances want-driven purchases, whose probability can rise with peer adoption. & See Submodel~11 & \citet{ackert2025bnpl,dehaan2024bnpl} \\
+3. Borrowing trigger & Traditional credit is sought only for a shortfall. \acs{BNPL} also finances want-driven purchases, whose probability can rise with peer adoption. & See Submodel~11 & \citet{ackert2025bnpl,dimaggio2022bnpl} \\
 \addlinespace
 4. Borrowing amount & Shortfall: the household requests the exact shortfall. Want-driven purchase: lognormal, with mean $\kappa$ times the household's monthly discretionary budget. & Shortfall rule assumed, swept; $\kappa = 0.139$ (\acs{IES}), swept 0.07--0.28; coefficient of variation 0.6, assumed & \citet{statssa_ies_2023} \\
 \addlinespace

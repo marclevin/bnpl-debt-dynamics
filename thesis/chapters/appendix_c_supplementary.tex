@@ -107,19 +107,19 @@ are to the body.} \\
 \bottomrule
 \endfoot
 \multicolumn{3}{l}{\emph{Bounding a central claim, argued in the body}} \\
-Default is a model construct & A household defaults when an instalment on any facility is 91 or more days past due, the bureau construct, but no external figure measures it for households. Of the 20.73\% baseline default, 6.36 points are households placed in default at the start, and a 56-day definition adds 13 points
+Default is a model construct & A household defaults when an instalment on any facility is 91 or more days past due, the bureau construct, but no external figure measures it for households. Of the 20.73\% baseline default including the starting stock, 6.36 points are households placed in default at the start, and a 56-day threshold adds 13 points, partly by bringing forward the consequences of default
 % baseline_default, fit_initial_default via tab_baseline_arms, rob_k4_diff (results_numbers.json).
  & Sections~\ref{sec:sequence}, \ref{sec:data-validation} and~\ref{sec:results-robustness}; bounds the level of default \\
 \addlinespace
-The baseline is calibrated, not validated & The run starts from the 2017 \ac{CCMR} profile, two parameters are fitted to its five bands and the write-off rate is derived, so agreement on the bands is not evidence; only their stability over two years is. Which households start in arrears, the 120+ ages and a defaulted account with no collections are assumptions. The separation rate is derived so that separations equal hires, the hire wage is imputed, and by the final tick household income is 15.2\% higher in Q1, 6.1\% lower in Q4 and 3.9\% lower in total
+The baseline is calibrated, not validated & The run starts from the 2017 \ac{CCMR} profile, two parameters are fitted to its five bands and the write-off rate is derived, so agreement on the bands is not evidence, and their stability over two years is a consistency check. Which households start in arrears, the 120+ ages and a defaulted account with no collections are assumptions. The separation rate is derived so that separations equal hires, the hire wage is imputed, and by the final tick household income is 15.2\% higher in Q1, 6.1\% lower in Q4 and 3.9\% lower in total
 % 15.2%, 6.1% and 3.9%: income_rel_t52_* in the "income path" entry of defaulter_credit.json.
 & Sections~\ref{sec:lim-calibration} and~\ref{sec:data-validation}; bounds every baseline agreement and the level of default \\
 \addlinespace
 The credit-active book halves & Without \ac{BNPL}, credit-active households fall from 2{,}285 to 1{,}175 over the run, because written-off and repaid accounts leave and new traditional borrowing arises only against shortfalls. The stable 90+ share is a ratio of shrinking counts, and credit-active shares measure levels, not effects & Sections~\ref{sec:lim-calibration} and~\ref{sec:results-injection}; bounds the stability claim and every credit-active share \\
 \addlinespace
-Households short from the start & Surveyed income is below food and rent for 3.6\% of agents, and these carry most of the \ac{BNPL} effect; among the other households it is $+0.11 \pm 0.07$ points. Whether their records reflect income or under-reporting is unknown & Sections~\ref{sec:data-validation} and~\ref{sec:results-injection}; bounds the size and distribution of the \ac{BNPL} effect \\
+Households short from the start & Surveyed income is below food and rent for 3.6\% of agents, and these carry most of the \ac{BNPL} effect; among the other households it is $+0.11 \pm 0.07$ points. For 68\% of the group's respondents the household's single-question income covers food and rent, so the survey cannot separate persistent hardship from under-recorded income & Sections~\ref{sec:data-validation} and~\ref{sec:results-injection}; bounds the size and distribution of the \ac{BNPL} effect \\
 \addlinespace
-The validation targets are uneven & Only Pattern~2 is South African and vintage-matched, and it is account-level and now an input and a target; Pattern~1 is partly designed in; Pattern~3 is reproduced through write-offs; Patterns~3 and 4 are foreign or off-vintage & Section~\ref{sec:lim-validation}; bounds the RQ1 claim \\
+The validation targets are uneven & Only Pattern~2 is South African and vintage-matched, and it is account-level and an input and a target; Pattern~1 is partly designed in; Pattern~3 comes from a United Kingdom model, appears only through write-offs and is not counted & Section~\ref{sec:lim-validation}; bounds the RQ1 claim \\
 \addlinespace
 Behavioural parameters are imported & The minimum-payer share, the friction motivation and the want-driven path are United States evidence; arrears persistence and the peer coefficients have no source at all & Section~\ref{sec:lim-transfer}; bounds every behavioural magnitude \\
 \addlinespace
@@ -150,9 +150,9 @@ categorical and need no deflation & Banked status gates \ac{BNPL} eligibility, s
 access ceiling carries a two-year vintage gap (Appendix~\ref{app:matching}, P5) \\
 \addlinespace
 Liquid savings proxy & Derived from a \ac{NIDS} field measuring reported financial assets rather
-than an accessible cash balance, and winsorised to remove implausible outliers & Validation
-pattern~4 measures the share reaching zero savings, so the model is judged partly on its weakest
-input \\
+than an accessible cash balance, and winsorised to remove implausible outliers & The share with
+no liquid savings reported in Table~\ref{tab:baseline-arms}, and the buffer against every
+shortfall \\
 \addlinespace
 Servicing derived & Statutory maxima are ceilings and the \ac{CCMR} publishes no realised rates,
 so rates tend to overstate servicing for a given balance and horizon. Repayment horizons are
@@ -178,7 +178,7 @@ Regulation 23A unit & The regulation prescribes a minimum-expense norm for an in
 and the model applies it to household income & For multi-earner households the gate is more
 permissive than in practice \\
 \addlinespace
-Committed shortfalls are not repaid & Credit raised against a food or rent shortfall pays it first; what stays unpaid is not carried forward and is reported as consumption distress, not default (Section~\ref{sec:sequence}) & The consumption-distress measure, which counts each tick's shortfall afresh \\
+Committed shortfalls are not repaid & Credit raised against a food or rent shortfall pays it first; what stays unpaid is not carried forward and is reported as consumption distress, which cannot cause default (Section~\ref{sec:sequence}) & The consumption-distress measures, which count each tick's shortfall afresh and record no Rand amount \\
 \addlinespace
 Resample distortion & Weighted resampling raises the per-capita income Gini from 0.6514 to 0.6668,
 a shift of 0.015, within the 0.02 tolerance of Table~\ref{tab:validation}. It is reported and left uncorrected & May overstate distress among the lowest-income agents \\
@@ -228,13 +228,12 @@ points. Neither lever acts on the households that carry the \ac{BNPL} effect: th
 block borrowing for a shortfall, and a shortfall request that the cap refuses passes to the
 traditional lender.
 
-Counting agreements in place of platforms does not change the cap's effect on default. A
-diagnostic on the cap arms' seeds, paired with an arm without a cap, compares three definitions.
+Counting agreements in place of platforms changes the cap's effect on default by at most
+$0.24 \pm 0.12$ points. A diagnostic on the cap arms' seeds, paired with an arm without a cap, compares three definitions.
 At $\beta = 0.3$ and a cap of two, the cap as modelled changes default by $-0.02 \pm 0.10$ points
 and removes 13.9\% of volume; a cap that counts agreements removes 14.1\% and changes default by
 $-0.05 \pm 0.12$. Paired by seed, the cap as modelled less the agreements cap is
-$+0.03 \pm 0.11$ points at a cap of two and $+0.24 \pm 0.12$ at a cap of three, one of eight such
-contrasts. At a cap of one the two definitions coincide. A cap on platforms that still allows
+$+0.03 \pm 0.11$ points at a cap of two and $+0.24 \pm 0.12$ at a cap of three. At a cap of one the two definitions coincide. A cap on platforms that still allows
 further agreements on platforms already in use removes 2.5\% of volume and changes default by
 $+0.07 \pm 0.15$ points.
 % results/summary/cap_definitions.md (notebooks/scripts/check_cap_definitions.py).
@@ -261,7 +260,9 @@ Table~\ref{tab:sobol} gives a Sobol decomposition of the levels of default and \
 holding. Each design point is the mean of eight replicates. Replicate noise is still 14\% of the
 variance of default across points, and because independent noise enters every total-order index,
 the total-order indices of 0.12 to 0.14 for the five parameters other than the separation rate are
-that noise; their first-order indices do not differ from zero. An earlier run with two replicates
+no larger than that noise: with it removed each is within 0.03 of zero (95\% bootstrap bound).
+Their first-order indices do not differ from zero, and the gap between the separation rate's
+first- and total-order indices is the same noise. An earlier run with two replicates
 per point left noise at 37\% of the variance and could give only a ranking. The separation rate is swept from 0.0013 to 0.0071, 0.3 to 1.6 times
 its derived value, and above the derived value employment falls through the run. Holding is set
 almost entirely by $q_{\text{base}}$.

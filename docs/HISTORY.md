@@ -11,6 +11,90 @@ Earlier history (model build, 2026-08-05 to 2026-09-28) is in the closed rows of
 
 ---
 
+## 2026-11-10: QA pass (branch `qa-pass-2026-11-10`; reviewer leads verified, Marc's decisions applied)
+
+A reviewer's QA prompt was checked against the code and outputs in three audits (statistics,
+evidence, citations) and acted on. No simulation was run; the analysis and generator changes are
+in 7da0484, the text and the rest are in the working tree.
+
+**Statistics (A1).** The eight beta effects share `rqb_off` and seeds 90,000-90,249 and
+correlate at about 0.5. The fit SEs had treated them as independent. They now use the
+across-seed covariance (sandwich, equivalent to seed clustering); the WLS estimates are
+unchanged. Slope +0.003 +/- 0.014 -> +/- 0.010 per 0.1 of beta; quadratic and hinge t 0.81/0.23
+-> 1.23/0.34; verdict still linear. The power sentence used 2 x SD x sqrt(2/n) with the effect SD;
+the no-BNPL arm cancels between beta values, so a difference of 0.07 points (not 0.1) is detected
+half the time. New `check_sobol_noise.py`: total-order indices of the five non-separation
+parameters minus replicate noise are within 0.03 of zero, so they are "no larger than" the noise
+rather than equal to it; the Sobol S1 +/- is a 95% interval and is now labelled so. Pairing and
+the pooled estimates were checked and are correct (B49 in DEFECTS).
+
+**Generators (A2).**
+- Table 9: Pattern 4 dropped (#29). Pattern 3's result is "Not counted: absent at the start;
+  appears as Q1's debt falls", with the starting debt-to-income shown from the population file.
+  The CFPB row's model cell now says the 28.2% is over two years.
+- Table 11 and tab:stacking-full: column groups say "Owing two or more platforms". The
+  one-platform cells print "--" in place of 0.0.
+- Figure 5: the 56-day default-threshold arm is removed from the tornado. It changes the
+  definition and timing of default (freezing, credit cut-off, write-off) rather than a behavioural
+  assumption, and its +13 points compressed the axis. It stays in tab:robustness, whose note now
+  splits it into +1.81 points of starting stock and +11.32 +/- 0.13 of default during the run.
+- New tab:scenarios-distress, with food and rent left unpaid under the RQ3 switches: two
+  measures, the mean per-tick share short (40 post-burn-in ticks) and the share ever short (52
+  ticks), both over all households; changes paired by seed, at three decimals; no Rand amount is
+  recorded.
+- Every table note labels +/- as one standard error, paired or unpaired, and says that default
+  includes the starting stock. Table 4 defines both default measures and their denominators.
+  The scenarios note says the benchmark column carries no SD. The Sobol note wording follows A1.
+- `check_results_tables.py` checks the new cells, lists every unmet prose expectation together,
+  and includes A1's checks; results_numbers.json gains the default-measure, k = 4, access-step,
+  Pattern 3 and distress keys.
+
+**Factual corrections in the text.**
+- *Default measures.* Section 3.1 now defines default during the run (new defaults over all
+  5,000 households: 14.37%, or 15.35% of those not in default at the start) and default including
+  the starting stock (20.73%, also the share ever in default), and says once that the starting
+  stock is the same households in every arm of a block, except at k = 4, so it cancels from
+  effects. The old sentence "the default rate includes the households placed in default at the
+  start" contradicted the 14.37% headline and is gone.
+- *Group short from the start (B47).* "31%" and "56%" were shares of all 182 members, 62 of whom
+  start in default; over the 120 at risk they are 47% and 85% (new `check_short_group.py`,
+  `short_group.json`). Section 3.5 now describes the group once, including that the household's
+  single income question covers food and rent for 68% of the group's respondents. "No longer
+  sets the level of default" (stale) is gone.
+- *56-day threshold.* "Changes the outcome measured, not household behaviour" was wrong: default
+  freezes accounts, stops credit and opens write-off, so the arm also brings those forward six
+  weeks. Section 4.6 and the Figure 5 caption say so.
+- *Agreement duration.* "Each agreement stays open for three ticks" holds only for a performing
+  schedule; an unpaid one stays open until paid or written off, and holding and stacking include
+  frozen balances of defaulted households.
+- *Access sweep.* "No step is followed by a level" replaced by the step range (-0.09 to +0.40
+  points), one of 24 steps beyond 2 SE from a straight line, and the 30-70% / 70-100% rises at
+  beta = 0.3 (0.73 +/- 0.12, 0.09 +/- 0.14): no jump, a gradual S-shape not excluded.
+- *Calibration and validation.* "With three more targets than fitted parameters" removed; the
+  final-tick 90+ share is described as a stability check of a share of a shrinking book. Section
+  3.5 separates inputs, targets, consistency checks and independent validation, and says once that
+  calibration does not make scenario differences reliable by itself.
+- *Pattern 4 dropped* everywhere (Section 3.5, Appendix C rows, Appendix D, bib annotes); "three
+  patterns"; Pattern 3 is described as not counted.
+- *Hardship (RQ3).* Section 5, the RQ3 answer, Section 6 and the abstract report food and rent left
+  unpaid: bureau visibility +0.125 +/- 0.016 points a tick (ever +0.091 +/- 0.024), screening
+  +0.036 +/- 0.015 (ever +0.055 +/- 0.027) at beta = 0, neither detectable for screening at 0.3;
+  no Rand amount recorded, so no welfare conclusion.
+- *Citations* (15 items from the citation audit): CBM quotation made verbatim and "impairment
+  convention" reworded to the CBM's impaired-record threshold; Keys and Wang figure corrected to
+  the published article; deHaan replaced by Di Maggio for want-driven purchases; the rate-cap
+  citation attached to the statutory maxima only; the CBM 21.7% comparison reworded (mortgage,
+  vehicle and service-provider accounts); payflex_limits cited for the platform limit; QLFS
+  citation on the NIDS/QLFS unemployment comparison; CFPB per-year against the model's two years;
+  new bib entry `statssa_cpi_history` (Table B1, re-read 10 November 2026); Community Survey URL
+  switched to the Internet Archive copy; NIDS DOI URL; CPI title "June 2026".
+- *Repetition.* The introduction's numerical preview, the RQ answers and the conclusion no longer
+  repeat the same bundle of estimates; the shortfall mechanism is explained in Section 4.1 and the
+  group in Section 3.5, with reminders elsewhere. Null results are stated as "not detectably" with
+  estimates. Body prose 9,991 words (was 9,875).
+
+---
+
 ## 2026-11-09: thesis text for the arrears rule and the beta result (#95, #100)
 
 Sections 2 to 6, the appendices and the parameter register now describe D18 and the beta sweep;

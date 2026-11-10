@@ -1,13 +1,15 @@
 """Examiner hole H3 (2026-10-13): default excluding households that default regardless.
 
 About 3.6% of agents have surveyed income below their food and rent (committed spending)
-from the start, and about 96% of them default in every arm (defaulter_credit.json). This
+from the start. (The "about 96% default in every arm" written here on 2026-10-13 was under the
+streak rule; under the arrears rule, 47% of those not in default at the start default during the
+run without BNPL and 85% with it: short_group.json, QA 2026-11-10.) This
 script measures default among the OTHER households, the "contestable" rate, and the BNPL
 and bureau-visibility effects on it, so the effects can be stated relative to the part of
 default that the experiments can move.
 
 Reruns, with agent-level default recorded:
-* the three blocks pooled for the beta = 1 BNPL effect, and the four for beta = 0, exactly as
+* the three blocks pooled for the peer-arm (beta = 0.3; beta = 1 before #98) BNPL effect, and the four for beta = 0, exactly as
   in build_results_tables.derived_numbers: rq0 (seeds 10,000-10,019), the access sweep at full
   against zero access (30,000-), the threshold control (60,000-, beta = 0 only) and the
   effect-sensitivity reference (70,000-);

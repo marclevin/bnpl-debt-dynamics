@@ -61,16 +61,12 @@ observe, so that the reporting gap can be switched on and off, and a set of expe
 that identify the mechanisms and assumptions on which the effect of \ac{BNPL} on default
 depends.
 
-In the experiments, enabling \ac{BNPL} raises default by 1.03 percentage points from a base
-of 14.4\% of households defaulting during the run, and the effect does not change with peer influence. It runs through households that
-use \ac{BNPL} to bridge cash shortfalls and then fall more than 90 days behind on it, and it
-disappears when \ac{BNPL} cannot be used against a shortfall. Default does not rise with the
-number of platforms. Making \ac{BNPL} instalments visible to the traditional lender raises
-default by 0.20 points through refusals. Screening \ac{BNPL} requests with the Regulation 23A
-test lowers default by 0.93 points, almost all in the poorest quintile.
-% beta0_effect_pooled and baseline_default (results_numbers.json, Section 4.1); slope:
-% results/summary/beta_sweep.json; no-shortfall-BNPL row of tab:effect; platform sweep
-% tab:stacking-full; bureau and screening rows of tab:scenarios.
+In the experiments, enabling \ac{BNPL} raises default by about one percentage point, mostly
+among households that use it to bridge cash shortfalls and whose surveyed income does not cover
+food and rent. Bureau visibility raises default a little, and screening \ac{BNPL} requests with
+the Regulation 23A test lowers it by about as much as \ac{BNPL} adds.
+% beta0_effect_pooled (results_numbers.json, Section 4.1); Section 3.5 for the households short
+% from the start; bureau and screening rows of tab:scenarios.
 
 \subsection{Research Questions}
 \label{sec:rqs}
@@ -96,7 +92,7 @@ Three subsidiary questions, RQ1 to RQ3, follow:
     borrowing and distress, both with and without peer influence on adoption?
 \end{enumerate}
 
-We measure distress mainly by the population default rate. A household defaults when an
+We measure distress mainly by default, in the two measures of Section~\ref{sec:sim-params}. A household defaults when an
 instalment on any of its credit, traditional or \ac{BNPL}, is more than 90 days past due, the
 rule set out in Section~\ref{sec:sequence}. We also report the share of credit-active households
 more than 90 days in arrears (the 90+ share), the household counterpart of the 2017 account figure above, and
