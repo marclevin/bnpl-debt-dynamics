@@ -8,7 +8,7 @@ provenance; Appendix~\ref{app:specification} gives every parameter.
 \centering\small
 \caption{Provenance of model inputs}
 \label{tab:param-taxonomy}
-\tabnote{Imported: estimated on a foreign population and applied to South African households. Assumed: no source gives the value, which is chosen. Swept: no source fixes the value, so a range is tested. Sourced inputs whose source may not transfer, among them $\kappa$ (derived), the minimum-payer share (imported) and the default threshold $k$, are also swept and keep their class here. In the register (Appendix~\ref{app:register}), sourced covers Observed, Constructed and Imported; derived, fitted and assumed keep their names, and the sweep column marks what is swept. The order does not rank reliability.}
+\tabnote{Imported: estimated on a foreign population and applied to South African households. Assumed: no source gives the value, which is chosen. Swept: no source fixes the value, so a range is tested. Inputs whose source may not transfer ($\kappa$, the minimum-payer share and $k$) are also swept and keep their class. In the register (Appendix~\ref{app:register}), sourced covers Observed, Constructed and Imported. The order does not rank reliability.}
 \begin{tabular}{L{2.2cm}L{6.9cm}L{4.3cm}}
 \toprule
 \textbf{Class} & \textbf{Principal members} & \textbf{Documented in} \\
@@ -47,7 +47,7 @@ permanent, so this second measure is also the share ever in default, and tables 
 report it unless they say otherwise. The arms of an experiment share a seed block
 (Table~\ref{tab:experiments}). Within a block the number starting in default is the same in
 every arm, except under the 56-day threshold (Section~\ref{sec:results-robustness}), so it
-cancels from differences between arms. They are the same households, except that a few differ
+cancels from differences between arms. The households are also the same, except that a few differ
 in arms that change access or a repayment parameter (Table~\ref{tab:experiments}).
 % 14.37%, 15.35%, 6.36%, 20.73%: baseline_new_default, baseline_new_default_of_not_initially_defaulted,
 % baseline_initial_default, baseline_default (results_numbers.json, seeds 10,000-10,019). Same
@@ -82,7 +82,7 @@ the assumptions.
 \centering
 \caption{Experiments}
 \label{tab:experiments}
-\tabnote{Seeds: the first seed of each block; replicate $i$ adds $i$. $\beta$ from 0 to 0.3 means 0, 0.1, 0.2 and 0.3, except in the $\beta$ sweep (0, 0.025, 0.05, 0.075, 0.10, 0.15, 0.20 and 0.30) and the variance decomposition (continuous). Starting stock: the baseline, injection and scenario arms start with the same households in default. Arms that change access or a repayment parameter swap a few (7 of 318 on one seed under changed access, up to 24 under another minimum payment), because eligibility and the repayment archetype are drawn first from the same stream.}
+\tabnote{Seeds: the first seed of each block; replicate $i$ adds $i$. $\beta$ from 0 to 0.3 means 0, 0.1, 0.2 and 0.3, except in the $\beta$ sweep (0, 0.025, 0.05, 0.075, 0.10, 0.15, 0.20 and 0.30) and the variance decomposition (continuous). Starting stock: the baseline, injection and scenario arms start with the same households in default. Arms that change access or a repayment parameter swap a few (7 of 318 on one seed under changed access, up to 24 under another minimum payment), because eligibility and the repayment archetype are drawn first from the same stream and the minimum payment enters the ranking that places starting arrears.}
 \begingroup\setlength{\tabcolsep}{4pt}\footnotesize
 \begin{tabular}{L{3.0cm}L{4.6cm}L{1.0cm}rL{1.8cm}l}
 \toprule
@@ -264,7 +264,7 @@ whether it transfers.
 The labour market is not fitted. The population holds 4{,}670 employed members and 1{,}113
 unemployed under the strict definition. Re-employment is the \ac{QLFS} rate of 1.87\% per tick,
 and separation, 0.446\%, is set so that separations equal hires in expectation. This is
-below the observed band of 0.54 to 1.17\% per tick, because the population's strict
+below the observed job-separation band of 0.54 to 1.17\% per tick, because the population's strict
 unemployment rate (Appendix~\ref{app:var-employed}) is below the \ac{QLFS}
 rate~\citep{statssa_lmd_2022}. At the final tick employment is 0.2\% below its start, and
 13.6\% of the members employed at the start are out of work. Within quintiles employment and
@@ -343,7 +343,7 @@ the level because the starting stock is an input. Three comparisons bear on the 
 seeds 10{,}000--10{,}019.
 The first is the flow. Each tick 0.83\% of the credit-active book passes 90 days, against 0.82\%
 if the \ac{CCMR} 91--120 day band holds 1.76\% of accounts for 30 days; the write-off derivation
-instead lets half the band age out each tick (0.88\%), and on the 30-day convention its rate
+instead lets half the band age out each tick (0.88\%), and on the 30-day convention the write-off rate
 would be 0.0660. The band was a target, so this checks consistency only.
 The second is the stock. By the final tick 43.7\% of the households that held credit at any tick
 have defaulted, 13.4 points of it from the starting stock, against the 39.3\% of credit-active
@@ -359,7 +359,7 @@ also covers mortgage, vehicle and service-provider accounts the model does not h
 % 0.82% = 1.76% x 14/30 (ccmr_inflow_91plus_per_tick_of_accounts); 0.88% = 1.76%/2;
 % 0.0660 = 0.82/12.45 (audit B, M2, 2026-11-11).
 Of those who default during the run, 88.3\% held traditional debt at the start and 12.5\%
-have an earner out of work when they do. Food and rent left unpaid are reported
+have an earner out of work when they default. Food and rent left unpaid are reported
 separately: in an average tick 3.4\% of households are short of them.
 % 20.73%, 6.36% and 14.37%: baseline_default (results_numbers.json) and default_rate,
 % held_traditional_at_start, unemployed_at_default of "no BNPL" in results/summary/defaulter_credit.json

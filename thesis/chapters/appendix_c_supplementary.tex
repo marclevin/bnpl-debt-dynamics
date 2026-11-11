@@ -119,9 +119,9 @@ Default is a model construct & A household defaults when an instalment on any fa
 % 0.72: fit_persistence.
  & Sections~\ref{sec:sequence}, \ref{sec:lim-calibration}, \ref{sec:data-validation} and~\ref{sec:results-robustness}; bounds the level of default \\
 \addlinespace
-\ac{BNPL} arrears count as default & Default counts \ac{BNPL} instalments more than 90 days past due, and the bureau records a default whatever caused it, although in the benchmark it does not record \ac{BNPL}; a household that defaults on \ac{BNPL} alone gets no further credit. Most of the \ac{BNPL} effect comes through this route. Under the earlier rule, in which \ac{BNPL} arrears did not count, the effect was $-0.10 \pm 0.06$ points (Appendix~\ref{app:calibration})
+\ac{BNPL} arrears count as default & Default counts \ac{BNPL} instalments more than 90 days past due, and the bureau records a default whatever caused it, although in the benchmark it does not record \ac{BNPL}; a household that defaults on \ac{BNPL} alone gets no further credit. Most of the \ac{BNPL} effect comes through this route. Under the earlier rule, in which \ac{BNPL} arrears did not count and the starting profile and write-off also differed, the effect was $-0.10 \pm 0.06$ points (Appendix~\ref{app:calibration})
 % Route: 0.94 +/- 0.01 of 1.08 points, bnpl_only_pp in results/summary/default_trigger.json (Section 4.1); -0.10 +/- 0.06:
-% the same file.
+% docs/ARREARS_RULE_2026-11.md.
 & Sections~\ref{sec:sequence} and~\ref{sec:results-injection}; bounds the size and sign of the \ac{BNPL} effect \\
 \addlinespace
 The baseline is calibrated, not validated & The run starts from the 2017 \ac{CCMR} profile, two parameters are fitted to its five bands and the write-off rate is derived, so agreement on the bands is not evidence, and their stability over two years is a consistency check. Which households start in arrears, the 120+ ages and a defaulted account with no collections are assumptions. The separation rate is derived so that separations equal hires, the hire wage is imputed, and by the final tick household income is 14.9\% higher in Q1, 5.8\% lower in Q5, the largest fall, and 3.9\% lower in total
