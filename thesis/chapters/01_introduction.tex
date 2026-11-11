@@ -5,40 +5,38 @@
 \label{sec:background}
 
 South Africa had substantial household credit distress before \ac{BNPL} spread. In early 2017, 14.2\% of unsecured and credit-facility accounts were more than
-90 days in arrears~\citep{ncr_ccmr_2017}. That distress arose in a regulated lending market: the
+90 days in arrears~\citep[computed from Tables 21 and 23]{ncr_ccmr_2017}. That distress arose in a regulated lending market: the
 \ac{NCA} requires affordability assessments, and Regulation 23A specifies a residual-income
 test for whether a borrower can afford additional credit
 \citep{sa_nca_2005,sa_ncr_affordability_2015}. In TransUnion's late-2025 online survey, after \ac{BNPL} had
 spread, 36\% of consumers expected to miss a bill or loan payment
-\citep{transunion_cps_sa_2025}. Account arrears and expected missed payments are different
-measures, but both point to households with little room for new obligations.
+\citep{transunion_cps_sa_2025}. The two measures differ, but both point to households with little room for new obligations.
 
-South African lenders did not see \ac{BNPL} obligations when they assessed affordability.
+South African lenders do not see \ac{BNPL} obligations when they assess affordability.
 The \ac{SARB} notes that providers often argue that interest-free agreements fall outside
 the \ac{NCA}~\citep{sarb_fsr_2026_1}, and legal commentary takes the same view
-\citep{nortonrose_bnpl_sa}. \ac{BNPL} agreements were not displayed on consumer credit
-profiles~\citep{dcasa_bnpl_2026,finasa_bnpl_2026}. A household could
+\citep{nortonrose_bnpl_sa}. \ac{BNPL} agreements are not displayed on consumer credit
+profiles~\citep{dcasa_bnpl_2026,finasa_bnpl_2026}. A household can
 therefore owe several providers without any lender seeing all its debts. The \ac{SARB}'s
-June 2026 Financial Stability Review identifies concurrent \ac{BNPL} obligations as a risk
+Financial Stability Review identifies concurrent \ac{BNPL} obligations as a risk
 to household indebtedness and notes that approval rests on less rigorous credit checks than
 traditional unsecured credit~\citep{sarb_fsr_2026_1}.
 
-Reporting arrangements are changing. Press reports describe an agreement between the
+Reporting arrangements are changing. A press report describes an agreement between the
 \ac{NCR}, the \ac{SACRRA} and the Credit Bureau Association to include \ac{BNPL} payment
-behaviour in bureau records, and the \ac{NCR}'s position that an agreement may become
+behaviour in bureau records, and the \ac{NCR}'s position that a \ac{BNPL} contract may become
 incidental credit when default charges are levied~\citep{businessday_bnpl_2026}. Providers
-submitted more than two million records in May 2026 while the format was being finalised
-\citep{dcasa_bnpl_2026}, and records are reportedly expected on consumer profiles from
-February 2027~\citep{businessday_bnpl_2026}; no statutory commencement date has been
-confirmed. The \ac{FINASA} reports one bureau's preliminary estimate that scores could fall
+submitted more than two million records in May 2026~\citep{dcasa_bnpl_2026}. The \ac{NCR}
+reportedly requires reporting from February 2027, and one provider expects the records on
+consumer profiles from then~\citep{businessday_bnpl_2026}; no published \ac{NCR} instrument
+sets a date. The \ac{FINASA} reports one bureau's preliminary estimate that scores could fall
 for roughly a quarter of credit-active consumers~\citep{finasa_bnpl_2026}.
 
 Evidence from the United States links \ac{BNPL} use to financial strain. Using banking
 records for 10.6 million consumers, deHaan et al.~\citeyearpar{dehaan2024bnpl} find higher
 overdraft charges, credit-card interest and late fees after \ac{BNPL} adoption, with
-larger increases among heavier users. The \ac{CFPB}~\citeyearpar{cfpb2025bnpl}
-documents borrowers who hold several loans at once, including loans from different
-providers. We found no South African study of how \ac{BNPL} affects household distress and
+larger increases among heavier users. The \ac{CFPB} documents borrowers who hold several
+loans at once, including loans from different providers~\citep{cfpb2025bnpl}. We found no South African study of how \ac{BNPL} affects household distress and
 no agent-based model of South African household credit, and the local reporting
 arrangements are too recent to have been evaluated. It is therefore not known how much an
 unreported, lightly screened \ac{BNPL} channel adds to distress in a population with South
@@ -51,22 +49,24 @@ Regulation 23A test to the obligations the credit bureau records, while \ac{BNPL
 apply a light screen and cannot see one another's balances. We calibrate a traditional-credit
 baseline to the 2017 arrears profile with \ac{BNPL} disabled, then enable \ac{BNPL} in the
 same population and compare outcomes over two years. Further experiments vary the number of
-platforms, access to \ac{BNPL}, peer influence on adoption, bureau visibility and
+platforms, access to \ac{BNPL}, peer influence, bureau visibility and
 affordability screening.
 
-The experiments measure differences between arms of the model. They do not estimate the
-historical effect of \ac{BNPL} in South Africa or forecast default under the new reporting
-arrangements. The contribution is a household model in which lenders differ in what they
-observe, so that the reporting gap can be switched on and off, and a set of experiments
-that identify the mechanisms and assumptions on which the effect of \ac{BNPL} on default
-depends.
+The experiments measure differences between arms, runs that differ in one setting. They
+do not estimate the historical effect of \ac{BNPL} in South Africa or forecast default under the
+new reporting arrangements. The contribution is a household model in which lenders differ in
+what they observe, so that the reporting gap can be switched on and off. The experiments
+identify the mechanisms and assumptions on which the effect of \ac{BNPL} on default depends.
 
-In the experiments, enabling \ac{BNPL} raises default by about one percentage point, mostly
-among households that use it to bridge cash shortfalls and whose surveyed income does not cover
-food and rent. Bureau visibility raises default a little, and screening \ac{BNPL} requests with
-the Regulation 23A test lowers it by about as much as \ac{BNPL} adds.
+Enabling \ac{BNPL} raises default by about one percentage point, mostly among households that
+use it to bridge cash shortfalls, whose surveyed income does not cover food and rent and whom
+the lender's test refuses. Bureau visibility raises default by 0.20 points without peer
+influence, and the estimate with peer influence does not differ detectably. Screening \ac{BNPL} requests
+with the same test lowers default by about as much as \ac{BNPL} adds.
 % beta0_effect_pooled (results_numbers.json, Section 4.1); Section 3.5 for the households short
-% from the start; bureau and screening rows of tab:scenarios.
+% from the start; the 55 of 120 the lender never lends to: results/summary/short_group_lending.json
+% (Section 4.1); bureau and screening rows of tab:scenarios; 0.20: scen_bureau_beta0_default; with
+% peer influence 0.10 +/- 0.06, difference -0.09 +/- 0.08 (Section 5).
 
 \subsection{Research Questions}
 \label{sec:rqs}
@@ -92,11 +92,12 @@ Three subsidiary questions, RQ1 to RQ3, follow:
     borrowing and distress, both with and without peer influence on adoption?
 \end{enumerate}
 
-We measure distress mainly by default, in the two measures of Section~\ref{sec:sim-params}. A household defaults when an
-instalment on any of its credit, traditional or \ac{BNPL}, is more than 90 days past due, the
-rule set out in Section~\ref{sec:sequence}. We also report the share of credit-active households
-more than 90 days in arrears (the 90+ share), the household counterpart of the 2017 account figure above, and
-food and rent left unpaid as consumption distress. Section~\ref{sec:calibration} answers RQ1, Section~\ref{sec:results}
+Our main measure of distress is default, in two forms (Section~\ref{sec:sim-params}). A
+household defaults when an instalment on any of its credit, traditional or \ac{BNPL}, is more
+than 90 days past due (Section~\ref{sec:sequence}). We also report the 90+ share, the share of
+credit-active households (those owing any debt) more than 90 days in arrears, the
+household counterpart of the 2017 account figure. Consumption distress is food and rent left
+unpaid. Section~\ref{sec:calibration} answers RQ1, Section~\ref{sec:results}
 RQ2 and Section~\ref{sec:scenarios} RQ3.
 
 \subsection{Related Literature}
@@ -106,27 +107,26 @@ RQ2 and Section~\ref{sec:scenarios} RQ3.
 \label{sec:lit-abm}
 
 Agent-based models of household credit derive aggregate distress from individual
-borrowing decisions. Cardaci~\citeyearpar{cardaci2018inequality} models rising
-inequality and consumption emulation, leading to debt-financed spending and eventually
-a banking crisis. That model concerns collateralised debt, so its mechanism differs
+borrowing decisions. Cardaci~\citeyearpar{cardaci2018inequality} models how rising
+inequality and consumption emulation lead to debt-financed spending and eventually
+a financial crisis. That model concerns collateralised debt, so its mechanism differs
 from unsecured pay-in-four lending. D'Orazio and Giulioni~\citeyearpar{dorazio2017micro}
 model household borrowing over the business cycle, driven by consumption wants,
 expectations of future income and bank credit rationing; our traditional lender rations
 credit through the Regulation 23A test.
 
 Madeira~\citeyearpar{madeira2018chile} models Chilean households exposed to labour-income
-shocks; a household defaults when it cannot finance minimum consumption. We model a
-shortfall as a cash-flow failure in the same way, which is the logic of the residual-income
-test, but count default only once an instalment is more than 90 days past due.
+shocks; a household defaults when it cannot finance minimum consumption. We also treat a
+shortfall as a cash-flow failure, as the residual-income test does, but count default only once an instalment is more than 90 days past due.
 
 Hamill et al.~\citeyearpar{hamill2023creditcard} suggest that longer interest-free promotions could
 raise indebtedness in a model of the United Kingdom credit-card market. Their model
 produces a non-monotonic debt-to-income profile, with the highest burden among
-middle-income households. We do not count this result as evidence (Section~\ref{sec:data-validation}).
+middle-income households. Section~\ref{sec:data-validation} explains why this profile is not
+evidence.
 
-Following Windrum, Fagiolo and Moneta~\citeyearpar{windrum2007validation} and the pattern-oriented approach of
-the \ac{ODD} protocol~\citep{grimm2020odd}, we distinguish patterns
-used to fit the model from those used to assess it afterwards.
+Following \citet{windrum2007validation} and pattern-oriented modelling~\citep{grimm2005pom}, we
+distinguish patterns used to fit the model from those used to assess it afterwards.
 
 \subsubsection*{Empirical Evidence on Buy Now, Pay Later}
 \label{sec:lit-bnpl}
@@ -140,14 +140,13 @@ arrears and interest charges (Table~\ref{tab:bnpl-on-checks}).
 
 Hayashi and Routh
 \citeyearpar{hayashi2025constraints} find that \ac{BNPL} users are more financially
-constrained than non-users. Wang~\citeyearpar{wang2026buynow} reports that borrowers with
-subprime or deep subprime credit scores accounted for most \ac{BNPL} originations in
-2021 and 2022, and Di Maggio et al.~\citeyearpar{dimaggio2022bnpl} find use highest among
+constrained than non-users. Borrowers with subprime or deep subprime credit scores accounted
+for most United States \ac{BNPL} originations in 2021 and 2022~\citep[p.~2]{cfpb2025bnpl}, and Di Maggio et al.~\citeyearpar{dimaggio2022bnpl} find use highest among
 low-to-middle-income consumers. Outcomes are therefore reported by income quintile.
 
-Ackert et al.~\citeyearpar{ackert2025bnpl} find that students in an incentivised experiment more
-often finance a discretionary purchase with interest-free \ac{BNPL} than with a credit card,
-and expect a small majority of others to approve. Together with the extra spending that Di Maggio
+Ackert et al.~\citeyearpar{ackert2025bnpl} find that students offered interest-free \ac{BNPL}
+in an incentivised experiment buy a discretionary item more often than students offered a
+credit card, and \ac{BNPL} buyers expect a small majority of others to approve. Together with the extra spending that Di Maggio
 et al.\ find, these results motivate two features of the model: want-driven purchases,
 made without a cash shortfall, and peer influence on adoption. Granovetter's~\citeyearpar{granovetter1978threshold} threshold model provides a second
 adoption mechanism: heterogeneous individual thresholds can produce abrupt changes
@@ -178,11 +177,11 @@ in 2017 was the repurchase rate plus 21 percentage points
 product rates households paid.
 
 International regulation motivates the comparison of lending rules.
-The United Kingdom's Woolard Review~\citeyearpar{woolard2021} informed the \ac{FCA}'s approach
-to deferred payment credit, including proportionate affordability checks
-\citep{fca_ps26_1}. The \ac{ASIC} review~\citeyearpar{asic2020rep672} found that
+The United Kingdom's Woolard Review~\citeyearpar{woolard2021} informed how the \ac{FCA}
+regulates deferred payment credit, including proportionate affordability checks
+\citep{fca_ps26_1}. \citet{asic2020rep672} found that
 one in five surveyed users had missed a payment in the preceding year, while
-\ac{BNPL} sat outside Australia's National Credit Act. The scenarios compare a lightly screened \ac{BNPL} channel
+\ac{BNPL} generally sat outside Australia's National Consumer Credit Protection Act. The scenarios compare a lightly screened \ac{BNPL} channel
 with one screened under the South African residual-income test, alone and together with
 bureau visibility.
 

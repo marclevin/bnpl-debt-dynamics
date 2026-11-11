@@ -243,9 +243,9 @@ def check_prose() -> None:
     expect_p("ch3 default", ch["03_calibration"], f"{num['baseline_default'] * 100:.2f}\\%")
     expect_p("ch3 default", ch["03_calibration"], f"{dc['no BNPL']['default_rate'] * 100:.2f}\\%")
     # Section 3.1 (QA 2026-11-10): the two default measures and their denominators.
-    expect_p("ch3 measures", ch["03_calibration"], f"{num['baseline_new_default'] * 100:.2f}\\%, or "
-             f"{num['baseline_new_default_of_not_initially_defaulted'] * 100:.2f}\\% of the households not in default")
-    expect_p("ch3 measures", ch["03_calibration"], f"adds the {num['baseline_initial_default'] * 100:.2f}\\% of households placed")
+    expect_p("ch3 measures", ch["03_calibration"], f"{num['baseline_new_default'] * 100:.2f}\\% without \\ac{{BNPL}}, or "
+             f"{num['baseline_new_default_of_not_initially_defaulted'] * 100:.2f}\\% of those not in default")
+    expect_p("ch3 measures", ch["03_calibration"], f"adds the {num['baseline_initial_default'] * 100:.2f}\\% placed")
     # Section 3.5 (QA 2026-11-10, B47): the group short from the start (short_group.json). The
     # run-time default shares are over the members not in default at the start.
     sg = json.loads((SUMMARY / "short_group.json").read_text())
@@ -253,13 +253,13 @@ def check_prose() -> None:
     assert abs(sg["default_during_run_no_bnpl_of_all"] - dc["no BNPL"]["income_below_committed_who_default"]) < 1e-12
     assert abs(sg["default_during_run_bnpl_beta0_of_all"] - dc["BNPL beta=0"]["income_below_committed_who_default"]) < 1e-12
     c3 = ch["03_calibration"]
-    expect_p("ch3 short", c3, f"Its {sg['n_agents']} agents are drawn from {sg['n_source_households']} \\ac{{NIDS}} households")
+    expect_p("ch3 short", c3, f"Its {sg['n_agents']} households are drawn from {sg['n_source_households']} \\ac{{NIDS}} records")
     assert round(sg["share_q1"] * 3) == 2 and round(sg["share_paying_rent"] * 3) == 2, "two-thirds"
     expect_p("ch3 short", c3, f"{sg['share_no_employed_member'] * 100:.0f}\\% have no employed member")
     expect_p("ch3 short", c3, f"{sg['share_no_liquid_savings'] * 100:.0f}\\% have no liquid savings")
     expect_p("ch3 short", c3, f"for {sg['one_shot_covers_share_of_answered'] * 100:.0f}\\% of the group's respondents")
     expect_p("appC short", ch["appendix_c_supplementary"], f"For {sg['one_shot_covers_share_of_answered'] * 100:.0f}\\% of the group's respondents")
-    expect_p("ch3 short", c3, f"The {sg['n_in_default_at_start_every_seed']} members who hold traditional debt")
+    expect_p("ch3 short", c3, f"The {sg['n_in_default_at_start_every_seed']} of the {sg['n_agents']} that hold traditional debt")
     expect_p("ch3 short", c3, f"only the other {sg['n_at_risk']} can default during the run")
     expect_p("ch3 short", c3, f"{sg['default_during_run_no_bnpl_of_at_risk'] * 100:.0f}\\% of those {sg['n_at_risk']} default")
     expect_p("ch3 short", c3, f"{sg['default_during_run_bnpl_beta0_of_at_risk'] * 100:.0f}\\% do")
@@ -269,9 +269,17 @@ def check_prose() -> None:
     assert abs(cont["beta0_effect_pooled_contestable"]) < 2 * cont["beta0_effect_pooled_contestable_se"]
     assert abs(cont["peer_effect_pooled_contestable"]) > 2 * cont["peer_effect_pooled_contestable_se"]
     expect_p("ch3 short", ch["03_calibration"], f"${pmj(cont, 'peer_effect_pooled_contestable')}$ at $\\beta=0.3$, which is")
-    expect_p("ch4 RQ2 others", ch["04_results"], f"it is ${pmj(cont, 'beta0_effect_pooled_contestable')}$ points at $\\beta=0$ "
-             f"and ${pmj(cont, 'peer_effect_pooled_contestable')}$ at $\\beta=0.3$")
-    expect_p("ch3 short", ch["03_calibration"], unsigned(pmj(cont, "rq3s_bureau_diff_contestable_b0")))
+    expect_p("ch4 RQ2 others", ch["04_results"], f"it is ${pmj(cont, 'beta0_effect_pooled_contestable')}$ points at $\\beta=0$, not detectable, "
+             f"and ${pmj(cont, 'peer_effect_pooled_contestable')}$ at $\\beta=0.3$, which is")
+    # Fix pass 2026-11-11: the bureau-visibility figure for the other households moved from
+    # Section 3.5 to Section 5 (examiner audit, L6).
+    expect_p("ch5 others", ch["05_policy"], unsigned(pmj(cont, "rq3s_bureau_diff_contestable_b0")))
+    # Fix pass 2026-11-11: the split of the effect by the facility in default (Section 4.1).
+    trig = json.loads((SUMMARY / "default_trigger.json").read_text(encoding="utf-8"))
+    expect_p("ch4 trigger", ch["04_results"], f"${trig['bnpl_only_pp']:.2f} \\pm {trig['bnpl_only_pp_se']:.2f}$ of the "
+             f"{trig['effect_pp']:.2f}")
+    expect_p("ch4 trigger", ch["04_results"], f"{trig['remainder_pp']:.2f} \\pm {trig['remainder_pp_se']:.2f}")
+    assert abs(trig["remainder_pp"]) < 2 * trig["remainder_pp_se"], "text says the remainder is not detectable"
     # Section 3.5: the default level against the bureau figures (check_default_level.py).
     lvl = json.loads((SUMMARY / "default_level.json").read_text())
     expect_p("ch3 level", ch["03_calibration"], f"{lvl['off_new_default_rate_final'] * 100:.2f}\\%")
@@ -282,9 +290,9 @@ def check_prose() -> None:
     # QA 2026-11-10 (E8): the share of the stock placed in default at the start, in points of the
     # households that ever held credit; (E4): the final-tick 90+ share on the same seeds.
     expect_p("ch3 level", ch["03_calibration"],
-             f"{lvl['off_initial_default_rate'] / lvl['off_ever_active_share'] * 100:.1f} points of them placed in default at the start")
+             f"{lvl['off_initial_default_rate'] / lvl['off_ever_active_share'] * 100:.1f} points of it from the starting stock")
     expect_p("ch3 level", ch["03_calibration"],
-             f"arrears at the final tick: {lvl['off_active_90_plus_final'] * 100:.2f}\\% of credit-active households")
+             f"arrears at the final tick, when {lvl['off_active_90_plus_final'] * 100:.2f}\\% of credit-active households")
     # QA 2026-11-10 (E3): households holding traditional debt at the start, from the population.
     pop = pd.read_parquet(ROOT / "data" / "processed" / "synthetic_population_5000.parquet", columns=["D_trad"])
     n_start = int((pop.D_trad > 0).sum())
@@ -303,12 +311,12 @@ def check_prose() -> None:
         expect_p(f"{name} sobol", ch[name], f"{min(others):.2f} to {max(others):.2f}")
     # A1 (2026-11-10): S1_conf is a 95% bootstrap half-width, not one standard error.
     expect_p("ch4 sobol", ch["04_results"],
-             f"{shd['S1']:.2f}, with a 95\\% interval of $\\pm {shd['S1_conf']:.2f}$")
+             f"{shd['S1']:.2f}, with a 95\\% bootstrap interval of $\\pm {shd['S1_conf']:.2f}$")
     snc = json.loads((SUMMARY / "sobol_noise_check.json").read_text(encoding="utf-8"))
     ub = max(r["ST_noise_corrected_ci"][1] for r in snc["rows"] if r["parameter"] != "shock_prob")
     expect_p("ch4 sobol noise", ch["04_results"], f"within {math.ceil(ub * 100) / 100:.2f} of zero")
-    expect_p("ch4 sobol", ch["04_results"], f"from {fifths[0] * 100:.1f}\\% in the lowest fifth")
-    expect_p("ch4 sobol", ch["04_results"], f"to {fifths[-1] * 100:.1f}\\% in the highest")
+    expect_p("ch4 sobol", ch["04_results"], f"is {fifths[0] * 100:.1f}\\% in the lowest fifth")
+    expect_p("ch4 sobol", ch["04_results"], f"and {fifths[-1] * 100:.1f}\\% in the highest")
     expect_p("ch3 sobol", ch["03_calibration"], f"Saltelli design & 0--0.3 & {sobj['replicates']} &")
     # Section 4.1 and the RQ2 answer: the pooled effect.
     for c in ("04_results", "06_conclusion"):
@@ -318,7 +326,7 @@ def check_prose() -> None:
     # Section 4.2: the beta sweep.
     h = sweep["headline_linear"]
     expect_p("ch4 beta", ch["04_results"], f"{h['beta0_effect_pp']:+.2f} \\pm {h['beta0_effect_se']:.2f}")
-    expect_p("ch4 beta", ch["04_results"], f"{h['beta0_effect_sd']:.2f}")
+    # Fix pass 2026-11-11: the replicate SD is in Table tab:beta only.
     slope = f"{h['slope_pp_per_0.1_beta']:+.3f} \\pm {h['slope_se_per_0.1_beta']:.3f}"
     for c in ("04_results", "06_conclusion"):
         expect_p(f"{c} slope", ch[c], slope)
@@ -340,11 +348,11 @@ def check_prose() -> None:
     # a level".
     assert num["access_step_dev_beyond_2se_all"] == 1, "text says only one of the 24 steps"
     c4 = ch["04_results"]
-    expect_p("ch4 access", c4, f"${num['access_min_step_all'] * 100:+.2f}$ to ${num['access_max_step_all'] * 100:+.2f}$ points")
+    # Fix pass 2026-11-11: the range of steps was cut from the prose; the 24-step count stays.
     expect_p("ch4 access", c4, unsigned(pmj(num, "access_rise_30_70_beta0.3")))
     expect_p("ch4 access", c4, unsigned(pmj(num, "access_rise_70_100_beta0.3")))
     # Section 4.6 (QA 2026-11-10): the 56-day threshold split into stock and default in the run.
-    expect_p("ch4 k4", c4, f"{num['rob_k4_initial_minus_k7'] * 100:.2f} points are households placed")
+    expect_p("ch4 k4", c4, f"{num['rob_k4_initial_minus_k7'] * 100:.2f} points come from households placed")
     expect_p("ch4 k4", c4, unsigned(pmj(num, "rob_k4_new_minus_k7")))
     # Section 5 (QA 2026-11-10): food and rent left unpaid (tab:scenarios-distress).
     def pm3(key: str) -> str:
@@ -356,8 +364,8 @@ def check_prose() -> None:
     for key in ("scen_afford_beta0.3_cdist_tick_diff", "scen_afford_beta0.3_cdist_ever_diff"):
         assert abs(num[key]) < 2 * num[key + "_se"], f"{key}: text says not detectable"
     # QA 2026-11-10 (E1): the RQ3 answer, with standard errors; at beta = 0.3 only visibility.
-    expect_p("ch5 distress", c5, f"visibility by ${pm3('scen_bureau_beta0_cdist_tick_diff')}$ points "
-             f"and screening by ${pm3('scen_afford_beta0_cdist_tick_diff')}$; at $\\beta=0.3$ only visibility does")
+    # Fix pass 2026-11-11: the RQ3 answer states the direction; the figures are in the body above.
+    expect_p("ch5 distress", c5, "and at $\\beta=0.3$ only visibility does")
     for key in ("scen_bureau_beta0_cdist_tick_diff", "scen_afford_beta0_cdist_tick_diff",
                 "scen_bureau_beta0.3_cdist_tick_diff", "scen_bureau_beta0.3_cdist_ever_diff"):
         assert abs(num[key]) > 2 * num[key + "_se"], f"{key}: text says detectable"

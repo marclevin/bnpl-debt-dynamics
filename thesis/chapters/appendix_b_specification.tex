@@ -32,9 +32,9 @@ Objectives & No forward-looking utility. Households satisfy obligations in a fix
 \addlinespace
 Learning & Excluded. Behavioural rules are static over the horizon. & None \\
 \addlinespace
-Prediction & Excluded. Agents treat current income as persistent. & None \\
+Prediction & Excluded. Households treat current income as persistent. & None \\
 \addlinespace
-Sensing & Agents know their own balance sheets and observe the lagged adoption share among their reference group's \ac{BNPL}-eligible members. In the benchmark the traditional lender sees only bureau-recorded traditional debt and defaults, and each platform sees only its own exposure; bureau visibility adds \ac{BNPL} obligations to the lender's view (Submodel~15). & \citet{dcasa_bnpl_2026,finasa_bnpl_2026} \\
+Sensing & Households know their own balance sheets and observe the lagged adoption share among their reference group's \ac{BNPL}-eligible members. In the benchmark the traditional lender sees only bureau-recorded traditional debt and defaults, whatever caused them, and each platform sees only its own exposure; bureau visibility adds \ac{BNPL} obligations to the lender's view (Submodel~15). & \citet{dcasa_bnpl_2026,finasa_bnpl_2026} \\
 \addlinespace
 Interaction & Households interact with lenders through credit applications, and with each other indirectly through reference-group adoption shares. & \citet{ackert2025bnpl} \\
 \addlinespace
@@ -63,10 +63,11 @@ Four groups of entries call for caution:
     (Section~\ref{sec:lim-calibration}). Which households start in arrears, and the 120+ ages,
     are assumed.
     \item \textbf{The uncited rules.} The shortfall borrowing amount (Submodel~4), \ac{BNPL} relief
-    of a shortfall and its cap (Submodel~5), the minimum-payment fraction (Submodel~6), arrears persistence
-    (Submodel~6), non-performing default with no collections (Submodel~7) and platform routing (Submodel~13)
-    have no literature anchor. Each is varied in at least one arm. Six assumptions are not
-    varied: purchase-size dispersion; the order cap, which binds on 0.44\% of platform requests
+    of a shortfall and its cap (Submodel~5), the minimum-payment fraction (Submodel~6) and platform
+    routing (Submodel~13) have no literature anchor, and each is varied in at least one arm. Arrears
+    persistence (Submodel~6) and non-performing default with no collections (Submodel~7) have no
+    anchor either; persistence is varied only in the calibration grid, and neither is varied in an
+    experiment. Six further assumptions are not varied: purchase-size dispersion; the order cap, which binds on 0.44\% of platform requests
     at $\beta=0$; the discretionary floor of zero (Submodel~2); the payment order, food and rent
     first, then \ac{BNPL}, then traditional debt (Section~\ref{sec:sequence}); the cut of a
     want-driven order to what the household can pay at checkout; and refusal at the fee cap
@@ -80,11 +81,11 @@ Four groups of entries call for caution:
     $\lambda = 0.10$ so that four platform limits sum to about Woolard's illustrative
     \pounds1{,}000 of credit amassed across several lenders~\citep{woolard2021}, which is 39\% of United
     Kingdom median monthly equivalised household disposable income in the year to March 2020
-    \citep{ons_income_fye2020}. We sweep $\lambda$ from 0.10 to 1.0 and read the sweep against a
+    \citep{ons_income_fye2020}. We sweep $\lambda$ from 0.10 to 1.00 and read the sweep against a
     band of 0.10 to 0.48. The upper end is Afterpay's maximum of A\$2{,}000 as a share of
     Australian median monthly equivalised household disposable income in 2019--20
     \citep{asic2020rep672,abs_income_2019_20}. The Australian scale puts a multi-member
-    household's equivalised income below its income, so that share overstates the limit against
+    household's equivalised income below its income~\citep{abs_income_2019_20}, so that share overstates the limit against
     the household income $\lambda$ multiplies (Submodel~12). The United Kingdom scale sets a
     couple's equivalised income equal to its income, so the lower end is closer to like for like.
 \end{itemize}
