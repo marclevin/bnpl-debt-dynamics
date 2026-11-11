@@ -24,14 +24,16 @@ tick; the peer signal is recomputed once, after every household has acted. Algor
 Algorithm~\ref{alg:tick} is the seven-step sequence of Section~\ref{sec:sequence}, with the step
 numbers of that list marked. Credit is sought at step~4 for the shortfall realised at steps~2
 and~3, before the payments it funds are made, and pays any food and rent left unpaid first
-($\mathbb{1}^{\text{fund}}$, on in the baseline). Arrears on every facility are held as unpaid
+($\mathbb{1}^{\text{fund}}$, on at the reference values). Arrears on every facility are held as unpaid
 amounts dated by the tick they fell due; Function~\textsc{Age} clears the oldest first and opens
 a new amount for what falls due unpaid. A defaulted household is non-performing: nothing falls due
 or is collected, and its arrears keep ageing until it is written off. The switch
 $\mathbb{1}^{\text{streak}}$ restores the earlier rule, under which default follows $k$
 consecutive distressed ticks; the distress indicator and $\mathbb{1}^{\text{clear}}$ act only
-under it. With $\mathbb{1}^{\text{pers}}$ and $\mathbb{1}^{\text{flow}}$ off, the single-tick
-arm, a job loss lasts one tick, only wage-dominant households are exposed, and nobody is hired.
+under it. The single-tick arm sets $\mathbb{1}^{\text{pers}}$ off, which also disables labour
+flows, so a job loss lasts one tick, only wage-dominant households are exposed, and nobody is
+hired. Payment friction is drawn whether or not the household has the cash for the traditional
+instalment.
 
 \begin{algorithm}[H]
 \caption{Household tick, for household $i$ at tick $t$}
@@ -40,7 +42,7 @@ arm, a job loss lasts one tick, only wage-dominant households are exposed, and n
 \footnotesize
 \State \textbf{Step 1: income, subject to labour flows}
 \State $y \gets y_i$
-\If{$\mathbb{1}^{\text{flow}}$}
+\If{$\mathbb{1}^{\text{flow}}$ and $\mathbb{1}^{\text{pers}}$}
 \State for each of the $u_i$ starting earners out of work, first: with probability $p^{\text{exit}}$, $u_i \gets u_i - 1$
 \State for each of the $n_i - u_i$ starting earners in work: with probability $p^{\text{sep}}$, $u_i \gets u_i + 1$
 \State for each of the $j_i - h_i$ jobseekers out of work: with probability $p^{\text{exit}}$, $h_i \gets h_i + 1$
@@ -82,7 +84,7 @@ arm, a job loss lasts one tick, only wage-dominant households are exposed, and n
     \State $(\text{paid}, \text{fees}) \gets \Call{Collect}{p, i, \text{cash}, t}$;\quad $\text{cash} \gets \text{cash} - \text{paid}$ \Comment{Algorithm~\ref{alg:collect}}
 \EndFor
 \EndIf
-\State $\text{skip} \gets U(0,1) < \pi$ \Comment{payment friction, traditional debt only}
+\State $\text{skip} \gets U(0,1) < \pi$ \Comment{payment friction, traditional debt only, whatever the cash}
 \If{not $\mathbb{1}^{\text{streak}}$, not frozen, $A_i > 0$ and $U(0,1) < \pi^{\text{arr}}$} $\text{skip} \gets$ true \Comment{arrears persistence} \EndIf
 \State $\text{paid}^T \gets \text{skip} \;?\; 0 : \min(\text{cash}, \text{due})$;\quad $\text{cash} \gets \text{cash} - \text{paid}^T$
 \If{not frozen} $A_i \gets \max(\text{due} - \text{paid}^T, 0)$;\quad \Call{Age}{$\mathcal{U}_i$, $\text{paid}^T$, $A_i$, $t$} \EndIf
@@ -126,8 +128,8 @@ first tick in the 91--120 band.
 
 Algorithm~\ref{alg:gate} is the shortfall path of Submodels~3 to~5 and~9. The household asks
 for the amount Submodel~4 specifies and takes \ac{BNPL} first where it can, up to $\kappa$ times
-its monthly discretionary budget $E^d_i$ (the cap $\mathbb{1}^{\text{cap}}$, removed in the three uncapped robustness arms). With
-$\mathbb{1}^{\text{short}}$ off, in a further robustness arm, the whole request goes to the
+its monthly discretionary budget $E^d_i$ (the cap $\mathbb{1}^{\text{cap}}$, removed in the three uncapped sensitivity arms). With
+$\mathbb{1}^{\text{short}}$ off, in a further sensitivity arm, the whole request goes to the
 traditional lender. An agreement of value $F$ frees $F(1 - 1/N)$ in cash, because $F/N$ is paid at
 checkout. The household applies to the traditional lender for the amount it still lacks, which is
 the request less the cash that \ac{BNPL} freed. The lender's test is the residual-income calculation on
@@ -187,8 +189,8 @@ only in the screening arms. The test is shown the household's traditional servic
 instalment for each live \ac{BNPL} agreement on every platform plus any arrears, whether or not
 bureau visibility is on. A request goes to the platforms in a random order, redrawn for every request,
 and whatever one platform does not finance passes to the next. No rule assigns a household a
-number of platforms. A robustness arm, $\mathbb{1}^{\text{loyal}}$, tries the platforms the
-household already owes first, so it spreads across platforms only when a limit binds. The hypothetical cap $\bar n$ counts the platforms on which the household owes a
+number of platforms. A sensitivity arm, $\mathbb{1}^{\text{loyal}}$, tries the platforms the
+household already owes first, so a household spreads across platforms only when a limit binds. The hypothetical cap $\bar n$ counts the platforms on which the household owes a
 balance, $n^{\text{owed}}_i$. A household at the cap is refused every draw, and a household below
 it may open at most $\bar n - n^{\text{owed}}_i$ further platforms in one request.
 
@@ -270,7 +272,9 @@ is cut off by that platform only.
 \subsection{The Peer Signal}\label{app:main-peer}
 
 Algorithm~\ref{alg:peer} is Submodel~11. The group share is computed once per tick from
-end-of-tick balances and read by every household in the next tick. With \ac{BNPL} disabled the signal is identically
+end-of-tick balances and read by every household in the next tick. A defaulted household's
+agreements are not collected, so its frozen balance stays in $B_{ip}$, and in the signal, until
+write-off. With \ac{BNPL} disabled the signal is identically
 zero and the channel is inert, which is why the calibration baseline is untouched by it.
 
 \begin{algorithm}[H]

@@ -4,7 +4,7 @@
 This appendix and Appendix~\ref{app:pseudo-main} give the model as pseudocode, following the
 convention of a master algorithm that dispatches to sub-algorithms. Each algorithm
 has been checked line by line against the module that implements it (\texttt{simulation/}). Two
-robustness arms change a rule without a switch shown here: purchases sized on $Y_i$ in place of
+sensitivity arms change a rule without a switch shown here: purchases sized on $Y_i$ in place of
 $E^d_i$ (Submodel~4) and a fixed activation order (Submodel~17). Table~\ref{tab:notation} fixes the notation used throughout.
 Sets are in script capitals, $H$ and $P$ are the sizes of $\mathcal{H}$ and $\mathcal{P}$, and
 elements are in lower case; a
@@ -39,7 +39,7 @@ carries the quantity, so that a symbol can be traced to code. Symbols already us
 $\mathcal{H}$, $H$, $i$ & households, their number ($5{,}000$), a household & \texttt{n\_agents} \\
 $\mathcal{P}$, $P$, $p$ & \ac{BNPL} platforms, their number (4), a platform & \texttt{n\_platforms} \\
 $\mathcal{G}$, $g(i)$ & reference groups (income quintile $\times$ province, 45); the group of $i$ & \texttt{reference\_group} \\
-$c(i)$ & the matching cell of $i$ in the data layer; the same partition as $g(i)$ & -- \\
+$c(i)$ & the matching cell of $i$ in the data layer; the same partition as $g(i)$. In Algorithm~\ref{alg:match}, as in Appendix~\ref{app:matching}, $c$ alone is a cell and $d$ a donor; neither is the household state $c_i(t)$ or $d_i(t)$ & -- \\
 $q(i)$, $p(i)$ & income quintile and province of $i$; $q$ alone is a purchase propensity and $p$ alone a platform & \texttt{income\_quintile}, \texttt{province} \\
 $t$, $T$, $T_0$ & tick, horizon (52), burn-in (12) & \texttt{n\_ticks}, \texttt{burn\_in} \\
 $\chi$ & monthly-to-tick conversion, $12/26$ & \texttt{MONTHLY\_TO\_TICK} \\
@@ -74,7 +74,7 @@ $\delta_i(t)$ & consecutive distressed ticks (streak rule only) & \texttt{distre
 $c_i(t)$ & consumption distress: food and rent left unpaid after credit & \texttt{consumption\_distress\_tick} \\
 $d_i(t)$ & default indicator & \texttt{defaulted} \\
 $\bar t_i$ & tick until which want-driven purchases are blocked & \texttt{cool\_off\_until} \\
-$s_g(t)$ & share of the eligible members of $g$ holding a \ac{BNPL} balance at the end of $t$ & \texttt{group\_share\_lagged} \\
+$s_g(t)$ & share of the eligible members of $g$ holding a \ac{BNPL} balance at the end of $t$, including a defaulted household's frozen balance until write-off & \texttt{group\_share\_lagged} \\
 \addlinespace
 \multicolumn{3}{l}{\emph{Platform constants}} \\
 $L_{ip}$ & rolling receivable limit of $p$ for $i$, $L_{ip} = \lambda Y_i$ & \texttt{rolling\_limits} \\
@@ -84,21 +84,21 @@ $\phi$, $\bar\phi$ & late fee per missed tick; fee cap per agreement in Rand. Th
 \addlinespace
 \multicolumn{3}{l}{\emph{Parameters}} \\
 $p^{\text{sep}}$, $p^{\text{exit}}$ & per-earner separation and re-employment probabilities per tick & \texttt{shock\_prob}, \texttt{shock\_exit\_prob} \\
-$\pi$ & payment friction: probability of skipping an affordable traditional instalment & \texttt{payment\_friction} \\
-$\pi^{\text{arr}}$ & arrears persistence: probability that a household in traditional arrears pays nothing again & \texttt{arrears\_persistence} \\
+$\pi$ & payment friction: probability of skipping a traditional instalment, whether or not the household has the cash to pay it & \texttt{payment\_friction} \\
+$\pi^{\text{arr}}$ & arrears persistence: probability that a household in traditional arrears misses its payment again, whatever its cash & \texttt{arrears\_persistence} \\
 $\omega$ & write-off rate of a defaulted account per tick & \texttt{write\_off\_rate} \\
 $f^{\min}$ & minimum-payment fraction of balance per month & \texttt{min\_payment\_frac} \\
 $k$ & arrears age in ticks at which a household defaults (7); under the streak rule, consecutive distressed ticks & \texttt{k\_default} \\
-$\varphi$ & discretionary floor as a share of target (0 by default) & \texttt{discretionary\_floor} \\
+$\varphi$ & discretionary floor as a share of target (0 at the reference values) & \texttt{discretionary\_floor} \\
 $\kappa$, $\nu$ & purchase-size ratio to $E^d_i$; its coefficient of variation & \texttt{bnpl\_purchase\_ratio}, \texttt{\_cv} \\
-$\mathbb{1}^{\text{cap}}$ & cap on the \ac{BNPL} share of a shortfall request at $\kappa E^d_i$ (off only in the three uncapped robustness arms) & \texttt{shortfall\_bnpl\_capped} \\
-$\mathbb{1}^{\text{short}}$ & \ac{BNPL} may relieve a shortfall (off only in one robustness arm) & \texttt{shortfall\_bnpl} \\
-$\mathbb{1}^{\text{fund}}$ & credit raised against a committed shortfall pays it first (on in the baseline) & \texttt{committed\_shortfall\_funded} \\
+$\mathbb{1}^{\text{cap}}$ & cap on the \ac{BNPL} share of a shortfall request at $\kappa E^d_i$ (off only in the three uncapped sensitivity arms) & \texttt{shortfall\_bnpl\_capped} \\
+$\mathbb{1}^{\text{short}}$ & \ac{BNPL} may relieve a shortfall (off only in one sensitivity arm) & \texttt{shortfall\_bnpl} \\
+$\mathbb{1}^{\text{fund}}$ & credit raised against a committed shortfall pays it first (on at the reference values) & \texttt{committed\_shortfall\_funded} \\
 $\mathbb{1}^{\text{clear}}$ & food and rent a loan pays in full are not distress (streak rule only; off) & \texttt{committed\_shortfall\_clears\_distress} \\
 $\mathbb{1}^{\text{streak}}$ & the earlier rule: default after $k$ consecutive distressed ticks (off; on only in the comparison of Appendix~\ref{app:calibration}) & \texttt{distress\_rule} \\
 $\mathbb{1}^{\text{init}}$ & the run starts from the \ac{CCMR} arrears profile (on) & \texttt{initial\_arrears} \\
-$\mathbb{1}^{\text{pers}}$, $\mathbb{1}^{\text{flow}}$ & job loss lasts until re-employment; labour flows with hires (both on; off together in the single-tick arm) & \texttt{shock\_persistent}, \texttt{labour\_flows} \\
-$\mathbb{1}^{\text{loyal}}$ & platforms already owed are tried first (on only in one robustness arm) & \texttt{platform\_routing} \\
+$\mathbb{1}^{\text{pers}}$, $\mathbb{1}^{\text{flow}}$ & job loss lasts until re-employment; labour flows with hires (both on). The single-tick arm sets $\mathbb{1}^{\text{pers}}$ off, which also disables labour flows & \texttt{shock\_persistent}, \texttt{labour\_flows} \\
+$\mathbb{1}^{\text{loyal}}$ & platforms already owed are tried first (on only in one sensitivity arm) & \texttt{platform\_routing} \\
 $\lambda$ & rolling limit as a multiple of monthly income & \texttt{bnpl\_limit\_income\_multiple} \\
 $q_{\text{base}}$, $\beta$ & base propensity; peer weight (linear rule) & \texttt{q\_base}, \texttt{beta} \\
 $\gamma$, $\mu_\theta$, $\sigma_\theta$ & propensity step; threshold mean and dispersion (threshold rule) & \texttt{gamma}, \texttt{mu\_theta}, \texttt{sigma\_theta} \\
@@ -244,12 +244,12 @@ Appendix~\ref{app:main-tick}, with 120+ ages drawn up to 26 ticks, an assumption
 \State $\mathcal{C} \gets \{i : D_i(0) > 0\}$ \Comment{nobody holds \ac{BNPL} at the start}
 \State $\text{due}_i \gets m_i \cdot \max(D_i \iota_i / 26,\ f^{\min} D_i \chi) + (1 - m_i)\, r_i$ for each $i \in \mathcal{C}$
 \State Rank $\mathcal{C}$ by $y_i - e^c_i - \text{due}_i$, lowest first
-\ForAll{arrears bands $b$, from 120+ down to 1--30 days, with ages $[l_b, h_b]$ in ticks and \ac{CCMR} share $s_b$}
-    \ForAll{the next $\mathrm{round}(s_b\, |\mathcal{C}|)$ households $i$ in the ranking}
-        \State $a \gets$ uniform integer on $[l_b, h_b]$, $h_b = 26$ for 120+ \Comment{initialisation stream}
-        \State $v \gets \text{due}_i > 0 \;?\; \min(\text{due}_i,\ D_i / a) : D_i / a$
-        \State $\mathcal{U}_i \gets \{(v \text{ due at } {-a}), \ldots, (v \text{ due at } {-1})\}$;\quad $A_i \gets a v$;\quad $\alpha_i \gets a$
-        \If{$a \geq k$ and not $\mathbb{1}^{\text{streak}}$} $d_i \gets 1$; the bureau records the default \EndIf
+\ForAll{arrears bands $z$, from 120+ down to 1--30 days, with ages $[x^{\text{lo}}_z, x^{\text{hi}}_z]$ in ticks and \ac{CCMR} share $\eta_z$}
+    \ForAll{the next $\mathrm{round}(\eta_z\, |\mathcal{C}|)$ households $i$ in the ranking}
+        \State $x \gets$ uniform integer on $[x^{\text{lo}}_z, x^{\text{hi}}_z]$, $x^{\text{hi}}_z = 26$ for 120+ \Comment{initialisation stream}
+        \State $v \gets \text{due}_i > 0 \;?\; \min(\text{due}_i,\ D_i / x) : D_i / x$
+        \State $\mathcal{U}_i \gets \{(v \text{ due at } {1-x}), \ldots, (v \text{ due at } 0)\}$;\quad $A_i \gets x v$;\quad $\alpha_i \gets x$ \Comment{the first tick is $t = 1$}
+        \If{$x \geq k$ and not $\mathbb{1}^{\text{streak}}$} $d_i \gets 1$; the bureau records the default \EndIf
     \EndFor
 \EndFor
 \end{algorithmic}

@@ -36,7 +36,7 @@ fee cap and the assumed order cap, are set at 2026 prices and deflated once (App
 \addlinespace
 \texttt{shock\_\allowbreak{}prob} & 1 & 0.00446 & derived & Derived, not fitted: the separation rate at which expected employment is constant, the re-employment rate times the ratio of strictly unemployed to employed members in the population (1{,}113 to 4{,}670). The \ac{QLFS} 2017 job-separation band is 0.54--1.17\% per tick~\citep{statssa_lmd_2022}. Fitting the rate to the \ac{CCMR} 90+ band without labour flows, as an earlier version did, chose 0.016. & 0.0013--0.0071 in the Sobol design \\
 \addlinespace
-\texttt{shock\_\allowbreak{}persistent} & 1 & on & sourced & An unemployment spell lasts until re-employment. In the \ac{QLFS} 2017, 68.4\% of the unemployed were still unemployed a quarter later~\citep{statssa_lmd_2022}. & single-tick shock as a robustness arm \\
+\texttt{shock\_\allowbreak{}persistent} & 1 & on & sourced & An unemployment spell lasts until re-employment. In the \ac{QLFS} 2017, 68.4\% of the unemployed were still unemployed a quarter later~\citep{statssa_lmd_2022}. & single-tick shock as a sensitivity arm \\
 \addlinespace
 \texttt{shock\_\allowbreak{}exit\_\allowbreak{}prob} & 1 & 0.018724 & sourced & Re-employment hazard per tick. In the \ac{QLFS} 2017, 11.6\% of the unemployed moved into employment in a quarter, which is 1.87\% per tick~\citep{statssa_lmd_2022}. & -- \\
 \addlinespace
@@ -46,7 +46,7 @@ fee cap and the assumed order cap, are set at 2026 prices and deflated once (App
 \addlinespace
 \texttt{q\_\allowbreak{}base} & 3/11 & 0.05 & assumed & Probability of a want-driven purchase in a tick without peer influence. No source. & 0.01--0.30 in the Sobol design; 0 in the shortfall-only arm (Table~\ref{tab:effect}) \\
 \addlinespace
-\texttt{beta} & 11 & 0 & assumed & Strength of peer influence under the linear rule (Equation~\ref{eq:peer}). No source. $\beta = 0$ is the control and the headline; the \ac{BNPL} effect on default is flat over 0--0.30 (Section~\ref{sec:results-beta}), and 0.30, the top of the pre-registered sweep, is reported beside it. Volume per eligible household enters the provider range at 0.2 and is still inside it at 0.30. & 0--0.30 at eight values, 250 replicates each (Section~\ref{sec:results-beta}); 0 / 0.1 / 0.2 / 0.3 in the platform and access experiments; 0--0.30 in the Sobol design; 0 and 0.3 in the effect, scenario and lever arms \\
+\texttt{beta} & 11 & 0 & assumed & Strength of peer influence under the linear rule (Equation~\ref{eq:peer}). No source. $\beta = 0$ is the control and the reported reference; the \ac{BNPL} effect on default has no detectable slope over 0--0.30 (Section~\ref{sec:results-beta}), and 0.30, the top of the sweep, whose reporting rule was fixed before the runs, is reported beside it. Volume per eligible household enters the provider range at 0.2 and is still inside it at 0.30. & 0--0.30 at eight values, 250 replicates each (Section~\ref{sec:results-beta}); 0 / 0.1 / 0.2 / 0.3 in the platform and access experiments; 0--0.30 in the Sobol design; 0 and 0.3 in the effect, scenario and lever arms \\
 \addlinespace
 \texttt{peer\_\allowbreak{}mechanism} & 11 & linear & sourced & The rule by which adoption spreads: linear (Equation~\ref{eq:peer}) or heterogeneous thresholds~\citep{granovetter1978threshold}. & both rules on the same access grid \\
 \addlinespace
@@ -58,7 +58,7 @@ fee cap and the assumed order cap, are set at 2026 prices and deflated once (App
 \addlinespace
 \texttt{amount\_\allowbreak{}rule} & 4 & shortfall & assumed & No estimate was located of what households borrow against a shortfall. & exact shortfall / $+25\%$ / plus one tick of committed expenditure \\
 \addlinespace
-\texttt{shortfall\_\allowbreak{}bnpl} & 5 & on & assumed & Whether \ac{BNPL} may relieve a shortfall. On in the benchmark; off sends every shortfall to the traditional lender, so \ac{BNPL} finances only want-driven purchases. & off as an effect-robustness arm (Table~\ref{tab:effect}) \\
+\texttt{shortfall\_\allowbreak{}bnpl} & 5 & on & assumed & Whether \ac{BNPL} may relieve a shortfall. On in the benchmark; off sends every shortfall to the traditional lender, so \ac{BNPL} finances only want-driven purchases. & off as an effect-sensitivity arm (Table~\ref{tab:effect}) \\
 \addlinespace
 \texttt{committed\_\allowbreak{}shortfall\_\allowbreak{}funded} & 7 & on & assumed & Credit raised in a tick with a food and rent shortfall pays that shortfall first; what stays unpaid is reported as consumption distress (Section~\ref{sec:sequence}). On in the baseline. Off, the earlier rule, spends the credit on debt service, then discretionary spending, then savings. & -- \\
 \addlinespace
@@ -74,7 +74,7 @@ fee cap and the assumed order cap, are set at 2026 prices and deflated once (App
 \addlinespace
 \texttt{min\_\allowbreak{}payer\_\allowbreak{}share} & 6 & 0.29 & sourced & 29\% of United States card accounts regularly pay at or near the minimum~\citep{Keys2019}. & 0.20--0.40 \\
 \addlinespace
-\texttt{payment\_\allowbreak{}friction} & 6 & 0.0575 & fitted & Probability per tick of missing a traditional instalment that the household could pay, motivated by evidence that borrowers depart from planned repayment~\citep{Kuchler2021}. Fitted jointly with \texttt{arrears\_persistence} to the five \ac{CCMR} arrears bands (Section~\ref{sec:lim-calibration}). & calibration grid 0.05--0.06 \\
+\texttt{payment\_\allowbreak{}friction} & 6 & 0.0575 & fitted & Probability per tick of skipping a traditional instalment, whether or not the household could pay it, motivated by evidence that borrowers depart from planned repayment~\citep{Kuchler2021}. Fitted jointly with \texttt{arrears\_persistence} to the five \ac{CCMR} arrears bands (Section~\ref{sec:lim-calibration}). & calibration grid 0.05--0.06 \\
 \addlinespace
 \texttt{min\_\allowbreak{}payment\_\allowbreak{}frac} & 6 & 0.05 & assumed & Minimum payment as a share of the balance per month. The \ac{NCA} prescribes no formula. & 0.025--0.10 \\
 \addlinespace
@@ -82,13 +82,13 @@ fee cap and the assumed order cap, are set at 2026 prices and deflated once (App
 \addlinespace
 \texttt{initial\_\allowbreak{}arrears} & 7 & on & sourced & The run starts from the 2017-Q1 \ac{CCMR} age profile~\citep{ncr_ccmr_2017}: credit-active households are placed in each band at its share, those with the least income left after food, rent and debt service in the oldest bands. Ages in the 120+ band are drawn over 9--26 ticks, an assumption. Households placed at 91+ days start in default. & off starts every household current \\
 \addlinespace
-\texttt{arrears\_\allowbreak{}persistence} & 7 & 0.72 & fitted & Probability per tick that a household already in traditional arrears pays nothing again, whatever its cash. No source; fitted jointly with \texttt{payment\_friction} to the five \ac{CCMR} arrears bands (Section~\ref{sec:lim-calibration}). & calibration grid 0.70--0.74 \\
+\texttt{arrears\_\allowbreak{}persistence} & 6 & 0.72 & fitted & Probability per tick that a household already in traditional arrears pays nothing again, whatever its cash. No source; fitted jointly with \texttt{payment\_friction} to the five \ac{CCMR} arrears bands (Section~\ref{sec:lim-calibration}). & calibration grid 0.70--0.74 \\
 \addlinespace
 \texttt{write\_\allowbreak{}off\_\allowbreak{}rate} & 7 & 0.0707 & derived & Probability per tick that a defaulted account leaves the book. Derived from the \ac{CCMR} profile: accounts enter the 120+ band at half the 91--120 share per tick, so a stationary 120+ stock needs $(1.76/2)/12.45 = 0.0707$~\citep{ncr_ccmr_2017}. & -- \\
 \addlinespace
 \texttt{k\_\allowbreak{}default} & 7 & 7 & sourced & Seven ticks are 98 days, the first tick boundary past 90 days past due: the threshold at which the \ac{NCR}'s Credit Bureau Monitor classes a record as impaired, ``three or more payments or months in arrears''~\citep{ncr_cbm_2017}. It defines the outcome. & four ticks (56 days) \\
 \addlinespace
-\texttt{bnpl\_\allowbreak{}bureau\_\allowbreak{}visible} & 10/15 & off & sourced & \ac{BNPL} agreements were not displayed on bureau profiles before the 2026 arrangements~\citep{dcasa_bnpl_2026,finasa_bnpl_2026}; off is the benchmark. & on / off (Section~\ref{sec:scenarios}) \\
+\texttt{bnpl\_\allowbreak{}bureau\_\allowbreak{}visible} & 10/15 & off & sourced & \ac{BNPL} agreements were not displayed on bureau profiles as of July 2026~\citep{dcasa_bnpl_2026,finasa_bnpl_2026}; off is the benchmark. & on / off (Section~\ref{sec:scenarios}) \\
 \addlinespace
 \texttt{bnpl\_\allowbreak{}enabled} & design & off & sourced & The 2017 baseline has no \ac{BNPL}; the experiments enable it. & on / off \\
 \addlinespace
@@ -102,20 +102,20 @@ fee cap and the assumed order cap, are set at 2026 prices and deflated once (App
 \addlinespace
 \texttt{bnpl\_\allowbreak{}instalments} & 14 & 4 & sourced & Pay-in-four: a quarter at checkout and a quarter at each of the next three ticks~\citep{payflex_terms}. & -- \\
 \addlinespace
-\texttt{bnpl\_\allowbreak{}late\_\allowbreak{}fee\_\allowbreak{}per\_\allowbreak{}tick} & 14 & 125.74 & sourced & A late fee of R95 a week, R190 a tick, at 2026 vintage~\citep{payflex_terms}, deflated to 2017 Rands. & -- \\
+\texttt{bnpl\_\allowbreak{}late\_\allowbreak{}fee\_\allowbreak{}per\_\allowbreak{}tick} & 14 & 125.74 & sourced & A late fee of R95 a week, R190 a tick, at 2026 prices~\citep{payflex_terms}, deflated to 2017 Rands. & -- \\
 \addlinespace
-\texttt{bnpl\_\allowbreak{}late\_\allowbreak{}fee\_\allowbreak{}cap} & 14 & 188.61 & sourced & Late fees on an agreement are capped at R285 over its life, at 2026 vintage~\citep{payflex_terms}, deflated to 2017 Rands. & -- \\
+\texttt{bnpl\_\allowbreak{}late\_\allowbreak{}fee\_\allowbreak{}cap} & 14 & 188.61 & sourced & Late fees on an agreement are capped at R285 over its life, at 2026 prices~\citep{payflex_terms}, deflated to 2017 Rands. & -- \\
 \addlinespace
 \texttt{bnpl\_\allowbreak{}late\_\allowbreak{}fee\_\allowbreak{}cap\_\allowbreak{}share} & 14 & 0.5 & sourced & Late fees on an agreement are capped at the lower of the Rand cap and half the purchase price~\citep{payflex_terms}. & -- \\
 \addlinespace
 \texttt{bnpl\_\allowbreak{}affordability\_\allowbreak{}check} & 15 & off & sourced & Applies the Regulation 23A test to each \ac{BNPL} request, the analogue of the \ac{FCA}'s affordability check~\citep{fca_ps26_1}. & on / off (Section~\ref{sec:scenarios}) \\
 \addlinespace
-\texttt{k\_\allowbreak{}cool} & 15 & 0 & sourced & Ticks for which want-driven purchases are blocked after a want-driven purchase. One tick is the fourteen-day right of withdrawal under section 66A of the United Kingdom's Consumer Credit Act 1974, which the \ac{FCA} confirms applies to regulated deferred payment credit~\citep{fca_ps26_1}. & 0--4 ticks (Appendix~\ref{app:levers}) \\
+\texttt{k\_\allowbreak{}cool} & 15 & 0 & sourced & Ticks for which want-driven purchases are blocked after a want-driven purchase. One tick is the fourteen-day right of withdrawal under section 66A of the United Kingdom's Consumer Credit Act 1974. The \ac{FCA}'s rules treat that right as applying to regulated deferred payment credit~\citep{fca_ps26_1}, as its consultation states~\citep[Table~1, p.~17]{fca_cp25_23}. & 0--4 ticks (Appendix~\ref{app:levers}) \\
 \addlinespace
 \texttt{stacking\_\allowbreak{}cap} & 15 & none & assumed & Cap on platforms owed: a household that owes this many platforms or more is refused every new agreement. Hypothetical; no jurisdiction we found imposes one. & 1--3 (Appendix~\ref{app:levers}) \\
 \addlinespace
-\texttt{platform\_\allowbreak{}routing} & 13 & random & assumed & Platform order for a \ac{BNPL} request: random for every request, or platforms already owed first. No evidence on how South African households choose providers was located. & loyal routing as an effect-robustness arm (Table~\ref{tab:effect}) \\
+\texttt{platform\_\allowbreak{}routing} & 13 & random & assumed & Platform order for a \ac{BNPL} request: random for every request, or platforms already owed first. No evidence on how South African households choose providers was located. & loyal routing as an effect-sensitivity arm (Table~\ref{tab:effect}) \\
 \addlinespace
-\texttt{activation} & 17 & random & assumed & Random order, redrawn every tick, is a modelling choice. The activation scheme changes outcomes~\citep{comer2013activation,alizadeh2015activation}, so a fixed-order arm tests it. & fixed order as a robustness arm \\
+\texttt{activation} & 17 & random & assumed & Random order, redrawn every tick, is a modelling choice. The activation scheme changes outcomes~\citep{comer2013activation,alizadeh2015activation}, so a fixed-order arm tests it. & fixed order as a sensitivity arm \\
 \end{longtable}
 \endgroup

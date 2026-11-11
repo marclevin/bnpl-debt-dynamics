@@ -157,7 +157,8 @@ def tab_baseline_arms(rq0: pd.DataFrame) -> None:
         "same households in every arm, so the change in default is a change in default during the "
         "run. Holders: households owing a \\ac{BNPL} balance at "
         "the final tick. Ever: at any tick of the two-year run. Arrears, interest, savings and "
-        "volume cover the post-burn-in ticks; default, lending and refusals cover the whole run. "
+        "volume cover the post-burn-in ticks (45.2\\% of households have no liquid savings at the start, "
+        "Section~\\ref{sec:data-validation}); default, lending and refusals cover the whole run. "
         "$\\pm$: one standard error, paired by seed.",
         "L{5.6cm}rrr",
         r"\textbf{Outcome} & \textbf{No \ac{BNPL}} & \textbf{\ac{BNPL}, $\beta=0$} & \textbf{\ac{BNPL}, $\beta=0.3$}",
@@ -203,7 +204,7 @@ def tab_arrears_fit() -> None:
         "\\midrule",
         f"90+ days & {target['pct_90_plus']:.2f} & {pct(model['90'])} & \\\\",
         f"60+ days & {target['pct_60_plus']:.2f} & {pct(model['60'])} & \\\\",
-        f"90+ days, final tick & -- & {pct(model['90_final'])} & not targeted \\\\",
+        f"90+ days, final tick & -- & {pct(model['90_final'])} & not a separate target \\\\",
     ]
     qlfs = cal["qlfs_band"]
     N.update(
@@ -232,7 +233,8 @@ def tab_arrears_fit() -> None:
         "\\ac{CCMR} profile. Fitted: the five bands to which payment friction and arrears "
         "persistence were jointly fitted, so agreement there is by construction. The separation "
         "rate is derived from the labour market and the write-off rate from the \\ac{CCMR} "
-        "profile. The final-tick 90+ share was not targeted.",
+        "profile. The final-tick 90+ share is not a separate target, but that tick lies inside the "
+        "fitted post-burn-in average.",
         "lrrl",
         r"\textbf{Days in arrears} & \textbf{\ac{CCMR} (\%)} & \textbf{Model (\%)} & ",
         rows,
@@ -452,7 +454,7 @@ def tab_bnpl_on_checks(rq0: pd.DataFrame) -> None:
     # Section 3.5 does not count Pattern 3 as evidence, so the column says so. If the pattern
     # is absent at the start and appears as Q1's ratio falls, it is not a behavioural result.
     if N["p3_middle_peak"] and not p3_at_start and dti["Q1"] < dti0["Q1"]:
-        p3_reading = "Not counted: absent at the start; appears as Q1's debt falls"
+        p3_reading = "Not counted: Q4 is highest at the start too; Q1's ratio falls with write-offs"
     elif N["p3_middle_peak"]:
         p3_reading = "Matches; not counted"
     else:
@@ -468,8 +470,8 @@ def tab_bnpl_on_checks(rq0: pd.DataFrame) -> None:
         f"{peak} {dti[peak]:.2f}; {second} {dti[second]:.2f} (start: {peak0} {dti0[peak0]:.2f}; "
         f"{second0} {dti0[second0]:.2f}) & {p3_reading} \\\\",
         group_row("\\ac{BNPL} market", 4),
-        f"Owing two or more providers at once~\\citep{{cfpb2025bnpl}} & 32--33\\% of borrowers in a year & "
-        f"{pct(ev0, 1)}\\% of ever-holders over two years & Close; different market \\\\",
+        f"Owing two or more platforms at once~\\citep{{cfpb2025bnpl}} & 32--33\\% of borrowers in a year & "
+        f"{pct(ev0, 1)}\\% of ever-holders over two years & Below, over a longer window; different market \\\\",
         f"Annual volume per eligible household~\\citep{{weaver2025iar}} & {rand(lo_vol)}--{rand(hi_vol)} & "
         f"{rand(N['vol_per_eligible_year'])} & {band(N['vol_per_eligible_year']).capitalize()} \\\\",
         f"Annual volume per ever-holder~\\citep{{weaver2025iar}} & {rand(lo_vol)}--{rand(hi_vol)} & "
@@ -515,7 +517,7 @@ def tab_scenarios(rq3s: pd.DataFrame) -> None:
         ("Refused applications", "trad_refused_gate", "abs", 1, 0),
         ("Traditional lending (R m)", "trad_granted_value", "abs", 1e-6, 2),
         ("\\ac{BNPL} holding (\\%)", "bnpl_adoption_final", "pp", 100, 2),
-        ("\\ac{BNPL} volume (R m)", "bnpl_volume_cumulative", "rel", 1e-6, 2),
+        ("\\ac{BNPL} volume (R m; change in \\%)", "bnpl_volume_cumulative", "rel", 1e-6, 2),
     ] + [(f"Default rate, {q} (\\%)", f"default_rate_final_{q}", "pp", 100, 2) for q in Q]  # noqa
     rows = []
     for b in (0.0, BP):
@@ -564,7 +566,7 @@ def tab_scenarios(rq3s: pd.DataFrame) -> None:
         f"One hundred replicates per arm, {SEEDS_S}. The first column is the benchmark's mean, without "
         "its replicate standard deviation; the "
         "others are each arm's change from it $\\pm$ one standard error, paired by seed, in the row's "
-        "unit except for \\ac{BNPL} volume, whose change is in per cent. Default rate: share of all "
+        "unit except for \\ac{BNPL} volume, whose change is in \\%. Default rate: share of all "
         f"households in default at the final tick, including the {pct(init)}\\% placed in default at "
         "the start, the same households in every arm. Refused applications and lending: the "
         "traditional lender's. Holding: at the final tick. Quintiles are of per-capita income. "
@@ -821,7 +823,7 @@ def tab_robustness(rob: pd.DataFrame) -> None:
     rows.append(group_row("Purchase size $\\kappa$ (Submodel 4)", 3))
     kappas = sorted(float(l.replace("rob_kappa", "")) for l in rob.label.unique() if l.startswith("rob_kappa"))
     mid = kappas[1]
-    rows.append(row(f"$\\kappa = {mid:.3f}$ (IES-derived)", f"rob_kappa{mid}"))
+    rows.append(row(f"$\\kappa = {mid:.3f}$ (\\acs{{IES}}-derived)", f"rob_kappa{mid}"))
     for k in (kappas[0], kappas[2]):
         rows.append(row(f"$\\kappa = {param(k)}$", f"rob_kappa{k}", f"rob_kappa{mid}"))
     rows.append(group_row("Purchase sizing base, $\\kappa$ matched (Submodel 4)", 3))
@@ -878,7 +880,7 @@ def tab_robustness(rob: pd.DataFrame) -> None:
 
     # appendix: the rest
     rows = [group_row("Activation order (Submodel 17)", 3),
-            row("random, reseeded each tick", "rob_act_random"),
+            row("random, redrawn each tick", "rob_act_random"),
             row("fixed order, the same every tick", "rob_act_uniform", "rob_act_random"),
             group_row("Population size", 3),
             row("5{,}000 households", "rob_n5000"),
@@ -1071,7 +1073,7 @@ EFFECT_ROWS = [
         ("amount125_uncapped", "shortfall $+25\\%$" + CAP_REMOVED, "amount125"),
         ("amountcommitted_uncapped", SHORTFALL_COMMITTED + CAP_REMOVED, "amountcommitted"),
     ]),
-    ("Routing and the shortfall path (Submodels 5, 7 and 13)", [
+    ("Routing and the shortfall path (Submodels 5 and 13)", [
         ("routing_loyal", "loyal routing", "ref"),
         ("no_shortfall_bnpl", "no \\ac{BNPL} for shortfalls", "ref"),
     ]),

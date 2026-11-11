@@ -21,15 +21,16 @@ the 2017 anchor is independently required by the counterfactual injection design
 
 \textbf{A propensity-to-consume or buffer-stock consumption rule (Submodel~2).} Both require a
 calibrated propensity, and we located no South African estimate suited to a fortnightly household
-rule; both also discard the
-committed-versus-discretionary expenditure split already observed in the survey data.
+rule. Both also discard the split between committed and discretionary expenditure that the
+survey data already record.
 
 \textbf{Cost ranking as the lender-choice rule (Submodel~5).} \ac{BNPL} is nominally
 interest-free, so a cost ranking would also send a shortfall to \ac{BNPL} first, but it would
 attribute the order to price. The evidence does not support that attribution. In the one
-experiment on the choice, \ac{BNPL} was interest-free and the card charged 24.99\% a year,
-although the authors argue that neither option was clearly cheaper~\citep{ackert2025bnpl}. For
-groceries, the one necessity, participants chose the two equally often. We therefore assume the
+experiment we found that compares \ac{BNPL} with a credit card, participants were offered one
+or the other. \ac{BNPL} was interest-free and the card charged 24.99\% a year, although the
+authors argue that neither option was clearly cheaper~\citep{ackert2025bnpl}. For groceries, the
+one necessity, purchase rates were similar under the two. We therefore assume the
 order directly and attribute it to no motive.
 
 \textbf{Scheduled amortisation as the sole repayment rule (Submodel~6).} Keys and Wang
@@ -48,22 +49,22 @@ still default (Appendix~\ref{app:calibration}).
 
 \textbf{A continuous present-bias parameter (Submodel~8).} We located no South African distribution
 against which to calibrate one, so it would add a free parameter with no discipline. The model
-carries a single binary behavioural type instead, whose share is sourced and swept.
+carries a binary repayment archetype instead, whose share is sourced and swept.
 
 \subsection{Lender and Platform Rules}
 
 \textbf{A flat \ac{DSTI} cap as the credit-granting gate (Submodel~9).} An earlier version of this
 model used a ceiling of 0.65. It was unsourced, the \ac{NCA} prescribes no such ratio, and it was
-badly over-permissive at the bottom of the distribution, since a 65\% rule would permit a household
+over-permissive at the bottom of the distribution, since a 65\% rule would permit a household
 earning R900 per month to service R585 per month. The Regulation 23A residual-income test produces
 an income-varying ceiling, which across the population spans zero to 93.2\% of income.
 
 \textbf{Making the \ac{BNPL} eligibility screen a real affordability test (Submodel~12).} The
 asymmetry between the Regulation 23A test that binds registered lenders and the light screen
-\ac{BNPL} providers apply is one of the conditions the model studies, so a genuine test on
+the platforms apply is one of the conditions the model studies, so a genuine test on
 \ac{BNPL} is an intervention: the screening scenario of Section~\ref{sec:scenarios}.
 
-\textbf{A purely multiplicative peer-influence rule (Submodel~11).} Every household opens with no
+\textbf{A purely multiplicative peer-influence rule (Submodel~11).} Every household starts with no
 \ac{BNPL} balance, so under $q_i = \beta s_g$ want-driven borrowing could start only after
 shortfall borrowing had created balances, and never where \ac{BNPL} relieves no shortfall. The
 additive form of Equation~\ref{eq:peer} lets $q_{\text{base}}$ start adoption and $\beta$ amplify
@@ -72,5 +73,5 @@ it.
 \subsection{Scheduling}
 
 \textbf{Fixed activation order (Submodel~17).} A fixed order would let the same households act
-first in every tick. A fixed-order arm changes default by less than two standard errors
+first in every tick. A fixed-order arm does not change default detectably
 (Appendix~\ref{app:activation}).

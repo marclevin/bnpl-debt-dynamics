@@ -1,0 +1,179 @@
+{
+  "seeds": [
+    10000,
+    10019
+  ],
+  "beta": 0.0,
+  "effect_pp": 1.082,
+  "effect_pp_se": 0.10646373239648077,
+  "bnpl_triggered_pp": 1.244,
+  "bnpl_triggered_pp_se": 0.014260730032247013,
+  "bnpl_only_pp": 0.938,
+  "bnpl_only_pp_se": 0.006790085651734791,
+  "remainder_pp": 0.144,
+  "remainder_pp_se": 0.10839110470397176,
+  "traditional_pp": -0.162,
+  "traditional_pp_se": 0.10347539753360138,
+  "per_seed": [
+    {
+      "seed": 10000,
+      "effect_pp": 1.92,
+      "bnpl_triggered_pp": 1.2,
+      "bnpl_only_pp": 0.88,
+      "remainder_pp": 1.04,
+      "traditional_pp": 0.72
+    },
+    {
+      "seed": 10001,
+      "effect_pp": 0.64,
+      "bnpl_triggered_pp": 1.18,
+      "bnpl_only_pp": 0.94,
+      "remainder_pp": -0.3,
+      "traditional_pp": -0.54
+    },
+    {
+      "seed": 10002,
+      "effect_pp": 0.98,
+      "bnpl_triggered_pp": 1.18,
+      "bnpl_only_pp": 0.92,
+      "remainder_pp": 0.06,
+      "traditional_pp": -0.2
+    },
+    {
+      "seed": 10003,
+      "effect_pp": 1.44,
+      "bnpl_triggered_pp": 1.24,
+      "bnpl_only_pp": 0.96,
+      "remainder_pp": 0.48,
+      "traditional_pp": 0.2
+    },
+    {
+      "seed": 10004,
+      "effect_pp": 1.06,
+      "bnpl_triggered_pp": 1.24,
+      "bnpl_only_pp": 0.94,
+      "remainder_pp": 0.12,
+      "traditional_pp": -0.18
+    },
+    {
+      "seed": 10005,
+      "effect_pp": 0.7,
+      "bnpl_triggered_pp": 1.14,
+      "bnpl_only_pp": 0.92,
+      "remainder_pp": -0.22,
+      "traditional_pp": -0.44
+    },
+    {
+      "seed": 10006,
+      "effect_pp": 0.56,
+      "bnpl_triggered_pp": 1.34,
+      "bnpl_only_pp": 0.96,
+      "remainder_pp": -0.4,
+      "traditional_pp": -0.78
+    },
+    {
+      "seed": 10007,
+      "effect_pp": 1.22,
+      "bnpl_triggered_pp": 1.26,
+      "bnpl_only_pp": 0.96,
+      "remainder_pp": 0.26,
+      "traditional_pp": -0.04
+    },
+    {
+      "seed": 10008,
+      "effect_pp": 0.52,
+      "bnpl_triggered_pp": 1.26,
+      "bnpl_only_pp": 0.96,
+      "remainder_pp": -0.44,
+      "traditional_pp": -0.74
+    },
+    {
+      "seed": 10009,
+      "effect_pp": 1.66,
+      "bnpl_triggered_pp": 1.28,
+      "bnpl_only_pp": 0.92,
+      "remainder_pp": 0.74,
+      "traditional_pp": 0.38
+    },
+    {
+      "seed": 10010,
+      "effect_pp": 1.36,
+      "bnpl_triggered_pp": 1.3,
+      "bnpl_only_pp": 0.92,
+      "remainder_pp": 0.44,
+      "traditional_pp": 0.06
+    },
+    {
+      "seed": 10011,
+      "effect_pp": 0.68,
+      "bnpl_triggered_pp": 1.24,
+      "bnpl_only_pp": 0.94,
+      "remainder_pp": -0.26,
+      "traditional_pp": -0.56
+    },
+    {
+      "seed": 10012,
+      "effect_pp": 0.9,
+      "bnpl_triggered_pp": 1.3,
+      "bnpl_only_pp": 0.9,
+      "remainder_pp": 0.0,
+      "traditional_pp": -0.4
+    },
+    {
+      "seed": 10013,
+      "effect_pp": 1.22,
+      "bnpl_triggered_pp": 1.14,
+      "bnpl_only_pp": 0.92,
+      "remainder_pp": 0.3,
+      "traditional_pp": 0.08
+    },
+    {
+      "seed": 10014,
+      "effect_pp": 0.86,
+      "bnpl_triggered_pp": 1.3,
+      "bnpl_only_pp": 1.02,
+      "remainder_pp": -0.16,
+      "traditional_pp": -0.44
+    },
+    {
+      "seed": 10015,
+      "effect_pp": 2.3,
+      "bnpl_triggered_pp": 1.36,
+      "bnpl_only_pp": 0.96,
+      "remainder_pp": 1.34,
+      "traditional_pp": 0.94
+    },
+    {
+      "seed": 10016,
+      "effect_pp": 0.94,
+      "bnpl_triggered_pp": 1.26,
+      "bnpl_only_pp": 0.94,
+      "remainder_pp": 0.0,
+      "traditional_pp": -0.32
+    },
+    {
+      "seed": 10017,
+      "effect_pp": 1.1,
+      "bnpl_triggered_pp": 1.3,
+      "bnpl_only_pp": 0.94,
+      "remainder_pp": 0.16,
+      "traditional_pp": -0.2
+    },
+    {
+      "seed": 10018,
+      "effect_pp": 0.5,
+      "bnpl_triggered_pp": 1.18,
+      "bnpl_only_pp": 0.96,
+      "remainder_pp": -0.46,
+      "traditional_pp": -0.68
+    },
+    {
+      "seed": 10019,
+      "effect_pp": 1.08,
+      "bnpl_triggered_pp": 1.18,
+      "bnpl_only_pp": 0.9,
+      "remainder_pp": 0.18,
+      "traditional_pp": -0.1
+    }
+  ]
+}

@@ -18,7 +18,7 @@ instantiation (\texttt{simulation/population.py}).
 \caption{Source field, rule and missing-data treatment for every agent field}
 \label{tab:var-map} \\
 \multicolumn{5}{p{13.3cm}}{\footnotesize Every agent field of
-Table~\ref{tab:agent-mapping}, with the data-layer fields behind them, the survey field or fields it is built from, the rule, what
+Table~\ref{tab:agent-mapping}, with the data-layer fields behind it, the survey field or fields each is built from, the rule, what
 happens when the source is missing, and the notebook or module implementing the rule. \ac{NIDS}
 fields are from the Wave 5 household-derived file unless marked; \ac{FinScope} fields are from the
 2019 household file. ``Zero-filled'' means a missing value denotes non-holding and is set to zero,
@@ -42,6 +42,10 @@ scaled to the 14-day tick at instantiation (Appendix~\ref{app:var-tick}).} \\
 \addlinespace
 \texttt{n\_earners} & \texttt{w5\_empl\_stat} (individual file) & count of roster members recorded as employed & 0 & S4 \\
 \addlinespace
+\texttt{n\_jobseekers} & \texttt{w5\_empl\_stat} (individual file) & count of roster members recorded as strictly unemployed & 0 & S4 \\
+\addlinespace
+\texttt{hire\_wage\_tick} & \texttt{w5\_fwag} (individual file) & median over employed adults in the household's income quintile; $\times\,12/26$ & -- & S4 \\
+\addlinespace
 \texttt{committed\_tick} & \texttt{w5\_expf} $+$ \texttt{w5\_rentexpend} & food plus rent paid; $\times\,12/26$ & rent zero-filled (80.2\%) & S1, S4 \\
 \addlinespace
 \texttt{discretionary\_\allowbreak tick} & \texttt{w5\_expnf} & non-food cash expenditure, floored at 0; $\times\,12/26$. Rent is a separate \ac{NIDS} component and is not subtracted; imputed rent (\texttt{w5\_hhimprent}) is excluded & zero-filled & S1, S4 \\
@@ -52,13 +56,13 @@ scaled to the 14-day tick at instantiation (Appendix~\ref{app:var-tick}).} \\
 \addlinespace
 \texttt{income\_quintile} & \texttt{w5\_hhincome}, \texttt{w5\_hhsizer}, \texttt{w5\_wgt} & weighted quintiles of income per household member & record dropped & S1 \\
 \addlinespace
-\texttt{province}, \texttt{household\_size} & \texttt{w5\_prov2011}, \texttt{w5\_hhsizer} & as reported & record dropped & S1 \\
+\texttt{province}, \texttt{household\_size} (data layer) & \texttt{w5\_prov2011}, \texttt{w5\_hhsizer} & as reported & record dropped & S1 \\
 \addlinespace
 head demographics & roster \texttt{w5\_r\_relhead}; individual \texttt{w5\_best\_age\_yrs}, \texttt{\_gen}, \texttt{\_race}, \texttt{\_edu} & the roster member coded as head, merged on person identifier & 105 unmatched, retained & S1 \\
 \addlinespace
 \texttt{banked}; product flags & \ac{FinScope} \texttt{F1}; \texttt{G10}--\texttt{G14} & ``Yes'' $\to$ true; copied as one vector from the matched donor (Appendix~\ref{app:matching}) & ``Don't know'' $\to$ false (14 donors) & S2 \\
 \addlinespace
-\texttt{apr\_annual}, \texttt{term\_months} & product flags $\times$ rate table & unweighted mean over the classes held; unsecured terms if none & -- & S4 \\
+\texttt{apr\_annual}, \texttt{term\_months} (data layer) & product flags $\times$ rate table & unweighted mean over the classes held; unsecured terms if none & -- & S4 \\
 \addlinespace
 \texttt{nca\_capacity\_monthly} & \texttt{w5\_hhincome} & $\rho(Y)$: income less the Regulation 23A necessary-expense norm (Table~\ref{tab:reg23a-norms}) & -- & S2, S4 \\
 \addlinespace
@@ -68,10 +72,11 @@ head demographics & roster \texttt{w5\_r\_relhead}; individual \texttt{w5\_best\
 
 \subsection{Sample and Weights}\label{app:var-sample}
 
-The Wave 5 household-derived file holds 13{,}719 records. A record is retained if
+The Wave 5 household-derived file holds 13{,}719 household records. A record is retained if
 \texttt{w5\_hhincome}, \texttt{w5\_hhsizer} and \texttt{w5\_wgt} are all present and the weight is
-positive, leaving 10{,}841. All 2{,}878 dropped records carry a zero or missing weight, so their
-removal changes no weighted total; the retained sample represents 18.67 million households.
+positive, leaving 10{,}841. Most of the other 2{,}878 are households not interviewed in Wave 5.
+All carry a zero or missing weight, so their removal changes no weighted total; the retained
+sample represents 18.67 million households.
 \texttt{w5\_wgt} is the post-stratified household weight and is used for every weighted statistic
 in Section~\ref{sec:population} and as the resampling probability in
 Appendix~\ref{app:var-resample}; it is not carried onto the agent.
@@ -130,9 +135,9 @@ The non-food aggregate already contains reported clothing-account and hire-purch
 vehicle-finance payments, so the constructed servicing of Appendix~\ref{app:var-servicing} charges a flow partly present
 in discretionary spending (Section~\ref{sec:servicing}). This overstates compressible outlay for
 indebted agents and understates their servicing share of outlay; its net effect on distress and
-on scenario differences is unsigned. The label ``discretionary''
-also covers transport, utilities and education, none of which is discretionary in the ordinary sense,
-because \ac{NIDS} offers no finer split.
+on scenario differences is unsigned. Because \ac{NIDS} offers no finer split, the label
+``discretionary'' also covers transport, utilities and education, none of which is discretionary
+in the ordinary sense.
 
 \subsection{Liquid Savings}\label{app:var-savings}
 
@@ -171,7 +176,7 @@ household size.
 \texttt{G10} to \texttt{G14} (store card, revolving credit, hire purchase, short-term loan,
 personal loan) equal to ``Yes''. All six are copied as one vector from a single donor drawn within
 the household's quintile-by-province cell in proportion to the donor's weight; the procedure,
-its assumptions and its limits are Appendix~\ref{app:matching}. Lay-by (\texttt{G15}) is excluded
+its assumptions and its limits are in Appendix~\ref{app:matching}. Lay-by (\texttt{G15}) is excluded
 as not credit. The flags are categorical and are not deflated.
 
 \subsection{Debt Service}
@@ -247,14 +252,14 @@ The 10{,}841 weighted households are resampled with replacement, with probabilit
 to \texttt{w5\_wgt} (seed 20260818), to 5{,}000 unweighted agents drawn from 3{,}221 unique
 source records. Every downstream statistic is therefore unweighted. The resample raises the
 per-capita income Gini from 0.6514 to 0.6668; its fidelity on the categorical attributes is
-within 1.4 percentage points (Figure~\ref{fig:pop-fidelity}).
+within 1.4 points (Figure~\ref{fig:pop-fidelity}).
 
 \subsection{Tick Scaling}
 \label{app:var-tick}
 
 Survey flows are monthly and the model's tick is 14 days, so every flow is multiplied once, at
 instantiation, by $\chi = 12/26$: income, its wage component, committed and discretionary
-expenditure, and scheduled service. Three monthly quantities are kept unscaled because the rules
+expenditure, scheduled service and the hire wage. Three monthly quantities are kept unscaled because the rules
 that use them are specified monthly: \texttt{income\_monthly} and \texttt{nca\_capacity\_monthly}
 for the Regulation 23A test, and \texttt{discretionary\_monthly} for sizing \ac{BNPL} purchases,
 which are lumpy monthly-scale items rather than fortnightly flows. Stocks (savings and debt) are
@@ -270,8 +275,8 @@ surveyed, and the imputed flags are categorical. The only deflated model paramet
 $\to$ R9{,}927) and Payflex's published late fee (R95 a week, R190 per tick $\to$ R125.74) and fee cap
 (R285 $\to$ R188.61), which are converted once by a cumulative price factor chained from published annual \ac{CPI}
 rates~\citep{statssa_cpi}. The 2018 to 2021 and 2025 rates are Stats SA annual averages, 2022 to
-2024 are the World Bank's annual inflation series built from the same index (7.04, 6.08 and 4.36, against Stats
-SA's 6.9, 6.0 and 4.4), and the June 2026 year-on-year rate carries the chain to mid-2026. The chained factor to June 2026, 1.511, is within 0.4\% of the ratio of the
+2024 are the World Bank's annual inflation series built from the same index (7.04, 6.08 and 4.36\%, against Stats
+SA's 6.9, 6.0 and 4.4\%), and the June 2026 year-on-year rate carries the chain to mid-2026. The chained factor to June 2026, 1.511, is within 0.4\% of the ratio of the
 published June 2026 index to the 2017 average index (107.5/71.4 = 1.506, both from Stats SA's
 \ac{CPI} history table, December 2024 = 100~\citep{statssa_cpi_history}), so no deflated
 parameter moves by more than 0.4\%. The

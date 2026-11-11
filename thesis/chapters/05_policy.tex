@@ -10,17 +10,22 @@ Under bureau visibility, \ac{BNPL} obligations enter the traditional lender's
 Regulation 23A test, which is how we model the reported bureau arrangements
 \citep{businessday_bnpl_2026}. Under mandatory screening, the same test is applied to every
 \ac{BNPL} request, a stricter version of the \ac{FCA}'s affordability check
-\citep{fca_ps26_1,woolard2021}. A third arm combines both (Section~\ref{sec:asymmetry}). Each
-arm runs at $\beta=0$ and $\beta=0.3$ with one hundred replicates on shared seeds, so a
+\citep{fca_ps26_1,woolard2021}. Regulation 23A excludes incidental credit
+\citep[reg.~23A(2)(e)]{sa_ncr_affordability_2015}, which \ac{BNPL} may become
+(Section~\ref{sec:background}), so screening is a policy analogue. A third arm combines both
+switches (Section~\ref{sec:asymmetry}). Each arm runs at $\beta=0$ and $\beta=0.3$ with one hundred replicates on shared seeds, so a
 difference of 0.13 points in default is detected about half the time.
 % switch_se_max = 0.00065 in results_numbers.json; 2 x 0.065 = 0.13.
 
 The two switches move default in opposite directions (Table~\ref{tab:scenarios};
-Figure~\ref{fig:scenarios}). Bureau visibility raises it by $0.20 \pm 0.07$ points at $\beta=0$;
-at $\beta=0.3$ the rise, $0.10 \pm 0.06$, is not detectable. Screening lowers it by
-$0.93 \pm 0.06$ points at $\beta=0$ and $1.03 \pm 0.06$ at $\beta=0.3$. The table's 90+ row is a
-share of credit-active households and, as in Section~\ref{sec:results-injection}, is not used
-for effects.
+Figure~\ref{fig:scenarios}). Bureau visibility raises it by $0.20 \pm 0.07$ points at $\beta=0$,
+and by $0.19 \pm 0.07$ among households whose income covers food and rent.
+% 0.19 +/- 0.07: rq3s_bureau_diff_contestable_b0 (+ _se), results/summary/contestable_default.json.
+At $\beta=0.3$ the rise, $0.10 \pm 0.06$, is not detectable, and the two estimates do not differ
+detectably ($-0.09 \pm 0.08$ points). Screening lowers default by
+$0.93 \pm 0.06$ points at $\beta=0$ and $1.03 \pm 0.06$ at $\beta=0.3$. As in
+Section~\ref{sec:results-injection}, the table's 90+ row is not used for effects.
+% -0.09 +/- 0.08: switch_bureau_interaction (+ _se), results/summary/results_numbers.json.
 
 \input{chapters/generated/tab_scenarios}
 
@@ -31,76 +36,77 @@ for effects.
 \includegraphics[width=\textwidth]{figures/fig_scenarios.png}
 \caption{Default and \ac{BNPL} volume under the two switches}
 \label{fig:scenarios}
-\tabnote{(a) Default rate under the benchmark, bureau visibility and mandatory screening; black: $\beta = 0$; error bars: 95\% confidence intervals over 100 replicates. (b) Cumulative \ac{BNPL} volume relative to the benchmark at the same $\beta$. The combined arm is in Table~\ref{tab:scenarios}.}
+\tabnote{(a) Default rate under the benchmark, bureau visibility and mandatory screening; black: $\beta = 0$; error bars: 95\% confidence intervals on the levels over 100 replicates, so they do not show the paired differences, which are in Table~\ref{tab:scenarios}. (b) Cumulative \ac{BNPL} volume relative to the benchmark at the same $\beta$. The combined arm is in Table~\ref{tab:scenarios}.}
 \end{figure}
 
-Once the lender sees \ac{BNPL} instalments, it refuses about 13\% more applications and lends
-12 to 15\% less. What it sees is mostly live instalments: arrears and late fees are 9.9\% of the
-visible obligation at application, and a quarter of it is on agreements opened in the same tick against the same shortfall, which a bureau
-reporting with a lag would not show.
+Visibility can only add obligations to the test, so the lender refuses about 13\% more
+applications and lends 12 to 15\% less. Arrears and late fees are 9.9\% of the obligation it
+sees at application. A quarter is on agreements opened in the same tick against the same
+shortfall, which we assume a bureau reporting with a lag would not show, so the switch
+overstates what a lender sees.
 % arrears_share_at_application (0.099) and live_opened_same_tick_share_at_application (0.25) for
 % beta0.all in results/summary/bureau_visible_split.json (notebooks/scripts/check_bureau_visible_split.py,
 % seeds 80,000-80,019). 13%: +124/954 and +121/954; 12 to 15%: lever_bureau_beta{0,0.3}_lending_diff
 % over lever_bench_beta{0,0.3}_lending (-0.119, -0.150).
 A refused household in the model has no other source of credit, so the debt service it cannot
-meet becomes arrears, and the food and rent the loan would have paid first go unpaid. At
+meet becomes arrears, and the food and rent that the loan would have paid go unpaid. At
 $\beta=0$ the share of households short of food and rent in a tick rises by $0.125 \pm 0.016$
 points and the share ever short by $0.091 \pm 0.024$ (Table~\ref{tab:scenarios-distress}).
 Default rises detectably in Q1 and Q3 at $\beta=0$, by $0.17 \pm 0.08$ and
 $0.43 \pm 0.13$ points, and in no quintile at $\beta=0.3$. If these ten quintile comparisons
-were independent, chance alone would make two or more detectable about 7\% of the time.
-\ac{BNPL} volume falls by 1.3 to 1.5\%, because the switch acts on traditional lending and not on
-\ac{BNPL} requests.
+were independent, chance would make two or more detectable about 7\% of the time.
+\ac{BNPL} volume falls by only 1.3 to 1.5\%, because the switch acts on traditional lending.
 % Q1 at beta = 0 is 0.169 +/- 0.080 unrounded (2.12 SE). 7%: P(2 or more of 10) at p = 0.0455,
 % 1 - 0.9545^10 - 10(0.0455)(0.9545^9) = 0.073. The quintiles and both betas share seeds 80,000-80,099.
 
-The model's rules may favour this result. A refusal can put a household into arrears at once,
-whereas a granted loan is repaid over 25 months, partly after the run ends, and the lender
-assesses surveyed rather than current income. The switches were not run under the other rules
-of Table~\ref{tab:effect} or over a longer horizon, so the result gives the direction of the
-affordability channel in the model and is not a forecast.
+The model's rules favour a rise in default under visibility. A refusal can put a household into
+arrears at once, whereas a granted loan is repaid over 25 months, partly after the run ends.
+The switches were not run under the other rules of Table~\ref{tab:effect} or over a longer horizon, so the result gives the sign of
+the affordability channel in the model within two years and is not a forecast.
 
 Almost all of screening's fall in default is in Q1, $-4.68 \pm 0.10$ points at $\beta=0$ and
-$-4.70 \pm 0.10$ at $\beta=0.3$, against a \ac{BNPL} effect in Q1 of about four points (Section~\ref{sec:results-distribution}). The test
-refuses \ac{BNPL} to households whose income leaves no room for another instalment, and a refused
-shortfall request passes in full to the traditional lender (Algorithm~\ref{alg:gate}), which
-applies the same test. Its refusals rise by 1{,}827, close to their level without \ac{BNPL}
-(Table~\ref{tab:baseline-arms}). Screening lowers \ac{BNPL} holding by 0.3 points at $\beta=0$
-and 0.7 at $\beta=0.3$, and volume by about 3\%, so it lowers default by about as much as
-\ac{BNPL} raises it while leaving most \ac{BNPL} use in place. Default under screening, 20.88\%
-at $\beta=0$ including the starting stock, is close to the 20.73\% of the baseline without
-\ac{BNPL} on other seeds. Screening leaves slightly more households short of food and rent: at
+$-4.70 \pm 0.10$ at $\beta=0.3$, against a \ac{BNPL} effect in Q1 of about four points
+(Section~\ref{sec:results-distribution}). A refused shortfall request passes in full to the
+traditional lender (Algorithm~\ref{alg:gate}), which applies the same test, and the lender's
+refusals rise by 1{,}827, close to their level without \ac{BNPL} (Table~\ref{tab:baseline-arms}).
+The offset is therefore close to mechanical. Screening applies to \ac{BNPL} requests the same test
+that already keeps these households from the lender
+(Section~\ref{sec:results-injection}). It lowers default by about as much as \ac{BNPL} raises it,
+while holding falls by 0.3 points at $\beta=0$ and 0.7 at $\beta=0.3$ and volume by about 3\%.
+Default under screening, 20.88\% at $\beta=0$ including the starting stock, is close to the
+baseline's 20.73\% on other seeds. Screening leaves more households short of food and rent: at
 $\beta=0$ the share short in a tick rises by $0.036 \pm 0.015$ points and the share ever short by
 $0.055 \pm 0.027$, both just detectable, and at $\beta=0.3$ neither change is detectable. The runs
-record only whether households are short of food and rent, with no Rand amount, so the fall in default does
-not by itself show that households are better off.
+record no Rand amount unpaid, so the fall in default does not show that households
+are better off.
 % lever_afford_beta0_default (results_numbers.json); baseline_default (seeds 10,000-10,019).
 % Food and rent: scen_{bureau,afford}_beta{0,0.3}_cdist_{tick,ever}_diff (+ _se),
 % results_numbers.json; tab_scenarios_distress.
 
 With both switches, default is $0.90 \pm 0.05$ points below the benchmark at $\beta=0$ and
-$0.85 \pm 0.05$ at $\beta=0.3$. Against visibility alone, adding screening lowers default by
-$1.09 \pm 0.07$ points at $\beta=0$. Against screening alone, adding visibility changes it by
+$0.85 \pm 0.05$ at $\beta=0.3$. Adding screening to visibility lowers default by
+$1.09 \pm 0.07$ points at $\beta=0$. Adding visibility to screening changes it by
 $+0.04 \pm 0.05$ points at $\beta=0$ and raises it by $0.18 \pm 0.06$ at $\beta=0.3$. Peer
-influence does not detectably change the benchmark or the effect of either switch
-($-0.09 \pm 0.08$ points for bureau visibility).
-% switch_both_less_bureau_beta0, switch_both_less_afford_beta{0,0.3}, switch_bench_beta_gap and
-% switch_bureau_interaction (+ _se), results/summary/results_numbers.json.
+influence does not detectably change the benchmark or the effect of either switch.
+% switch_both_less_bureau_beta0, switch_both_less_afford_beta{0,0.3}, switch_bench_beta_gap,
+% switch_bureau_interaction and switch_afford_interaction (+ _se), results/summary/results_numbers.json.
 
-Two further levers, a cooling-off window of one to four ticks after a want-driven purchase and
+Two further levers, a cooling-off window on want-driven purchases and
 a hypothetical cap on platforms owed, are reported in Appendix~\ref{app:levers}. None of their
-fourteen contrasts with the benchmark, which share the benchmark arm at each $\beta$, is detectable, although
-the window removes up to 41\% of \ac{BNPL} volume at $\beta=0.3$ and a cap of one platform removes 35 to 40\%. The window does not
-act on borrowing for a shortfall, which is where the \ac{BNPL} effect arises.
+fourteen contrasts with the benchmark, which share the benchmark arm at each $\beta$, is
+detectable, although the window removes up to 40.5\% of \ac{BNPL} volume at $\beta=0.3$ and a
+cap of one platform removes 35 to 40\%. The window does not act on borrowing for a shortfall,
+which is where the \ac{BNPL} effect arises.
+% 40.5%: four-tick window at beta = 0.3; 35 to 40%: cap of one (35.1 and 40.3), tab_cooloff and tab_cap.
 
 \subsection{Answer to RQ3}
 \label{sec:scenarios-answer}
 
-Making \ac{BNPL} instalments visible to the traditional lender raises its
-refusals by about 13\% and default by $0.20 \pm 0.07$ points without peer influence, because in
-the model refused households have nowhere else to borrow; with peer influence the rise is not
-detectable. Mandatory screening lowers default by 0.93 to 1.03 points, almost all in the poorest
-quintile, about as much as \ac{BNPL} adds. At $\beta=0$ each switch raises the share of households
-short of food and rent in a tick, visibility by $0.125 \pm 0.016$ points and screening by
-$0.036 \pm 0.015$; at $\beta=0.3$ only visibility does. The runs record no amount
-unpaid, so neither result shows whether households end up better or worse off.
+Bureau visibility raises the traditional lender's refusals by about 13\% and default by
+$0.20 \pm 0.07$ points at $\beta=0$, since in the model a refused household has no other source of credit. At $\beta=0.3$ the rise is not detectable, but the two estimates
+do not differ detectably. Mandatory screening lowers default by 0.93 to 1.03 points, almost all
+in the poorest quintile, about as much as \ac{BNPL} adds, because it applies the lender's test to
+\ac{BNPL}. At $\beta=0$ both switches
+raise the share of households short of food and rent, and at $\beta=0.3$ only visibility
+does. Visibility therefore worsens both measures at $\beta=0$, and whether screening leaves households
+better off is open.

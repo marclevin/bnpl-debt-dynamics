@@ -94,13 +94,13 @@ The vintage gap (P5) and the one-adult respondent (P4) can change the eligibilit
 adoption levels, in opposite directions.
 The access sweep tests sensitivity to eligibility levels, but does not reconstruct who was banked
 in 2017. Lost within-cell associations (P1) can affect both the distribution of exposure and
-aggregate default, since household responses are nonlinear.
+aggregate default, since household responses are non-linear.
 We have not ranked donor reuse and income-band error (P2--P3). P6 and P7 limit the
 validation claim: agreement on construction targets cannot show that the imputed population
 reproduces relationships that were not observed.
 
 A statistical fusion on more matching variables would relax A1; Appendix~\ref{app:rationale}
-gives why we did not use it.
+explains why we did not use it.
 
 \subsection{Fidelity of the Match and the Resample}\label{app:match-fidelity}
 
@@ -113,7 +113,7 @@ Figure~\ref{fig:pop-fidelity} compares the 5{,}000-agent resample with its sourc
 \centering
 \caption{National rates for the six imputed indicators}
 \label{tab:imputation_errors}
-\tabnote{This table compares the national rate of each imputed indicator in three populations: the \ac{FinScope} 2019 target, weighted by its survey weight; the 10{,}841-household synthetic population after matching, weighted by \ac{NIDS} survey weight; and the unweighted 5{,}000-agent resample used in the simulation. The difference column is synthetic less \ac{FinScope}, in percentage points, computed before rounding; the tolerance is 3 percentage points (Table~\ref{tab:validation}). Because the match draws donors within the same quintile-by-province cell in proportion to weight, agreement here is expected by construction: it tests the implementation, not the population's external validity (P6, Appendix~\ref{app:match-problems}).}
+\tabnote{This table compares the national rate of each imputed indicator in three populations: the \ac{FinScope} 2019 target, weighted by its survey weight; the 10{,}841-household synthetic population after matching, weighted by \ac{NIDS} survey weight; and the unweighted 5{,}000-agent resample used in the simulation. The difference column is synthetic less \ac{FinScope}, in percentage points, computed before rounding; the tolerance is 3 points (Table~\ref{tab:validation}). Because the match draws donors within the same quintile-by-province cell in proportion to weight, agreement here is expected by construction: it tests the implementation, not the population's external validity (P6, Appendix~\ref{app:match-problems}).}
 \begin{tabular}{lrrrr}
 \toprule
 \textbf{Imputed indicator} & \textbf{FinScope 2019} & \textbf{Synthetic} & \textbf{Agents} & \textbf{Difference} \\
@@ -134,7 +134,7 @@ Personal loan    &  2.1 &  2.3 &  2.3 & 0.2 \\
 \includegraphics[width=\textwidth]{figures/fig_inclusion_fidelity.png}
 \caption{Fidelity of the imputed indicators}
 \label{fig:inclusion-fidelity}
-\tabnote{Panel (a) compares the national rate of each of the six imputed indicators across the \ac{FinScope} 2019 target, the weighted synthetic population and the unweighted 5{,}000-agent population, as in Table~\ref{tab:imputation_errors}. Panel (b) shows the synthetic-less-\ac{FinScope} gap for each indicator within each per-capita income quintile, thirty cells in all; the largest single deviation is 2.3 percentage points against a tolerance of 5. Quintiles are the weighted \ac{NIDS} bounds of Appendix~\ref{app:variables}.}
+\tabnote{Panel (a) compares the national rate of each of the six imputed indicators across the \ac{FinScope} 2019 target, the weighted synthetic population and the unweighted 5{,}000-agent population, as in Table~\ref{tab:imputation_errors}. Panel (b) shows the synthetic-less-\ac{FinScope} gap for each indicator within each per-capita income quintile, thirty cells in all; the largest single deviation is 2.3 points against a tolerance of 5. Quintiles are the weighted \ac{NIDS} bounds of Appendix~\ref{app:variables}.}
 \end{figure}
 
 \begin{figure}[H]
@@ -142,7 +142,7 @@ Personal loan    &  2.1 &  2.3 &  2.3 & 0.2 \\
 \includegraphics[width=\textwidth]{figures/fig_population_fidelity.png}
 \caption{Distributional fidelity of the agent population}
 \label{fig:pop-fidelity}
-\tabnote{Each panel compares the unweighted 5{,}000-agent resample, drawn with replacement in proportion to \ac{NIDS} survey weight (seed 20260818) from 3{,}221 unique source records, against the weighted 10{,}841-household source it is drawn from. Panels (a) and (b) cover the per-capita income distribution and its concentration; panels (c) to (f) cover income quintile, household size, province and primary income source, the categorical attributes that gate behaviour and define the reference groups in the simulation. The Kolmogorov--Smirnov distance in (a) is 0.016, the largest categorical deviation across the 24 sub-categories is 1.4 percentage points, and the Gini rises by 0.015, from 0.6514 to 0.6668.}
+\tabnote{Each panel compares the unweighted 5{,}000-agent resample, drawn with replacement in proportion to \ac{NIDS} survey weight (seed 20260818) from 3{,}221 unique source records, against the weighted 10{,}841-household source it is drawn from. Panels (a) and (b) cover the per-capita income distribution and its concentration; panels (c) to (f) cover income quintile, household size, province and primary income source, the categorical attributes that gate behaviour and define the reference groups in the simulation. The Kolmogorov--Smirnov distance in (a) is 0.016, the largest categorical deviation across the 24 sub-categories is 1.4 points, and the Gini rises by 0.015, from 0.6514 to 0.6668.}
 \end{figure}
 
 \subsection{Construction Checks}\label{app:match-checks}
@@ -159,21 +159,21 @@ sources.
 \toprule
 \textbf{Check} & \textbf{Metric} & \textbf{Value} & \textbf{Tolerance} & \\
 \midrule
-A. Quintile shares $\approx 20\%$ & max $|$share $-0.20|$ & 0.4pp & $\pm$2pp & \checkmark \\
+A. Quintile shares $\approx 20\%$ & max $|$share $-0.20|$ & 0.4 pp & $\pm$2 pp & \checkmark \\
 A. No impossible values & negative values & 0 & exact & \checkmark \\
 \addlinespace
-B. Banked (national) & vs FinScope & 0.4pp & $\pm$3pp & \checkmark \\
-B. Store card & vs FinScope & 1.8pp & $\pm$3pp & \checkmark \\
-B. Revolving credit & vs FinScope & 0.5pp & $\pm$3pp & \checkmark \\
-B. Hire purchase & vs FinScope & 0.5pp & $\pm$3pp & \checkmark \\
-B. Short-term loan & vs FinScope & 0.6pp & $\pm$3pp & \checkmark \\
-B. Personal loan & vs FinScope & 0.2pp & $\pm$3pp & \checkmark \\
-B. By-quintile flags & max over q$\times$flag & 2.3pp & $\pm$5pp & \checkmark \\
+B. Banked (national) & vs FinScope & 0.4 pp & $\pm$3 pp & \checkmark \\
+B. Store card & vs FinScope & 1.8 pp & $\pm$3 pp & \checkmark \\
+B. Revolving credit & vs FinScope & 0.5 pp & $\pm$3 pp & \checkmark \\
+B. Hire purchase & vs FinScope & 0.5 pp & $\pm$3 pp & \checkmark \\
+B. Short-term loan & vs FinScope & 0.6 pp & $\pm$3 pp & \checkmark \\
+B. Personal loan & vs FinScope & 0.2 pp & $\pm$3 pp & \checkmark \\
+B. By-quintile flags & max over q$\times$flag & 2.3 pp & $\pm$5 pp & \checkmark \\
 \addlinespace
 C. Regulation 23A cap & debtors on whom it binds & 3.8\% & $\leq$10\% & \checkmark \\
 \addlinespace
-D. Resample quintile shares & max $|$unwtd $-$ wtd$|$ & 1.3pp & $\pm$2pp & \checkmark \\
-D. Resample flag rates & max $|$unwtd $-$ wtd$|$ & 0.8pp & $\pm$3pp & \checkmark \\
+D. Resample quintile shares & max $|$unwtd $-$ wtd$|$ & 1.3 pp & $\pm$2 pp & \checkmark \\
+D. Resample flag rates & max $|$unwtd $-$ wtd$|$ & 0.8 pp & $\pm$3 pp & \checkmark \\
 D. Resample income ECDF & KS max gap & 0.016 & $\leq$0.05 & \checkmark \\
 D. Resample Gini & $|$agents $-$ source$|$ & 0.015 & $\leq$0.02 & \checkmark \\
 \bottomrule
