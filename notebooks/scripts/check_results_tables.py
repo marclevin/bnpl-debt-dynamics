@@ -187,7 +187,7 @@ def main() -> None:
     expect("scenarios_distress", t, f"& {sben0.consumption_distress_mean.mean() * 100:.2f} &")
     expect("scenarios_distress", t, core(pmp(bur0, sben0, "consumption_distress_mean", 3)))
     expect("scenarios_distress", t, core(pmp(both0, sben0, "ever_consumption_distress_final", 3)))
-    assert "not the Rand amount unpaid" in t
+    assert "not Rand amounts" in t
 
     t = frag("tab_effect")
     eff = pd.read_parquet(RAW / "effect.parquet")

@@ -443,7 +443,7 @@ def tab_bnpl_on_checks(rq0: pd.DataFrame) -> None:
     )
     def verdict(pairs):
         """The direction each (difference, se) supports, under the two-standard-error rule."""
-        words = ["no change" if not detectable(d, se) else ("rises" if d > 0 else "falls")
+        words = ["no detectable change" if not detectable(d, se) else ("rises" if d > 0 else "falls")
                  for d, se in pairs]
         return words[0].capitalize() if words[0] == words[1] else \
             f"{words[0].capitalize()} ($\\beta=0$); {words[1]} ($\\beta=0.3$)"
@@ -482,18 +482,18 @@ def tab_bnpl_on_checks(rq0: pd.DataFrame) -> None:
     table(
         "tab_bnpl_on_checks",
         "Comparisons with external evidence",
-        "No parameter was fitted to these quantities. Pattern~1 informed the design "
-        "(Section~\\ref{sec:lim-validation}). Model values are from the $\\beta = 0$ arm of "
-        "Table~\\ref{tab:baseline-arms}; Pattern~1 shows the change from the no-\\ac{BNPL} arm at "
-        "$\\beta = 0$ and $\\beta = 0.3$, $\\pm$ one standard error paired by seed, and Pattern~3 uses "
-        "the no-\\ac{BNPL} arm at the final tick. Debt-to-income is total debt over total monthly "
-        "income in each quintile; start: the population before the first tick. The volume band runs from the "
-        "provider's volume per signed-up customer to its volume per active customer, in 2017 Rands. "
-        "The provider's 2024 report gives average spending of R7{,}000 per customer, about R5{,}000 in "
-        "2017 Rands and above the band~\\citep{homechoice2024ir}, so the band's top is uncertain. "
-        "The purchase target divides gross merchandise value by transaction count. Pattern~1: "
-        "deHaan et al.\\ measure card late fees and interest; the model's counterpart to late fees is traditional arrears. Pattern~2, "
-        "the calibration target, is in Table~\\ref{tab:arrears-fit}.",
+        "No parameters were fitted to these quantities; Pattern~1 informed the design "
+        "(Section~\\ref{sec:lim-validation}). Model values use the $\\beta = 0$ arm of "
+        "Table~\\ref{tab:baseline-arms}, except Pattern~1 (changes from no-\\ac{BNPL} at "
+        "$\\beta = 0$ and $0.3$, $\\pm$ one seed-paired standard error) and Pattern~3 "
+        "(no-\\ac{BNPL}, final tick). Debt-to-income is total debt divided by total monthly "
+        "income per quintile; start denotes the pre-tick population. The volume band spans "
+        "provider volumes per signed-up and active customer in 2017 Rands. "
+        "Reported 2024 spending of R7{,}000 per customer (about R5{,}000 in 2017 Rands) exceeds "
+        "the band, making its upper bound uncertain~\\citep{homechoice2024ir}. "
+        "The purchase target is gross merchandise value divided by transaction count. For Pattern~1, "
+        "deHaan et al.\\ measure card late fees and interest; traditional arrears proxy late fees in the model. Pattern~2, "
+        "the calibration target, appears in Table~\\ref{tab:arrears-fit}.",
         "L{4.6cm}L{2.7cm}L{3.0cm}L{3.3cm}",
         r"\textbf{Comparison} & \textbf{Expected} & \textbf{Model} & \textbf{Result}",
         rows,
@@ -614,13 +614,12 @@ def tab_scenarios_distress(rq3s: pd.DataFrame) -> None:
     table(
         "tab_scenarios_distress",
         "Food and rent left unpaid under the two switches",
-        f"Arms, seeds and layout as in Table~\\ref{{tab:scenarios}}: the benchmark's mean, then each "
-        "arm's change from it $\\pm$ one standard error, paired by seed, at three decimals. A household "
-        "is short when its income and savings, with any credit raised in the tick, which pays food and "
-        "rent first, do not cover its food and rent; a household in default cannot borrow. Short in a "
-        f"tick: the share of all households short in a tick, averaged over the {ticks - burn} "
-        f"post-burn-in ticks. Ever short: the share of all households short in at least one of the "
-        f"{ticks} ticks. The runs record whether a household is short, not the Rand amount unpaid.",
+        "Arms, seeds and layout follow Table~\\ref{tab:scenarios}: benchmark mean, then changes "
+        "$\\pm$ one seed-paired standard error, to three decimals. A household is short when "
+        "income, savings and new credit cannot cover food and rent, which take priority; defaulted "
+        "households cannot borrow. Short in a tick: mean share of all households short over the "
+        f"{ticks - burn} post-burn-in ticks. Ever short: share short in any of the {ticks} ticks. "
+        "Runs record shortfalls as indicators, not Rand amounts.",
         "L{2.8cm}R{2.1cm}R{2.7cm}R{2.7cm}R{2.7cm}",
         r"& & \multicolumn{3}{c}{\textbf{Change from benchmark}} \\ \cmidrule(lr){3-5}"
         "\n\\textbf{Outcome} & \\textbf{Benchmark} & \\textbf{Bureau visibility} & "

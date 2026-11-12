@@ -135,7 +135,7 @@ Households short from the start & Surveyed income is below food and rent for 3.6
 % 62: results/summary/short_group.json.
 & Sections~\ref{sec:data-validation} and~\ref{sec:results-injection}; bounds the size and distribution of the \ac{BNPL} effect \\
 \addlinespace
-The validation targets are uneven & Only Pattern~2 is South African and vintage-matched, and it is account-level and an input and a target; Pattern~1 is partly designed in; Pattern~3 comes from a United Kingdom model, appears only through write-offs and is not counted & Section~\ref{sec:lim-validation}; bounds the RQ1 claim \\
+The validation targets are uneven & Only Pattern~2 is South African and vintage-matched, and it is account-level and an input and a target; Pattern~1 is partly designed in; Pattern~3 is already present in the initial population and is not counted as independent validation & Section~\ref{sec:lim-validation}; bounds the RQ1 claim \\
 \addlinespace
 Behavioural parameters are imported & The minimum-payer share, the friction motivation and the want-driven path are United States evidence; arrears persistence and the peer coefficients have no source at all & Section~\ref{sec:lim-transfer}; bounds every behavioural magnitude \\
 \addlinespace
@@ -239,9 +239,8 @@ The levers give fourteen contrasts with the benchmark, and none is detectable. T
 removes 4.2 to 11.7\% of \ac{BNPL} volume at $\beta = 0$ and 13.7 to 40.5\% at $\beta = 0.3$, and
 changes default by $-0.18$ to $+0.05$ points. The caps of one to three remove 11.1 to 35.1\% of
 volume at $\beta = 0$ and 6.8 to 40.3\% at $\beta = 0.3$, and change default by $-0.19$ to $-0.01$
-points. Neither lever acts on the households that carry the \ac{BNPL} effect: the window does not
-block borrowing for a shortfall, and a shortfall request that the cap refuses passes to the
-traditional lender.
+points. Neither lever changes default detectably in these runs. The cooling-off window leaves shortfall borrowing available.
+The platform cap can restrict it, with refused amounts passed to the traditional lender, which may also refuse them.
 
 A diagnostic compares three definitions of the cap on the cap arms' own seeds, each paired with
 an arm without a cap. Its numbers therefore differ from those of Table~\ref{tab:cap}, which
