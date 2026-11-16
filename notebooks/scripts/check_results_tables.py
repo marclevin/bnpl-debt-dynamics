@@ -258,17 +258,16 @@ def check_prose() -> None:
     expect_p("ch3 short", c3, f"{sg['share_no_employed_member'] * 100:.0f}\\% have no employed member")
     expect_p("ch3 short", c3, f"{sg['share_no_liquid_savings'] * 100:.0f}\\% have no liquid savings")
     expect_p("ch3 short", c3, f"for {sg['one_shot_covers_share_of_answered'] * 100:.0f}\\% of the group's respondents")
-    expect_p("appC short", ch["appendix_c_supplementary"], f"For {sg['one_shot_covers_share_of_answered'] * 100:.0f}\\% of the group's respondents")
     expect_p("ch3 short", c3, f"The {sg['n_in_default_at_start_every_seed']} of the {sg['n_agents']} that hold traditional debt")
     expect_p("ch3 short", c3, f"only the other {sg['n_at_risk']} can default during the run")
-    expect_p("ch3 short", c3, f"{sg['default_during_run_no_bnpl_of_at_risk'] * 100:.0f}\\% of those {sg['n_at_risk']} default")
-    expect_p("ch3 short", c3, f"{sg['default_during_run_bnpl_beta0_of_at_risk'] * 100:.0f}\\% do")
-    expect_p("ch3 short", ch["03_calibration"], pmj(cont, "beta0_effect_pooled_contestable"))
-    expect_p("ch3 short", ch["03_calibration"], pmj(cont, "peer_effect_pooled_contestable"))
+    # Style pass 2026-11-16: the effect among the other households moved from Section 3.5 to 4.1,
+    # and the 3.5 preview of the group's default shares was cut (Section 4.1 decomposes the effect).
+    expect_p("ch4 others", ch["04_results"], pmj(cont, "beta0_effect_pooled_contestable"))
+    expect_p("ch4 others", ch["04_results"], pmj(cont, "peer_effect_pooled_contestable"))
     # QA 2026-11-10 (E2): beta = 0 not detectable, beta = 0.3 detectable; both in the RQ2 answer.
     assert abs(cont["beta0_effect_pooled_contestable"]) < 2 * cont["beta0_effect_pooled_contestable_se"]
     assert abs(cont["peer_effect_pooled_contestable"]) > 2 * cont["peer_effect_pooled_contestable_se"]
-    expect_p("ch3 short", ch["03_calibration"], f"${pmj(cont, 'peer_effect_pooled_contestable')}$ at $\\beta=0.3$, which is")
+    expect_p("ch4 others", ch["04_results"], f"${pmj(cont, 'peer_effect_pooled_contestable')}$ at $\\beta=0.3$, which is")
     expect_p("ch4 RQ2 others", ch["04_results"], f"it is ${pmj(cont, 'beta0_effect_pooled_contestable')}$ points at $\\beta=0$, not detectable, "
              f"and ${pmj(cont, 'peer_effect_pooled_contestable')}$ at $\\beta=0.3$, which is")
     # Fix pass 2026-11-11: the bureau-visibility figure for the other households moved from
@@ -298,17 +297,17 @@ def check_prose() -> None:
     n_start = int((pop.D_trad > 0).sum())
     assert n_start == round(lvl["off_start_active_share"] * len(pop)), "start book against default_level.json"
     start_txt = f"{n_start:,}".replace(",", "{,}")
+    # Style pass 2026-11-16: Appendix C's limitations index points to Section 3.5 for the book.
     expect_p("ch3 book", ch["03_calibration"], f"fall from {start_txt} at the start")
-    expect_p("appC book", ch["appendix_c_supplementary"], f"fall from {start_txt} to")
     expect_p("ch4 level", ch["04_results"], f"{num['baseline_default'] * 100:.2f}\\%")
     sobj = json.loads((SUMMARY / "sobol_indices.json").read_text(encoding="utf-8"))
     shd = next(r for r in sobj["indices"]["default_rate_final"] if r["parameter"] == "shock_prob")
     others = [r["ST"] for r in sobj["indices"]["default_rate_final"] if r["parameter"] != "shock_prob"]
     fifths = sobj["new_default_by_shock_prob_fifth"]
     noise = sobj["replicate_noise_share"]["default_rate_final"]
-    for name in ("04_results", "appendix_c_supplementary"):
-        expect_p(f"{name} sobol", ch[name], f"{noise * 100:.0f}\\% of the")
-        expect_p(f"{name} sobol", ch[name], f"{min(others):.2f} to {max(others):.2f}")
+    # Style pass 2026-11-16: Section 4.6 points to Appendix C for the replicate-noise argument.
+    expect_p("appC sobol", ch["appendix_c_supplementary"], f"{noise * 100:.0f}\\% of the")
+    expect_p("appC sobol", ch["appendix_c_supplementary"], f"{min(others):.2f} to {max(others):.2f}")
     # A1 (2026-11-10): S1_conf is a 95% bootstrap half-width, not one standard error.
     expect_p("ch4 sobol", ch["04_results"],
              f"{shd['S1']:.2f}, with a 95\\% bootstrap interval of $\\pm {shd['S1_conf']:.2f}$")

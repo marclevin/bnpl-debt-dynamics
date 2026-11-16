@@ -84,7 +84,7 @@ REGISTER: dict[str, tuple[str, str]] = {
                          r"calibration grid 0.05--0.06"),
     "arrears_persistence": (r"Probability per tick that a household already in traditional arrears pays nothing again, whatever its cash. No source; fitted jointly with \texttt{payment\_friction} to the five \ac{CCMR} arrears bands (Section~\ref{sec:lim-calibration}).",
                             r"calibration grid 0.70--0.74"),
-    "distress_rule": (r"A household defaults when its oldest unpaid instalment on any facility, traditional or \ac{BNPL}, is \texttt{k\_default} ticks old (Section~\ref{sec:sequence}). The earlier rule, \texttt{streak}, defaulted a household after \texttt{k\_default} consecutive ticks of unpaid food, rent or debt service; it is kept only for the comparison in Appendix~\ref{app:calibration}.",
+    "distress_rule": (r"A household defaults when its oldest unpaid instalment on any debt, traditional or \ac{BNPL}, is \texttt{k\_default} ticks old (Section~\ref{sec:sequence}). The earlier rule, \texttt{streak}, defaulted a household after \texttt{k\_default} consecutive ticks of unpaid food, rent or debt service; it is kept only for the comparison in Appendix~\ref{app:calibration}.",
                       r"streak in that comparison"),
     "initial_arrears": (r"The run starts from the 2017-Q1 \ac{CCMR} age profile~\citep{ncr_ccmr_2017}: credit-active households are placed in each band at its share, those with the least income left after food, rent and debt service in the oldest bands. Ages in the 120+ band are drawn over 9--26 ticks, an assumption. Households placed at 91+ days start in default.",
                         r"off starts every household current"),

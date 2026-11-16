@@ -4,47 +4,43 @@
 % Numbers are read from the generated tables of Sections 3.5, 4 and 5 or from
 % results/summary/results_numbers.json.
 
-This thesis asked how adding a \ac{BNPL} channel changes credit distress in a model of South
-African households, and how bureau visibility and affordability screening affect the outcome.
-The answers are comparisons within the model under 2017 conditions, and each is conditional on
-the assumptions the compared arms share.
+The traditional lender's affordability test never grants a loan to some of the households short
+from the start. The platforms, whose screen does not compare income with living costs, lend to
+them when they run short of cash, and their \ac{BNPL} arrears carry them into default. This route
+accounts for most of the $1.03 \pm 0.06$ points that \ac{BNPL} adds to default without peer influence. Peer
+influence adds want-driven borrowing without detectably changing the effect
+($+0.003 \pm 0.010$ points per 0.1 of $\beta$). Bureau visibility tightens only the lender's test
+and leaves the route open, while screening closes it by applying that test to every \ac{BNPL}
+request. Each effect is a difference between arms within the model, conditional on their
+shared assumptions. Sections~\ref{sec:calibration-answer}, \ref{sec:results-answer}
+and~\ref{sec:scenarios-answer} answer RQ1 to RQ3.
+% 1.03 +/- 0.06: beta0_effect_pooled (results_numbers.json, Section 4.1); "most": the 55 the
+% lender never lends to account for 0.92 of the 1.08 points (short_group_lending.json, Section 4.1);
+% slope: results/summary/beta_sweep.json (Section 4.2).
 
-\textbf{RQ1.} The population built from survey microdata matches external figures for
-household size and income inequality and holds about half the household debt of the
-corresponding \ac{CCMR} book. The baseline keeps its calibrated arrears profile as a share while
-the credit-active book halves. Part of that stability is built into the calibration, and none of
-it shows how arrears arise. Debt service is above what households report, and the default rate
-has no external counterpart.
+Every result covers two years. Default follows the bureau's 90-day construct, and its
+level rests on the starting profile and the threshold (Section~\ref{sec:results-robustness}). The
+\ac{BNPL} effect depends on letting households borrow with \ac{BNPL} against a shortfall
+(Section~\ref{sec:results-effect}) and on counting \ac{BNPL} arrears as default
+(Section~\ref{sec:results-injection}). Which households start in arrears is an assumption. The
+hire wage is imputed, and hires move income between quintiles (Section~\ref{sec:lim-calibration}).
 
-\textbf{RQ2.} Enabling \ac{BNPL} raises default by $1.03 \pm 0.06$ points without peer
-influence. Most of the effect comes from the 3.6\% of households whose surveyed income does not
-cover their food and rent, chiefly those the Regulation 23A test refuses and the platforms' light screen
-accepts, and it is not detectable when \ac{BNPL} cannot be used against a shortfall. Peer
-influence acts only on want-driven purchases, and the effect does not change detectably with
-$\beta$ between 0 and 0.3 ($+0.003 \pm 0.010$ points per 0.1). Default rises with access under
-both adoption rules and shows no systematic rise with the number of platforms. Stacking is set by
-the assumed routing and by how often households borrow (Section~\ref{sec:results-stacking}).
+For the reporting arrangements, the model gives only the sign of one channel, the lender's
+affordability test. Through it, reporting raises default by
+$0.20 \pm 0.07$ points without peer influence, because the households the lender refuses have no
+other source of credit in the model. The model's rules favour that rise
+(Section~\ref{sec:scenarios}). Screening's fall in default lies almost all in the poorest
+quintile, but without peer influence more households go short of food
+and rent. The runs record no amount unpaid, so whether screening leaves households better off is
+open (Table~\ref{tab:scenarios-distress}).
+% 0.20 +/- 0.07: scen_bureau_beta0_default (tab:scenarios, Section 5); quintiles and food and rent:
+% tab:scenarios and tab:scenarios-distress.
 
-\textbf{RQ3.} Bureau visibility raises default by $0.20 \pm 0.07$ points at $\beta=0$; at
-$\beta=0.3$ the rise is not detectable, but the two do not differ detectably. Screening lowers
-default by 0.93 to 1.03 points, about as much as \ac{BNPL} adds, because it applies the lender's
-test to \ac{BNPL}. Visibility also raises the share of households short of food and rent, so it
-worsens both measures at $\beta=0$. Screening raises that share at $\beta=0$ only, and whether it leaves
-households better off is open (Table~\ref{tab:scenarios-distress}).
-
-Better data would most improve four inputs: how much South African households borrow with
-\ac{BNPL} when short of cash and who they are, the size and frequency of \ac{BNPL} purchases, how
-households choose among providers, and where refused households borrow instead, including informal
-lenders.
-
-\label{sec:lim-reading}
-Default follows the bureau's 90-day construct, and its level rests on the starting profile and
-the threshold (Section~\ref{sec:results-robustness}). The \ac{BNPL} effect depends on counting \ac{BNPL} arrears as default
-(Section~\ref{sec:results-injection}).
-Which households start in arrears is an assumption, and the survey cannot say whether the
-households whose income is below their food and rent are persistently short or have
-under-recorded income (Section~\ref{sec:data-validation}). The hire wage is imputed, and
-hires move income between quintiles (Section~\ref{sec:lim-calibration}).
+Better data would most improve three inputs: how much South African households borrow with
+\ac{BNPL} when short of cash and who they are, the size and frequency of \ac{BNPL} purchases, and
+how households choose among providers. The first would measure the shortfall path behind the effect
+(Section~\ref{sec:results-effect}), and the others would replace the assumptions that set volume
+and stacking (Section~\ref{sec:results-stacking}).
 
 A rule linking reported \ac{BNPL} behaviour to credit scores, pricing
 and refusals would test the channel that the reporting arrangements most directly open
@@ -54,9 +50,4 @@ bureau visibility survives. Re-running the injection with the larger of the deri
 single-question incomes for the households short from the start would show how far the effect
 rests on how \ac{NIDS} records their income. A lender that restricts credit
 after losses, or a link from aggregate default to employment, would let distress spread through
-channels the model now excludes (Table~\ref{tab:design-concepts}). A flow of new borrowers would
-keep the credit-active book from shrinking (Section~\ref{sec:lim-calibration}).
-% Numbers: results_numbers.json (beta0_effect_pooled, eff_no_shortfall_bnpl_b0,
-% lever_bureau/afford_*), results/summary/beta_sweep.json (slope), defaulter_credit.json and
-% short_group.json (3.6%). -0.10 +/- 0.06 under the earlier (streak) rule: docs/ARREARS_RULE_2026-11.md,
-% as in Appendix app:calibration.
+channels the model now excludes (Table~\ref{tab:design-concepts}).

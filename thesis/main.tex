@@ -64,7 +64,7 @@
 % Confirm the UCT / departmental mini-dissertation specification and adjust.
 % Everything else in this document is template-agnostic.
 
-\title{Buy Now, Pay Later and Household Credit Distress \\ in South Africa: An Agent-Based Model}
+\title{Buy Now, Pay Later and Household Credit\\ Distress in South Africa:\\ An Agent-Based Model}
 \author{Marc Levin \\[0.5em]
     University of Cape Town \\
     Cape Town, South Africa \\[0.3em]
@@ -95,30 +95,42 @@ not been submitted for any other degree or examination at any other university.
 \section*{Abstract}
 \addcontentsline{toc}{section}{Abstract}
 
-% Every number is read from a generated table or a results/summary JSON:
-% 1.0 point: beta0_effect_pooled (1.03); baseline 14.4%: default during the run, tab:baseline-arms;
-% 2.4 times: volume_ratio_peer_over_beta0; no detectable slope in beta: results/summary/beta_sweep.json;
-% shortfall path: no-shortfall-BNPL row of tab:effect; households below food and rent:
-% short_group.json and contestable_default.json (Section 3.5);
-% about 13% (+124/954) and 0.20 points from tab:scenarios; 0.9 to 1.0 points: screening rows of
-% tab:scenarios; food and rent: tab:scenarios-distress. Bureau visibility with peer influence:
-% 0.10 +/- 0.06, difference -0.09 +/- 0.08 (Section 5). No systematic rise with platforms: two of
-% the 20 contrasts with one platform pass two SEs (nmax_minus_n1_beta*, Section 4.3). The group
-% the lender's test refuses: results/summary/short_group_lending.json (55 of the 120, Section 4.1).
-% February 2027: businessday_bnpl_2026 attributes to the NCR an order to report from then.
-This thesis asks how \ac{BNPL} changes credit distress in a model of South African households, and what
-bureau visibility and affordability screening would change. Bureau reporting of \ac{BNPL} is
-reportedly to be mandatory from 2027.
-We build an agent-based model of 5{,}000 households from \ac{NIDS} and \acs{FinScope} microdata. A traditional lender applies the Regulation 23A test to the debts the bureau records, while four \ac{BNPL} platforms apply a light screen and cannot see one another's balances. Job losses offset hiring, which follows labour-force data.
-The baseline starts from the 2017 arrears profile, and two parameters are fitted to its five bands before \ac{BNPL} is added.
-A household defaults when an instalment on any facility is more than 90 days past due.
-The constructed population matches household size, income inequality and the order of magnitude of debt, and the model holds the arrears profile as a share for two years while its book of credit-active households halves. The profile is an input and a calibration target, so it cannot validate the model. We therefore interpret differences between runs, conditional on their shared assumptions.
-Under the assumed routing, many households owe several platforms at once, and default shows no systematic rise with the number of platforms.
-Adding \ac{BNPL} raises default during the two-year run by 1.0 percentage point, from 14.4\% in the baseline.
-The effect runs through households that use \ac{BNPL} to bridge cash shortfalls and default on it, most of them households whose surveyed income does not cover food and rent and whom the lender's test refuses; it is not detectable when \ac{BNPL} cannot be used against a shortfall.
-Peer influence acts only on want-driven purchases. It raises borrowing 2.4-fold at the top of the range tested, and the effect shows no detectable slope.
-The model has no credit score, so bureau visibility acts through the lender's Regulation 23A test. Adding \ac{BNPL} obligations to it raises refusals by about 13\% and default by 0.20 points without peer influence, because in the model refused households have no other credit; the estimate with peer influence does not differ detectably.
-Screening \ac{BNPL} requests with the same test lowers default by 0.9 to 1.0 points, almost all in the poorest quintile. Bureau visibility also leaves more households short of food and rent. Screening does so only without peer influence, and the runs do not record how much goes unpaid, so screening's welfare effect is open.
+% Every number is read from a generated table, a results/summary JSON or Section 3:
+% 5,000 households and four platforms: Section 3.1 and tab:experiments; the 2017 profile, its five
+% bands and the two fitted parameters (payment friction, arrears persistence): tab:arrears-fit,
+% Section 3.4; validation misses: Section 3.5 (debt service: tab:pop-external; the book halves:
+% 2,237 to 1,175, Section 3.4; interest: tab:bnpl-on-checks; default has no external counterpart).
+% Two-year horizon and "enter default during the run": Section 3.1 (sec:sim-params).
+% 1.0 point: beta0_effect_pooled (1.03); 14.4%: default during the run without BNPL, 14.37,
+% tab:baseline-arms; households below food and rent: short_group.json and
+% short_group_lending.json (Sections 3.5 and 4.1); not detectable without the shortfall path:
+% no-shortfall-BNPL row of tab:effect; no detectable slope:
+% results/summary/beta_sweep.json; 0.20 points: scen_bureau_beta0_default, tab:scenarios (refusals
+% +124/954); 0.9 to 1.0 points: screening rows of tab:scenarios; food and rent:
+% tab:scenarios-distress. Bureau visibility with peer influence: 0.10 +/- 0.06, difference
+% -0.09 +/- 0.08 (Section 5). Possibly understated: for 68% of the group's respondents a single
+% income question covers food and rent (one_shot_covers_share_of_answered, short_group.json,
+% Section 3.5). Peer influence raises borrowing: Sections 4.2 and 4.4.
+South African households were in credit distress before \ac{BNPL} spread, and \ac{BNPL} agreements
+do not appear on consumer credit profiles. Using an agent-based model of 5{,}000 households built
+from South African survey microdata, we ask how \ac{BNPL} changes credit distress and what bureau
+visibility and affordability screening would change. The model's traditional lender tests
+affordability on the debts the bureau records, and four \ac{BNPL} platforms cannot see one
+another's balances. Runs start from the 2017 arrears profile, to whose five bands we fit two
+repayment parameters, and last two years. A household defaults when an instalment on any of its
+credit, \ac{BNPL} included, is more than 90 days past due. Enabling \ac{BNPL} raises the share of
+households that default during the run by 1.0 percentage point, from 14.4\%. The rise comes mostly
+from households the lender refuses and the platforms accept, whose surveyed income, possibly
+understated, does not cover food and rent. It is not detectable when \ac{BNPL} cannot be used
+against a cash shortfall. Peer influence raises \ac{BNPL} borrowing without detectably changing the
+effect. Without peer influence, bureau visibility raises default by 0.20
+points, because the lender refuses more households, which in the model have no other credit.
+Screening \ac{BNPL} with the same test lowers default by 0.9 to 1.0 points. Without peer
+influence, both policies leave more households short of food and rent. The fitted profile cannot
+validate the model, opening debt service exceeds what households report, the number of indebted
+households halves over the run, traditional interest does not rise with \ac{BNPL} as in United
+States data, and no external figure measures default. We therefore interpret mainly differences
+between runs, conditional on their shared assumptions.
 
 \section*{Data and Code}
 \addcontentsline{toc}{section}{Data and Code}
