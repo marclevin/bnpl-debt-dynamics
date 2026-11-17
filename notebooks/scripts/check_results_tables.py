@@ -224,7 +224,7 @@ def check_prose() -> None:
     dc = json.loads((SUMMARY / "defaulter_credit.json").read_text())
     # Whitespace is collapsed (QA 2026-11-10) so that a needle matches across a line break.
     ch = {n: " ".join((ROOT / "thesis" / "chapters" / f"{n}.tex").read_text(encoding="utf-8").split())
-          for n in ("03_calibration", "04_results", "05_policy", "06_conclusion", "appendix_c_supplementary")}
+          for n in ("01_introduction", "03_calibration","04_results", "05_policy", "06_conclusion", "appendix_c_supplementary")}
 
     def pmj(d: dict, key: str, dp: int = 2) -> str:
         return f"{d[key] * 100:+.{dp}f} \\pm {d[key + '_se'] * 100:.{dp}f}"
@@ -246,12 +246,9 @@ def check_prose() -> None:
     expect_p("ch3 measures", ch["03_calibration"], f"{num['baseline_new_default'] * 100:.2f}\\% without \\ac{{BNPL}}, or "
              f"{num['baseline_new_default_of_not_initially_defaulted'] * 100:.2f}\\% of those not in default")
     expect_p("ch3 measures", ch["03_calibration"], f"adds the {num['baseline_initial_default'] * 100:.2f}\\% placed")
-    # Section 3.5 (QA 2026-11-10, B47): the group short from the start (short_group.json). The
-    # run-time default shares are over the members not in default at the start.
+    # Section 3.5 (QA 2026-11-10, B47): the group short from the start (short_group.json).
     sg = json.loads((SUMMARY / "short_group.json").read_text())
     assert sg["n_agents"] == 182 and sg["zero_or_missing_income"] == 0
-    assert abs(sg["default_during_run_no_bnpl_of_all"] - dc["no BNPL"]["income_below_committed_who_default"]) < 1e-12
-    assert abs(sg["default_during_run_bnpl_beta0_of_all"] - dc["BNPL beta=0"]["income_below_committed_who_default"]) < 1e-12
     c3 = ch["03_calibration"]
     expect_p("ch3 short", c3, f"Its {sg['n_agents']} households are drawn from {sg['n_source_households']} \\ac{{NIDS}} records")
     assert round(sg["share_q1"] * 3) == 2 and round(sg["share_paying_rent"] * 3) == 2, "two-thirds"
@@ -262,12 +259,12 @@ def check_prose() -> None:
     expect_p("ch3 short", c3, f"only the other {sg['n_at_risk']} can default during the run")
     # Style pass 2026-11-16: the effect among the other households moved from Section 3.5 to 4.1,
     # and the 3.5 preview of the group's default shares was cut (Section 4.1 decomposes the effect).
-    expect_p("ch4 others", ch["04_results"], pmj(cont, "beta0_effect_pooled_contestable"))
-    expect_p("ch4 others", ch["04_results"], pmj(cont, "peer_effect_pooled_contestable"))
+    # Anchored on the 4.1 wording: bare figures also match the RQ2 answer's copy (ultrareview).
+    expect_p("ch4 others", ch["04_results"], f"(three at $\\beta=0.3$), the effect is ${pmj(cont, 'beta0_effect_pooled_contestable')}$ "
+             f"points at $\\beta=0$, not detectable, and ${pmj(cont, 'peer_effect_pooled_contestable')}$ at $\\beta=0.3$, which is.")
     # QA 2026-11-10 (E2): beta = 0 not detectable, beta = 0.3 detectable; both in the RQ2 answer.
     assert abs(cont["beta0_effect_pooled_contestable"]) < 2 * cont["beta0_effect_pooled_contestable_se"]
     assert abs(cont["peer_effect_pooled_contestable"]) > 2 * cont["peer_effect_pooled_contestable_se"]
-    expect_p("ch4 others", ch["04_results"], f"${pmj(cont, 'peer_effect_pooled_contestable')}$ at $\\beta=0.3$, which is")
     expect_p("ch4 RQ2 others", ch["04_results"], f"it is ${pmj(cont, 'beta0_effect_pooled_contestable')}$ points at $\\beta=0$, not detectable, "
              f"and ${pmj(cont, 'peer_effect_pooled_contestable')}$ at $\\beta=0.3$, which is")
     # Fix pass 2026-11-11: the bureau-visibility figure for the other households moved from
@@ -297,7 +294,7 @@ def check_prose() -> None:
     n_start = int((pop.D_trad > 0).sum())
     assert n_start == round(lvl["off_start_active_share"] * len(pop)), "start book against default_level.json"
     start_txt = f"{n_start:,}".replace(",", "{,}")
-    # Style pass 2026-11-16: Appendix C's limitations index points to Section 3.5 for the book.
+    # Style pass 2026-11-16: Appendix C's limitations index points to Section 3.4 for the book.
     expect_p("ch3 book", ch["03_calibration"], f"fall from {start_txt} at the start")
     expect_p("ch4 level", ch["04_results"], f"{num['baseline_default'] * 100:.2f}\\%")
     sobj = json.loads((SUMMARY / "sobol_indices.json").read_text(encoding="utf-8"))
@@ -372,6 +369,18 @@ def check_prose() -> None:
     expect_p("ch5 bureau", ch["05_policy"], unsigned(pmj(num, "lever_bureau_beta0_diff")))
     expect_p("ch5 screening", ch["05_policy"], f"{-num['lever_afford_beta0_diff'] * 100:.2f} \\pm "
            f"{num['lever_afford_beta0_diff_se'] * 100:.2f}")
+    # Style pass 2026-11-16: the introduction now gives the body's figures exactly (ultrareview).
+    c1 = ch["01_introduction"]
+    expect_p("ch1 effect", c1, f"${unsigned(pmj(num, 'beta0_effect_pooled'))}$ points without peer influence, "
+             f"from {num['baseline_new_default'] * 100:.2f}\\%")
+    expect_p("ch1 shortfall", c1, f"${pmj(num, 'eff_no_shortfall_bnpl_b0')}$ points")
+    for c in ("01_introduction", "06_conclusion"):
+        expect_p(f"{c} bureau", ch[c], f"${unsigned(pmj(num, 'lever_bureau_beta0_diff'))}$ points without peer influence")
+    expect_p("ch1 screening", c1, f"lowers default by {-num['lever_afford_beta0_diff'] * 100:.2f} to "
+             f"{-num['lever_afford_beta0.3_diff'] * 100:.2f} points")
+    expect_p("ch1 volume", c1, f"from R{s0['volume_per_eligible_year']:,.0f} to R{s3['volume_per_eligible_year']:,.0f} a year"
+             .replace(",", "{,}"))
+    expect_p("ch1 stack", c1, f"Under the assumed routing, {s0['stacking_ever_holders'] * 100:.0f}\\% of")
     if missing:
         print(f"{checked - start} typed prose numbers match; {len(missing)} do not. Each needle is "
               "formatted from results/ and must appear in the named chapter:")
