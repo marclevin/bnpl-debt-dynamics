@@ -6,21 +6,20 @@ steps, and Table~\ref{tab:notation} defines the notation.
 
 \subsection{The Procedure}\label{app:match-procedure}
 
-Both surveys are partitioned by the same two variables, per-capita income quintile $q$ and
-province $p$, into $|\mathcal{C}| = 45$ cells $c = (q, p)$. For each \ac{NIDS} record $i$ with
-cell $c(i)$, one donor $d$ is drawn from the \ac{FinScope} records in the same cell with
-probability $w_d / \sum_{d' \in c(i)} w_{d'}$, where $w$ is the \ac{FinScope} household weight,
-and the donor's six-flag vector (banked; store card; revolving credit; hire purchase; short-term
-loan; personal loan) is copied to $i$ whole. Draws are with replacement, seeded (42), and
-the quintile of a \ac{FinScope} donor is assigned from the midpoint of its seven-band income
-question divided by household size, against the weighted \ac{NIDS} quintile bounds. An empty
-cell would fall back to the quintile-only pool; none was empty.
+We partition both surveys by per-capita income quintile $q$ and province $p$ into
+$|\mathcal{C}| = 45$ cells $c = (q, p)$. Each \ac{NIDS} record $i$ draws one donor $d$ from the
+\ac{FinScope} records in its cell $c(i)$ with probability $w_d / \sum_{d' \in c(i)} w_{d'}$, where
+$w$ is the \ac{FinScope} household weight, and copies the donor's six-flag vector (banked; store
+card; revolving credit; hire purchase; short-term loan; personal loan) whole. Draws are with
+replacement and seeded (42). A \ac{FinScope} donor's quintile comes from the midpoint of its
+seven-band income question divided by household size, placed against the weighted \ac{NIDS}
+quintile bounds. An empty cell would fall back to the quintile-only pool.
 
-The smallest cell holds 30 donors and the median 87; only three cells (all in the top
-quintile: Limpopo, North West, Northern Cape) hold fewer than 50. Of 4{,}969 available donors,
+The smallest cell holds 30 donors and the median 87; only three cells, all in the top quintile
+(Limpopo, North West and Northern Cape), hold fewer than 50. Of 4{,}969 available donors,
 3{,}597 were used at least once; the median donor was used twice, the 99th percentile 13 times,
 and the most-used donor 20 times. Donor reuse is concentrated where \ac{NIDS} is dense and
-\ac{FinScope} is thin: in the largest cell, the bottom quintile of KwaZulu-Natal, 1{,}058
+\ac{FinScope} is thin. In the largest cell, the bottom quintile of KwaZulu-Natal, 1{,}058
 recipients drew from 109 donors, and eleven cells have more than three recipients per donor.
 The most-used 1\% of donors supply 5.1\% of recipients.
 
@@ -29,24 +28,21 @@ The most-used 1\% of donors supply 5.1\% of recipients.
 \begin{description}
 \item[A1. Cell sufficiency.] Conditional on income quintile and province, the six flags are
 independent of everything else in \ac{NIDS} that affects a household's behaviour in the model.
-This assumption cannot be tested from the two surveys alone, since the flags
-are observed in one and the balance sheet in the other. We rely on it because quintile and
+The two surveys alone cannot test this assumption, since one observes the flags and the other
+the balance sheet. We rely on it because quintile and
 province are available in both instruments and the \ac{FinScope} flags vary widely across cells
 (banked status ranges from below 60\% to above 95\%).
-\item[A2. Common support.] Every \ac{NIDS} cell has \ac{FinScope} donors. This holds:
-each of the 45 cells has at least 30, and no draw used the fallback.
+\item[A2. Common support.] Every \ac{NIDS} cell has \ac{FinScope} donors. Each of the 45 cells
+has at least 30, and no draw used the fallback.
 \item[A3. Population comparability.] The two instruments sample the same population, and a
 donor's answers stand for its household. \ac{FinScope} interviews one adult per household, chosen
 by Kish grid, and asks about accounts and credit in that adult's own name (\texttt{F1},
-\texttt{G10}) or used in the past twelve months (\texttt{G11}--\texttt{G14}). The imputed flags
-therefore record one adult's holdings and understate holding in households with several adults.
-The product questions name the same instruments the \ac{CCMR} categorises, so each flag can be
-priced from the statutory rate table.
+\texttt{G10}) or used in the past twelve months (\texttt{G11}--\texttt{G14}). The product questions name the same instruments the \ac{CCMR} categorises, so the
+statutory rate table can price each flag.
 \item[A4. Joint-structure preservation.] Because one donor supplies all six flags, the imputed
 joint distribution of products within a cell follows the weighted donor distribution in
-expectation. Finite draws need not reproduce it exactly. This is why single-donor transfer was chosen over per-flag imputation
-(Figure~\ref{fig:cell-donor}c), and it matters because the combination of products a
-household holds prices its opening traditional debt.
+expectation. Finite draws need not reproduce it exactly. We chose single-donor transfer over
+per-flag imputation for this reason (Figure~\ref{fig:cell-donor}c).
 \item[A5. Weight-proportional draw.] Drawing in proportion to \ac{FinScope} weight reproduces
 that survey's weighted cell marginals in expectation. Table~\ref{tab:imputation_errors}
 (national, 1.8 points at most) and the by-quintile check (2.3 points at most) test it; national
@@ -56,24 +52,25 @@ gaps also absorb differences between the two surveys' cell compositions.
 \subsection{Circumstances Under Which the Match Is Problematic}\label{app:match-problems}
 
 \begin{description}
-\item[P1. Within-cell heterogeneity.] Anything that predicts inclusion within a cell, such as urban or
-rural location, education and the formality of employment, is not matched on. Donor flags still vary within each cell, but their associations with these recipient
-characteristics are lost. If those associations concentrate borrowing among liquidity-constrained
-households, the model may understate exposure concentration. The direction and size of that
-effect are not established by the marginal checks.
-\item[P2. Small-cell donor reuse.] Recipients are drawn with replacement from pools that in
-three cells are near the 30-donor floor, and in the densest cells outnumber donors nearly ten
-to one. A heavily reused donor's flag vector is copied to many recipients, which reduces the
-effective sample of flag vectors below the nominal 10{,}841. The 5.1\% concentration figure in
+\item[P1. Within-cell heterogeneity.] The match ignores anything that predicts inclusion within a
+cell, such as urban or rural location, education and the formality of employment. Donor flags
+still vary within each cell, but their associations with these recipient characteristics are
+lost. If those associations concentrate borrowing among liquidity-constrained households, the
+model may understate exposure concentration. The marginal checks establish neither the direction
+nor the size of that effect.
+\item[P2. Small-cell donor reuse.] Recipients draw with replacement from pools that in three
+cells are near the 30-donor floor; in the densest cells recipients outnumber donors nearly ten
+to one. Many recipients copy a heavily reused donor's flag vector, so the effective sample of
+flag vectors is below the nominal 10{,}841. The 5.1\% concentration figure of
 Appendix~\ref{app:match-procedure} is national and does not bound concentration within a cell.
 \item[P3. Matching-key error.] \ac{FinScope} income is banded and in 2019 Rands, so a donor's
 quintile rests on a band midpoint divided by household size and placed against 2017 cut points.
 Donors therefore do not split evenly into fifths, and misassignment across a quintile boundary
 places a donor in the wrong cell.
 \item[P4. Respondent, not household.] Because \ac{FinScope} records one adult's holdings
-(A3), a multi-adult household is imputed the inclusion of one member. Banked status, which gates
+(A3), the match gives a multi-adult household the inclusion of one member. Banked status, which gates
 \ac{BNPL} eligibility, and the product flags that price opening debt are therefore likely to be
-understated for larger households; the direction on default is not established.
+understated for larger households. The direction of the effect on default is not established.
 \item[P5. Vintage.] The flags are 2019 observations imposed on a 2017 population. Banked status
 was rising over that interval, so the 82.8\% \ac{BNPL}-eligibility ceiling is plausibly
 too generous for 2017. The magnitude is unknown, and the categorical flags cannot be deflated.
@@ -82,10 +79,10 @@ within the cell, agreement with the \ac{FinScope} cell marginals is expected by 
 The seven Group B checks in Table~\ref{tab:validation} therefore verify the implementation and
 say nothing about the population's external validity; Section~\ref{sec:data-validation} does not
 count them as validation.
-\item[P7. The joint distribution is never externally validated.] Only marginals are checked. No
-independent South African benchmark was located for the joint distribution of credit-product
-holding. Copying observed combinations supports plausibility but does not verify the resulting
-joint distribution in the recipient population.
+\item[P7. The joint distribution is never externally validated.] The checks cover only
+marginals. We located no independent South African benchmark for the joint distribution of
+credit-product holding. Copying observed combinations supports plausibility but does not verify
+the resulting joint distribution in the recipient population.
 \end{description}
 
 \subsection{Which of These Would Move a Result}\label{app:match-results}
@@ -95,9 +92,8 @@ adoption levels, in opposite directions.
 The access sweep tests sensitivity to eligibility levels, but does not reconstruct who was banked
 in 2017. Lost within-cell associations (P1) can affect both the distribution of exposure and
 aggregate default, since household responses are non-linear.
-We have not ranked donor reuse and income-band error (P2--P3). P6 and P7 limit the
-validation claim: agreement on construction targets cannot show that the imputed population
-reproduces relationships that were not observed.
+We have not ranked donor reuse and income-band error (P2--P3). P6 and P7 bear on the validation
+claim only.
 
 A statistical fusion on more matching variables would relax A1; Appendix~\ref{app:rationale}
 explains why we did not use it.
@@ -113,7 +109,7 @@ Figure~\ref{fig:pop-fidelity} compares the 5{,}000-agent resample with its sourc
 \centering
 \caption{National rates for the six imputed indicators}
 \label{tab:imputation_errors}
-\tabnote{This table compares the national rate of each imputed indicator in three populations: the \ac{FinScope} 2019 target, weighted by its survey weight; the 10{,}841-household synthetic population after matching, weighted by \ac{NIDS} survey weight; and the unweighted 5{,}000-agent resample used in the simulation. The difference column is synthetic less \ac{FinScope}, in percentage points, computed before rounding; the tolerance is 3 points (Table~\ref{tab:validation}). Because the match draws donors within the same quintile-by-province cell in proportion to weight, agreement here is expected by construction: it tests the implementation, not the population's external validity (P6, Appendix~\ref{app:match-problems}).}
+\tabnote{The national rate of each imputed indicator in three populations: the \ac{FinScope} 2019 target, weighted by its survey weight; the 10{,}841-household synthetic population after matching, weighted by \ac{NIDS} survey weight; and the unweighted 5{,}000-agent resample used in the simulation. The difference column is synthetic less \ac{FinScope}, in percentage points, computed before rounding; the tolerance is 3 points (Table~\ref{tab:validation}). Agreement is expected by construction, so the table tests the implementation only (P6, Appendix~\ref{app:match-problems}).}
 \begin{tabular}{lrrrr}
 \toprule
 \textbf{Imputed indicator} & \textbf{FinScope 2019} & \textbf{Synthetic} & \textbf{Agents} & \textbf{Difference} \\
@@ -134,7 +130,7 @@ Personal loan    &  2.1 &  2.3 &  2.3 & 0.2 \\
 \includegraphics[width=\textwidth]{figures/fig_inclusion_fidelity.png}
 \caption{Fidelity of the imputed indicators}
 \label{fig:inclusion-fidelity}
-\tabnote{Panel (a) compares the national rate of each of the six imputed indicators across the \ac{FinScope} 2019 target, the weighted synthetic population and the unweighted 5{,}000-agent population, as in Table~\ref{tab:imputation_errors}. Panel (b) shows the synthetic-less-\ac{FinScope} gap for each indicator within each per-capita income quintile, thirty cells in all; the largest single deviation is 2.3 points against a tolerance of 5. Quintiles are the weighted \ac{NIDS} bounds of Appendix~\ref{app:variables}.}
+\tabnote{(a) National rate of each of the six imputed indicators in the three populations of Table~\ref{tab:imputation_errors}. (b) Synthetic-less-\ac{FinScope} gap for each indicator within each per-capita income quintile, thirty cells in all; the largest single deviation is 2.3 points against a tolerance of 5. Quintiles are the weighted \ac{NIDS} bounds of Appendix~\ref{app:variables}.}
 \end{figure}
 
 \begin{figure}[H]

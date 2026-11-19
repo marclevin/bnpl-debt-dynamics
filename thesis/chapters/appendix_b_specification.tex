@@ -11,7 +11,7 @@ Table~\ref{tab:design-concepts} gives the model's treatment of the eleven \ac{OD
 \begin{longtable}{L{2.9cm}L{7.3cm}L{3.2cm}}
 \caption{\ac{ODD} design concepts and design exclusions}
 \label{tab:design-concepts} \\
-\multicolumn{3}{p{13.4cm}}{\footnotesize The eleven design concepts of the \ac{ODD} protocol~\citep{grimm2020odd}, each with the model's treatment and the literature that grounds it; ``None'' in the source column marks a modelling choice with no external anchor. The final row lists the eight mechanisms excluded by design and the reason for each. The absence of default-to-income and lender-loss feedback limits the contagion mechanisms tested in Section~\ref{sec:results-rq2}.} \\
+\multicolumn{3}{p{13.4cm}}{\footnotesize The eleven design concepts of the \ac{ODD} protocol~\citep{grimm2020odd}, each with the model's treatment and the literature that grounds it; ``None'' in the source column marks a modelling choice with no external anchor. The final row lists the eight mechanisms excluded by design and the reason for each.} \\
 \toprule
 \textbf{Concept} & \textbf{Treatment} & \textbf{Source} \\
 \midrule
@@ -51,17 +51,12 @@ Exclusions & Eight mechanisms are excluded by design. \emph{No macroeconomic dyn
 \subsection{Parameter Register}\label{app:register}
 
 Table~\ref{tab:param-register} gives every parameter with its value, provenance and sweep range.
-It is generated from the parameter declarations in \texttt{simulation/config.py} by
-\texttt{notebooks/scripts/generate\_param\_register.py}.
+\texttt{notebooks/scripts/generate\_param\_register.py} generates it from the parameter
+declarations in \texttt{simulation/config.py}.
 
-Four groups of entries call for caution:
+Section~\ref{sec:lim-calibration} sets the fitted and derived entries. Three other groups call
+for caution:
 \begin{itemize}
-    \item \textbf{The fitted and derived parameters.} Payment friction and arrears persistence
-    (Submodel~6) are fitted jointly to the five \ac{CCMR} arrears bands. The separation rate
-    (Submodel~1) is derived from the stable-employment condition, and the write-off rate
-    (Submodel~7) from the stationarity of the \ac{CCMR} 120+ stock; neither is fitted
-    (Section~\ref{sec:lim-calibration}). Which households start in arrears, and the 120+ ages,
-    are assumed.
     \item \textbf{The uncited rules.} The shortfall borrowing amount (Submodel~4), \ac{BNPL} relief
     of a shortfall and its cap (Submodel~5), the minimum-payment fraction (Submodel~6) and platform
     routing (Submodel~13) have no literature anchor, and each is varied in at least one arm. Arrears
@@ -73,15 +68,14 @@ Four groups of entries call for caution:
     want-driven order to what the household can pay at checkout; and refusal at the fee cap
     (Submodel~14).
     \item \textbf{The uncalibrated peer coefficients.} $q_{\text{base}}$, $\beta$ and the
-    threshold parameters of Submodel~11 have no South African estimate. The
-    $\beta = 0$ and $\gamma = 0$ control arms are reported beside every peer-influence result;
+    threshold parameters of Submodel~11 have no South African estimate. We report the
+    $\beta = 0$ and $\gamma = 0$ control arms beside every peer-influence result;
     the level-sensitivity arms run at $\beta = 0$ only.
-    \item \textbf{The rolling limit.} We found no South African provider that publishes a
-    limit~\citep{payflex_limits}. We set
-    $\lambda = 0.10$ so that four platform limits sum to about Woolard's illustrative
+    \item \textbf{The rolling limit.} We set $\lambda = 0.10$ (Section~\ref{sec:servicing}) so
+    that four platform limits sum to about Woolard's illustrative
     \pounds1{,}000 of credit amassed across several lenders~\citep{woolard2021}, which is 39\% of United
     Kingdom median monthly equivalised household disposable income in the year to March 2020
-    \citep{ons_income_fye2020}. We sweep $\lambda$ from 0.10 to 1.00 and read the sweep against a
+    \citep{ons_income_fye2020}. We read the sweep of $\lambda$ from 0.10 to 1.00 against a
     band of 0.10 to 0.48. The upper end is Afterpay's maximum of A\$2{,}000 as a share of
     Australian median monthly equivalised household disposable income in 2019--20
     \citep{asic2020rep672,abs_income_2019_20}. The Australian scale puts a multi-member

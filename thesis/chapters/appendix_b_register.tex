@@ -78,7 +78,7 @@ fee cap and the assumed order cap, are set at 2026 prices and deflated once (App
 \addlinespace
 \texttt{min\_\allowbreak{}payment\_\allowbreak{}frac} & 6 & 0.05 & assumed & Minimum payment as a share of the balance per month. The \ac{NCA} prescribes no formula. & 0.025--0.10 \\
 \addlinespace
-\texttt{distress\_\allowbreak{}rule} & 7 & arrears & sourced & A household defaults when its oldest unpaid instalment on any facility, traditional or \ac{BNPL}, is \texttt{k\_default} ticks old (Section~\ref{sec:sequence}). The earlier rule, \texttt{streak}, defaulted a household after \texttt{k\_default} consecutive ticks of unpaid food, rent or debt service; it is kept only for the comparison in Appendix~\ref{app:calibration}. & streak in that comparison \\
+\texttt{distress\_\allowbreak{}rule} & 7 & arrears & sourced & A household defaults when its oldest unpaid instalment on any debt, traditional or \ac{BNPL}, is \texttt{k\_default} ticks old (Section~\ref{sec:sequence}). The earlier rule, \texttt{streak}, defaulted a household after \texttt{k\_default} consecutive ticks of unpaid food, rent or debt service; it is kept only for the comparison in Appendix~\ref{app:calibration}. & streak in that comparison \\
 \addlinespace
 \texttt{initial\_\allowbreak{}arrears} & 7 & on & sourced & The run starts from the 2017-Q1 \ac{CCMR} age profile~\citep{ncr_ccmr_2017}: credit-active households are placed in each band at its share, those with the least income left after food, rent and debt service in the oldest bands. Ages in the 120+ band are drawn over 9--26 ticks, an assumption. Households placed at 91+ days start in default. & off starts every household current \\
 \addlinespace

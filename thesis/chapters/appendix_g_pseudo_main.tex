@@ -1,8 +1,7 @@
 \section{Pseudocode: Main Simulation Loop}
 \label{app:pseudo-main}
 
-The main loop runs for $T$ ticks. Within a tick, households act in a random order redrawn every
-tick; the peer signal is recomputed once, after every household has acted. Algorithm~\ref{alg:main} dispatches the tick.
+Algorithm~\ref{alg:main} runs the model for $T$ ticks.
 
 \begin{algorithm}[H]
 \caption{Main simulation}
@@ -21,19 +20,11 @@ tick; the peer signal is recomputed once, after every household has acted. Algor
 
 \subsection{The Household Tick}\label{app:main-tick}
 
-Algorithm~\ref{alg:tick} is the seven-step sequence of Section~\ref{sec:sequence}, with the step
-numbers of that list marked. Credit is sought at step~4 for the shortfall realised at steps~2
-and~3, before the payments it funds are made, and pays any food and rent left unpaid first
-($\mathbb{1}^{\text{fund}}$, on at the reference values). Arrears on every facility are held as unpaid
-amounts dated by the tick they fell due; Function~\textsc{Age} clears the oldest first and opens
-a new amount for what falls due unpaid. A defaulted household is non-performing: nothing falls due
-or is collected, and its arrears keep ageing until it is written off. The switch
-$\mathbb{1}^{\text{streak}}$ restores the earlier rule, under which default follows $k$
-consecutive distressed ticks; the distress indicator and $\mathbb{1}^{\text{clear}}$ act only
-under it. The single-tick arm sets $\mathbb{1}^{\text{pers}}$ off, which also disables labour
-flows, so a job loss lasts one tick, only wage-dominant households are exposed, and nobody is
-hired. Payment friction is drawn whether or not the household has the cash for the traditional
-instalment.
+Algorithm~\ref{alg:tick} is the seven-step sequence of Section~\ref{sec:sequence}, with its step
+numbers marked. The model holds the arrears on traditional debt and on each \ac{BNPL} agreement as
+unpaid amounts dated by the tick they fell due; Function~\textsc{Age} clears the oldest first and
+opens a new amount for what falls due unpaid. For a defaulted household nothing falls due and
+nothing is collected, but its arrears keep ageing until write-off.
 
 \begin{algorithm}[H]
 \caption{Household tick, for household $i$ at tick $t$}
@@ -126,21 +117,12 @@ first tick in the 91--120 band.
 
 \subsection{Credit Applications and the Regulation 23A Gate}\label{app:main-gate}
 
-Algorithm~\ref{alg:gate} is the shortfall path of Submodels~3 to~5 and~9. The household asks
-for the amount Submodel~4 specifies and takes \ac{BNPL} first where it can, up to $\kappa$ times
-its monthly discretionary budget $E^d_i$ (the cap $\mathbb{1}^{\text{cap}}$, removed in the three uncapped sensitivity arms). With
-$\mathbb{1}^{\text{short}}$ off, in a further sensitivity arm, the whole request goes to the
-traditional lender. An agreement of value $F$ frees $F(1 - 1/N)$ in cash, because $F/N$ is paid at
-checkout. The household applies to the traditional lender for the amount it still lacks, which is
-the request less the cash that \ac{BNPL} freed. The lender's test is the residual-income calculation on
-the liabilities the bureau shows it, and the line marked bureau visibility is the only place the reported 2026
-arrangements enter the model: with $\mathbb{1}^{\text{bur}}$ on, the household's
-\ac{BNPL} instalments and arrears on every platform, $o_i$, are added to the visible obligations. Both gates assess the
-household on its income at initialisation, which an unemployment spell does not reduce. A granted loan is booked: it joins the
-household's one consolidated traditional balance at the unsecured terms of
-Table~\ref{tab:credit-terms}, raising the balance and the scheduled service and reweighting the
-rate. Because the bureau shows scheduled service, each grant uses up residual-income headroom
-and repeated borrowing limits itself.
+Algorithm~\ref{alg:gate} is the shortfall path of Submodels~3 to~5 and~9
+(Section~\ref{sec:amount}). The line marked bureau visibility is the only place the reported 2026
+arrangements enter the model. A granted loan joins the household's one consolidated traditional
+balance at the unsecured terms of Table~\ref{tab:credit-terms}. Because the bureau shows
+scheduled service, each grant uses up residual-income headroom, so repeated borrowing limits
+itself.
 
 \begin{algorithm}[H]
 \caption{Credit application and the Regulation 23A gate}
@@ -182,17 +164,12 @@ and repeated borrowing limits itself.
 \subsection{\texorpdfstring{\acs{BNPL}}{BNPL} Origination and Platform Routing}\label{app:main-bnpl}
 
 Algorithm~\ref{alg:bnpl} covers the want-driven purchase of Submodels~3 and~4 and the routing
-of any \ac{BNPL} request across platforms that cannot see one another (Submodels~12 and~13).
-The platform's screen is a per-order cap and a rolling limit expressed in receivable terms.
-The line marked screening applies the Regulation 23A test to the origination itself and is on
-only in the screening arms. The test is shown the household's traditional service and $o_i$, one
-instalment for each live \ac{BNPL} agreement on every platform plus any arrears, whether or not
-bureau visibility is on. A request goes to the platforms in a random order, redrawn for every request,
-and whatever one platform does not finance passes to the next. No rule assigns a household a
-number of platforms. A sensitivity arm, $\mathbb{1}^{\text{loyal}}$, tries the platforms the
-household already owes first, so a household spreads across platforms only when a limit binds. The hypothetical cap $\bar n$ counts the platforms on which the household owes a
-balance, $n^{\text{owed}}_i$. A household at the cap is refused every draw, and a household below
-it may open at most $\bar n - n^{\text{owed}}_i$ further platforms in one request.
+of any \ac{BNPL} request across platforms that cannot see one another (Submodels~12 and~13;
+Section~\ref{sec:stacking}). The platform's screen is a per-order cap and a rolling limit in
+receivable terms. The line marked screening applies the Regulation 23A test to the origination
+itself, in the screening arms only. Under the platform cap $\bar n$ of Appendix~\ref{app:levers},
+a household below the cap may open at most $\bar n - n^{\text{owed}}_i$ further platforms in one
+request.
 
 \begin{algorithm}[H]
 \caption{\ac{BNPL} origination and platform routing}
@@ -234,13 +211,9 @@ it may open at most $\bar n - n^{\text{owed}}_i$ further platforms in one reques
 
 \subsection{\texorpdfstring{\acs{BNPL}}{BNPL} Collection, Late Fees and Cut-Off}\label{app:main-collect}
 
-Algorithm~\ref{alg:collect} is Submodel~14. Nothing is collected on an agreement in the tick
-in which it is opened, because its first instalment was the checkout payment. From the next tick
-an instalment falls due whether or not it is met,
-so the pay-in-four schedule lands on tick boundaries regardless of payment. What is unpaid
-becomes arrears and accrues the late fee up to the cap, which is the lower of $\bar\phi$ and half
-the purchase price. Once the cap is exhausted the household
-is cut off by that platform only.
+Algorithm~\ref{alg:collect} is Submodel~14. From the tick after checkout an instalment falls due
+whether or not it is met, so the pay-in-four schedule lands on tick boundaries regardless of
+payment.
 
 \begin{algorithm}[H]
 \caption{\ac{BNPL} collection}
@@ -271,11 +244,9 @@ is cut off by that platform only.
 
 \subsection{The Peer Signal}\label{app:main-peer}
 
-Algorithm~\ref{alg:peer} is Submodel~11. The group share is computed once per tick from
-end-of-tick balances and read by every household in the next tick. A defaulted household's
-agreements are not collected, so its frozen balance stays in $B_{ip}$, and in the signal, until
-write-off. With \ac{BNPL} disabled the signal is identically
-zero and the channel is inert, which is why the calibration baseline is untouched by it.
+Algorithm~\ref{alg:peer} is Submodel~11 (Section~\ref{sec:peer-influence}). With \ac{BNPL}
+disabled the signal is identically zero, so the peer channel cannot affect the calibration
+baseline.
 
 \begin{algorithm}[H]
 \caption{Peer-signal update and propensity}

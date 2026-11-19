@@ -2,8 +2,8 @@
 \label{app:pseudo-init}
 
 This appendix and Appendix~\ref{app:pseudo-main} give the model as pseudocode, following the
-convention of a master algorithm that dispatches to sub-algorithms. Each algorithm
-has been checked line by line against the module that implements it (\texttt{simulation/}). Two
+convention of a master algorithm that dispatches to sub-algorithms. We checked each algorithm
+line by line against the module that implements it (\texttt{simulation/}). Two
 sensitivity arms change a rule without a switch shown here: purchases sized on $Y_i$ in place of
 $E^d_i$ (Submodel~4) and a fixed activation order (Submodel~17). Table~\ref{tab:notation} fixes the notation used throughout.
 Sets are in script capitals, $H$ and $P$ are the sizes of $\mathcal{H}$ and $\mathcal{P}$, and
@@ -19,12 +19,11 @@ than 5{,}000 each use their own generator.
 \begin{longtable}{L{2.6cm}L{7.4cm}L{3.4cm}}
 \caption{Notation}
 \label{tab:notation} \\
-\multicolumn{3}{p{13.4cm}}{\footnotesize This table defines every symbol used in
+\multicolumn{3}{p{13.4cm}}{\footnotesize Every symbol used in
 Algorithms~\ref{alg:init} to~\ref{alg:peer}. Flows are per 14-day tick unless marked monthly; all
 money is in 2017 Rands. The right-hand column names the parameter in
 \texttt{simulation/config.py}, or the field, method or function in \texttt{simulation/}, that
-carries the quantity, so that a symbol can be traced to code. Symbols already used in the body
-(Equation~\ref{eq:peer}) are unchanged.} \\
+carries the quantity. Symbols already used in the body (Equation~\ref{eq:peer}) are unchanged.} \\
 \toprule
 \textbf{Symbol} & \textbf{Meaning} & \textbf{Code} \\
 \midrule
@@ -104,7 +103,7 @@ $q_{\text{base}}$, $\beta$ & base propensity; peer weight (linear rule) & \textt
 $\gamma$, $\mu_\theta$, $\sigma_\theta$ & propensity step; threshold mean and dispersion (threshold rule) & \texttt{gamma}, \texttt{mu\_theta}, \texttt{sigma\_theta} \\
 $k^{\text{cool}}$, $\bar n$ & cooling-off ticks; cap on the number of platforms owed (both off in the benchmark) & \texttt{k\_cool}, \texttt{stacking\_cap} \\
 \addlinespace
-\multicolumn{3}{l}{\emph{Scenario switches}} \\
+\multicolumn{3}{l}{\emph{Switches}} \\
 $\mathbb{1}^{\text{bnpl}}$ & \ac{BNPL} platforms present (off in the calibration baseline) & \texttt{bnpl\_enabled} \\
 $\mathbb{1}^{\text{bur}}$ & \ac{BNPL} obligations visible to the bureau (bureau visibility) & \texttt{bnpl\_bureau\_visible} \\
 $\mathbb{1}^{\text{aff}}$ & Regulation 23A test applied to \ac{BNPL} originations (screening) & \texttt{bnpl\_affordability\_check} \\
@@ -137,7 +136,7 @@ simulation and turns that file into agents. Algorithm~\ref{alg:init} dispatches 
 \subsection{Build the Survey Backbone}\label{app:init-backbone}
 
 Algorithm~\ref{alg:backbone} filters the \ac{NIDS} household file and derives the six core
-variables of Section~\ref{sec:backbone}; every rule is specified in Appendix~\ref{app:variables}.
+variables of Section~\ref{sec:backbone}; Appendix~\ref{app:variables} specifies every rule.
 
 \begin{algorithm}[H]
 \caption{Build the survey backbone}
@@ -160,8 +159,7 @@ variables of Section~\ref{sec:backbone}; every rule is specified in Appendix~\re
 
 \subsection{Cell-Donor Match}\label{app:init-match}
 
-Algorithm~\ref{alg:match} is the procedure of Appendix~\ref{app:matching}. The quintile-only
-fallback exists for completeness and was never triggered.
+Algorithm~\ref{alg:match} is the procedure of Appendix~\ref{app:matching}.
 
 \begin{algorithm}[H]
 \caption{Cell-donor match}
@@ -204,9 +202,8 @@ in Algorithm~\ref{alg:gate}.
 \subsection{Resample and Instantiate}\label{app:init-resample}
 
 Algorithm~\ref{alg:resample} draws the agent population and sets every state variable to its
-opening value. Eligibility and the repayment archetype are the two stochastic endowments drawn
-from the simulation stream; the threshold endowment comes from the separate initialisation
-stream.
+opening value. The simulation stream supplies the two stochastic endowments, eligibility and the
+repayment archetype.
 
 \begin{algorithm}[H]
 \caption{Resample and instantiate}
@@ -231,10 +228,9 @@ stream.
 \end{algorithm}
 
 Algorithm~\ref{alg:seed} places the 2017-Q1 \ac{CCMR} age profile on the households that owe
-traditional debt at the start (Section~\ref{sec:lim-calibration}). It fills the oldest band first,
-with the households that have least income left after food, rent and debt service, and draws each
-age within its band from the initialisation stream, so the simulation stream is unchanged. Each
-tick of age is one unpaid instalment. The bands in ticks are those of
+traditional debt at the start (Section~\ref{sec:lim-calibration}). It draws each age within its
+band from the initialisation stream, so the simulation stream is unchanged. Each tick of age is
+one unpaid instalment. The bands in ticks are those of
 Appendix~\ref{app:main-tick}, with 120+ ages drawn up to 26 ticks, an assumption.
 
 \begin{algorithm}[H]
