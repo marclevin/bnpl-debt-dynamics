@@ -373,7 +373,7 @@ def tab_stacking(rq1: pd.DataFrame) -> None:
         f"can owe two (--). Default: including the households placed in default at the start. "
         f"Replicate standard deviations are at most {sd_max * 100:.1f} "
         f"points for that share and {sd_def * 100:.2f} for default. Default with six platforms less "
-        f"one: {', '.join(contrasts)}, $\\pm$ one standard error, paired by seed.",
+        f"one: {', '.join(contrasts)}, $\\pm$~one standard error, paired by seed.",
         # a wider gap between the two blocks of columns
         "c" + " R{1.27cm}" * k + r" @{\hspace{14pt}}" + " R{1.27cm}" * k,
         f"& \\multicolumn{{{k}}}{{c}}{{\\textbf{{\\begin{{tabular}}[b]{{@{{}}c@{{}}}}Owing two or more platforms\\\\(\\% of households)\\end{{tabular}}}}}} "
@@ -536,9 +536,16 @@ def tab_bnpl_on_checks(rq0: pd.DataFrame) -> None:
 # The two scenario tables share their heads. At \small five columns of changes with their
 # standard errors do not fit the text width, so both are \footnotesize.
 SCEN_COLS = "H{4.2cm}R{2.0cm}R{2.3cm}R{2.3cm}R{2.3cm}"
-SCEN_HEAD = (r"& & \multicolumn{3}{c}{\textbf{Change from benchmark}} \\ \cmidrule(lr){3-5}"
-             "\n\\textbf{Outcome} & \\textbf{Benchmark} & \\textbf{Bureau visibility} & "
-             "\\textbf{Screening} & \\textbf{Both}")
+
+
+def scen_head(width: str) -> str:
+    """The scenario heads; the wrapped "Bureau visibility" is bottom-aligned by hb() in a column
+    of the given width, as in the other tables."""
+    return (r"& & \multicolumn{3}{c}{\textbf{Change from benchmark}} \\ \cmidrule(lr){3-5}"
+            f"\n\\textbf{{Outcome}} & \\textbf{{Benchmark}} & {hb('Bureau visibility', width)} & "
+            "\\textbf{Screening} & \\textbf{Both}")
+
+
 def tab_scenarios(rq3s: pd.DataFrame) -> None:
     """One table for RQ3: the benchmark level and each arm's change from it, at both betas."""
     keys = [("bench", "Benchmark"), ("bureau", "Bureau visibility"), ("afford", "Screening"),
@@ -607,7 +614,7 @@ def tab_scenarios(rq3s: pd.DataFrame) -> None:
         "traditional lender's. Holding: at the final tick. Quintiles are of per-capita income. "
         "Food and rent left unpaid: Table~\\ref{tab:scenarios-distress}.",
         SCEN_COLS,
-        SCEN_HEAD,
+        scen_head('2.3cm'),
         rows,
         size=r"\footnotesize",
         placement=FLOAT_NEAR,
@@ -655,7 +662,7 @@ def tab_scenarios_distress(rq3s: pd.DataFrame) -> None:
         "Runs record shortfalls as indicators, not Rand amounts.",
         # changes at three decimals need wider columns; the labels are short
         "H{3.3cm}R{2.0cm}R{2.65cm}R{2.65cm}R{2.65cm}",
-        SCEN_HEAD,
+        scen_head('2.65cm'),
         rows,
         size=r"\footnotesize",
         placement=FLOAT_NEAR,
@@ -720,13 +727,13 @@ def tab_distribution(rq0: pd.DataFrame) -> None:
         "limit for that household reduced or refused. Purchase: mean want-driven purchase, in 2017 "
         "Rands.",
         # \footnotesize: eight columns, two of changes with standard errors
-        "c R{1.4cm} R{1.25cm} R{2.25cm} R{2.25cm} R{1.5cm} R{1.25cm} R{1.6cm}",
+        "c R{1.4cm} R{1.25cm} R{2.25cm} R{2.25cm} R{1.4cm} R{1.25cm} R{1.75cm}",
         r"& \multicolumn{2}{c}{\textbf{No \ac{BNPL}}} & \multicolumn{2}{c}{\textbf{Change in default (pp)}} "
         r"& \multicolumn{3}{c}{\textbf{\ac{BNPL}, $\beta=0$}} \\ "
         r"\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-8}"
         f"\n\\textbf{{Quintile}} & {hb('Default (\\%)', '1.4cm')} & {hb('Debt/ income', '1.25cm')} & "
-        f"${{\\beta=0}}$ & ${{\\beta=0.3}}$ & {hb('Holding (\\%)', '1.5cm')} & "
-        f"{hb('Limit binds (\\%)', '1.25cm')} & {hb('Purchase (R)', '1.6cm')}",
+        f"${{\\beta=0}}$ & ${{\\beta=0.3}}$ & {hb('Holding (\\%)', '1.4cm')} & "
+        f"{hb('Limit binds (\\%)', '1.25cm')} & {hb('Purchase (R)', '1.75cm')}",
         rows,
         size=r"\footnotesize",
         placement=FLOAT_NEAR,
@@ -939,7 +946,7 @@ def tab_robustness(rob: pd.DataFrame) -> None:
     for lam in (0.25, 0.5, 1.0):
         rows.append(row(f"{lam:.2f}", f"rob_limit{lam}", "rob_limit0.1"))
     rows += [group_row("Income-shock persistence (Submodel 1)", 3),
-             row("persistent until re-employment (default rule, seeds 50{,}000--)", "rob_amount_shortfall"),
+             row("persistent until re-employment (default rule, seeds 50{,}000--50{,}019)", "rob_amount_shortfall"),
              row("single-tick income shock", "rob_shock_single_tick", "rob_amount_shortfall")]
     N.update(
         rob_act_random=ms(a("rob_act_random").default_rate_final)[0],
@@ -1309,7 +1316,7 @@ def tab_effect_split(rq0: pd.DataFrame, screen: pd.DataFrame, redraw: pd.DataFra
         "rate; its runs with and without \\ac{BNPL} share the draw and the seed, so the standard error "
         "covers the population draw as well as simulation variance (Section~\\ref{sec:sim-params}). "
         "Households short from the start: surveyed income below committed expenditure, "
-        f"{num(N['split_short_n'])} households in the benchmark population and {num(sizes['min'])} to "
+        f"{num(N['split_short_n'])} households in the fixed population and {num(sizes['min'])} to "
         f"{num(sizes['max'])} in the draws. Wage-income screen less benchmark, paired by seed: {note_diff}.",
         "H{3.6cm}R{2.6cm}R{2.9cm}R{2.9cm}",
         r"& \multicolumn{3}{c}{\textbf{Effect on default during the run (pp)}} \\ \cmidrule(lr){2-4}"

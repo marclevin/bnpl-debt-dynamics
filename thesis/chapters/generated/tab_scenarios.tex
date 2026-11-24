@@ -7,7 +7,7 @@
 \begin{tabular}{H{4.2cm}R{2.0cm}R{2.3cm}R{2.3cm}R{2.3cm}}
 \toprule
 & & \multicolumn{3}{c}{\textbf{Change from benchmark}} \\ \cmidrule(lr){3-5}
-\textbf{Outcome} & \textbf{Benchmark} & \textbf{Bureau visibility} & \textbf{Screening} & \textbf{Both} \\
+\textbf{Outcome} & \textbf{Benchmark} & \multicolumn{1}{>{\raggedleft\arraybackslash}b{2.3cm}}{\textbf{Bureau visibility}} & \textbf{Screening} & \textbf{Both} \\
 \midrule
 \multicolumn{5}{l}{\emph{No peer influence ($\beta = 0$)}} \\
 Default rate (\%) & 21.81 & $\boldsymbol{+0.20 \pm 0.07}$ & $\boldsymbol{-0.93 \pm 0.06}$ & $\boldsymbol{-0.90 \pm 0.05}$ \\
@@ -38,7 +38,7 @@ Default rate, Q5 (\%) & 17.02 & $+0.24 \pm 0.16$ & $+0.01 \pm 0.14$ & $+0.24 \pm
 \end{tabular}}
 \caption{Bureau visibility and mandatory screening}
 \label{tab:scenarios}
-{\ifdim\wd\gentabbox<0.9\linewidth\setlength{\linewidth}{\wd\gentabbox}\fi
+{\ifdim\wd\gentabbox<\linewidth\setlength{\linewidth}{\wd\gentabbox}\fi
 \tabnote{One hundred replicates per arm, seeds 80{,}000--80{,}099. The first column is the benchmark's mean, without its replicate standard deviation; the others are each arm's change from it $\pm$ one standard error, paired by seed, in the row's unit except for \ac{BNPL} volume, whose change is in \%. Default rate: share of all households in default at the final tick, including the 6.36\% placed in default at the start, the same households in every arm. Refused applications and lending: the traditional lender's. Holding: at the final tick. Quintiles are of per-capita income. Food and rent left unpaid: Table~\ref{tab:scenarios-distress}.}}
 \usebox{\gentabbox}
 \end{table}

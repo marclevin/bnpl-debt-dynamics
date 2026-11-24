@@ -20,7 +20,7 @@
 \end{tabular}}
 \caption{Stacking, volume and default by number of platforms}
 \label{tab:stacking}
-{\ifdim\wd\gentabbox<0.9\linewidth\setlength{\linewidth}{\wd\gentabbox}\fi
+{\ifdim\wd\gentabbox<\linewidth\setlength{\linewidth}{\wd\gentabbox}\fi
 \tabnote{Seeds 20{,}000--20{,}019. Owing two or more platforms, holders: share of the households holding \ac{BNPL} at the final tick that owe two or more platforms; ever-holders: share of the households that ever held \ac{BNPL} that owed two or more platforms at some tick. With one platform no household can owe two (--). The \ac{CFPB} reports that 32 to 33\% of United States borrowers in a year held simultaneous loans at two or more firms, an undercount by its own account~\citep{cfpb2025bnpl}. Volume: cumulative post-burn-in \ac{BNPL} lending. Replicate standard deviations of default are at most 0.53 points. Default: including the households placed in default at the start. Default with six platforms less one: $+0.13 \pm 0.13$ points at $\beta = 0$ and $+0.17 \pm 0.12$ at $\beta = 0.3$, $\pm$ one standard error, paired by seed.}}
 \usebox{\gentabbox}
 \end{table}

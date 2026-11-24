@@ -168,7 +168,7 @@ def main() -> None:
         r"\footnotesize",
         r"\setlength{\tabcolsep}{3pt}",
         # the widths and the eight inner \tabcolsep sum to \linewidth (418.25pt)
-        r"\begin{longtable}{@{}L{4.15cm}L{1.75cm}L{2.15cm}L{1.35cm}L{4.45cm}@{}}",
+        r"\begin{longtable}{@{}L{4.75cm}L{1.75cm}L{2.0cm}L{1.35cm}L{4.0cm}@{}}",
         r"\caption{The full parameter register}",
         r"\label{tab:param-register} \\",
         r"\multicolumn{5}{@{}p{\linewidth}@{}}{\footnotesize Every model parameter. Names, submodels,",

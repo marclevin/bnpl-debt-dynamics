@@ -77,10 +77,10 @@ Table~\ref{tab:further-caveats} indexes the limitations.
 \begingroup
 \setlength{\tabcolsep}{4pt}
 \small
-\begin{longtable}{L{3.1cm}L{6.2cm}L{4.1cm}}
+\begin{longtable}{@{}L{3.1cm}L{6.5cm}L{4.45cm}@{}}
 \caption{Index of limitations}
 \label{tab:further-caveats} \\
-\multicolumn{3}{p{13.4cm}}{\footnotesize Every limitation the thesis records. The first fifteen
+\multicolumn{3}{@{}p{\linewidth}@{}}{\footnotesize Every limitation the thesis records. The first fifteen
 bound a central claim; the body argues each at the location in the right-hand column, which also
 names the claim it bounds, and the statement column adds only figures the body does not give. The
 remaining ten do not bound a central claim, and the right-hand
@@ -96,7 +96,7 @@ column states what each bounds.} \\
 \endhead
 \bottomrule
 \endfoot
-\multicolumn{3}{l}{\emph{Bounding a central claim, argued in the body}} \\
+\multicolumn{3}{@{}l}{\emph{Bounding a central claim, argued in the body}} \\
 Default is a model construct & A household defaults when an instalment on any debt, traditional or \ac{BNPL}, is more than 90 days past due, the bureau construct; no external figure measures it for households. Its level rests on the starting profile, the threshold and arrears persistence & Sections~\ref{sec:sequence}, \ref{sec:lim-calibration}, \ref{sec:data-validation} and~\ref{sec:results-robustness}; bounds the level of default \\
 \addlinespace
 \ac{BNPL} arrears count as default & Default counts \ac{BNPL} arrears, and the bureau records every default although in the benchmark it does not record \ac{BNPL}. Most of the \ac{BNPL} effect comes through this route; Appendix~\ref{app:calibration} gives the effect under the earlier rule, which did not count them & Sections~\ref{sec:sequence} and~\ref{sec:results-injection}; bounds the size and sign of the \ac{BNPL} effect \\
@@ -129,7 +129,7 @@ Refused households have no fallback & A refused household has no other source of
 \addlinespace
 Income at the gate & Both affordability tests use surveyed income, which the model does not reduce during unemployment & Section~\ref{sec:asymmetry}; bounds the RQ3 results, including the fall in default under screening \\
 \addlinespace
-\multicolumn{3}{l}{\emph{Other limitations, recorded here}} \\
+\multicolumn{3}{@{}l}{\emph{Other limitations, recorded here}} \\
 \ac{FinScope} vintage & No 2017 wave exists, so the 2019 wave supplies the six
 financial-inclusion flags for a population otherwise fixed at 2017. The imported variables are
 categorical and need no deflation & Banked status gates \ac{BNPL} eligibility, so the 82.8\%

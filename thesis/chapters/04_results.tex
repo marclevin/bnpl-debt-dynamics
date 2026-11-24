@@ -22,6 +22,8 @@ pooled effect is $1.10 \pm 0.07$.
 % results/summary/results_numbers.json (blocks: Tables tab:baseline-arms, tab:access, the threshold
 % control and tab:effect).
 
+\input{chapters/generated/tab_baseline_arms}
+
 The effect runs through households that use \ac{BNPL} to bridge cash shortfalls and then fall
 more than 90 days past due on it. On the seeds of Table~\ref{tab:baseline-arms}, $0.94 \pm 0.01$ of the 1.08
 points are households in default on \ac{BNPL} alone. The remaining $0.14 \pm 0.11$, defaults that
@@ -56,7 +58,7 @@ Under the wage-income screen the platforms lend only to households with wage inc
 income from employment or self-employment. The arm lowers the effect by $0.58 \pm 0.12$ points, to
 $+0.50 \pm 0.09$ (Table~\ref{tab:effect-split}), so about half of the effect depends on the
 platforms lending to households with no wage income. Of the 55 the lender never lends to, 18
-still default, all among the 19 with wage income, which need not cover food and rent.
+still default, all among the 19 with wage income.
 % 0.58 +/- 0.12 and +0.50 +/- 0.09: split_screen_less_bench_all and split_screen_all (+ _se),
 % results/summary/results_numbers.json (seeds 10,000-10,019, beta = 0, paired by seed with the
 % no-BNPL arm of rq0). 19 and 18 (18.15 of the 55): never_lent_every_seed_wage and
@@ -64,10 +66,12 @@ still default, all among the 19 with wage income, which need not cover food and 
 % (notebooks/scripts/check_effect_split.py); 2,802 of the 4,142 eligible households pass
 % (eligible_screen, eligible_bench). Half: 0.58 and 0.50 of the 1.08 points.
 
+\input{chapters/generated/tab_effect_split}
+
 In the redrawn population the effect is $+1.13 \pm 0.06$ points, of which $+0.97 \pm 0.02$ are
 households short from the start (Table~\ref{tab:effect-split}). It does not differ detectably
-from the pooled $1.03 \pm 0.06$, and without \ac{BNPL} default during the run averages 14.37\%
-over the draws, as in the benchmark population.
+from the pooled $1.03 \pm 0.06$. Without \ac{BNPL}, default during the run averages 14.37\%
+over the draws, as in the fixed population.
 % +1.13 +/- 0.06 and +0.97 +/- 0.02: split_redraw_all and split_redraw_short (+ _se),
 % results_numbers.json (100 replicates, seeds 110,000-110,099, beta = 0, one population draw per
 % replicate). The standard deviation of the effect is 0.57 points across draws and 0.48 across
@@ -99,9 +103,6 @@ value of $\beta$ ($-$R$0.10 \pm 0.25$ million and $+$R$0.15 \pm 0.25$ million).
 % zero_savings_change_beta0 (+ _se), lending_change_* (+ _se), results_numbers.json (rq0, seeds
 % 10,000-10,019).
 
-\input{chapters/generated/tab_baseline_arms}
-
-\input{chapters/generated/tab_effect_split}
 
 \subsection{Peer Influence}
 \label{sec:results-beta}

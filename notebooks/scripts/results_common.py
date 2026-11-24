@@ -225,8 +225,8 @@ def table(
         + body
         + "\n\\bottomrule\n\\end{tabular}}\n"
         + f"\\caption{{{caption}}}\n\\label{{tab:{name.replace('tab_', '').replace('_', '-')}}}\n"
-        # the note takes the table's width when the table is under 90% of the line
-        + ("{\\ifdim\\wd\\gentabbox<0.9\\linewidth\\setlength{\\linewidth}{\\wd\\gentabbox}\\fi\n"
+        # the note takes the table's width when the table is narrower than the line
+        + ("{\\ifdim\\wd\\gentabbox<\\linewidth\\setlength{\\linewidth}{\\wd\\gentabbox}\\fi\n"
            if fit_note else "{\n")
         + f"\\tabnote{{{note}}}}}\n"
         + "\\usebox{\\gentabbox}\n"

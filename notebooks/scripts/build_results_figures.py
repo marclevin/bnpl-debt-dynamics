@@ -139,7 +139,7 @@ def fig_stacking(rq1: pd.DataFrame) -> None:
     axes[2].set_title("(c) Default rate")
     axes[0].set_ylabel("Share of all households (%)")
     axes[1].set_ylabel("Share of households that\never held BNPL (%)")
-    axes[2].set_ylabel("Share of all households (%)")
+    axes[2].set_ylabel("Population default rate (%)")
     for ax in axes:
         ax.set_xlabel("Number of BNPL platforms")
         ax.set_xticks(range(1, 7))
@@ -389,12 +389,17 @@ def fig_scenarios_appendix(rq3: pd.DataFrame, rq3s: pd.DataFrame) -> None:
                        Line2D([0], [0], color=RED, marker="D", lw=0, ms=4.2),
                        Line2D([0], [0], color=INK, ls="--", lw=0.8)],
                  ["implemented or proposed instrument", "hypothetical: no jurisdiction found that imposes it",
-                  "no change"], ncol=2, handlelength=1.4)
+                  "no change"], ncol=2, handlelength=1.4, columnspacing=1.0)
     fig.tight_layout(rect=(0, 0.165, 1, 1), w_pad=1.2)
     # One x-axis label for both panels, just under the tick labels and above the legend.
     r = fig.canvas.get_renderer()
     y_ticks = min(ax.xaxis.get_tightbbox(r).y0 for ax in axes) / fig.bbox.height
     x_mid = (axes[0].get_position().x0 + axes[1].get_position().x1) / 2
+    # The legend is centred on the two panels, as the axis label is, not on the whole figure,
+    # as far as the figure's right edge allows (it is about as wide as the two panels).
+    legend = fig.legends[-1]
+    half = legend.get_window_extent(r).width / fig.bbox.width / 2
+    legend.set_bbox_to_anchor((min(x_mid, 1 - half), 0.0), transform=fig.transFigure)
     fig.text(x_mid, y_ticks - 0.01, "Change in default against the benchmark (percentage points)", ha="center",
              va="top", fontsize=plt.rcParams["axes.labelsize"])
     save(fig, "fig_scenarios_appendix")

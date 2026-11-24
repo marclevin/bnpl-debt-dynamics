@@ -4,10 +4,10 @@
 \centering
 \ifdefined\gentabbox\else\newsavebox{\gentabbox}\fi
 \sbox{\gentabbox}{\footnotesize\setlength{\tabcolsep}{3pt}%
-\begin{tabular}{c R{1.4cm} R{1.25cm} R{2.25cm} R{2.25cm} R{1.5cm} R{1.25cm} R{1.6cm}}
+\begin{tabular}{c R{1.4cm} R{1.25cm} R{2.25cm} R{2.25cm} R{1.4cm} R{1.25cm} R{1.75cm}}
 \toprule
 & \multicolumn{2}{c}{\textbf{No \ac{BNPL}}} & \multicolumn{2}{c}{\textbf{Change in default (pp)}} & \multicolumn{3}{c}{\textbf{\ac{BNPL}, $\beta=0$}} \\ \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-8}
-\textbf{Quintile} & \multicolumn{1}{>{\raggedleft\arraybackslash}b{1.4cm}}{\textbf{Default (\%)}} & \multicolumn{1}{>{\raggedleft\arraybackslash}b{1.25cm}}{\textbf{Debt/ income}} & ${\beta=0}$ & ${\beta=0.3}$ & \multicolumn{1}{>{\raggedleft\arraybackslash}b{1.5cm}}{\textbf{Holding (\%)}} & \multicolumn{1}{>{\raggedleft\arraybackslash}b{1.25cm}}{\textbf{Limit binds (\%)}} & \multicolumn{1}{>{\raggedleft\arraybackslash}b{1.6cm}}{\textbf{Purchase (R)}} \\
+\textbf{Quintile} & \multicolumn{1}{>{\raggedleft\arraybackslash}b{1.4cm}}{\textbf{Default (\%)}} & \multicolumn{1}{>{\raggedleft\arraybackslash}b{1.25cm}}{\textbf{Debt/ income}} & ${\beta=0}$ & ${\beta=0.3}$ & \multicolumn{1}{>{\raggedleft\arraybackslash}b{1.4cm}}{\textbf{Holding (\%)}} & \multicolumn{1}{>{\raggedleft\arraybackslash}b{1.25cm}}{\textbf{Limit binds (\%)}} & \multicolumn{1}{>{\raggedleft\arraybackslash}b{1.75cm}}{\textbf{Purchase (R)}} \\
 \midrule
 Q1 & 26.03 & 0.08 & $\boldsymbol{+4.12 \pm 0.24}$ & $\boldsymbol{+4.21 \pm 0.16}$ & 6.8 & 20.6 & 108 \\
 Q2 & 21.56 & 0.11 & $+0.08 \pm 0.28$ & $+0.27 \pm 0.27$ & 8.9 & 20.4 & 171 \\
@@ -18,7 +18,7 @@ Q5 & 16.85 & 0.14 & $+0.26 \pm 0.24$ & $+0.33 \pm 0.21$ & 12.2 & 12.9 & 1{,}911 
 \end{tabular}}
 \caption{Outcomes by income quintile}
 \label{tab:distribution}
-{\ifdim\wd\gentabbox<0.9\linewidth\setlength{\linewidth}{\wd\gentabbox}\fi
+{\ifdim\wd\gentabbox<\linewidth\setlength{\linewidth}{\wd\gentabbox}\fi
 \tabnote{Per-capita income quintiles of 1{,}017, 987, 1{,}069, 937 and 990 households; seeds 10{,}000--10{,}019. Default: including the households placed in default at the start. Change: default with \ac{BNPL} less default without, $\pm$ one standard error, paired by seed. Holding: share holding \ac{BNPL} at the final tick. Debt/income: the quintile's total debt over its total monthly income. Limit binds: share of the quintile's platform requests that a platform's limit for that household reduced or refused. Purchase: mean want-driven purchase, in 2017 Rands.}}
 \usebox{\gentabbox}
 \end{table}

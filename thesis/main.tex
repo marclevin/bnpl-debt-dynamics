@@ -62,7 +62,9 @@
 \usepackage[round,sort]{natbib}
 \setcitestyle{aysep={,}}
 % natbib typesets agsm URLs with \textit, which breaks on % and _; read them with \url.
-\renewcommand{\harvardurl}{Available at:~\url}
+% No page break just before the URL line (pdfTeX's \vadjust pre puts the penalty above it), so
+% "Available at:" never starts a page cut off from the rest of its entry.
+\renewcommand{\harvardurl}{\vadjust pre{\nobreak}Available at:~\url}
 \usepackage{hyperref}
 % Links work but carry no coloured border or text colour, on screen or in print.
 \hypersetup{hidelinks, pdftitle={Buy Now, Pay Later and Household Credit Distress in South
@@ -79,7 +81,9 @@
 % In a longtable the note goes in a \multicolumn row instead.
 \newcommand{\tabnote}[1]{\par\vspace{2pt}\noindent\begin{minipage}{\linewidth}\footnotesize\sloppy #1\end{minipage}\par\vspace{4pt}}
 \usepackage{etoolbox}
-\AtBeginEnvironment{algorithmic}{\small}   % compact, as in the reference paper
+% Compact, as in the reference paper; ragged right, so a wrapped statement keeps even word
+% spaces (\Comment uses \hfill and stays flush right).
+\AtBeginEnvironment{algorithmic}{\small\raggedright}
 \algrenewcommand\alglinenumber[1]{}
 \captionsetup[algorithm]{labelsep=space}
 % acronym v1.50 ends each printonlyused entry with \\, which leaves a blank line between
@@ -196,11 +200,11 @@ defaults when an instalment on any credit, \ac{BNPL} included, is more than 90 d
 due. In the model \ac{BNPL} raises default mainly among the 3.6\% of households short from the
 start, whose surveyed income, possibly understated, does not cover food and rent. The rise comes
 mostly from those the lender refuses and the platforms accept. For other households it is small.
-Over all households, default rises by 1.0 percentage point, from 14.4\%. About
-half of the rise remains when the platforms lend only to households with income from
-work. When each comparison draws a new population, the rise is 1.1 points. It
-is not detectable when \ac{BNPL} cannot be used against a cash shortfall. Peer influence raises
-\ac{BNPL} borrowing without detectably changing the effect. Without peer influence, bureau
+Over all households, default rises by 1.0 percentage point, from 14.4\%. The rise is not
+detectable when \ac{BNPL} cannot be used against a cash shortfall. About half of it remains when
+the platforms lend only to households with income from work. When each comparison draws a new
+population, the rise is 1.1 points. Peer influence raises \ac{BNPL} borrowing without detectably
+changing the rise. Without peer influence, bureau
 visibility raises default by 0.20 points, since in the model a refused household has no other
 source of credit. Screening \ac{BNPL} with the lender's test lowers default by 0.9 to 1.0 points.
 Both leave more households short of food and rent, screening only without peer influence. The

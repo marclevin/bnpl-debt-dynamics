@@ -25,8 +25,8 @@ italics	appendix_b_specification.tex	fault cannot spread through these channels.
 italics	appendix_b_specification.tex	injection effect under baseline conditions. \emph{No contagion}: one aggregate lender with no
 italics	appendix_b_specification.tex	peer influence acts only on BNPL adoption. \emph{Static household composition}. \emph{No cred
 italics	appendix_b_specification.tex	ption. \emph{Static household composition}. \emph{No credit scores or risk pricing}: bureau vi
-italics	appendix_c_supplementary.tex	ead \bottomrule \endfoot \multicolumn{3}{l}{\emph{Bounding a central claim, argued in the body
-italics	appendix_c_supplementary.tex	reening \\ \addlinespace \multicolumn{3}{l}{\emph{Other limitations, recorded here}} \\ FinSco
+italics	appendix_c_supplementary.tex	\bottomrule \endfoot \multicolumn{3}{@{}l}{\emph{Bounding a central claim, argued in the body
+italics	appendix_c_supplementary.tex	ning \\ \addlinespace \multicolumn{3}{@{}l}{\emph{Other limitations, recorded here}} \\ FinSco
 italics	appendix_d_variables.tex	5 \\ \bottomrule \end{tabular} \end{table} \emph{Diagnostics.} Among indebted households, con
 italics	appendix_d_variables.tex	bt stock to a monthly flow in three steps. \emph{Rate and horizon.} Each product class carrie
 italics	appendix_d_variables.tex	is a numerical guard only and never binds. \emph{Amortisation.} The uncapped instalment is th

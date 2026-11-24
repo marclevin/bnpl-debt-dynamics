@@ -152,7 +152,8 @@ itself.
     \IfThen{the bureau shows $i$ as defaulted}{\Return 0}
     \State $\text{new} \gets \mathrm{PMT}(\text{amount},\ 0.28,\ 25)$ \Comment{unsecured terms}
     \State $\text{visible} \gets r_i / \chi$ \Comment{traditional service, which the bureau shows}
-    \IfThen{$\ind^{\text{bur}}$}{$\text{visible} \gets \text{visible} + o_i / \chi$ \Comment{\textbf{Bureau visibility:} \ac{BNPL} enters the test}}
+    \LineComment{\textbf{Bureau visibility:} \ac{BNPL} enters the test}
+    \IfThen{$\ind^{\text{bur}}$}{$\text{visible} \gets \text{visible} + o_i / \chi$}
     \IfThen{$\text{new} > \max(\rho(Y_i) - \text{visible},\ 0)$}{\Return 0 \Comment{refused at the gate}}
     \State \Return amount \Comment{granted in full}
 \EndFunction
@@ -208,7 +209,8 @@ request.
 \Function{Request}{$p$, $i$, amount}
     \IfThen{$i$ is cut off at $p$}{\Return 0}
     \State $\text{amount} \gets \min(\text{amount},\ \bar o)$ \Comment{per-order cap}
-    \State $\text{amount} \gets \min\bigl(\text{amount},\ (L_{ip} - B_{ip}) \cdot N / (N - 1)\bigr)$ \Comment{rolling limit, receivable terms}
+    \LineComment{rolling limit, receivable terms}
+    \State $\text{amount} \gets \min\bigl(\text{amount},\ (L_{ip} - B_{ip}) \cdot N / (N - 1)\bigr)$
     \IfThen{$\text{amount} \leq 0$}{\Return 0}
     \State Open an agreement at $p$: principal amount, instalment amount$/N$, $N - 1$ instalments remaining, opened at $t$
     \State \Return amount

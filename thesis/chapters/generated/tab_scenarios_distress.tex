@@ -7,7 +7,7 @@
 \begin{tabular}{H{3.3cm}R{2.0cm}R{2.65cm}R{2.65cm}R{2.65cm}}
 \toprule
 & & \multicolumn{3}{c}{\textbf{Change from benchmark}} \\ \cmidrule(lr){3-5}
-\textbf{Outcome} & \textbf{Benchmark} & \textbf{Bureau visibility} & \textbf{Screening} & \textbf{Both} \\
+\textbf{Outcome} & \textbf{Benchmark} & \multicolumn{1}{>{\raggedleft\arraybackslash}b{2.65cm}}{\textbf{Bureau visibility}} & \textbf{Screening} & \textbf{Both} \\
 \midrule
 \multicolumn{5}{l}{\emph{No peer influence ($\beta = 0$)}} \\
 Short in a tick, mean~(\%) & 3.48 & $\boldsymbol{+0.125 \pm 0.016}$ & $\boldsymbol{+0.036 \pm 0.015}$ & $\boldsymbol{+0.119 \pm 0.018}$ \\
@@ -20,7 +20,7 @@ Ever short (\%) & 5.13 & $\boldsymbol{+0.088 \pm 0.024}$ & $0.000 \pm 0.023$ & $
 \end{tabular}}
 \caption{Food and rent left unpaid under the two switches}
 \label{tab:scenarios-distress}
-{\ifdim\wd\gentabbox<0.9\linewidth\setlength{\linewidth}{\wd\gentabbox}\fi
+{\ifdim\wd\gentabbox<\linewidth\setlength{\linewidth}{\wd\gentabbox}\fi
 \tabnote{Arms, seeds and layout follow Table~\ref{tab:scenarios}: benchmark mean, then changes $\pm$ one seed-paired standard error, to three decimals. A household is short when income, savings and new credit cannot cover food and rent, which take priority; defaulted households cannot borrow. Short in a tick: mean share of all households short over the 40 post-burn-in ticks. Ever short: share short in any of the 52 ticks. Runs record shortfalls as indicators, not Rand amounts.}}
 \usebox{\gentabbox}
 \end{table}

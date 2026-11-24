@@ -88,6 +88,7 @@ the term is defined. When the thesis changes, this file changes in the same comm
 
 | Write | Meaning | Do not write |
 |---|---|---|
+| the fixed population | The 5,000 households that every run except the redrawn population uses | benchmark population (the benchmark is an arm), canonical population |
 | arm | One configuration of the model | treatment, condition, variant, specification |
 | baseline | BNPL off | benchmark, base case, status quo |
 | benchmark | BNPL on at the reference values, no switch or lever | baseline (the conclusion-level slip to avoid: "the baseline's 20.73%" beside the benchmark's figure) |

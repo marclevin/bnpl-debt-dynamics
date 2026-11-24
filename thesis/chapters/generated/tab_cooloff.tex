@@ -25,7 +25,7 @@ benchmark & 21.90 (0.38) & -- & 21.3 & -- & 5.19 \\
 \end{tabular}}
 \caption{The cooling-off window}
 \label{tab:cooloff}
-{\ifdim\wd\gentabbox<0.9\linewidth\setlength{\linewidth}{\wd\gentabbox}\fi
+{\ifdim\wd\gentabbox<\linewidth\setlength{\linewidth}{\wd\gentabbox}\fi
 \tabnote{Default: including the households placed in default at the start. $\Delta$: default less the benchmark's, $\pm$ one standard error, paired by seed. Holding: share holding \ac{BNPL} at the final tick (\%). Volume: change in cumulative post-burn-in \ac{BNPL} volume (\%). Lending: new traditional lending (R~m). Seeds 40{,}000--40{,}019. The window blocks want-driven \ac{BNPL} purchases for $k^{\text{cool}}$ ticks after one; borrowing for a shortfall is not blocked.}}
 \usebox{\gentabbox}
 \end{table}

@@ -267,7 +267,7 @@ def check_effect_split(rq0: pd.DataFrame) -> None:
     assert abs(num["split_redraw_separation_rate_mean"] - ro.shock_prob.mean()) < 1e-6
     expect("effect_split", t, f"{int(runs[runs.label == 'redraw_off'].n_short.min())} to "
            f"{int(runs[runs.label == 'redraw_off'].n_short.max())} in the draws")
-    expect("effect_split", t, f"{num['split_short_n']} households in the benchmark population")
+    expect("effect_split", t, f"{num['split_short_n']} households in the fixed population")
     assert num["split_short_n"] == 182 and num["split_short_at_risk"] == 120
     assert num["split_eligible_screen"] == screen.n_bnpl_eligible.mean()
     checked += 3
@@ -477,7 +477,7 @@ def check_prose() -> None:
     # "does not differ detectably from the pooled" estimate, and the baseline level over the draws.
     gap_all = num["split_redraw_all"] - num["beta0_effect_pooled"]
     assert abs(gap_all) < 2 * math.hypot(num["split_redraw_all_se"], num["beta0_effect_pooled_se"])
-    expect_p("ch4 redraw", c4, f"from the pooled ${unsigned(pmj(num, 'beta0_effect_pooled'))}$, and without")
+    expect_p("ch4 redraw", c4, f"from the pooled ${unsigned(pmj(num, 'beta0_effect_pooled'))}$. Without")
     level = f"{num['split_redraw_baseline_new_default_mean'] * 100:.2f}"
     assert level == f"{num['baseline_default_during'] * 100:.2f}" if "baseline_default_during" in num else True
     expect_p("ch4 redraw", c4, f"default during the run averages {level}\\%")
