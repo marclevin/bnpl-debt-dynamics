@@ -54,6 +54,8 @@ RESULTS_RAW = ROOT / "results" / "raw"
 RESULTS_SUMMARY = ROOT / "results" / "summary"
 
 POPULATION_PARQUET = DATA_PROCESSED / "synthetic_population_5000.parquet"
+#: P2 output: the 10,841 matched NIDS households that P3 resamples (D19 redraws from it).
+MATCHED_PARQUET = DATA_PROCESSED / "synthetic_population_matched.parquet"
 NIDS_HHDERIVED = DATA_RAW / "NIDS_W5" / "hhderived.csv"
 NIDS_INDDERIVED = DATA_RAW / "NIDS_W5" / "indderived_W5_Anon_V1.0.0.dta"
 RATE_TABLE = DATA_CONFIG / "credit_rate_table.csv"
@@ -190,6 +192,20 @@ class ParamSet:
         provenance="ASSUMPTION",
         source="None = use the full 5,000-agent resample (a design choice, not computed from data)",
         sweep="1000 / 5000 / 10000 population-stability check",
+    )
+    population_seed: int | None = _p(
+        None,
+        rule="P3",
+        provenance="ASSUMPTION",
+        source=(
+            "Added 2026-11-24 (D19). None (every stored run) uses the canonical P3 population, "
+            "the 5,000 households drawn with seed 20,260,818. A seed draws a new population "
+            "with the same P3 step (population.resample_population): 5,000 households with "
+            "replacement, in proportion to weight, from the 10,841 matched NIDS households. "
+            "Used only by the redrawn-population design, in which each replicate has its own "
+            "population draw and the separation rate is re-derived for it."
+        ),
+        sweep="redrawn population: 100 draws, seeds 110,000-110,099, BNPL off and on at beta = 0",
     )
 
     # -- D1 income and shock ----------------------------------------------------
@@ -572,6 +588,20 @@ class ParamSet:
             "households by observed data, so access_rate=1.0 means 82.8% of all households."
         ),
         sweep="RQ2 axis 1, 0.0-1.0 within the banked subpopulation",
+    )
+    bnpl_wage_income_screen: bool = _p(
+        False,
+        rule="D11",
+        provenance="ASSUMPTION",
+        source=(
+            "Added 2026-11-24 (D19). The wage-income screen: platforms lend only to households "
+            "whose surveyed labour-market income is above zero (w5_hhwage, income_wage_tick > 0), "
+            "fixed at the start of the run. Applied after the access-rate draw by removing "
+            "screened households from the eligible set, so the random stream is the benchmark's "
+            "and the arm pairs by seed with it. Off (the benchmark) is the light screen: banked "
+            "and not in default."
+        ),
+        sweep="wage-income screen arm at beta = 0 on the baseline seeds (10,000-10,019)",
     )
     n_platforms: int = _p(
         4,

@@ -47,7 +47,10 @@ class BNPLModel(Model):
         # Offset by a fixed prime so it cannot coincide with the main stream.
         self.init_rng = random.Random(params.seed + 999_983)
 
-        records, groups = build_records(params.n_agents, seed=params.seed)
+        # D19: `population_seed` None is the canonical population; a seed, a redrawn one.
+        records, groups = build_records(
+            params.n_agents, seed=params.seed, population_seed=params.population_seed
+        )
         self.records = records
         self.groups = groups
         self.zero_capacity_debtors = set(zero_capacity_debtors(records))
@@ -56,6 +59,12 @@ class BNPLModel(Model):
         banked = [r.agent_id for r in records if r.banked]
         n_eligible = int(round(params.bnpl_access_rate * len(banked)))
         eligible = set(self.rng.sample(banked, n_eligible)) if n_eligible else set()
+        # D19: the wage-income screen removes households with no surveyed labour-market income
+        # AFTER the draw above, so the draw, and every draw after it, is the benchmark's on the
+        # same seed. Fixed at the start: a jobseeker hired during the run does not become
+        # eligible, and a household that loses its wage income does not lose eligibility.
+        if params.bnpl_wage_income_screen:
+            eligible = {i for i in eligible if records[i].income_wage_tick > 0}
         self.n_banked = len(banked)
         self.n_bnpl_eligible = len(eligible)
 

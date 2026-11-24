@@ -1,8 +1,13 @@
-"""Final-run driver: the three experiment commands of the README, in order, stopping on failure.
+"""Final-run driver: the experiment commands of the README, in order, stopping on failure.
 
     PYTHONPATH=. .venv/bin/python notebooks/scripts/final_run.py [--skip-sobol]
 
-Everything the three steps print goes to results/final_run.log, which ends with one of
+`--which all` runs every suite in simulation.experiments.SUITES, the wage-income screen
+(`screen`) and the redrawn population (`redraw`, 100 draws whatever --reps) of D19 included.
+Their summary, notebooks/scripts/check_effect_split.py, is the last step: it reruns them with
+the rq0 arms and writes results/summary/effect_split.json, which build_results_tables.py reads.
+
+Everything the steps print goes to results/final_run.log, which ends with one of
 two sentinel lines: `FINAL RUN COMPLETE` or `FINAL RUN FAILED at <step>`. The log opens
 with the commit the run was produced from, so the results are traceable to the code.
 """
@@ -20,6 +25,8 @@ STEPS = [
     ["-m", "simulation.experiments", "--which", "all", "--reps", "20"],
     ["-m", "simulation.sensitivity", "--samples", "256"],
     ["-m", "simulation.analysis"],
+    # D19 (2026-11-24): the source of tab:effect-split, after the screen and redraw suites.
+    ["notebooks/scripts/check_effect_split.py"],
 ]
 
 

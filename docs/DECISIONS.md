@@ -1165,6 +1165,76 @@ Four levers, three of which correspond to instruments that actually exist:
   this rule. The `rq3r` suite and the `committed_funded` / `committed_relief` effect arms
   lose their meaning (#91 C7) and are to be dropped in the rerun (#96).
 
+### D19. The wage-income screen and the redrawn population (supervisor, 2026-11-24)
+- **Governs:** two checks on the headline BNPL effect, added as the last step before
+  submission. Neither changes a stored run or an existing number; the headline stays the pooled
+  fixed-population estimate and both are reported beside it (`tab:effect-split`).
+- **Why:** the effect at beta = 0 (about 1.0 point of default during the run) is carried by the
+  182 households short from the start (`income_tick < committed_tick`): 0.92 of the 1.08 points on
+  the seeds of `tab:baseline-arms`. The supervisor asked (1) for an arm in which platforms lend
+  only to households with wage income, at beta = 0, on the same seeds, and (2) for the main
+  comparison rerun with a new population draw in each replicate, so that the standard errors
+  carry sampling variation as well as simulation variance.
+- **DECISION A (Marc), the wage-income screen** (`bnpl_wage_income_screen`, off by default). A
+  platform lends only to a household whose surveyed labour-market income is above zero
+  (`HouseholdRecord.income_wage_tick > 0`, from NIDS `w5_hhwage`), fixed at the start of the run.
+  It is applied in `BNPLModel.__init__` AFTER the eligibility draw (`self.rng.sample(banked,
+  n_eligible)`), by removing screened households from the eligible set, so the random stream is
+  the benchmark's on the same seed and the arm pairs with `rq0`. The peer-share denominators
+  (`group_eligible`) count the screened set. 2,802 of the 4,142 eligible households pass.
+  - *What `w5_hhwage` is* (checked in `check_effect_split.py`): for every one of the 6,507 NIDS
+    households where it is recorded, it equals, to within R0.01, the sum over members of eight
+    `indderived` components: `w5_fwag` (primary and secondary jobs), `w5_cwag` (casual work),
+    `w5_swag` (self-employment), `w5_prof` (profit share), `w5_extr` (piece-rate), `w5_bonu`
+    (bonuses), `w5_cheq` (13th cheque) and `w5_help` (helping friends). Without `w5_swag` only
+    5,451 match. So it includes self-employment income, as the supervisor's wording ("employment
+    or self-employment") requires.
+  - *A gap found on the way, not changed:* `w5_hhwage` is missing for 479 households (all in the
+    matched 10,841) whose income comes from the single household-level question
+    (`w5_hhincome_flg = Household`), although their members report labour income. P5 fills a
+    missing wage with zero, so the 202 agents drawn from them (all `income_source = OTHER`) count
+    as having no wage income: the screen excludes them, and the D1 separation costs them nothing.
+    Two of them are among the 182 short households; none is among those never lent to.
+- **DECISION B (Marc), the redrawn population** (`population_seed`, None by default = the
+  canonical parquet). The P3 step moved from `notebooks/p3_resample.ipynb` into
+  `population.resample_population` unchanged (`np.random.RandomState(seed)`, `p = w5_wgt / sum`,
+  `rng.choice(len(pop), 5000, replace=True, p=p)`, the two renames and `agent_id`); with P3's seed
+  20,260,818 it reproduces `synthetic_population_5000.parquet` exactly (test). The `redraw` suite
+  runs 100 replicates on seeds 110,000-110,099, BNPL off and on at beta = 0; replicate i draws its
+  population on seed 110,000 + i and runs on the same model seed, and its two arms share both.
+  Every quantity P5 computes is recomputed from the draw (wage join, earners, jobseekers, hire
+  wages, APRs, reference groups, the starting arrears ranking). The separation rate is DERIVED
+  from each draw (`stationary_separation_rate(..., population_seed)`) so that expected employment
+  stays constant, rounded to five decimals as `DERIVED_SHOCK_PROB` is, and recorded in each row as
+  `shock_prob`. Payment friction, arrears persistence, the write-off rate and the FinScope match
+  are held fixed. Nothing else reads the canonical file during a run: `load_population_frame`
+  is cached per population seed, `n_agents` resampling acts on whichever frame is loaded, and
+  `calibrate.py` and `metrics.py` do not read the parquet.
+- **DECISION C (Marc):** the headline stays the pooled fixed-population estimate; the redraw is
+  reported beside it as a check. No existing result changed (HISTORY, 2026-11-24).
+- **Choices the brief left open, each the one that leaves stored results untouched:** the
+  population seed equals the model seed (numpy's legacy generator and Python's `random` are
+  seeded by different algorithms, so the streams are unrelated); `REDRAW_REPS = 100` is fixed in
+  code, as `BETA_SWEEP_REPS` is; the screen reads `income_wage_tick`, i.e. `w5_hhwage` after P5's
+  fill with zero and cap at income; in a draw, the households short from the start are those of
+  that draw; the 55/65 split of the short households by lending is taken seed by seed, as in
+  `check_short_group_lending.py` (55 or 56 are never lent to, by seed).
+- **Results** (`results/summary/effect_split.json`, `tab:effect-split`; points of all households,
+  paired SE): benchmark +1.08 +/- 0.11 (short from the start +0.92 +/- 0.02, others +0.17 +/- 0.11);
+  wage-income screen +0.50 +/- 0.09 (+0.38 +/- 0.02, +0.13 +/- 0.09), screen less benchmark
+  -0.58 +/- 0.12, almost all of it in the short group (-0.54 +/- 0.01); redrawn population
+  +1.13 +/- 0.06 (+0.97 +/- 0.02, +0.17 +/- 0.05). Of the 55 never lent to, 19 have wage income,
+  and under the screen 18.15 of them default during the run on average, against 45.75 in the
+  benchmark. Across the 100 draws the short group has 156-235 households (mean 194), default
+  during the run without BNPL is 13.4-15.9% (mean 14.37%), the separation rate 0.00395-0.00484
+  (mean 0.00436); the SD of the effect across draws is 0.57 points against 0.48 across the rq0
+  seeds.
+- **Limits:** the draws resample households independently, so they reflect neither the NIDS
+  sample design (clustering and stratification) nor uncertainty in the FinScope match (each
+  household keeps the flags of its one P2 donor); the two fitted parameters are not refitted per
+  draw, so a draw's default level is not recalibrated to the CCMR bands; the screen is fixed at
+  the start and reads the survey's wage variable, with the 202-agent gap above.
+
 ---
 
 ## Part E. Calibration & experiment knobs (tie rules → research questions)

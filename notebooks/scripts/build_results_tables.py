@@ -1171,6 +1171,101 @@ def tab_effect(eff: pd.DataFrame) -> None:
     )
 
 
+def tab_effect_split(rq0: pd.DataFrame, screen: pd.DataFrame, redraw: pd.DataFrame) -> None:
+    """D19 (supervisor, 2026-11-24): the effect by household group under the wage-income screen
+    and on a redrawn population, beside the benchmark.
+
+    The all-households column is taken from results/raw; the two group columns from the
+    per-run rows of results/summary/effect_split.json (check_effect_split.py, which reruns the
+    same runs with household-level default and checks each against results/raw). Default
+    during the run, as a share of all households, so the group columns sum to the first.
+    """
+    es = json.loads((SUMMARY / "effect_split.json").read_text(encoding="utf-8"))
+    runs = pd.DataFrame(es["per_run"])
+    runs["new_default_all"] = runs.new_default_rate_final
+    off = arm(rq0, "baseline_no_bnpl")
+    specs = [  # key, row label, (on, off) in results/raw, (on, off) labels in effect_split.json
+        ("bench", "Benchmark", (arm(rq0, "bnpl_on_beta0"), off), ("bnpl_on_beta0", "baseline_no_bnpl")),
+        ("screen", "Wage-income screen", (arm(screen, "screen_b0.0"), off), ("screen_b0.0", "baseline_no_bnpl")),
+        ("redraw", "Redrawn population", (arm(redraw, "redraw_b0.0"), arm(redraw, "redraw_off")),
+         ("redraw_b0.0", "redraw_off")),
+    ]
+    rows = []
+    for key, name, (on_raw, off_raw), (on_l, off_l) in specs:
+        assert shares_seeds(on_raw, off_raw), key
+        d, se = delta(on_raw, off_raw, "new_default_rate_final")
+        cells = [name, pmb(d, se)]
+        N[f"split_{key}_all"], N[f"split_{key}_all_se"] = d, se
+        for g in ("short", "other"):
+            gd, gse = paired_diff(arm(runs, on_l), arm(runs, off_l), f"new_default_{g}")
+            assert abs(gd - es[f"{key}_{g}"]) < 1e-12 and abs(gse - es[f"{key}_{g}_se"]) < 1e-12, (key, g)
+            N[f"split_{key}_{g}"], N[f"split_{key}_{g}_se"] = gd, gse
+            cells.append(pmb(gd, gse))
+        # The rerun reproduces the stored runs, so its all-households effect is the raw one.
+        assert abs(d - es[f"{key}_all"]) < 1e-12 and abs(se - es[f"{key}_all_se"]) < 1e-12, key
+        rows.append(" & ".join(cells) + r" \\")
+    for g in ("all", "short", "other"):
+        col = "new_default_rate_final" if g == "all" else f"new_default_{g}"
+        src = (arm(screen, "screen_b0.0"), arm(rq0, "bnpl_on_beta0")) if g == "all" else \
+            (arm(runs, "screen_b0.0"), arm(runs, "bnpl_on_beta0"))
+        N[f"split_screen_less_bench_{g}"], N[f"split_screen_less_bench_{g}_se"] = paired_diff(*src, col)
+    assert abs(N["split_bench_all"] - N["injection_beta0"]) < 1e-12, "the benchmark row is Table baseline-arms"
+    # The counts the prose quotes, as check_effect_split.py computed them.
+    for k in ("short_n", "short_sources", "short_at_risk", "short_at_risk_sources", "short_at_risk_banked",
+              "short_at_risk_banked_wage", "short_at_risk_wage", "never_lent", "never_lent_wage",
+              "never_lent_banked", "never_lent_sources", "never_lent_every_seed",
+              "never_lent_every_seed_wage", "never_lent_every_seed_sources", "lent", "lent_wage",
+              "lent_banked", "lent_sources", "never_lent_default_off", "never_lent_default_bench",
+              "never_lent_default_screen", "lent_default_off", "lent_default_bench",
+              "lent_default_screen", "eligible_bench", "eligible_screen"):
+        N[f"split_{k}"] = es[k]
+    for k in ("redraw_short_n", "redraw_short_at_risk", "redraw_baseline_new_default",
+              "redraw_separation_rate"):
+        for stat in ("mean", "sd", "min", "max"):
+            N[f"split_{k}_{stat}"] = es[k][stat]
+    N["split_redraw_reps"] = es["redraw_n"]
+    N["split_redraw_seed_min"], N["split_redraw_seed_max"] = es["redraw_seeds"]
+    N["split_effect_sd_rq0_seeds"] = es["effect_sd_rq0_seeds"]
+    N["split_effect_sd_redraws"] = es["effect_sd_redraws"]
+    N["split_hhwage_match_all_eight"] = es["w5_hhwage"]["match_all_eight"]
+    N["split_hhwage_households"] = es["w5_hhwage"]["households_with_hhwage"]
+    N["split_hhwage_missing_agents"] = es["w5_hhwage"]["agents_from_those_households"]
+    reps = es["redraw_n"]
+    sizes = es["redraw_short_n"]
+    note_diff = ", ".join(
+        f"{pm(N[f'split_screen_less_bench_{g}'], N[f'split_screen_less_bench_{g}_se'])}"
+        + (" points" if g == "all" else "") + f" {where}"
+        for g, where in (("all", "for all households"), ("short", "for those short from the start"),
+                         ("other", "for the others")))
+    table(
+        "tab_effect_split",
+        "The \\ac{BNPL} effect by household group",
+        "Effect: default during the run with \\ac{BNPL} at $\\beta = 0$ less default without, in "
+        "points of all 5{,}000 households, so the two group columns sum to the first; $\\pm$ one "
+        "standard error. Benchmark: the $\\beta = 0$ arm of Table~\\ref{tab:baseline-arms}, seeds "
+        "10{,}000--10{,}019. Wage-income screen: platforms lend only to households whose surveyed "
+        "labour-market income (from employment or self-employment) is above zero at the start, "
+        f"{num(N['split_eligible_screen'])} of the {num(N['split_eligible_bench'])} eligible "
+        "households; the same seeds. Pairing: by seed with the no-\\ac{BNPL} arm of "
+        f"Table~\\ref{{tab:baseline-arms}} for these two rows. Redrawn population: {num(reps)} "
+        f"replicates, seeds {num(N['split_redraw_seed_min'])}--{num(N['split_redraw_seed_max'])}. "
+        "Each draws 5{,}000 households from the 10{,}841 matched \\ac{NIDS} households and derives "
+        "its own separation rate. Its runs with and without \\ac{BNPL} share the draw and the seed, "
+        "so the standard error includes sampling variation of the population as well as "
+        "simulation variance. Households short from the start: surveyed income below committed "
+        f"expenditure, {num(N['split_short_n'])} households in the benchmark population and "
+        f"{num(sizes['min'])} to {num(sizes['max'])} in the draws. Screen less benchmark, paired by "
+        f"seed: {note_diff}.",
+        "L{3.1cm}R{2.6cm}R{2.9cm}R{2.9cm}",
+        r"& \multicolumn{3}{c}{\textbf{Effect on default during the run (pp)}} \\ \cmidrule(lr){2-4}"
+        "\n& \\textbf{All households} & \\textbf{Households short from the start} & "
+        "\\textbf{Households not short from the start}",
+        rows,
+        size=r"\small",
+        placement=FLOAT_NEAR,
+    )
+
+
 def derived_numbers(rq0, rq2, rq2t, rq3, eff) -> None:
     """Quantities the prose quotes that no single table cell holds."""
     # --- the effect of BNPL at beta = 0, estimated on four independent seed blocks -------
@@ -1342,6 +1437,16 @@ def main() -> None:
     tab_levers(rq3, rq3s)
     tab_effect(eff)
     derived_numbers(rq0, rq2, rq2t, rq3s, eff)
+    # D19 (2026-11-24): the wage-income screen and the redrawn population. After every other
+    # table, so it adds keys to results_numbers.json and changes none.
+    screen, redraw = load("screen"), load("redraw")
+    assert screen.seed.nunique() == 20 and set(screen.seed) == set(arm(rq0, "baseline_no_bnpl").seed)
+    assert redraw.groupby("label").seed.nunique().eq(100).all(), "every redraw arm needs 100 draws"
+    before = dict(N)
+    assert not any(k.startswith("split_") for k in before)
+    tab_effect_split(rq0, screen, redraw)
+    assert all(N[k] is before[k] for k in before), "the D19 table must not change an existing number"
+    assert all(k.startswith("split_") for k in set(N) - set(before))
     out = {k: (round(float(v), 6) if isinstance(v, (float, np.floating)) else
                (int(v) if isinstance(v, np.integer) else v)) for k, v in N.items()}
     (SUMMARY / "results_numbers.json").write_text(json.dumps(out, indent=2), encoding="utf-8")

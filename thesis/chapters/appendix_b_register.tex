@@ -34,6 +34,8 @@ fee cap and the assumed order cap, are set at 2026 prices and deflated once (App
 \addlinespace
 \texttt{n\_\allowbreak{}agents} & data & 5{,}000 & assumed & The full resampled population of 5{,}000 (Appendix~\ref{app:var-resample}); a design choice, checked at 1{,}000 and 10{,}000. & 1{,}000 / 5{,}000 / 10{,}000 \\
 \addlinespace
+\texttt{population\_\allowbreak{}seed} & data & none & assumed & None uses the resampled population of 5{,}000 households (Appendix~\ref{app:var-resample}). A seed draws a new population with the same step: 5{,}000 households with replacement, in proportion to weight, from the 10{,}841 matched \ac{NIDS} households. Used only for the redrawn population, in which each replicate has its own population draw and its own derived separation rate. & one population draw per replicate, seeds 110{,}000--110{,}099, without \ac{BNPL} and with it at $\beta = 0$ \\
+\addlinespace
 \texttt{shock\_\allowbreak{}prob} & 1 & 0.00446 & derived & Derived, not fitted: the separation rate at which expected employment is constant, the re-employment rate times the ratio of strictly unemployed to employed members in the population (1{,}113 to 4{,}670). The \ac{QLFS} 2017 job-separation band is 0.54--1.17\% per tick~\citep{statssa_lmd_2022}. Fitting the rate to the \ac{CCMR} 90+ band without labour flows, as an earlier version did, chose 0.016. & 0.0013--0.0071 in the Sobol design \\
 \addlinespace
 \texttt{shock\_\allowbreak{}persistent} & 1 & on & sourced & An unemployment spell lasts until re-employment. In the \ac{QLFS} 2017, 68.4\% of the unemployed were still unemployed a quarter later~\citep{statssa_lmd_2022}. & single-tick shock as a sensitivity arm \\
@@ -93,6 +95,8 @@ fee cap and the assumed order cap, are set at 2026 prices and deflated once (App
 \texttt{bnpl\_\allowbreak{}enabled} & design & off & sourced & The 2017 baseline has no \ac{BNPL}; the experiments enable it. & on / off \\
 \addlinespace
 \texttt{bnpl\_\allowbreak{}access\_\allowbreak{}rate} & 12 & 1 & assumed & Share of banked households that are eligible for \ac{BNPL}. Banked households are 82.8\% of the population. & 0--1.0 at seven levels \\
+\addlinespace
+\texttt{bnpl\_\allowbreak{}wage\_\allowbreak{}income\_\allowbreak{}screen} & 12 & off & assumed & The wage-income screen: platforms lend only to households whose surveyed labour-market income (from employment or self-employment) is above zero, fixed at the start of the run. It removes households from the eligible set after the access draw, so the arm shares the benchmark's random draws seed by seed. Off is the benchmark's light screen. & on in one arm at $\beta = 0$, seeds 10{,}000--10{,}019 \\
 \addlinespace
 \texttt{n\_\allowbreak{}platforms} & 13 & 4 & assumed & Several providers operate in South Africa, among them PayJustNow and Payflex~\citep{payjustnow_terms,payflex_terms}; four is a stylised count. & 1--6 \\
 \addlinespace

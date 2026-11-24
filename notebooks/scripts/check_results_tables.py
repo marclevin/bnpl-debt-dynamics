@@ -202,8 +202,75 @@ def main() -> None:
     expect("effect", t, paired("eff_amountcommitted_b0.0", "eff_amountcommitted_off"))
     expect("effect", t, paired("eff_want_off_b0.0", "eff_ref_off"))
 
+    check_effect_split(rq0)
     print(f"OK: {checked} numbers re-derived from results/raw match the generated fragments")
     check_prose()
+
+
+def check_effect_split(rq0: pd.DataFrame) -> None:
+    """D19 (2026-11-24): tab:effect-split and its keys in results_numbers.json.
+
+    The all-households column is re-derived from results/raw (rq0, screen, redraw); the two group
+    columns from the per-run rows of effect_split.json, which check_effect_split.py checked
+    against results/raw run by run. Every cell, and each key the prose may quote, is compared.
+    """
+    global checked
+    t = frag("tab_effect_split")
+    num = json.loads((SUMMARY / "results_numbers.json").read_text())
+    es = json.loads((SUMMARY / "effect_split.json").read_text())
+    runs = pd.DataFrame(es["per_run"])
+    screen = pd.read_parquet(RAW / "screen.parquet")
+    redraw = pd.read_parquet(RAW / "redraw.parquet")
+    off = rq0[rq0.label == "baseline_no_bnpl"]
+    assert len(screen) == 20 and sorted(screen.seed) == sorted(off.seed), "the screen pairs with rq0"
+    assert (redraw.groupby("label").seed.nunique() == 100).all()
+    raw = {"bench": (rq0[rq0.label == "bnpl_on_beta0"], off), "screen": (screen, off),
+           "redraw": (redraw[redraw.label == "redraw_b0.0"], redraw[redraw.label == "redraw_off"])}
+    labels = {"bench": ("bnpl_on_beta0", "baseline_no_bnpl"), "screen": ("screen_b0.0", "baseline_no_bnpl"),
+              "redraw": ("redraw_b0.0", "redraw_off")}
+    names = {"bench": "Benchmark", "screen": "Wage-income screen", "redraw": "Redrawn population"}
+
+    def numbers(a: pd.DataFrame, b: pd.DataFrame, col: str) -> tuple[float, float]:
+        x = a.set_index("seed")[col]
+        y = b.set_index("seed")[col]
+        assert sorted(x.index) == sorted(y.index), "arms do not share seeds"
+        z = x - y.reindex(x.index)
+        return z.mean(), z.std(ddof=1) / math.sqrt(len(z))
+
+    for key in ("bench", "screen", "redraw"):
+        cells = [core(pmp(*raw[key], "new_default_rate_final"))]
+        d, se = numbers(*raw[key], "new_default_rate_final")
+        # results_numbers.json rounds to six decimals, so agreement is to within half of 1e-6.
+        assert abs(num[f"split_{key}_all"] - d) < 1e-6 and abs(num[f"split_{key}_all_se"] - se) < 1e-6, key
+        on, of = (runs[runs.label == lab] for lab in labels[key])
+        for g in ("short", "other"):
+            cells.append(core(pmp(on, of, f"new_default_{g}")))
+            d, se = numbers(on, of, f"new_default_{g}")
+            assert abs(num[f"split_{key}_{g}"] - d) < 1e-6, (key, g)
+            assert abs(num[f"split_{key}_{g}_se"] - se) < 1e-6, (key, g)
+        # The row as a whole, so a cell in the wrong column fails; bold cells match via core().
+        row = " & ".join([names[key]] + cells)
+        flat = t.replace("\\boldsymbol{", "").replace("}$", "$").replace("$", "")
+        expect("effect_split", flat, row)
+    # The group columns sum to the first: default during the run is over all households.
+    assert np.allclose(runs.new_default_short + runs.new_default_other, runs.new_default_rate_final, atol=1e-12)
+    # The rerun rows are the stored runs.
+    for key, (a, b) in raw.items():
+        for frame, lab in zip((a, b), labels[key]):
+            r = runs[runs.label == lab].set_index("seed").new_default_rate_final
+            assert (frame.set_index("seed").new_default_rate_final.reindex(r.index) == r).all(), lab
+    # The screen less the benchmark, in the note, paired by seed.
+    expect("effect_split", t, pmp(screen, rq0[rq0.label == "bnpl_on_beta0"], "new_default_rate_final") + " points")
+    # The redrawn populations: separation rate re-derived per draw, short group sizes in the note.
+    ro = redraw[redraw.label == "redraw_off"]
+    assert ro.shock_prob.nunique() > 1 and (ro.population_seed == ro.seed).all()
+    assert abs(num["split_redraw_separation_rate_mean"] - ro.shock_prob.mean()) < 1e-6
+    expect("effect_split", t, f"{int(runs[runs.label == 'redraw_off'].n_short.min())} to "
+           f"{int(runs[runs.label == 'redraw_off'].n_short.max())} in the draws")
+    expect("effect_split", t, f"{num['split_short_n']} households in the benchmark population")
+    assert num["split_short_n"] == 182 and num["split_short_at_risk"] == 120
+    assert num["split_eligible_screen"] == screen.n_bnpl_eligible.mean()
+    checked += 3
 
 
 def check_prose() -> None:
@@ -381,6 +448,12 @@ def check_prose() -> None:
     expect_p("ch1 volume", c1, f"from R{s0['volume_per_eligible_year']:,.0f} to R{s3['volume_per_eligible_year']:,.0f} a year"
              .replace(",", "{,}"))
     expect_p("ch1 stack", c1, f"Under the assumed routing, {s0['stacking_ever_holders'] * 100:.0f}\\% of")
+    # ------------------------------------------------------------------------------------------
+    # D19 (2026-11-24): PROSE CHECKS FOR tab:effect-split GO HERE (to be added by the lead once
+    # the sentences on the wage-income screen and the redrawn population are written). Format
+    # each needle from results_numbers.json (keys split_*) or effect_split.json, e.g.
+    #   expect_p("ch4 screen", ch["04_results"], unsigned(pmj(num, "split_screen_all")))
+    # ------------------------------------------------------------------------------------------
     if missing:
         print(f"{checked - start} typed prose numbers match; {len(missing)} do not. Each needle is "
               "formatted from results/ and must appear in the named chapter:")

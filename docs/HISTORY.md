@@ -11,6 +11,34 @@ Earlier history (model build, 2026-08-05 to 2026-09-28) is in the closed rows of
 
 ---
 
+## 2026-11-24: wage-income screen and redrawn population (supervisor's final request; D19)
+
+Two runs the supervisor asked for before submission, on branch `supervisor-final-2026-11-24`.
+Design and decisions A to C are in [`DECISIONS.md`](DECISIONS.md) D19. **No existing result
+moved:** every stored suite was left as it was (`rq0.parquet` is read, not rerun); rebuilding
+every table, figure input and the register changes nothing that existed, and adds only
+`tab_effect_split.tex`, `effect_split.json`, 74 `split_*` keys in `results_numbers.json` and two
+register rows. A run with both new fields at their defaults reproduces a stored `rq0` row in
+every column, and the README check scripts reproduce their stored JSON.
+
+- **Code.** Two `ParamSet` fields, both off by default: `bnpl_wage_income_screen` (applied after
+  the eligibility draw in `model.py`) and `population_seed`. The P3 resample moved into
+  `population.resample_population`; `load_population_frame` and `stationary_separation_rate`
+  take a population seed. New suites `screen` (20 runs, seeds 10,000-10,019, pairs with `rq0`)
+  and `redraw` (200 runs, seeds 110,000-110,099, one population draw per replicate, separation
+  rate re-derived per draw); both run under `--which all`. New `check_effect_split.py` (also the
+  last step of `final_run.py`), new `tab:effect-split`, new `test_population_redraw.py`.
+- **Results** (default during the run, points of all households, paired SE): benchmark
+  +1.08 +/- 0.11, of which +0.92 +/- 0.02 among the households short from the start; under the
+  wage-income screen +0.50 +/- 0.09 (+0.38 +/- 0.02); on the redrawn population +1.13 +/- 0.06
+  (+0.97 +/- 0.02). The screen lowers the effect by 0.58 +/- 0.12 points, 0.54 of them in the short
+  group. Across draws the short group has 156 to 235 households and the effect's SD is 0.57 points,
+  against 0.48 across the `rq0` seeds.
+- **Found, not changed:** NIDS leaves `w5_hhwage` missing for 479 matched households whose income
+  comes from the household-level question although their members report labour income; the 202
+  agents drawn from them have zero wage in the model, so the screen excludes them and a separation
+  costs them nothing (D19).
+
 ## 2026-11-10: QA pass (branch `qa-pass-2026-11-10`; reviewer leads verified, Marc's decisions applied)
 
 A reviewer's QA prompt was checked against the code and outputs in three audits (statistics,
