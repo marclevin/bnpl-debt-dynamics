@@ -278,10 +278,10 @@ def fig_scenarios(rq3s: pd.DataFrame) -> None:
 TORNADO_GROUPS = [
     ("Borrowing amount on a shortfall (exact)", "rob_amount_shortfall", [
         ("shortfall +25%", "rob_amount_shortfall_125"),
-        ("shortfall + one tick of committed spending", "rob_amount_shortfall_plus_committed"),
+        ("shortfall + one tick of committed expenditure", "rob_amount_shortfall_plus_committed"),
         ("exact shortfall, uncapped", "rob_amount_shortfall_uncapped"),
         ("shortfall +25%, uncapped", "rob_amount_shortfall_125_uncapped"),
-        ("shortfall + one tick of committed spending, uncapped", "rob_amount_shortfall_plus_committed_uncapped"),
+        ("shortfall + one tick of committed expenditure, uncapped", "rob_amount_shortfall_plus_committed_uncapped"),
     ], True),
     (r"Purchase size $\kappa$ (0.139)", "rob_kappa0.1387", [("0.07", "rob_kappa0.07"), ("0.28", "rob_kappa0.28")], False),
     ("Purchase sizing base (discretionary)", "rob_base_discretionary", [("sized on income", "rob_base_income")], False),

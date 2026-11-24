@@ -2,19 +2,21 @@
 % do not edit by hand; re-run the script instead.
 \begin{table}[!htb]
 \centering
-\caption{The \ac{BNPL} effect by household group}
-\label{tab:effect-split}
-\tabnote{Effect: default during the run with \ac{BNPL} at $\beta = 0$ less default without, in points of all 5{,}000 households, so the two group columns sum to the first; $\pm$ one standard error. Benchmark: the $\beta = 0$ arm of Table~\ref{tab:baseline-arms}, seeds 10{,}000--10{,}019. Wage-income screen: platforms lend only to households whose surveyed labour-market income (from employment or self-employment) is above zero at the start, 2{,}802 of the 4{,}142 eligible households; the same seeds. Pairing: by seed with the no-\ac{BNPL} arm of Table~\ref{tab:baseline-arms} for these two rows. Redrawn population: 100 replicates, seeds 110{,}000--110{,}099. Each draws 5{,}000 households from the 10{,}841 matched \ac{NIDS} households and derives its own separation rate. Its runs with and without \ac{BNPL} share the draw and the seed, so the standard error includes sampling variation of the population as well as simulation variance. Households short from the start: surveyed income below committed expenditure, 182 households in the benchmark population and 156 to 235 in the draws. Screen less benchmark, paired by seed: $-0.58 \pm 0.12$ points for all households, $-0.54 \pm 0.01$ for those short from the start, $-0.04 \pm 0.11$ for the others.}
-\begingroup\setlength{\tabcolsep}{4pt}\small
-\begin{tabular}{L{3.1cm}R{2.6cm}R{2.9cm}R{2.9cm}}
+\ifdefined\gentabbox\else\newsavebox{\gentabbox}\fi
+\sbox{\gentabbox}{\small\setlength{\tabcolsep}{5pt}%
+\begin{tabular}{H{3.6cm}R{2.6cm}R{2.9cm}R{2.9cm}}
 \toprule
 & \multicolumn{3}{c}{\textbf{Effect on default during the run (pp)}} \\ \cmidrule(lr){2-4}
-& \textbf{All households} & \textbf{Households short from the start} & \textbf{Households not short from the start} \\
+& \multicolumn{1}{>{\raggedleft\arraybackslash}b{2.6cm}}{\textbf{All households}} & \multicolumn{1}{>{\raggedleft\arraybackslash}b{2.9cm}}{\textbf{Households short from the start}} & \multicolumn{1}{>{\raggedleft\arraybackslash}b{2.9cm}}{\textbf{Households not short from the start}} \\
 \midrule
 Benchmark & $\boldsymbol{+1.08 \pm 0.11}$ & $\boldsymbol{+0.92 \pm 0.02}$ & $+0.17 \pm 0.11$ \\
 Wage-income screen & $\boldsymbol{+0.50 \pm 0.09}$ & $\boldsymbol{+0.38 \pm 0.02}$ & $+0.13 \pm 0.09$ \\
 Redrawn population & $\boldsymbol{+1.13 \pm 0.06}$ & $\boldsymbol{+0.97 \pm 0.02}$ & $\boldsymbol{+0.17 \pm 0.05}$ \\
 \bottomrule
-\end{tabular}
-\endgroup
+\end{tabular}}
+\caption{The \ac{BNPL} effect by household group}
+\label{tab:effect-split}
+{\ifdim\wd\gentabbox<0.9\linewidth\setlength{\linewidth}{\wd\gentabbox}\fi
+\tabnote{Effect: default during the run with \ac{BNPL} at $\beta = 0$ less default without, in points of all 5{,}000 households, so the two group columns sum to the first up to rounding; $\pm$ one standard error. Benchmark: the $\beta = 0$ arm of Table~\ref{tab:baseline-arms}. Wage-income screen: platforms lend only to households with wage income (surveyed income from employment or self-employment) at the start, 2{,}802 of the 4{,}142 eligible households. Both rows: seeds 10{,}000--10{,}019, paired by seed with the no-\ac{BNPL} arm of Table~\ref{tab:baseline-arms}. Redrawn population: 100 replicates, seeds 110{,}000--110{,}099, each drawing 5{,}000 households from the 10{,}841 matched \ac{NIDS} households and deriving its own separation rate; its runs with and without \ac{BNPL} share the draw and the seed, so the standard error covers the population draw as well as simulation variance (Section~\ref{sec:sim-params}). Households short from the start: surveyed income below committed expenditure, 182 households in the benchmark population and 156 to 235 in the draws. Wage-income screen less benchmark, paired by seed: $-0.58 \pm 0.12$ points for all households, $-0.54 \pm 0.01$ for those short from the start, $-0.04 \pm 0.11$ for the others.}}
+\usebox{\gentabbox}
 \end{table}

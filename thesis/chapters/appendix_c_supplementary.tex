@@ -67,6 +67,8 @@ limits apply per household, so activation order does not allocate a common credi
 fixed-order arm therefore checks whether implementation details or the assignment of random
 draws affect the outcomes.
 
+% The index is a long table: start it where more than one row fits under its caption and note.
+\needspace{0.6\textheight}
 \subsection{Index of Limitations}
 \label{app:caveats}
 
@@ -87,6 +89,7 @@ column states what each bounds.} \\
 \textbf{Limitation} & \textbf{Statement} & \textbf{Where argued, or what it bounds} \\
 \midrule
 \endfirsthead
+\LTcontinued{3}
 \toprule
 \textbf{Limitation} & \textbf{Statement} & \textbf{Where argued, or what it bounds} \\
 \midrule
@@ -226,9 +229,9 @@ of volume and changes default by $+0.07 \pm 0.15$ points.
 
 \input{chapters/generated/tab_cap}
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
-\includegraphics[width=\textwidth]{figures/fig_scenarios_appendix.png}
+\includegraphics[width=\textwidth]{figures/fig_scenarios_appendix}
 \caption{Every lever against the benchmark, with and without peer influence}
 \label{fig:scenarios-appendix}
 \tabnote{Change in the population default rate at the final tick, lever less benchmark at the same $\beta$, at $\beta = 0$ (left) and $\beta = 0.3$ (right), with 95\% confidence intervals; the dashed line marks no change. The levers are the two switches of Section~\ref{sec:scenarios} and their combination, the cooling-off window of one to four ticks and the cap of one to three platforms owed. The switches have 100 replicates and are compared with the benchmark of Table~\ref{tab:scenarios}; the window and the cap have 20 and are compared with the benchmark of Table~\ref{tab:cooloff}. Values and differences with standard errors are in Tables~\ref{tab:scenarios}, \ref{tab:cooloff} and~\ref{tab:cap}.}

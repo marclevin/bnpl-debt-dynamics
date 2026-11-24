@@ -2,15 +2,13 @@
 % do not edit by hand; re-run the script instead.
 \begin{table}[!htb]
 \centering
-\caption{Stacking, volume and default by number of platforms}
-\label{tab:stacking}
-\tabnote{Seeds 20{,}000--20{,}019. Owing two or more platforms, holders: share of the households holding \ac{BNPL} at the final tick that owe two or more platforms; ever-holders: share of the households that ever held \ac{BNPL} that owed two or more platforms at some tick. With one platform no household can owe two (--). The \ac{CFPB} reports that 32 to 33\% of United States borrowers in a year held simultaneous loans at two or more firms, an undercount by its own account~\citep{cfpb2025bnpl}. Volume: cumulative post-burn-in \ac{BNPL} lending. Replicate standard deviations of default are at most 0.53 points. Default: including the households placed in default at the start. Default with six platforms less one: $+0.13 \pm 0.13$ points at $\beta = 0$ and $+0.17 \pm 0.12$ at $\beta = 0.3$, $\pm$ one standard error, paired by seed.}
-\begingroup\setlength{\tabcolsep}{4pt}\small
-\begin{tabular}{c rr rr rr rr}
+\ifdefined\gentabbox\else\newsavebox{\gentabbox}\fi
+\sbox{\gentabbox}{\small\setlength{\tabcolsep}{3pt}%
+\begin{tabular}{c R{1.25cm}R{1.25cm} @{\hspace{10pt}} R{1.25cm}R{1.25cm} @{\hspace{10pt}} R{1.25cm}R{1.25cm} @{\hspace{10pt}} R{1.25cm}R{1.25cm}}
 \toprule
 & \multicolumn{4}{c}{\textbf{Owing two or more platforms}} & & & & \\ \cmidrule(lr){2-5}
-& \multicolumn{2}{c}{\textbf{Holders (\%)}} & \multicolumn{2}{c}{\textbf{Ever-holders (\%)}} & \multicolumn{2}{c}{\textbf{Volume (R m)}} & \multicolumn{2}{c}{\textbf{Default (\%)}} \\ \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(lr){8-9}
-\textbf{Platforms} & $\beta=0$ & $\beta=0.3$ & $\beta=0$ & $\beta=0.3$ & $\beta=0$ & $\beta=0.3$ & $\beta=0$ & $\beta=0.3$ \\
+& \multicolumn{2}{c}{\textbf{Holders (\%)}} & \multicolumn{2}{c}{\textbf{Ever-holders (\%)}} & \multicolumn{2}{c}{\textbf{Volume (R~m)}} & \multicolumn{2}{c}{\textbf{Default (\%)}} \\ \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(lr){8-9}
+\textbf{Platforms} & ${\beta=0}$ & ${\beta=0.3}$ & ${\beta=0}$ & ${\beta=0.3}$ & ${\beta=0}$ & ${\beta=0.3}$ & ${\beta=0}$ & ${\beta=0.3}$ \\
 \midrule
 1 & -- & -- & -- & -- & 4.47 & 11.03 & 21.57 & 21.65 \\
 2 & 19.6 & 16.9 & 23.8 & 60.9 & 5.21 & 12.52 & 21.79 & 21.74 \\
@@ -19,6 +17,10 @@
 5 & 21.6 & 20.5 & 29.0 & 71.7 & 5.50 & 12.74 & 21.76 & 21.87 \\
 6 & 22.4 & 20.6 & 29.3 & 73.1 & 5.59 & 12.80 & 21.70 & 21.82 \\
 \bottomrule
-\end{tabular}
-\endgroup
+\end{tabular}}
+\caption{Stacking, volume and default by number of platforms}
+\label{tab:stacking}
+{\ifdim\wd\gentabbox<0.9\linewidth\setlength{\linewidth}{\wd\gentabbox}\fi
+\tabnote{Seeds 20{,}000--20{,}019. Owing two or more platforms, holders: share of the households holding \ac{BNPL} at the final tick that owe two or more platforms; ever-holders: share of the households that ever held \ac{BNPL} that owed two or more platforms at some tick. With one platform no household can owe two (--). The \ac{CFPB} reports that 32 to 33\% of United States borrowers in a year held simultaneous loans at two or more firms, an undercount by its own account~\citep{cfpb2025bnpl}. Volume: cumulative post-burn-in \ac{BNPL} lending. Replicate standard deviations of default are at most 0.53 points. Default: including the households placed in default at the start. Default with six platforms less one: $+0.13 \pm 0.13$ points at $\beta = 0$ and $+0.17 \pm 0.12$ at $\beta = 0.3$, $\pm$ one standard error, paired by seed.}}
+\usebox{\gentabbox}
 \end{table}

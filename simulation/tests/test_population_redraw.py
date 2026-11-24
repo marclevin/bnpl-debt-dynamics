@@ -3,7 +3,8 @@
   * with both new fields at their defaults a run reproduces a stored rq0 row exactly;
   * the P3 step, moved into population.py, reproduces the canonical population with P3's seed;
   * under the screen no household without wage income is eligible, and the eligibility draw
-    consumes the same random numbers as the benchmark's, so the arm pairs by seed;
+    consumes the same random numbers as the benchmark's, so the two arms start from the same
+    state (the simulation streams part in the first tick; this is not tested or claimed);
   * population draws differ between seeds and repeat on one seed.
 """
 
@@ -76,7 +77,7 @@ def test_p3_step_reproduces_the_canonical_population():
 
 
 @needs_data
-def test_screen_keeps_only_wage_households_and_the_benchmark_stream():
+def test_screen_keeps_only_wage_households_and_the_benchmark_start():
     bench = _model(bnpl_enabled=True, beta=0.0, seed=10_003)
     screen = _model(bnpl_enabled=True, beta=0.0, seed=10_003, bnpl_wage_income_screen=True)
     # The eligibility draw, and the minimum-payer draw after it, used the same numbers.

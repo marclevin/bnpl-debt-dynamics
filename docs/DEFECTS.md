@@ -248,6 +248,23 @@ beta = 0 and 0.3 beside Table 4. Section 6 names it as further work. Stale: the 
 `check_contestable_default.py` ("about 96% of them default in every arm", "beta = 1") was from the
 streak rule and before #98; its docstring now says so (no code change, not rerun).
 
+**Supervisor's two runs, 2026-11-24 (D19; `check_effect_split.py`, `effect_split.json`,
+`tab:effect-split`).** *Wage-income screen:* with platforms lending only to households with
+surveyed labour-market income the effect is +0.50 +/- 0.09 pp on the rq0 seeds, 0.58 +/- 0.12
+below the benchmark; 19 of the 55 the lender never lends to have wage income and about 18 of the
+55 still default. *Redrawn population:* over 100 population draws the effect is +1.13 +/- 0.06 pp,
+of which +0.97 +/- 0.02 are households short from the start (156 to 235 of them per draw, 182 in
+the benchmark population). An independent check reproduced every figure. Two limits it raised,
+both disclosed: the screen arm shares only the benchmark's starting state, not its random stream,
+so the paired standard error is no smaller than the unpaired one; and the spread of the effect
+across draws (SD 0.57) against seeds (SD 0.48, 20 seeds) is too imprecise to say how much the
+population draw adds, so the thesis does not claim that it adds little. *Data gap found, not
+fixed:* 479 matched NIDS households have `w5_hhwage` missing although members report labour
+income; the model reads their wage income as zero, so the 202 agents drawn from them fail the
+screen and lose nothing when a member loses work. Two are short from the start and none is among
+the 55; recomputing their wage income from members' records would move the screen result by
+about 0.01 pp.
+
 ### B49 · Beta-sweep slope and curvature SEs ignored the shared no-BNPL arm · `MAJOR` · agent · RESOLVED
 
 Found 2026-11-10 (QA pass, A1). `beta_sweep_analysis.py` fitted WLS with weights 1/SE^2 and took

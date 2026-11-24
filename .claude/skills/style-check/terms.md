@@ -82,7 +82,7 @@ the term is defined. When the thesis changes, this file changes in the same comm
 | detectable | Exceeds two standard errors (Section 3.1). Tables print it in bold. Forms: "not detectable", "does not change detectably", "no detectable slope", "do not differ detectably" | significant, insignificant, no effect, negligible |
 | replicates; seeds; seed block | Runs of one arm; their random seeds; a set of seeds used together | repetitions, trials, samples |
 | pooled by inverse variance | How blocks are combined | averaged |
-| simulation variance | What the standard errors measure today. If a design also redraws the population, say so by name each time | noise, sampling error |
+| simulation variance | What the standard errors measure, outside the redrawn population. The redrawn population's standard errors also cover the drawn population; say so by name each time | noise, sampling error |
 
 ## Experiments
 
@@ -97,6 +97,8 @@ the term is defined. When the thesis changes, this file changes in the same comm
 | lever | Cooling-off window; platform cap | switch for these two; "lever" for all four |
 | scenario | The Section 5 arms only | scenario for any other arm |
 | sweep | A grid over one or two parameters | |
+| the redrawn population | The design in which each replicate has its own population draw and derived separation rate, at β = 0 (Sections 3.1 and 4.1; `tab:effect-split`). Reported beside the headline as a check; the headline stays the pooled fixed-population estimate | resampled population (that is the fixed 5,000 of Section 3.2), bootstrap draw, bootstrap population, new population, population redraw, fresh population |
+| population draw | One replicate's 5,000 households in the redrawn population. "Across population draws"; "the draws" after it is named | resample, bootstrap sample, redraw (noun), population sample |
 | sensitivity | Headings and prose for varying an assumption | robustness |
 | without BNPL; enabling BNPL | Prose | BNPL-free, BNPL disabled ("No BNPL", "BNPL off" are table labels) |
 | without peer influence; with peer influence | β = 0; β = 0.3, in the abstract, Section 1, the RQ answers and Section 6 | "at β = 0" in those places |
@@ -107,6 +109,8 @@ the term is defined. When the thesis changes, this file changes in the same comm
 |---|---|---|
 | the Regulation 23A test, then "the lender's test" | The traditional lender's affordability test | affordability check, credit check, income check, credit gate in prose (the gate is the submodel's name) |
 | light screen | What the platforms apply: banked and not in default. "The platforms' screen does not compare income with living costs" | eligibility check |
+| the wage-income screen | The arm in which the platforms lend only to households with wage income (Section 4.1; `tab:effect-split`). Always in full where the light screen is also in play. It does not compare income with food and rent, so it is never an affordability test | income screen, wage screen, wage test, employment screen, income check, affordability test for this arm |
+| wage income | Surveyed income from employment or self-employment (NIDS `w5_hhwage`), above zero. "Households with no wage income" | labour income, earnings, salaried, employed households (a household can have wage income and still be short from the start) |
 | mandatory screening, then "screening" | The switch that applies the lender's test to BNPL requests | affordability screening (only in the frozen research questions and the Section 5 title), strict screening |
 | bureau visibility, then "visibility" | The switch that shows BNPL to the lender's test | bureau reporting, "reporting raises default" |
 | reporting arrangements | The real-world change in South Africa | bureau visibility for the real event |
@@ -203,6 +207,14 @@ households can borrow with BNPL against a shortfall and that BNPL arrears count 
 "the traditional lender's Regulation 23A test never grants a loan to 55 and lends to 65";
 "the platforms, whose screen does not compare income with living costs, lend to them".
 
+**The wage-income screen.** "Under the wage-income screen the platforms lend only to households
+with wage income, surveyed income from employment or self-employment." "About half of the effect
+depends on the platforms lending to households with no wage income."
+
+**The redrawn population.** "In the redrawn population the effect is `$+1.13 \pm 0.06$` points";
+"each replicate has its own population draw"; "The draws resample households independently and
+reflect neither the survey's clustering nor uncertainty in the match."
+
 **The refused household.** "in the model a refused household has no other source of credit".
 
 **Screening and welfare.** "The runs record no Rand amount unpaid, so the fall in default does
@@ -234,10 +246,10 @@ next edited. Do not copy these forms into new text.
 
 1. `01_introduction` "28% of BNPL users owe two or more platforms": should be "ever-holders".
 2. Abstract "the number of indebted households halves": should be "credit-active".
-3. "committed spending" in `04_results` and two generated tables: "committed expenditure".
-4. "more than 90 days behind" (four places): "past due".
+3. "committed spending" in two generated tables: "committed expenditure" (fixed in `04_results` on 2026-11-24).
+4. "more than 90 days behind" (fixed in `03_calibration` and `04_results` on 2026-11-24; check `01_introduction`): "past due".
 5. "bureau reporting" and "reporting raises default" for the switch (`01`, `05`, `06`): "bureau visibility".
-6. "the earlier rule" in Section 4.1 with no name: "the streak rule".
+6. "the earlier rule" in Section 4.1 with no name: fixed on 2026-11-24 ("the earlier streak rule").
 7. "lever" for all four arms in one Appendix C caption.
 8. "ceiling" beside "cap" for the Regulation 23A payment cap.
 9. "route" in the conclusion for the shortfall path.

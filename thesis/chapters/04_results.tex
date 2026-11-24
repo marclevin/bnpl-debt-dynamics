@@ -23,7 +23,7 @@ pooled effect is $1.10 \pm 0.07$.
 % control and tab:effect).
 
 The effect runs through households that use \ac{BNPL} to bridge cash shortfalls and then fall
-more than 90 days behind on it. On the seeds of Table~\ref{tab:baseline-arms}, $0.94 \pm 0.01$ of the 1.08
+more than 90 days past due on it. On the seeds of Table~\ref{tab:baseline-arms}, $0.94 \pm 0.01$ of the 1.08
 points are households in default on \ac{BNPL} alone. The remaining $0.14 \pm 0.11$, defaults that
 involve traditional arrears, is not detectable.
 With \ac{BNPL} kept out of the shortfall path the effect is $-0.05 \pm 0.16$ points, and with
@@ -41,7 +41,7 @@ instead. With \ac{BNPL} the platforms lend to them and 46 of the 55 default, whi
 default in both arms. The 55 therefore account for 0.92 of the 1.08 points. This part of the
 effect follows from the rules, because a household with no debt cannot default and the platforms'
 screen does not compare income with living costs. The effect therefore depends on counting
-\ac{BNPL} arrears as default. Under the earlier rule, which did not and also differed in its
+\ac{BNPL} arrears as default. Under the earlier streak rule, which did not and also differed in its
 starting profile and write-off, it was $-0.10 \pm 0.06$ points (Appendix~\ref{app:calibration}).
 Households try \ac{BNPL} before the traditional lender
 (Submodel~5), so fewer requests reach the lender and its refusals fall from 2{,}796 to 970 over the
@@ -50,13 +50,39 @@ run, of which households short from the start make 2{,}623 and 817.
 % 970: at_risk, never_lent_to, lent_to, never_default_on, lent_to_default_off/_on,
 % group_refusals_off/_on, all_refusals_off/_on in results/summary/short_group_lending.json
 % (notebooks/scripts/check_short_group_lending.py, seeds 10,000-10,019, beta = 0); never_default_off
-% is 0. 0.92 = 45.75 / 5,000. Earlier rule: -0.10 +/- 0.06, Appendix C (docs/ARREARS_RULE_2026-11.md).
+% is 0. 0.92 = 45.75 / 5,000. Streak rule: -0.10 +/- 0.06, Appendix C (docs/ARREARS_RULE_2026-11.md).
+
+Under the wage-income screen the platforms lend only to households with wage income, surveyed
+income from employment or self-employment. The arm lowers the effect by $0.58 \pm 0.12$ points, to
+$+0.50 \pm 0.09$ (Table~\ref{tab:effect-split}), so about half of the effect depends on the
+platforms lending to households with no wage income. Of the 55 the lender never lends to, 18
+still default, all among the 19 with wage income, which need not cover food and rent.
+% 0.58 +/- 0.12 and +0.50 +/- 0.09: split_screen_less_bench_all and split_screen_all (+ _se),
+% results/summary/results_numbers.json (seeds 10,000-10,019, beta = 0, paired by seed with the
+% no-BNPL arm of rq0). 19 and 18 (18.15 of the 55): never_lent_every_seed_wage and
+% never_lent_default_screen in results/summary/effect_split.json
+% (notebooks/scripts/check_effect_split.py); 2,802 of the 4,142 eligible households pass
+% (eligible_screen, eligible_bench). Half: 0.58 and 0.50 of the 1.08 points.
+
+In the redrawn population the effect is $+1.13 \pm 0.06$ points, of which $+0.97 \pm 0.02$ are
+households short from the start (Table~\ref{tab:effect-split}). It does not differ detectably
+from the pooled $1.03 \pm 0.06$, and without \ac{BNPL} default during the run averages 14.37\%
+over the draws, as in the benchmark population.
+% +1.13 +/- 0.06 and +0.97 +/- 0.02: split_redraw_all and split_redraw_short (+ _se),
+% results_numbers.json (100 replicates, seeds 110,000-110,099, beta = 0, one population draw per
+% replicate). The standard deviation of the effect is 0.57 points across draws and 0.48 across
+% the 20 benchmark seeds (split_effect_sd_redraws, split_effect_sd_rq0_seeds); the second is too
+% imprecise to say how much the population draw adds (independent check, 2026-11-24). The group has 156 to 235 households
+% across the draws (split_redraw_short_n_min/_max).
 
 Among households not short from the start, pooled over four seed blocks
 (three at $\beta=0.3$), the effect is $+0.11 \pm 0.07$ points at $\beta=0$, not detectable,
-and $+0.18 \pm 0.08$ at $\beta=0.3$, which is.
+and $+0.18 \pm 0.08$ at $\beta=0.3$, which is. The redrawn population's $+0.17 \pm 0.05$ at
+$\beta=0$ is detectable and does not differ detectably from the pooled estimate.
 % +0.11 +/- 0.07, +0.18 +/- 0.08: beta0/peer_effect_pooled_contestable (+ _se),
 % results/summary/contestable_default.json (four blocks at beta = 0, three at beta = 0.3).
+% +0.17 +/- 0.05: split_redraw_other (+ _se), results_numbers.json. The two differ by 0.06 +/- 0.08
+% (0.168 - 0.113; se = sqrt(0.066^2 + 0.053^2)).
 
 The 90+ share of credit-active households falls with \ac{BNPL}, from 13.98\% to 12.46\% at
 $\beta=0$, because \ac{BNPL} holders join the denominator. We therefore use it for the level
@@ -74,6 +100,8 @@ value of $\beta$ ($-$R$0.10 \pm 0.25$ million and $+$R$0.15 \pm 0.25$ million).
 % 10,000-10,019).
 
 \input{chapters/generated/tab_baseline_arms}
+
+\input{chapters/generated/tab_effect_split}
 
 \subsection{Peer Influence}
 \label{sec:results-beta}
@@ -128,7 +156,7 @@ the effect of platforms not seeing one another.
 
 \begin{figure}[!htb]
 \centering
-\includegraphics[width=\textwidth]{figures/fig_stacking.png}
+\includegraphics[width=\textwidth]{figures/fig_stacking}
 \caption{Stacking and default by platform count}
 \label{fig:stacking}
 \tabnote{(a) Share of all households, not of holders as in Table~\ref{tab:stacking}, owing two or more platforms at the final tick (values in Table~\ref{tab:stacking-full}). (b) Share of ever-holders who owed two or more platforms at some tick of the two-year run; the dashed line is the \ac{CFPB}'s 32\% of United States borrowers in 2021, a one-year share~\citep{cfpb2025bnpl}. Both shares are zero with one platform. (c) Default rate. Black: $\beta = 0$. Error bars: 95\% confidence intervals of the levels over 20 replicates; differences paired by seed are in Section~\ref{sec:results-stacking} and Table~\ref{tab:stacking-full}. Seeds as in Table~\ref{tab:stacking}.}
@@ -164,7 +192,7 @@ from 41\% to 13\% without changing default detectably ($-0.18 \pm 0.14$ points).
 
 \begin{figure}[!htb]
 \centering
-\includegraphics[width=\textwidth]{figures/fig_access_default.png}
+\includegraphics[width=\textwidth]{figures/fig_access_default}
 \caption{Holding and default against \ac{BNPL} access under two adoption rules}
 \label{fig:access-default}
 \tabnote{Access is the share of banked households eligible for \ac{BNPL}. (a) Default under the linear peer rule, by $\beta$; black: $\beta = 0$. (b) Holding at the final tick and (c) default under the threshold rule with $\gamma = 0.3$, by threshold dispersion $\sigma_\theta$; black: $\gamma = 0$. Error bars: 95\% confidence intervals of the levels over 20 replicates. Changes from zero to full access, paired by seed, are in Table~\ref{tab:access}.}
@@ -222,7 +250,7 @@ removed, each is within 0.03 of zero.
 Replacing persistent job loss with a
 single-tick loss, an arm that also has no hires and exposes only households living mainly on
 wages, lowers default by $0.86 \pm 0.15$ points. With the \ac{BNPL} share of a shortfall capped,
-borrowing a quarter more than the shortfall, or a tick of committed spending on top of it,
+borrowing a quarter more than the shortfall, or a tick of committed expenditure on top of it,
 lowers default by $0.51 \pm 0.14$ and $0.39 \pm 0.15$ points. Purchase size, the minimum payment
 and the minimum-payer share do not change default detectably (Figure~\ref{fig:tornado}).
 
@@ -230,7 +258,7 @@ and the minimum-payer share do not change default detectably (Figure~\ref{fig:to
 
 \begin{figure}[!htb]
 \centering
-\includegraphics[width=\textwidth]{figures/fig_tornado.png}
+\includegraphics[width=\textwidth]{figures/fig_tornado}
 \caption{Sensitivity of the population default rate}
 \label{fig:tornado}
 \tabnote{Change in default from each group's reference arm at $\beta = 0$, with 95\% confidence intervals. Hollow markers: assumptions with no empirical estimate. The uncapped arms are compared with the exact-shortfall reference, not with the same rule capped as in Table~\ref{tab:robustness}. The 56-day default threshold is in Table~\ref{tab:robustness} only, because it changes the definition and the timing of default. The remaining arms are in Table~\ref{tab:robustness-appendix}.}
@@ -267,7 +295,9 @@ short of food and rent ($+0.06 \pm 0.01$ points) and the share with no liquid sa
 ($+0.17 \pm 0.04$). The effect on default runs through \ac{BNPL} used against cash shortfalls and
 is concentrated in the 3.6\% of households short from the start. Among the others it is
 $+0.11 \pm 0.07$ points at $\beta=0$, not detectable, and
-$+0.18 \pm 0.08$ at $\beta=0.3$, which is. Peer influence raises volume and stacking, but the
+$+0.18 \pm 0.08$ at $\beta=0.3$, which is. In the redrawn population the effect is
+$+1.13 \pm 0.06$ points, and the wage-income screen lowers the benchmark's 1.08 points by
+$0.58 \pm 0.12$ (Section~\ref{sec:results-injection}). Peer influence raises volume and stacking, but the
 effect shows no detectable slope in $\beta$
 ($+0.003 \pm 0.010$ points per 0.1) and stays within 0.15 points of the control under the
 threshold rule. Default rises with access, with no sign of a jump. It does not change detectably with the routing rule
@@ -278,6 +308,8 @@ of ever-holders owe two or more platforms at some tick.
 % +0.06 +/- 0.01 and +0.17 +/- 0.04: as in Section 4.1 (effect_consumption_ever_pp, beta_sweep.json;
 % zero_savings_change_beta0, results_numbers.json). Within 0.15 of the control: thr_default_rise_*
 % against thr_ctrl_default_rise, results_numbers.json (largest gap 0.146).
+% Redrawn population and wage-income screen: split_redraw_all and split_screen_less_bench_all
+% (+ _se), results_numbers.json, as in Section 4.1.
 
 The size of the effect depends most on whether households can borrow with \ac{BNPL} against a
 shortfall (Section~\ref{sec:results-effect}) and on counting \ac{BNPL} arrears as default

@@ -170,6 +170,18 @@ HEADER = (
 )
 
 
+#: Table style, one for every table in the thesis (generated and hand-written):
+#:   * body \small; \footnotesize only where the columns do not fit the text width at \small;
+#:     the note \footnotesize (\tabnote), under the caption, above the table;
+#:   * booktabs rules only; bold column heads; an italic group row gets a little space above it;
+#:   * where any cell wraps, \addlinespace between rows (spaced=True), and row labels that can
+#:     wrap go in an H column (hanging indent), so a continuation line does not read as a row;
+#:   * numbers right-aligned, one number of decimals per column, true minus signs (in math);
+#:   * a note under a table much narrower than the text is set to the table's width;
+#:   * body tables float [!htb] (near the citing text); appendix tables [!htbp].
+APPENDIX_PLACEMENT = "!htbp"
+
+
 def table(
     name: str,
     caption: str,
@@ -178,19 +190,47 @@ def table(
     header: str,
     rows: list[str],
     size: str = r"\small",
-    colsep: str = "4pt",
-    placement: str = "H",
+    colsep: str = "5pt",
+    placement: str = APPENDIX_PLACEMENT,
+    spaced: bool = False,
+    env: str = "table",
+    fit_note: bool = True,
 ) -> None:
-    body = "\n".join(rows)
+    """Write one table fragment in the thesis table style.
+
+    The tabular is set in a box first, so the note can take the table's width when the table
+    is much narrower than the text. `spaced` puts \\addlinespace between data rows (for a table
+    in which a cell wraps); a group row (group_row) always gets space above it unless it opens
+    the body. `env` is "table" or "sidewaystable" (a rotated table on its own page).
+    `fit_note=False` keeps a full-width note under a narrow table (fewer lines, where the
+    page could not otherwise hold the table).
+    """
+    out: list[str] = []
+    for i, r in enumerate(rows):
+        is_group = r.startswith("\\multicolumn") and "\\emph{" in r
+        prev = rows[i - 1] if i else ""
+        prev_is_group = prev.startswith("\\multicolumn") and "\\emph{" in prev
+        if i and prev.strip() != "\\midrule" and r.strip() != "\\midrule":
+            if is_group or (spaced and not prev_is_group):
+                out.append("\\addlinespace")
+        out.append(r)
+    body = "\n".join(out)
     tex = (
         HEADER
-        + f"\\begin{{table}}[{placement}]\n\\centering\n"
-        + f"\\caption{{{caption}}}\n\\label{{tab:{name.replace('tab_', '').replace('_', '-')}}}\n"
-        + f"\\tabnote{{{note}}}\n"
-        + f"\\begingroup\\setlength{{\\tabcolsep}}{{{colsep}}}{size}\n"
+        + f"\\begin{{{env}}}[{placement}]\n\\centering\n"
+        # one box register for every generated table, allocated by the first that is set
+        + "\\ifdefined\\gentabbox\\else\\newsavebox{\\gentabbox}\\fi\n"
+        + f"\\sbox{{\\gentabbox}}{{{size}\\setlength{{\\tabcolsep}}{{{colsep}}}%\n"
         + f"\\begin{{tabular}}{{{colspec}}}\n\\toprule\n{header} \\\\\n\\midrule\n"
         + body
-        + "\n\\bottomrule\n\\end{tabular}\n\\endgroup\n\\end{table}\n"
+        + "\n\\bottomrule\n\\end{tabular}}\n"
+        + f"\\caption{{{caption}}}\n\\label{{tab:{name.replace('tab_', '').replace('_', '-')}}}\n"
+        # the note takes the table's width when the table is under 90% of the line
+        + ("{\\ifdim\\wd\\gentabbox<0.9\\linewidth\\setlength{\\linewidth}{\\wd\\gentabbox}\\fi\n"
+           if fit_note else "{\n")
+        + f"\\tabnote{{{note}}}}}\n"
+        + "\\usebox{\\gentabbox}\n"
+        + f"\\end{{{env}}}\n"
     )
     GEN.mkdir(parents=True, exist_ok=True)
     (GEN / f"{name}.tex").write_text(tex, encoding="utf-8")

@@ -5,25 +5,29 @@ We chose the model's rules (Section~\ref{sec:model}) over the following alternat
 
 \subsection{Population Construction}
 
-\textbf{Statistical fusion of \ac{NIDS} and \ac{FinScope}.} A hot-deck or model-based fusion would
+\labelpar{Statistical fusion of \ac{NIDS} and \ac{FinScope}.}
+A hot-deck or model-based fusion would
 recover finer joint structure between the two instruments than copying flags within an
 income-quintile-by-province cell, at the cost of its own validation burden and a risk of
 fitting the idiosyncrasies of two surveys rather than the population behind them. The cell match
 reproduces the weighted within-cell distribution of flag combinations, which is what the servicing
 construction needs.
 
-\textbf{\ac{CPI} forwarding to 2022.} An earlier design forwarded \ac{NIDS} monetary values to
+\labelpar{\ac{CPI} forwarding to 2022.}
+An earlier design forwarded \ac{NIDS} monetary values to
 2022, which required a second reference year, assumptions about how relative incomes moved between
 the two, and 2022-vintage validation targets. Working entirely in 2017 Rands removes all three, and
 the counterfactual injection design needs a 2017 anchor in any case.
 
 \subsection{Household Decision Rules}
 
-\textbf{A propensity-to-consume or buffer-stock consumption rule (Submodel~2).} Either would need further behavioural assumptions and a calibrated propensity,
+\labelpar{A propensity-to-consume or buffer-stock consumption rule (Submodel~2).}
+Either would need further behavioural assumptions and a calibrated propensity,
 and we located no South African estimate suited to a fortnightly household rule.
 We keep the expenditure split constructed from the survey.
 
-\textbf{Cost ranking as the lender-choice rule (Submodel~5).} \ac{BNPL} is nominally
+\labelpar{Cost ranking as the lender-choice rule (Submodel~5).}
+\ac{BNPL} is nominally
 interest-free, so a cost ranking would also send a shortfall to \ac{BNPL} first, but it would
 attribute the order to price. The evidence does not support that attribution. In the one
 experiment we found that compares \ac{BNPL} with a credit card, participants were offered one
@@ -32,40 +36,47 @@ authors argue that neither option was clearly cheaper~\citep{ackert2025bnpl}. Fo
 one necessity, purchase rates were similar under the two. We therefore assume the
 order directly and attribute it to no motive.
 
-\textbf{Scheduled amortisation as the sole repayment rule (Submodel~6).} Keys and Wang
+\labelpar{Scheduled amortisation as the sole repayment rule (Submodel~6).}
+Keys and Wang
 \citeyearpar{Keys2019} find that 29\% of credit-card accounts regularly pay at or near the contractual minimum, and
 that at least 9\% of all accounts, and 22\% of near-minimum payers, respond to changes in the
 minimum-payment formula in ways liquidity constraints alone cannot explain. A uniform amortisation rule would
 suppress the behaviour by which obligations persist and compound.
 
-\textbf{A debt-service-to-income threshold as the default condition (Submodel~7).} Any such
+\labelpar{A debt-service-to-income threshold as the default condition (Submodel~7).}
+Any such
 threshold would be arbitrary, and the \ac{NCA} prescribes none. The model uses the 90-days-past-due
 convention instead, the construct of the bureau figures it is compared with~\citep{ncr_cbm_2017}. An
 earlier version used a cash-flow test after Madeira~\citeyearpar{madeira2018chile}, the streak rule
 of Appendix~\ref{app:calibration}. It made food and rent shortfalls the main route into default,
 and a household two months behind that caught up could still default.
 
-\textbf{A continuous present-bias parameter (Submodel~8).} We located no South African distribution
+\labelpar{A continuous present-bias parameter (Submodel~8).}
+We located no South African distribution
 against which to calibrate one, so it would add a free parameter with no discipline. The model
 carries a binary repayment archetype instead, whose share is sourced and swept.
 
 \subsection{Lender and Platform Rules}
 
-\textbf{A flat \ac{DSTI} cap as the credit-granting gate (Submodel~9).} An earlier version of this
+\labelpar{A flat \ac{DSTI} cap as the credit-granting gate (Submodel~9).}
+An earlier version of this
 model used a ceiling of 0.65. It had no source, the \ac{NCA} prescribes no such ratio, and it was
 over-permissive at the bottom of the distribution, since it would let a household earning R900 per month service R585 per month. The
 Regulation 23A residual-income test gives a ceiling that varies with income (Appendix~\ref{app:gate}).
 
-\textbf{Making the \ac{BNPL} eligibility screen a real affordability test (Submodel~12).} The
+\labelpar{Making the \ac{BNPL} eligibility screen a real affordability test (Submodel~12).}
+The
 asymmetry between the Regulation 23A test that binds registered lenders and the light screen
 the platforms apply is one of the conditions the model studies, so a genuine test on
 \ac{BNPL} is an intervention, the screening scenario of Section~\ref{sec:scenarios}.
 
-\textbf{A purely multiplicative peer-influence rule (Submodel~11).} Every household starts with no
+\labelpar{A purely multiplicative peer-influence rule (Submodel~11).}
+Every household starts with no
 \ac{BNPL} balance, so under $q_i = \beta s_g$ want-driven borrowing could start only after
 shortfall borrowing had created balances, and never where \ac{BNPL} relieves no shortfall.
 
 \subsection{Scheduling}
 
-\textbf{Fixed activation order (Submodel~17).} A fixed order would let the same households act
+\labelpar{Fixed activation order (Submodel~17).}
+A fixed order would let the same households act
 first in every tick. Appendix~\ref{app:activation} reports a fixed-order arm.

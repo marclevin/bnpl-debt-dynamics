@@ -73,19 +73,27 @@ visibility and screening. The experiments show which assumptions an effect depen
 identify the mechanisms at work in South African households, estimate the historical effect of
 \ac{BNPL} or forecast default.
 
-Enabling \ac{BNPL} raises default during the run by $1.03 \pm 0.06$ points without peer influence,
-from 14.37\% (Section~\ref{sec:results-injection}). The rise comes from households that use
-\ac{BNPL} to bridge cash shortfalls and then fall more than 90 days behind on it, most of them among
-the 3.6\% whose surveyed income does not cover their food and rent. Those the lender's test never
-lends to hold no debt and cannot default without \ac{BNPL}, but the platforms lend to them; they
-account for most of the effect. For about two-thirds of the group's survey respondents, though, the
-household's answer
-to a single income question does cover food and rent, so the effect may partly reflect how the
-survey records income (Section~\ref{sec:data-validation}).
-% 1.03 +/- 0.06: beta0_effect_pooled (results_numbers.json, Section 4.1); 14.37%: baseline_new_default;
+In the model \ac{BNPL} raises default mainly among the 3.6\% of households short from the start,
+whose surveyed income does not cover food and rent. Those the lender's test never lends to hold no
+debt and cannot default without \ac{BNPL}, but the platforms lend to them against a shortfall,
+and these households account for most of the effect. For about two-thirds of the group's
+respondents the answer to a single income question covers food and rent, so the effect may partly
+reflect how the survey records income (Section~\ref{sec:data-validation}). Among households not
+short from the start the effect is $+0.11 \pm 0.07$ points. Over all households, enabling
+\ac{BNPL} raises default during the run by $1.03 \pm 0.06$ points without peer influence, from
+14.37\% (Section~\ref{sec:results-injection}). When the platforms lend only to households with
+income from employment or self-employment, the effect falls by $0.58 \pm 0.12$ points, about
+half. In the redrawn population, in which each comparison draws its own households, the effect is
+$+1.13 \pm 0.06$ points (Table~\ref{tab:effect-split}).
 % 3.6%: short_group.json (Section 3.5); most of the effect: 0.92 of 1.08 points from the 55 of 120
 % the lender never lends to, results/summary/short_group_lending.json (Section 4.1); two-thirds:
-% one_shot_covers_share_of_answered (68%), short_group.json (Section 3.5).
+% one_shot_covers_share_of_answered (68%), short_group.json (Section 3.5). +0.11 +/- 0.07:
+% beta0_effect_pooled_contestable (+ _se), results/summary/contestable_default.json (four seed
+% blocks, Section 4.1). 1.03 +/- 0.06: beta0_effect_pooled (results_numbers.json, Section 4.1);
+% 14.37%: baseline_new_default. 0.58 +/- 0.12: split_screen_less_bench_all (+ _se), against the
+% benchmark's +1.08 +/- 0.11 on the same seeds (split_bench_all); +1.13 +/- 0.06: split_redraw_all
+% (+ _se), 100 replicates; both in results_numbers.json and results/summary/effect_split.json
+% (tab:effect-split, Section 4.1).
 
 The effect therefore depends most on two features of the model, that households can borrow with
 \ac{BNPL} against a shortfall and that \ac{BNPL} arrears count toward default. With \ac{BNPL} kept
@@ -110,7 +118,7 @@ Peer influence acts only on want-driven purchases, those made without a cash sho
 strongest setting of the linear rule it raises
 \ac{BNPL} volume per eligible household from R862 to R2{,}014 a year, but the effect on default
 shows no detectable slope (Section~\ref{sec:results-beta}). Under the assumed routing, 28\% of
-\ac{BNPL} users owe two or more platforms at some point, and default shows no systematic rise with
+households that ever hold \ac{BNPL} owe two or more platforms at some point, and default shows no systematic rise with
 the number of platforms (Section~\ref{sec:results-stacking}).
 % R862, R2,014 and the slope: results/summary/beta_sweep.json (Section 4.2); 28%: share of
 % ever-holders, Section 4.3; platform count: nmax_minus_n1_beta* (Section 4.3).
@@ -175,12 +183,10 @@ Axtell and Farmer~\citeyearpar{axtell2025abm} describe an \ac{ABM} as a populati
 usually heterogeneous, that follow explicit rules of behaviour. Models more common in economics
 derive behaviour from utility maximisation and impose an equilibrium, often with a representative
 agent. Agents in an \ac{ABM} need not optimise or hold rational expectations, and no equilibrium
-is imposed. Aggregate outcomes follow from the agents' interactions and are found by simulation
-over runs with different random seeds. Axtell and Farmer treat the method as a complement to
-equilibrium models. The method suits this thesis because its households differ in income and
-debt, and the traditional lender and the platforms observe different obligations. \acp{ABM} of
-household credit derive aggregate distress from individual
-borrowing decisions. In Cardaci's~\citeyearpar{cardaci2018inequality} model, rising inequality and
+is imposed. Aggregate outcomes follow from the agents' interactions and are found by simulation.
+The method suits this model because its households follow rules, respond to their peers and face
+lenders that observe different obligations. In Cardaci's~\citeyearpar{cardaci2018inequality}
+model of household credit, rising inequality and
 consumption emulation lead to debt-financed spending and eventually a financial crisis, but its
 debt is collateralised. Two models are closest to this one (Table~\ref{tab:gap}). Hamill et al.~\citeyearpar{hamill2023creditcard} suggest, in a model of the
 United Kingdom credit-card market, that longer interest-free promotions could raise indebtedness.
@@ -193,8 +199,8 @@ view of a shortfall, but default here requires an instalment more than 90 days p
 \caption{The closest studies and this thesis}
 \label{tab:gap}
 \tabnote{Setting, data and outcomes as the studies report them. The patterns are the external checks of Section~\ref{sec:lim-validation}.}
-\begingroup\footnotesize
-\begin{tabular}{L{2.6cm}L{3.9cm}L{3.9cm}L{3.2cm}}
+\begingroup\small\setlength{\tabcolsep}{5pt}
+\begin{tabular}{H{2.5cm}L{3.75cm}L{3.9cm}L{3.1cm}}
 \toprule
 \textbf{Study} & \textbf{Setting and data} & \textbf{Credit and outcome} & \textbf{Use in this thesis} \\
 \midrule
@@ -221,7 +227,7 @@ al.~\citeyearpar{dehaan2024bnpl} find strain in United States data, does not ris
 (Section~\ref{sec:results-injection}). Second, it builds a model of South African household credit
 from survey data in which the traditional lender and the \ac{BNPL} platforms observe and screen
 under different rules, so the reporting gap can be switched on and off. Third, it compares bureau
-reporting, acting through the lender's affordability test, with affordability checks on \ac{BNPL}
+visibility, acting through the lender's affordability test, with affordability checks on \ac{BNPL}
 itself~\citep{fca_ps26_1}.
 % Default involving traditional arrears: remainder_pp 0.14 +/- 0.11 of the 1.08 points,
 % results/summary/default_trigger.json (Section 4.1).

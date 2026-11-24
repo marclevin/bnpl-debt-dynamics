@@ -2,42 +2,49 @@
 % do not edit by hand; re-run the script instead.
 \begin{table}[p]
 \centering
-\caption{The \ac{BNPL} effect on default under alternative assumptions}
-\label{tab:effect}
-\tabnote{Effect: default with \ac{BNPL} less default without, $\pm$ one standard error, paired by seed over one block (70{,}000--70{,}019). No \ac{BNPL}: the setting's default rate without \ac{BNPL}, including the households placed in default at the start. Purchase: mean want-driven purchase, in 2017 Rands, against a provider-based figure of R992. Volume: annual \ac{BNPL} volume per eligible household, in 2017 Rands, against a provider range of R1{,}333--R4{,}261 (Table~\ref{tab:bnpl-on-checks}).}
-\begingroup\setlength{\tabcolsep}{1.8pt}\footnotesize
-\begin{tabular}{L{3.5cm}R{1.15cm}@{\hspace{6pt}}rr@{\hspace{6pt}}rr@{\hspace{6pt}}r@{\hspace{6pt}}r}
+\ifdefined\gentabbox\else\newsavebox{\gentabbox}\fi
+\sbox{\gentabbox}{\footnotesize\setlength{\tabcolsep}{2.5pt}%
+\begin{tabular}{@{\hspace{1pt}}H{4.1cm}@{\hspace{3pt}}>{\raggedleft\arraybackslash}b{1.15cm}@{\hspace{7pt}}r@{\hspace{6pt}}r@{\hspace{8pt}}r@{\hspace{6pt}}r@{\hspace{8pt}}r@{\hspace{6pt}}r@{\hspace{1pt}}}
 \toprule
-& & \multicolumn{2}{c}{\textbf{Purchase (R)}} & \multicolumn{2}{c}{\textbf{Volume (R)}} & \multicolumn{2}{c}{\textbf{Effect (pp)}} \\ \cmidrule(lr){3-4}\cmidrule(lr){5-6}\cmidrule(lr){7-8}
-\textbf{Setting} & \textbf{No \ac{BNPL} (\%)} & $\beta=0$ & $\beta=0.3$ & $\beta=0$ & $\beta=0.3$ & $\beta=0$ & $\beta=0.3$ \\
+& \textbf{No \ac{BNPL} (\%)} & \multicolumn{2}{c}{\textbf{\begin{tabular}[b]{@{}c@{}}Purchase\\(R)\end{tabular}}} & \multicolumn{2}{c}{\textbf{\begin{tabular}[b]{@{}c@{}}Volume\\(R)\end{tabular}}} & \multicolumn{2}{c}{\textbf{Effect (pp)}} \\ \cmidrule(lr){3-4}\cmidrule(lr){5-6}\cmidrule(lr){7-8}
+\textbf{Setting} & & $\beta=0$ & $0.3$ & $\beta=0$ & $0.3$ & $\beta=0$ & $0.3$ \\
 \midrule
 \multicolumn{8}{l}{\emph{Reference}} \\
 \textbf{reference settings} & 20.74 & 655 & 668 & 840 & 1{,}968 & $\boldsymbol{+0.98 \pm 0.13}$ & $\boldsymbol{+1.07 \pm 0.15}$ \\
+\addlinespace
 \multicolumn{8}{l}{\emph{Purchase size (Submodel 4)}} \\
 $\kappa = 0.07$ (half) & 20.74 & 332 & 341 & 447 & 1{,}033 & $\boldsymbol{+0.89 \pm 0.12}$ & $\boldsymbol{+1.09 \pm 0.16}$ \\
 $\kappa = 0.28$ (double) & 20.74 & 1{,}309 & 1{,}336 & 1{,}589 & 3{,}856 & $\boldsymbol{+1.01 \pm 0.13}$ & $\boldsymbol{+1.07 \pm 0.13}$ \\
 sized on income & 20.74 & 1{,}075 & 1{,}099 & 1{,}239 & 3{,}099 & $\boldsymbol{+1.13 \pm 0.13}$ & $\boldsymbol{+1.12 \pm 0.14}$ \\
+\addlinespace
 \multicolumn{8}{l}{\emph{Borrowing amount on a shortfall (Submodel 4)}} \\
 shortfall $+25\%$ & 20.34 & 656 & 673 & 889 & 2{,}051 & $\boldsymbol{+0.84 \pm 0.12}$ & $\boldsymbol{+0.96 \pm 0.13}$ \\
-shortfall $+$ one tick of committed spending & 20.66 & 659 & 669 & 906 & 2{,}067 & $\boldsymbol{+0.97 \pm 0.12}$ & $\boldsymbol{+0.99 \pm 0.13}$ \\
+shortfall $+$ one tick of committed expenditure & 20.66 & 659 & 669 & 906 & 2{,}067 & $\boldsymbol{+0.97 \pm 0.12}$ & $\boldsymbol{+0.99 \pm 0.13}$ \\
 exact shortfall, uncapped & 20.74 & 663 & 680 & 1{,}141 & 2{,}266 & $\boldsymbol{+0.95 \pm 0.09}$ & $\boldsymbol{+1.13 \pm 0.17}$ \\
 shortfall $+25\%$, uncapped & 20.34 & 663 & 675 & 1{,}216 & 2{,}418 & $\boldsymbol{+1.03 \pm 0.14}$ & $\boldsymbol{+0.79 \pm 0.11}$ \\
-shortfall $+$ one tick of committed spending, uncapped & 20.66 & 652 & 672 & 1{,}295 & 2{,}444 & $\boldsymbol{+0.89 \pm 0.11}$ & $\boldsymbol{+1.02 \pm 0.10}$ \\
+shortfall $+$ one tick of committed expenditure, uncapped & 20.66 & 652 & 672 & 1{,}295 & 2{,}444 & $\boldsymbol{+0.89 \pm 0.11}$ & $\boldsymbol{+1.02 \pm 0.10}$ \\
+\addlinespace
 \multicolumn{8}{l}{\emph{Routing and the shortfall path (Submodels 5 and 13)}} \\
 loyal routing & 20.74 & 658 & 673 & 849 & 2{,}029 & $\boldsymbol{+0.91 \pm 0.12}$ & $\boldsymbol{+1.07 \pm 0.12}$ \\
 no \ac{BNPL} for shortfalls & 20.74 & 657 & 686 & 600 & 1{,}599 & $-0.05 \pm 0.16$ & $+0.11 \pm 0.13$ \\
+\addlinespace
 \multicolumn{8}{l}{\emph{Other assumptions (Submodels 1, 6, 7 and 12)}} \\
 single-tick income shock & 20.05 & 666 & 683 & 701 & 1{,}828 & $\boldsymbol{+1.04 \pm 0.08}$ & $\boldsymbol{+0.81 \pm 0.11}$ \\
 default after 56 days & 33.74 & 657 & 678 & 634 & 1{,}456 & $\boldsymbol{+0.96 \pm 0.13}$ & $\boldsymbol{+1.18 \pm 0.16}$ \\
-minimum payment 2.5\% a month & 20.75 & 663 & 679 & 847 & 1{,}998 & $\boldsymbol{+0.90 \pm 0.13}$ & $\boldsymbol{+1.07 \pm 0.12}$ \\
-minimum payment 10\% a month & 20.90 & 656 & 670 & 830 & 1{,}973 & $\boldsymbol{+0.81 \pm 0.16}$ & $\boldsymbol{+0.96 \pm 0.11}$ \\
+minimum payment 2.5\%~a~month & 20.75 & 663 & 679 & 847 & 1{,}998 & $\boldsymbol{+0.90 \pm 0.13}$ & $\boldsymbol{+1.07 \pm 0.12}$ \\
+minimum payment 10\%~a~month & 20.90 & 656 & 670 & 830 & 1{,}973 & $\boldsymbol{+0.81 \pm 0.16}$ & $\boldsymbol{+0.96 \pm 0.11}$ \\
 minimum-payer share 0.20 & 20.58 & 655 & 673 & 846 & 1{,}981 & $\boldsymbol{+1.14 \pm 0.12}$ & $\boldsymbol{+1.10 \pm 0.08}$ \\
 minimum-payer share 0.40 & 20.88 & 668 & 676 & 871 & 1{,}996 & $\boldsymbol{+1.08 \pm 0.14}$ & $\boldsymbol{+0.93 \pm 0.14}$ \\
 rolling limit $\lambda = 0.25$ & 20.74 & 662 & 679 & 865 & 2{,}014 & $\boldsymbol{+0.98 \pm 0.14}$ & $\boldsymbol{+1.14 \pm 0.13}$ \\
 rolling limit $\lambda = 1.00$ & 20.74 & 665 & 678 & 894 & 2{,}055 & $\boldsymbol{+0.86 \pm 0.15}$ & $\boldsymbol{+0.95 \pm 0.14}$ \\
-\multicolumn{8}{l}{\emph{Want-driven path switched off ($q_{\text{base}} = 0$, $\beta = 0$)}} \\
+\addlinespace
+\multicolumn{8}{l}{\emph{Want-driven path switched off ($q_{\mathrm{base}} = 0$, $\beta = 0$)}} \\
 \ac{BNPL} for shortfalls only & 20.74 & -- & -- & 265 & -- & $\boldsymbol{+0.93 \pm 0.12}$ & -- \\
 \bottomrule
-\end{tabular}
-\endgroup
+\end{tabular}}
+\caption{The \ac{BNPL} effect on default under alternative assumptions}
+\label{tab:effect}
+{\ifdim\wd\gentabbox<0.9\linewidth\setlength{\linewidth}{\wd\gentabbox}\fi
+\tabnote{Effect: default with \ac{BNPL} less default without, $\pm$ one standard error, paired by seed over one block (70{,}000--70{,}019). No \ac{BNPL}: the setting's default rate without \ac{BNPL}, including the households placed in default at the start. Purchase: mean want-driven purchase, in 2017 Rands, against a provider-based figure of R992. Volume: annual \ac{BNPL} volume per eligible household, in 2017 Rands, against a provider range of R1{,}333--R4{,}261 (Table~\ref{tab:bnpl-on-checks}).}}
+\usebox{\gentabbox}
 \end{table}

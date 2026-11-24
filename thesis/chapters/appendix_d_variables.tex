@@ -26,6 +26,7 @@ scaled to the 14-day tick at instantiation (Appendix~\ref{app:var-tick}).} \\
 \textbf{Agent field} & \textbf{Source field(s)} & \textbf{Rule} & \textbf{If missing} & \textbf{Where} \\
 \midrule
 \endfirsthead
+\LTcontinued{5}
 \toprule
 \textbf{Agent field} & \textbf{Source field(s)} & \textbf{Rule} & \textbf{If missing} & \textbf{Where} \\
 \midrule
@@ -169,6 +170,7 @@ Submodel~11.
 personal loan) equal to ``Yes''. Each household copies all six as one vector from a single donor
 (Appendix~\ref{app:matching}). We exclude lay-by (\texttt{G15}), which is not credit.
 
+\needspace{5\baselineskip}
 \subsection{Debt Service}
 \label{app:var-servicing}
 
@@ -204,7 +206,7 @@ indebted source households the resulting debt-service-to-income ratio has a weig
 10.9\% and an unweighted median of 3.3\%; the weighted full-population mean is 4.8\%, since
 56.0\% of weighted households hold no debt.
 
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
 \caption{Regulation 23A minimum necessary-expense norms}
 \label{tab:reg23a-norms}
@@ -240,7 +242,8 @@ inflates the outlay denominator, so removing it would widen the gap.
 We resample the 10{,}841 weighted households with replacement, in proportion to
 \texttt{w5\_wgt}, to 5{,}000 unweighted agents from 3{,}221 unique source records
 (Section~\ref{sec:resample}), so every downstream statistic is unweighted.
-Figure~\ref{fig:pop-fidelity} reports the resample's fidelity.
+Figure~\ref{fig:pop-fidelity} reports the resample's fidelity. In the redrawn population each
+replicate repeats this draw with its own seed (Section~\ref{sec:sim-params}).
 
 \subsection{Tick Scaling}
 \label{app:var-tick}

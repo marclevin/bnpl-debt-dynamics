@@ -496,8 +496,9 @@ def wage_screen(reps: int) -> list[ParamSet]:
     One arm, platforms lending only to households with surveyed labour-market income, on the
     rq0 seeds (10,000 onwards) so that it pairs by seed with `baseline_no_bnpl` and
     `bnpl_on_beta0` in results/raw/rq0.parquet, which are not re-run. The screen acts after
-    the eligibility draw, so the arm shares the benchmark's random stream until its
-    households' choices differ. Label screen_b0.0; results/raw/screen.parquet.
+    the eligibility draw, so the arm shares the benchmark's population, eligibility draw and
+    starting arrears. The streams part in the first tick, when a screened household skips its
+    purchase draw (verified 2026-11-24: paired SE 0.118, unpaired 0.105). Label screen_b0.0; results/raw/screen.parquet.
     """
     return replicate(
         calibrated(bnpl_enabled=True, beta=0.0, bnpl_wage_income_screen=True, label="screen_b0.0"),

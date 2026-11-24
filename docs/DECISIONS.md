@@ -1179,8 +1179,11 @@ Four levers, three of which correspond to instruments that actually exist:
   platform lends only to a household whose surveyed labour-market income is above zero
   (`HouseholdRecord.income_wage_tick > 0`, from NIDS `w5_hhwage`), fixed at the start of the run.
   It is applied in `BNPLModel.__init__` AFTER the eligibility draw (`self.rng.sample(banked,
-  n_eligible)`), by removing screened households from the eligible set, so the random stream is
-  the benchmark's on the same seed and the arm pairs with `rq0`. The peer-share denominators
+  n_eligible)`), by removing screened households from the eligible set, so the arm starts from
+  the benchmark's population, eligibility draw and starting arrears on the same seed. The
+  simulation streams part in the first tick, when a screened household skips its purchase draw,
+  so pairing with `rq0` by seed reduces the standard error little (paired 0.118, unpaired 0.105;
+  independent check, 2026-11-24). The peer-share denominators
   (`group_eligible`) count the screened set. 2,802 of the 4,142 eligible households pass.
   - *What `w5_hhwage` is* (checked in `check_effect_split.py`): for every one of the 6,507 NIDS
     households where it is recorded, it equals, to within R0.01, the sum over members of eight

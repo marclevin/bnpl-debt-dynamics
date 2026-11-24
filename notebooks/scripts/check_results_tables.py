@@ -391,8 +391,8 @@ def check_prose() -> None:
     expect_p("ch4 beta", ch["04_results"], f"{h['beta0_effect_pp']:+.2f} \\pm {h['beta0_effect_se']:.2f}")
     # Fix pass 2026-11-11: the replicate SD is in Table tab:beta only.
     slope = f"{h['slope_pp_per_0.1_beta']:+.3f} \\pm {h['slope_se_per_0.1_beta']:.3f}"
-    for c in ("04_results", "06_conclusion"):
-        expect_p(f"{c} slope", ch[c], slope)
+    # 2026-11-24: the conclusion states the slope's result without the number (Section 4.2 has it).
+    expect_p("04_results slope", ch["04_results"], slope)
     assert sweep["verdict"] == "linear"
     # QA 2026-11-10 (E6): Section 4.1's side measures from the sweep's beta = 0 arm (post-burn-in
     # mean of the 90+ share of all households; ever short of food and rent), seeds 90,000-90,249.
@@ -454,6 +454,50 @@ def check_prose() -> None:
     # each needle from results_numbers.json (keys split_*) or effect_split.json, e.g.
     #   expect_p("ch4 screen", ch["04_results"], unsigned(pmj(num, "split_screen_all")))
     # ------------------------------------------------------------------------------------------
+    c3 = ch["03_calibration"]
+    es = json.loads((SUMMARY / "effect_split.json").read_text())
+    drop = unsigned(pmj({k: -v if not k.endswith("_se") else v for k, v in num.items()
+                         if k.startswith("split_screen_less_bench_all")}, "split_screen_less_bench_all"))
+    # Section 4.1: the wage-income screen.
+    expect_p("ch4 screen", c4, f"The arm lowers the effect by ${drop}$ points, to")
+    expect_p("ch4 screen", c4, f"${pmj(num, 'split_screen_all')}$ (Table~\\ref{{tab:effect-split}}), so about half")
+    assert es["never_lent_every_seed"] == 55 and round(es["never_lent_default_bench"]) == 46
+    expect_p("ch4 screen", c4, f"Of the {es['never_lent_every_seed']} the lender never lends to, "
+             f"{es['never_lent_default_screen']:.0f}")
+    expect_p("ch4 screen", c4, f"still default, all among the {es['never_lent_every_seed_wage']} with wage income")
+    # "all among": a household without wage income is refused by the screen, holds no debt and
+    # cannot default, so every default among the 55 under the screen is one of the 19.
+    assert es["never_lent_default_screen"] <= es["never_lent_every_seed_wage"]
+    # "About half": the fall and what remains, as shares of the benchmark effect on the same seeds.
+    assert abs(-num["split_screen_less_bench_all"] / num["split_bench_all"] - 0.5) < 0.05
+    assert abs(num["split_screen_all"] / num["split_bench_all"] - 0.5) < 0.05
+    # Section 4.1: the redrawn population.
+    expect_p("ch4 redraw", c4, f"In the redrawn population the effect is ${pmj(num, 'split_redraw_all')}$ points, "
+             f"of which ${pmj(num, 'split_redraw_short')}$ are")
+    # "does not differ detectably from the pooled" estimate, and the baseline level over the draws.
+    gap_all = num["split_redraw_all"] - num["beta0_effect_pooled"]
+    assert abs(gap_all) < 2 * math.hypot(num["split_redraw_all_se"], num["beta0_effect_pooled_se"])
+    expect_p("ch4 redraw", c4, f"from the pooled ${unsigned(pmj(num, 'beta0_effect_pooled'))}$, and without")
+    level = f"{num['split_redraw_baseline_new_default_mean'] * 100:.2f}"
+    assert level == f"{num['baseline_default_during'] * 100:.2f}" if "baseline_default_during" in num else True
+    expect_p("ch4 redraw", c4, f"default during the run averages {level}\\%")
+    expect_p("ch4 redraw", c4, f"The redrawn population's ${pmj(num, 'split_redraw_other')}$ at $\\beta=0$ is detectable")
+    assert num["split_redraw_other"] > 2 * num["split_redraw_other_se"]
+    gap = num["split_redraw_other"] - cont["beta0_effect_pooled_contestable"]
+    gap_se = math.hypot(num["split_redraw_other_se"], cont["beta0_effect_pooled_contestable_se"])
+    assert abs(gap) < 2 * gap_se, "redrawn and pooled estimates for the other households differ detectably"
+    # Answer to RQ2.
+    expect_p("ch4 answer", c4, f"${pmj(num, 'split_redraw_all')}$ points, and the wage-income screen lowers the "
+             f"benchmark's {num['split_bench_all'] * 100:.2f} points by")
+    expect_p("ch4 answer", c4, f"${drop}$ (Section~\\ref{{sec:results-injection}})")
+    # tab:experiments (Section 3.1): the two rows, their replicates and first seeds.
+    screen_seeds = [r["seed"] for r in es["per_run"] if r["label"] == "screen_b0.0"]
+    assert es["screen_n"] == len(screen_seeds) == 20 and min(screen_seeds) == 10000
+    expect_p("ch3 experiments", c3, "Wage-income screen & platforms lend only to households with wage income & 0 & "
+             f"{es['screen_n']} & 10{{,}}000 & \\ref{{tab:effect-split}}")
+    first_seed = f"{num['split_redraw_seed_min']:,}".replace(",", "{,}")
+    expect_p("ch3 experiments", c3, "Redrawn population & \\ac{BNPL} off and on, one population draw per replicate & 0 & "
+             + f"{num['split_redraw_reps']} & {first_seed} & \\ref{{tab:effect-split}}")
     if missing:
         print(f"{checked - start} typed prose numbers match; {len(missing)} do not. Each needle is "
               "formatted from results/ and must appear in the named chapter:")

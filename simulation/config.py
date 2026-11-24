@@ -597,9 +597,11 @@ class ParamSet:
             "Added 2026-11-24 (D19). The wage-income screen: platforms lend only to households "
             "whose surveyed labour-market income is above zero (w5_hhwage, income_wage_tick > 0), "
             "fixed at the start of the run. Applied after the access-rate draw by removing "
-            "screened households from the eligible set, so the random stream is the benchmark's "
-            "and the arm pairs by seed with it. Off (the benchmark) is the light screen: banked "
-            "and not in default."
+            "screened households from the eligible set, so the arm starts from the benchmark's "
+            "population, eligibility draw and starting arrears on the same seed. The streams "
+            "part in the first tick, when a screened household skips its purchase draw, so "
+            "pairing by seed reduces the standard error little. Off (the benchmark) is the "
+            "light screen: banked and not in default."
         ),
         sweep="wage-income screen arm at beta = 0 on the baseline seeds (10,000-10,019)",
     )

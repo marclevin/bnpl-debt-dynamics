@@ -11,8 +11,8 @@ elements are in lower case; a
 subscript indexes an element, a superscript identifies a variant. Random draws are written
 $U(0,1)$; every draw within a run comes from generators seeded by the run's seed. The threshold
 endowments $\theta_i$ come from a separate initialisation stream so that control arms reproduce
-the main stream exactly, and the order of activation and the resampling of populations other
-than 5{,}000 each use their own generator.
+the main stream exactly, and the order of activation, the resampling of populations other
+than 5{,}000 and each population draw of the redrawn population use their own generators.
 
 \begingroup
 \small
@@ -28,6 +28,7 @@ carries the quantity. Symbols already used in the body (Equation~\ref{eq:peer}) 
 \textbf{Symbol} & \textbf{Meaning} & \textbf{Code} \\
 \midrule
 \endfirsthead
+\LTcontinued{3}
 \toprule
 \textbf{Symbol} & \textbf{Meaning} & \textbf{Code} \\
 \midrule
@@ -90,23 +91,24 @@ $f^{\min}$ & minimum-payment fraction of balance per month & \texttt{min\_paymen
 $k$ & arrears age in ticks at which a household defaults (7); under the streak rule, consecutive distressed ticks & \texttt{k\_default} \\
 $\varphi$ & discretionary floor as a share of target (0 at the reference values) & \texttt{discretionary\_floor} \\
 $\kappa$, $\nu$ & purchase-size ratio to $E^d_i$; its coefficient of variation & \texttt{bnpl\_purchase\_ratio}, \texttt{\_cv} \\
-$\mathbb{1}^{\text{cap}}$ & cap on the \ac{BNPL} share of a shortfall request at $\kappa E^d_i$ (off only in the three uncapped sensitivity arms) & \texttt{shortfall\_bnpl\_capped} \\
-$\mathbb{1}^{\text{short}}$ & \ac{BNPL} may relieve a shortfall (off only in one sensitivity arm) & \texttt{shortfall\_bnpl} \\
-$\mathbb{1}^{\text{fund}}$ & credit raised against a committed shortfall pays it first (on at the reference values) & \texttt{committed\_shortfall\_funded} \\
-$\mathbb{1}^{\text{clear}}$ & food and rent a loan pays in full are not distress (streak rule only; off) & \texttt{committed\_shortfall\_clears\_distress} \\
-$\mathbb{1}^{\text{streak}}$ & the earlier rule: default after $k$ consecutive distressed ticks (off; on only in the comparison of Appendix~\ref{app:calibration}) & \texttt{distress\_rule} \\
-$\mathbb{1}^{\text{init}}$ & the run starts from the \ac{CCMR} arrears profile (on) & \texttt{initial\_arrears} \\
-$\mathbb{1}^{\text{pers}}$, $\mathbb{1}^{\text{flow}}$ & job loss lasts until re-employment; labour flows with hires (both on). The single-tick arm sets $\mathbb{1}^{\text{pers}}$ off, which also disables labour flows & \texttt{shock\_persistent}, \texttt{labour\_flows} \\
-$\mathbb{1}^{\text{loyal}}$ & platforms already owed are tried first (on only in one sensitivity arm) & \texttt{platform\_routing} \\
+$\ind^{\text{cap}}$ & cap on the \ac{BNPL} share of a shortfall request at $\kappa E^d_i$ (off only in the three uncapped sensitivity arms) & \texttt{shortfall\_bnpl\_capped} \\
+$\ind^{\text{short}}$ & \ac{BNPL} may relieve a shortfall (off only in one sensitivity arm) & \texttt{shortfall\_bnpl} \\
+$\ind^{\text{fund}}$ & credit raised against a committed shortfall pays it first (on at the reference values) & \texttt{committed\_shortfall\_funded} \\
+$\ind^{\text{clear}}$ & food and rent a loan pays in full are not distress (streak rule only; off) & \texttt{committed\_shortfall\_clears\_distress} \\
+$\ind^{\text{streak}}$ & the earlier rule: default after $k$ consecutive distressed ticks (off; on only in the comparison of Appendix~\ref{app:calibration}) & \texttt{distress\_rule} \\
+$\ind^{\text{init}}$ & the run starts from the \ac{CCMR} arrears profile (on) & \texttt{initial\_arrears} \\
+$\ind^{\text{pers}}$, $\ind^{\text{flow}}$ & job loss lasts until re-employment; labour flows with hires (both on). The single-tick arm sets $\ind^{\text{pers}}$ off, which also disables labour flows & \texttt{shock\_persistent}, \texttt{labour\_flows} \\
+$\ind^{\text{loyal}}$ & platforms already owed are tried first (on only in one sensitivity arm) & \texttt{platform\_routing} \\
 $\lambda$ & rolling limit as a multiple of monthly income & \texttt{bnpl\_limit\_income\_multiple} \\
 $q_{\text{base}}$, $\beta$ & base propensity; peer weight (linear rule) & \texttt{q\_base}, \texttt{beta} \\
 $\gamma$, $\mu_\theta$, $\sigma_\theta$ & propensity step; threshold mean and dispersion (threshold rule) & \texttt{gamma}, \texttt{mu\_theta}, \texttt{sigma\_theta} \\
 $k^{\text{cool}}$, $\bar n$ & cooling-off ticks; cap on the number of platforms owed (both off in the benchmark) & \texttt{k\_cool}, \texttt{stacking\_cap} \\
 \addlinespace
 \multicolumn{3}{l}{\emph{Switches}} \\
-$\mathbb{1}^{\text{bnpl}}$ & \ac{BNPL} platforms present (off in the calibration baseline) & \texttt{bnpl\_enabled} \\
-$\mathbb{1}^{\text{bur}}$ & \ac{BNPL} obligations visible to the bureau (bureau visibility) & \texttt{bnpl\_bureau\_visible} \\
-$\mathbb{1}^{\text{aff}}$ & Regulation 23A test applied to \ac{BNPL} originations (screening) & \texttt{bnpl\_affordability\_check} \\
+$\ind^{\text{bnpl}}$ & \ac{BNPL} platforms present (off in the calibration baseline) & \texttt{bnpl\_enabled} \\
+$\ind^{\text{bur}}$ & \ac{BNPL} obligations visible to the bureau (bureau visibility) & \texttt{bnpl\_bureau\_visible} \\
+$\ind^{\text{aff}}$ & Regulation 23A test applied to \ac{BNPL} originations (screening) & \texttt{bnpl\_affordability\_check} \\
+$\ind^{\text{wage}}$ & platforms lend only to households with wage income (wage-income screen; off in the benchmark) & \texttt{bnpl\_wage\_income\_screen} \\
 \addlinespace
 \multicolumn{3}{l}{\emph{Functions}} \\
 $\rho(Y)$ & Regulation 23A residual-income capacity: $Y$ less the statutory necessary-expense norm (Table~\ref{tab:reg23a-norms}) & \texttt{nca\_max\_service} \\
@@ -122,7 +124,7 @@ records that opens the fourth are the data layer of Section~\ref{sec:population}
 offline to produce the population file; the rest of the fourth runs at the start of every
 simulation and turns that file into agents. Algorithm~\ref{alg:init} dispatches them.
 
-\begin{algorithm}[H]
+\begin{algorithm}[!htbp]
 \caption{Initialisation}
 \label{alg:init}
 \begin{algorithmic}
@@ -138,7 +140,7 @@ simulation and turns that file into agents. Algorithm~\ref{alg:init} dispatches 
 Algorithm~\ref{alg:backbone} filters the \ac{NIDS} household file and derives the six core
 variables of Section~\ref{sec:backbone}; Appendix~\ref{app:variables} specifies every rule.
 
-\begin{algorithm}[H]
+\begin{algorithm}[!htbp]
 \caption{Build the survey backbone}
 \label{alg:backbone}
 \begin{algorithmic}
@@ -147,7 +149,8 @@ variables of Section~\ref{sec:backbone}; Appendix~\ref{app:variables} specifies 
 \ForAll{households $i$}
     \State Zero-fill the income components, rent paid, food, non-food, imputed rent, assets and debt \Comment{missing $=$ non-holding}
     \State $\text{source}_i \gets \arg\max\{\text{wage},\ \text{grant},\ \text{other}\}$; OTHER if none is positive
-    \State $e^c_i \gets \text{food} + \text{rent paid}$;\quad $e^d_i \gets \max(\text{non-food}, 0)$ \Comment{imputed rent excluded from both}
+    \LineComment{imputed rent excluded from both}
+    \State $e^c_i \gets \text{food} + \text{rent paid}$;\quad $e^d_i \gets \max(\text{non-food}, 0)$
     \State $a_i(0) \gets \min(\text{financial assets},\ \text{99th percentile})$
     \State $D_i(0) \gets \text{financial debt}$
     \State income per member $\gets Y_i / \text{household size}$
@@ -161,7 +164,7 @@ variables of Section~\ref{sec:backbone}; Appendix~\ref{app:variables} specifies 
 
 Algorithm~\ref{alg:match} is the procedure of Appendix~\ref{app:matching}.
 
-\begin{algorithm}[H]
+\begin{algorithm}[!htbp]
 \caption{Cell-donor match}
 \label{alg:match}
 \begin{algorithmic}
@@ -172,7 +175,8 @@ Algorithm~\ref{alg:match} is the procedure of Appendix~\ref{app:matching}.
 \EndFor
 \State Partition donors into pools by cell $c = (q, p)$ \Comment{45 cells, $\geq 30$ donors each}
 \ForAll{households $i$}
-    \State pool $\gets$ donors in $c(i)$;\ \textbf{if} pool is empty \textbf{then} pool $\gets$ donors in $q(i)$ \Comment{never triggered}
+    \LineComment{never triggered}
+    \State pool $\gets$ donors in $c(i)$;\ \textbf{if} pool is empty \textbf{then} pool $\gets$ donors in $q(i)$
     \State Draw $d$ from pool with probability $w_d / \sum_{d' \in \text{pool}} w_{d'}$
     \State $(\text{banked}_i, \text{flags}_i) \gets \text{flags}_d$ \Comment{the whole vector, one donor}
 \EndFor
@@ -185,7 +189,7 @@ Algorithm~\ref{alg:service} converts the debt stock to a capped monthly flow
 (Appendix~\ref{app:var-servicing}). The function $\rho$ is the same one the lender applies
 in Algorithm~\ref{alg:gate}.
 
-\begin{algorithm}[H]
+\begin{algorithm}[!htbp]
 \caption{Construct debt service}
 \label{alg:service}
 \begin{algorithmic}
@@ -205,11 +209,12 @@ Algorithm~\ref{alg:resample} draws the agent population and sets every state var
 opening value. The simulation stream supplies the two stochastic endowments, eligibility and the
 repayment archetype.
 
-\begin{algorithm}[H]
+\begin{algorithm}[!htbp]
 \caption{Resample and instantiate}
 \label{alg:resample}
 \begin{algorithmic}
-\State Draw $H = 5{,}000$ records from the 10{,}841 with replacement, with probability $\propto w_i$ \Comment{offline, seed 20260818}
+\LineComment{offline, seed 20260818}
+\State Draw $H = 5{,}000$ records from the 10{,}841 with replacement, with probability $\propto w_i$
 \ForAll{drawn records, indexed $i = 1, \ldots, H$}
     \State Join $y^w_i$, $n_i$ and $j_i$ from the \ac{NIDS} wage field and the employment roster;\quad $h_i(0) \gets 0$
     \State $\bar w_{q(i)} \gets \chi \times$ median monthly take-home pay of employed adults in quintile $q(i)$ (Appendix~\ref{app:var-employed})
@@ -218,12 +223,14 @@ repayment archetype.
     \State Keep $Y_i$, $E^d_i$, $\rho_i$ monthly; keep $a_i(0)$ and $D_i(0)$ unscaled
     \State $g(i) \gets (q(i), p(i))$
 \EndFor
-\State $\epsilon_i \gets 1$ for a random share \texttt{bnpl\_access\_rate} of banked households, else 0 \Comment{1.0 in the benchmark: 82.8\% of all}
+\LineComment{1.0 in the benchmark: 82.8\% of all}
+\State $\epsilon_i \gets 1$ for a random share \texttt{bnpl\_access\_rate} of banked households, else 0
+\IfThen{$\ind^{\text{wage}} = 1$ and $y^w_i = 0$}{$\epsilon_i \gets 0$}
 \State $m_i \gets 1$ for a random share 0.29 of households, else 0
-\If{threshold rule} $\theta_i \gets \mathrm{clip}\bigl(\mathcal{N}(\mu_\theta, \sigma_\theta^2), 0, 1\bigr)$ from the initialisation stream \EndIf
+\IfThen{threshold rule}{$\theta_i \gets \mathrm{clip}\bigl(\mathcal{N}(\mu_\theta, \sigma_\theta^2), 0, 1\bigr)$ from the initialisation stream}
 \State $B_{ip}(0), A_i(0), \delta_i(0), \alpha_i(0), d_i(0), u_i(0), \bar t_i \gets 0$;\quad $s_g(0) \gets 0$ for all $g$
-\State Create the bureau with visibility $\mathbb{1}^{\text{bur}}$, the lender, and, if $\mathbb{1}^{\text{bnpl}}$, $P$ platforms with $L_{ip} = \lambda Y_i$
-\If{$\mathbb{1}^{\text{init}}$} execute Algorithm~\ref{alg:seed} \EndIf
+\State Create the bureau with visibility $\ind^{\text{bur}}$, the lender, and, if $\ind^{\text{bnpl}}$, $P$ platforms with $L_{ip} = \lambda Y_i$
+\IfThen{$\ind^{\text{init}}$}{execute Algorithm~\ref{alg:seed}}
 \end{algorithmic}
 \end{algorithm}
 
@@ -233,7 +240,7 @@ band from the initialisation stream, so the simulation stream is unchanged. Each
 one unpaid instalment. The bands in ticks are those of
 Appendix~\ref{app:main-tick}, with 120+ ages drawn up to 26 ticks, an assumption.
 
-\begin{algorithm}[H]
+\begin{algorithm}[!htbp]
 \caption{Initial arrears from the \ac{CCMR} profile}
 \label{alg:seed}
 \begin{algorithmic}
@@ -244,8 +251,9 @@ Appendix~\ref{app:main-tick}, with 120+ ages drawn up to 26 ticks, an assumption
     \ForAll{the next $\mathrm{round}(\eta_z\, |\mathcal{C}|)$ households $i$ in the ranking}
         \State $x \gets$ uniform integer on $[x^{\text{lo}}_z, x^{\text{hi}}_z]$, $x^{\text{hi}}_z = 26$ for 120+ \Comment{initialisation stream}
         \State $v \gets \text{due}_i > 0 \;?\; \min(\text{due}_i,\ D_i / x) : D_i / x$
-        \State $\mathcal{U}_i \gets \{(v \text{ due at } {1-x}), \ldots, (v \text{ due at } 0)\}$;\quad $A_i \gets x v$;\quad $\alpha_i \gets x$ \Comment{the first tick is $t = 1$}
-        \If{$x \geq k$ and not $\mathbb{1}^{\text{streak}}$} $d_i \gets 1$; the bureau records the default \EndIf
+        \LineComment{the first tick is $t = 1$}
+        \State $\mathcal{U}_i \gets \{(v \text{ due at } {1-x}), \ldots, (v \text{ due at } 0)\}$;\quad $A_i \gets x v$;\quad $\alpha_i \gets x$
+        \IfThen{$x \geq k$ and not $\ind^{\text{streak}}$}{$d_i \gets 1$; the bureau records the default}
     \EndFor
 \EndFor
 \end{algorithmic}
