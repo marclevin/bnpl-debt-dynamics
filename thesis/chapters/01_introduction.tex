@@ -74,23 +74,27 @@ identify the mechanisms at work in South African households, estimate the histor
 \ac{BNPL} or forecast default.
 
 In the model \ac{BNPL} raises default mainly among the 3.6\% of households short from the start,
-whose surveyed income does not cover food and rent. Those the lender's test never lends to hold no
+whose surveyed income does not cover food and rent. Those the lender never lends to hold no
 debt and cannot default without \ac{BNPL}, but the platforms lend to them against a shortfall,
 and these households account for most of the effect. For about two-thirds of the group's
 respondents the answer to a single income question covers food and rent, so the effect may partly
 reflect how the survey records income (Section~\ref{sec:data-validation}). Among households not
-short from the start the effect is $+0.11 \pm 0.07$ points. Over all households, enabling
-\ac{BNPL} raises default during the run by $1.03 \pm 0.06$ points without peer influence, from
-14.37\% (Section~\ref{sec:results-injection}). When the platforms lend only to households with
-income from employment or self-employment, the effect falls by $0.58 \pm 0.12$ points, about
-half. In the redrawn population, in which each comparison draws its own households, the effect is
-$+1.13 \pm 0.06$ points (Table~\ref{tab:effect-split}).
+short from the start the effect is $+0.17 \pm 0.05$ points. Over all households, enabling
+\ac{BNPL} raises default during the run by $1.13 \pm 0.06$ points without peer influence, from
+14.37\% (Table~\ref{tab:effect-split}). Both estimates come from the redrawn population, in which
+each replicate has its own population draw, so their standard errors cover the drawn population
+as well as simulation variance. In the fixed population, the 5{,}000 households that every other
+run uses, the effect over all households is $+1.03 \pm 0.06$ points
+(Section~\ref{sec:results-injection}). When the platforms lend only to households with income
+from employment or self-employment, the effect falls by $0.58 \pm 0.12$ points, about half.
 % 3.6%: short_group.json (Section 3.5); most of the effect: 0.92 of 1.08 points from the 55 of 120
 % the lender never lends to, results/summary/short_group_lending.json (Section 4.1); two-thirds:
-% one_shot_covers_share_of_answered (68%), short_group.json (Section 3.5). +0.11 +/- 0.07:
-% beta0_effect_pooled_contestable (+ _se), results/summary/contestable_default.json (four seed
-% blocks, Section 4.1). 1.03 +/- 0.06: beta0_effect_pooled (results_numbers.json, Section 4.1);
-% 14.37%: baseline_new_default. 0.58 +/- 0.12: split_screen_less_bench_all (+ _se), against the
+% one_shot_covers_share_of_answered (68%), short_group.json (Section 3.5). +0.17 +/- 0.05 and
+% +1.13 +/- 0.06: split_redraw_other and split_redraw_all (+ _se), 100 replicates (the main
+% estimate since 2026-11-25, supervisor: its standard error covers the population draw).
+% 1.03 +/- 0.06: beta0_effect_pooled, four seed blocks of the fixed population
+% (results_numbers.json, Section 4.1);
+% 14.37%: baseline_new_default and split_redraw_baseline_new_default_mean. 0.58 +/- 0.12: split_screen_less_bench_all (+ _se), against the
 % benchmark's +1.08 +/- 0.11 on the same seeds (split_bench_all); +1.13 +/- 0.06: split_redraw_all
 % (+ _se), 100 replicates; both in results_numbers.json and results/summary/effect_split.json
 % (tab:effect-split, Section 4.1).
@@ -176,14 +180,34 @@ deferred payment credit, including proportionate affordability checks~\citep{fca
 South Africa is moving to bureau reporting (Section~\ref{sec:background}). The model's platforms
 cannot see one another's balances, and its scenarios compare the two responses.
 
+\subsubsection*{Agent-Based Models}
+\label{sec:lit-abm-method}
+
+Axtell and Farmer~\citeyearpar{axtell2025abm} describe an \ac{ABM} as a population of agents,
+each with its own state and rules of behaviour, that interact with one another. The modeller sets
+the starting states and the rules and runs the population forward on a computer. Aggregate
+outcomes are not specified in advance and follow from the agents' interactions. Models more
+common in economics give each agent a utility function, derive behaviour from its maximisation
+and solve for an equilibrium, often with a representative agent so that the solution stays
+tractable. An \ac{ABM} relaxes these assumptions. Its rules can be heuristics, its agents can
+differ as widely as the data do and need not hold rational expectations, and no equilibrium is
+imposed, so the model follows states such as a household building up arrears over time.
+
+The authors treat the two approaches as complements and set out what an \ac{ABM} costs. A run
+shows only what its starting states and rules produce, so results rest on repeated runs over varied
+seeds. An \ac{ABM} often has more parameters than an analytical model, and the cost of exploring
+them rises steeply with their number. We therefore take values from data or statute where a source exists, fit
+only two parameters (Section~\ref{sec:calibration}) and vary the assumptions no source fixes
+(Section~\ref{sec:results-robustness}).
+% Axtell and Farmer, Section I.A (what an ABM is, what is normally not present, utility
+% maximisation against rules stated directly, each run a sufficiency theorem), Section I
+% (complement, not substitute), Section III.A (representative agent as analytical expedient),
+% Section IV.G (more parameters, curse of dimensionality). Body text read in the 2022 working
+% paper (INET Oxford 2022-10) on 2026-11-25; the published version was read in abstract only.
+
 \subsubsection*{Agent-Based Models of Household Credit}
 \label{sec:lit-abm}
 
-Axtell and Farmer~\citeyearpar{axtell2025abm} describe an \ac{ABM} as a population of agents,
-usually heterogeneous, that follow explicit rules of behaviour. Models more common in economics
-derive behaviour from utility maximisation and impose an equilibrium, often with a representative
-agent. Agents in an \ac{ABM} need not optimise or hold rational expectations, and no equilibrium
-is imposed. Aggregate outcomes follow from the agents' interactions and are found by simulation.
 The method suits this model because its households follow rules, respond to their peers and face
 lenders that observe different obligations. In Cardaci's~\citeyearpar{cardaci2018inequality}
 model of household credit, rising inequality and

@@ -175,12 +175,13 @@ not been submitted for any other degree or examination at any other university.
 % Section 3.4; validation misses: Section 3.5 (debt service: tab:pop-external; the book halves:
 % 2,237 to 1,175, Section 3.4; interest: tab:bnpl-on-checks; default has no external counterpart).
 % Two-year horizon and "enter default during the run": Section 3.1 (sec:sim-params).
-% 1.0 point: beta0_effect_pooled (1.03); 14.4%: default during the run without BNPL, 14.37,
+% 1.1 points: split_redraw_all (1.13, redrawn population, the main estimate since 2026-11-25);
+% 1.0: beta0_effect_pooled (1.03, fixed population); 14.4%: default during the run without BNPL, 14.37,
 % tab:baseline-arms; 3.6% short from the start (182 of 5,000): short_group.json (Section 3.5);
 % refused by the lender and accepted by the platforms: 0.92 of the 1.08 points from the 55 of 120
-% the lender never lends to, short_group_lending.json (Section 4.1); other households: +0.11 +/-
-% 0.07 pooled, beta0_effect_pooled_contestable, contestable_default.json (+0.17 +/- 0.11,
-% split_bench_other, results_numbers.json). About half under the wage-income screen: +0.50 +/- 0.09
+% the lender never lends to, short_group_lending.json (Section 4.1); other households: +0.17 +/-
+% 0.05, split_redraw_other, results_numbers.json (redrawn population; +0.11 +/- 0.07 pooled over the
+% fixed population's blocks, beta0_effect_pooled_contestable, contestable_default.json). About half under the wage-income screen: +0.50 +/- 0.09
 % against +1.08 +/- 0.11 on the same seeds, split_screen_all and split_bench_all; 1.1 points with
 % the redrawn population: +1.13 +/- 0.06, split_redraw_all (results_numbers.json and
 % effect_split.json, tab:effect-split, Section 4.1). Not detectable without the shortfall path:
@@ -200,10 +201,10 @@ defaults when an instalment on any credit, \ac{BNPL} included, is more than 90 d
 due. In the model \ac{BNPL} raises default mainly among the 3.6\% of households short from the
 start, whose surveyed income, possibly understated, does not cover food and rent. The rise comes
 mostly from those the lender refuses and the platforms accept. For other households it is small.
-Over all households, default rises by 1.0 percentage point, from 14.4\%. The rise is not
+Across households, default rises by 1.1 percentage points, from 14.4\%, when each comparison
+draws a new population, and by 1.0 in one fixed population. The rise is not
 detectable when \ac{BNPL} cannot be used against a cash shortfall. About half of it remains when
-the platforms lend only to households with income from work. When each comparison draws a new
-population, the rise is 1.1 points. Peer influence raises \ac{BNPL} borrowing without detectably
+the platforms lend only to households with wage income. Peer influence raises \ac{BNPL} borrowing without detectably
 changing the rise. Without peer influence, bureau
 visibility raises default by 0.20 points, since in the model a refused household has no other
 source of credit. Screening \ac{BNPL} with the lender's test lowers default by 0.9 to 1.0 points.

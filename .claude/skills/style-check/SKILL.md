@@ -168,7 +168,8 @@ Do not reopen these, and do not flag them as defects.
 - "We" and "our" on a sole-authored thesis.
 - The research questions keep their wording (Marc, 2026-11-11). "Affordability screening",
   "peer adoption" and "population default" survive inside them for that reason.
-- The headline is the pooled `$1.03 \pm 0.06$` points unless a new run design replaces it.
+- The main estimate is the redrawn population's `$1.13 \pm 0.06$` points (Marc, 2026-11-25, on the
+  supervisor's advice); the pooled fixed-population `$1.03 \pm 0.06$` is reported beside it.
 - No stars, no p-values; "detectable" means beyond two standard errors.
 - The departures from the guides listed at the end of `guides.md`.
 

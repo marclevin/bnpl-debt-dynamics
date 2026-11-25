@@ -438,8 +438,15 @@ def check_prose() -> None:
            f"{num['lever_afford_beta0_diff_se'] * 100:.2f}")
     # Style pass 2026-11-16: the introduction now gives the body's figures exactly (ultrareview).
     c1 = ch["01_introduction"]
-    expect_p("ch1 effect", c1, f"${unsigned(pmj(num, 'beta0_effect_pooled'))}$ points without peer influence, "
+    # 2026-11-25 (supervisor): the redrawn population is the main estimate; the pooled
+    # fixed-population estimate is reported beside it.
+    assert f"{num['split_redraw_baseline_new_default_mean'] * 100:.2f}" == f"{num['baseline_new_default'] * 100:.2f}"
+    expect_p("ch1 effect", c1, f"${unsigned(pmj(num, 'split_redraw_all'))}$ points without peer influence, "
              f"from {num['baseline_new_default'] * 100:.2f}\\%")
+    expect_p("ch1 effect fixed", c1, f"over all households is ${pmj(num, 'beta0_effect_pooled')}$ points")
+    expect_p("ch1 others", c1, f"short from the start the effect is ${pmj(num, 'split_redraw_other')}$ points")
+    expect_p("ch6 others", ch["06_conclusion"], f"(${pmj(num, 'split_redraw_other')}$ points)")
+    expect_p("ch6 effect", ch["06_conclusion"], f"adds ${unsigned(pmj(num, 'split_redraw_all'))}$ points to default")
     expect_p("ch1 shortfall", c1, f"${pmj(num, 'eff_no_shortfall_bnpl_b0')}$ points")
     for c in ("01_introduction", "06_conclusion"):
         expect_p(f"{c} bureau", ch[c], f"${unsigned(pmj(num, 'lever_bureau_beta0_diff'))}$ points without peer influence")
@@ -477,7 +484,7 @@ def check_prose() -> None:
     # "does not differ detectably from the pooled" estimate, and the baseline level over the draws.
     gap_all = num["split_redraw_all"] - num["beta0_effect_pooled"]
     assert abs(gap_all) < 2 * math.hypot(num["split_redraw_all_se"], num["beta0_effect_pooled_se"])
-    expect_p("ch4 redraw", c4, f"from the pooled ${unsigned(pmj(num, 'beta0_effect_pooled'))}$. Without")
+    expect_p("ch4 redraw", c4, f"from the pooled ${unsigned(pmj(num, 'beta0_effect_pooled'))}$ of the fixed population. Without")
     level = f"{num['split_redraw_baseline_new_default_mean'] * 100:.2f}"
     assert level == f"{num['baseline_default_during'] * 100:.2f}" if "baseline_default_during" in num else True
     expect_p("ch4 redraw", c4, f"default during the run averages {level}\\%")
@@ -487,8 +494,10 @@ def check_prose() -> None:
     gap_se = math.hypot(num["split_redraw_other_se"], cont["beta0_effect_pooled_contestable_se"])
     assert abs(gap) < 2 * gap_se, "redrawn and pooled estimates for the other households differ detectably"
     # Answer to RQ2.
-    expect_p("ch4 answer", c4, f"${pmj(num, 'split_redraw_all')}$ points, and the wage-income screen lowers the "
-             f"benchmark's {num['split_bench_all'] * 100:.2f} points by")
+    expect_p("ch4 answer", c4, f"default by ${unsigned(pmj(num, 'split_redraw_all'))}$ points without peer influence in the "
+             "redrawn population and by")
+    expect_p("ch4 answer", c4, f"In the redrawn population it is ${pmj(num, 'split_redraw_other')}$ points at")
+    expect_p("ch4 answer", c4, f"The wage-income screen lowers the benchmark's {num['split_bench_all'] * 100:.2f} points by")
     expect_p("ch4 answer", c4, f"${drop}$ (Section~\\ref{{sec:results-injection}})")
     # tab:experiments (Section 3.1): the two rows, their replicates and first seeds.
     screen_seeds = [r["seed"] for r in es["per_run"] if r["label"] == "screen_b0.0"]

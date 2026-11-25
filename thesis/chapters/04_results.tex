@@ -69,8 +69,10 @@ still default, all among the 19 with wage income.
 \input{chapters/generated/tab_effect_split}
 
 In the redrawn population the effect is $+1.13 \pm 0.06$ points, of which $+0.97 \pm 0.02$ are
-households short from the start (Table~\ref{tab:effect-split}). It does not differ detectably
-from the pooled $1.03 \pm 0.06$. Without \ac{BNPL}, default during the run averages 14.37\%
+households short from the start (Table~\ref{tab:effect-split}). Its standard error covers the
+drawn population as well as simulation variance, so it is our main estimate of the effect. It
+does not differ detectably
+from the pooled $1.03 \pm 0.06$ of the fixed population. Without \ac{BNPL}, default during the run averages 14.37\%
 over the draws, as in the fixed population.
 % +1.13 +/- 0.06 and +0.97 +/- 0.02: split_redraw_all and split_redraw_short (+ _se),
 % results_numbers.json (100 replicates, seeds 110,000-110,099, beta = 0, one population draw per
@@ -291,13 +293,14 @@ shape that path, the cash an agreement frees and the cap on the \ac{BNPL} share 
 \label{sec:results-answer}
 
 Enabling \ac{BNPL} raises
-default by $1.03 \pm 0.06$ points without peer influence, and it raises the share ever
+default by $1.13 \pm 0.06$ points without peer influence in the redrawn population and by
+$1.03 \pm 0.06$ in the fixed population, and it raises the share ever
 short of food and rent ($+0.06 \pm 0.01$ points) and the share with no liquid savings
 ($+0.17 \pm 0.04$). The effect on default runs through \ac{BNPL} used against cash shortfalls and
 is concentrated in the 3.6\% of households short from the start. Among the others it is
 $+0.11 \pm 0.07$ points at $\beta=0$, not detectable, and
-$+0.18 \pm 0.08$ at $\beta=0.3$, which is. In the redrawn population the effect is
-$+1.13 \pm 0.06$ points, and the wage-income screen lowers the benchmark's 1.08 points by
+$+0.18 \pm 0.08$ at $\beta=0.3$, which is. In the redrawn population it is
+$+0.17 \pm 0.05$ points at $\beta=0$. The wage-income screen lowers the benchmark's 1.08 points by
 $0.58 \pm 0.12$ (Section~\ref{sec:results-injection}). Peer influence raises volume and stacking, but the
 effect shows no detectable slope in $\beta$
 ($+0.003 \pm 0.010$ points per 0.1) and stays within 0.15 points of the control under the
@@ -309,7 +312,7 @@ of ever-holders owe two or more platforms at some tick.
 % +0.06 +/- 0.01 and +0.17 +/- 0.04: as in Section 4.1 (effect_consumption_ever_pp, beta_sweep.json;
 % zero_savings_change_beta0, results_numbers.json). Within 0.15 of the control: thr_default_rise_*
 % against thr_ctrl_default_rise, results_numbers.json (largest gap 0.146).
-% Redrawn population and wage-income screen: split_redraw_all and split_screen_less_bench_all
+% Redrawn population and wage-income screen: split_redraw_all, split_redraw_other and split_screen_less_bench_all
 % (+ _se), results_numbers.json, as in Section 4.1.
 
 The size of the effect depends most on whether households can borrow with \ac{BNPL} against a

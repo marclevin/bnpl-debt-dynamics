@@ -1215,6 +1215,11 @@ Four levers, three of which correspond to instruments that actually exist:
   `calibrate.py` and `metrics.py` do not read the parquet.
 - **DECISION C (Marc):** the headline stays the pooled fixed-population estimate; the redraw is
   reported beside it as a check. No existing result changed (HISTORY, 2026-11-24).
+  **Reversed 2026-11-25 (Marc, on the supervisor's "the more robust way"):** the redrawn
+  population's +1.13 +/- 0.06 (others +0.17 +/- 0.05) now leads in the abstract, the
+  introduction, the answer to RQ2 and the conclusion, and the pooled fixed-population
+  1.03 +/- 0.06 is reported beside it. No run or number changed, only which one leads. The
+  scenario and sensitivity results remain on the fixed population.
 - **Choices the brief left open, each the one that leaves stored results untouched:** the
   population seed equals the model seed (numpy's legacy generator and Python's `random` are
   seeded by different algorithms, so the streams are unrelated); `REDRAW_REPS = 100` is fixed in

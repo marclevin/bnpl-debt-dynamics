@@ -98,7 +98,7 @@ the term is defined. When the thesis changes, this file changes in the same comm
 | lever | Cooling-off window; platform cap | switch for these two; "lever" for all four |
 | scenario | The Section 5 arms only | scenario for any other arm |
 | sweep | A grid over one or two parameters | |
-| the redrawn population | The design in which each replicate has its own population draw and derived separation rate, at β = 0 (Sections 3.1 and 4.1; `tab:effect-split`). Reported beside the headline as a check; the headline stays the pooled fixed-population estimate | resampled population (that is the fixed 5,000 of Section 3.2), bootstrap draw, bootstrap population, new population, population redraw, fresh population |
+| the redrawn population | The design in which each replicate has its own population draw and derived separation rate, at β = 0 (Sections 3.1 and 4.1; `tab:effect-split`). Since 2026-11-25 its estimate is the main one ("our main estimate of the effect"), because its standard error covers the drawn population; the pooled fixed-population estimate is reported beside it | resampled population (that is the fixed 5,000 of Section 3.2), bootstrap draw, bootstrap population, new population, population redraw, fresh population |
 | population draw | One replicate's 5,000 households in the redrawn population. "Across population draws"; "the draws" after it is named | resample, bootstrap sample, redraw (noun), population sample |
 | sensitivity | Headings and prose for varying an assumption | robustness |
 | without BNPL; enabling BNPL | Prose | BNPL-free, BNPL disabled ("No BNPL", "BNPL off" are table labels) |
@@ -231,9 +231,12 @@ assumption." "No study measures X, so the sensitivity analysis sweeps it."
 
 | Place | Form |
 |---|---|
-| Abstract | Rounded, no standard error: "by 1.0 percentage point, from 14.4%" |
-| Introduction, Answer to RQ2, Conclusion | "`$1.03 \pm 0.06$` points without peer influence" (pooled over four seed blocks) |
-| Section 4.1 | The single block first, `$1.08 \pm 0.11$` at `$\beta=0$`, then the pooled value |
+| Abstract | Rounded, no standard error: "by 1.1 percentage points, from 14.4%, when each comparison draws a new population, and by 1.0 in one fixed population" |
+| Introduction, Answer to RQ2, Conclusion | "`$1.13 \pm 0.06$` points without peer influence" in the redrawn population, then "`$1.03 \pm 0.06$`" in the fixed population (pooled over four seed blocks). Households not short from the start: `$+0.17 \pm 0.05$` (redrawn population) |
+| Section 4.1 | The single block first, `$1.08 \pm 0.11$` at `$\beta=0$`, then the pooled value, then the redrawn population as "our main estimate of the effect" |
+
+Changed on 2026-11-25: the supervisor called the redrawn standard error the more robust one, and
+Marc said to follow it. Before that the pooled `$1.03 \pm 0.06$` led.
 
 A finding is stated once in the abstract, once in the introduction and once in the body. The
 number, its standard error and the words "without peer influence" must agree in every place.

@@ -42,6 +42,7 @@ long-sentence	03_calibration.tex	By the final tick 43.7 % of the households that
 long-sentence	03_calibration.tex	It reproduces each flag's rate but not which products a household holds together, which se
 long-sentence	03_calibration.tex	The share of ever-holders owing more than one platform at once over the two years, 28.2 %,
 long-sentence	03_calibration.tex	The third is arrears at the final tick, when 14.16 % of credit-active households are more 
+long-sentence	04_results.tex	Answer to RQ2 Enabling BNPL raises default by MATH points without peer influence in the re
 long-sentence	05_policy.tex	figure [!htb] Default and BNPL volume under the two switches (a) Default rate under the be
 long-sentence	appendix_a_rationale.tex	Making the BNPL eligibility screen a real affordability test (Submodel 12). The asymmetry 
 long-sentence	appendix_a_rationale.tex	Population Construction Statistical fusion of NIDS and FinScope. A hot-deck or model-based
@@ -166,10 +167,11 @@ t-actor	appendix_d_variables.tex	linespace head demographics & roster CODE ; ind
 t-actor	appendix_d_variables.tex	of the unsecured book, three times the gross debtors book divided by quarterly credit granted (24
 t-actor	appendix_d_variables.tex	tal synthetic debt is 49\% of the CCMR gross debtor book for the in-scope products, whereas impu
 t-actor	appendix_e_matching.tex	ark \\ \addlinespace C. Regulation 23A cap & debtors on whom it binds & 3.8\% & MATH 10\% & \che
-t-agent	01_introduction.tex	an equilibrium, often with a representative agent. Agents in an ABM need not optimise or hold
-t-agent	01_introduction.tex	er~ CITE describe an ABM as a population of agents, usually heterogeneous, that follow explicit
-t-agent	01_introduction.tex	ilibrium, often with a representative agent. Agents in an ABM need not optimise or hold rational
-t-agent	01_introduction.tex	imposed. Aggregate outcomes follow from the agents' interactions and are found by simulation. T
+t-agent	01_introduction.tex	an equilibrium, often with a representative agent so that the solution stays tractable. An ABM
+t-agent	01_introduction.tex	er~ CITE describe an ABM as a population of agents, each with its own state and rules of behavi
+t-agent	01_introduction.tex	not specified in advance and follow from the agents' interactions. Models more common in economi
+t-agent	01_introduction.tex	s. Models more common in economics give each agent a utility function, derive behaviour from it
+t-agent	01_introduction.tex	ssumptions. Its rules can be heuristics, its agents can differ as widely as the data do and need
 t-agent	02_model.tex	H{4.25cm}L{6.0cm}L{3.15cm}} \toprule \textbf{Agent field} & \textbf{Description} & \textbf{Sour
 t-agent	02_model.tex	\begin{table}[p] \centering \caption{Data-to-agent mapping} \tabnote{The state initialised fo
 t-agent	02_model.tex	endices~ and~ the pseudocode. \subsection{Agents and Institutions} \begin{table}[p] \cente

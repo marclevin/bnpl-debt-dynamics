@@ -1,5 +1,6 @@
 \section{Conclusion}
 \label{sec:conclusion}
+\enlargethispage{\baselineskip} % keeps the section on one page
 
 % Numbers are read from the generated tables of Sections 3.5, 4 and 5 or from
 % results/summary/results_numbers.json.
@@ -8,8 +9,8 @@ In the model the \ac{BNPL} effect is concentrated in households short from the s
 traditional lender's Regulation 23A test never grants a loan. The platforms, whose screen does not
 compare income with living costs, lend to them against a shortfall, and their \ac{BNPL} arrears
 carry them into default. For households not short from the start the effect is small
-($+0.11 \pm 0.07$ points). Over all households \ac{BNPL} adds $1.03 \pm 0.06$ points to default
-without peer influence, and $1.13 \pm 0.06$ in the redrawn population. About half of the effect
+($+0.17 \pm 0.05$ points). Over all households \ac{BNPL} adds $1.13 \pm 0.06$ points to default
+without peer influence in the redrawn population, and $1.03 \pm 0.06$ in the fixed population. About half of the effect
 depends on the platforms lending to households with no wage income
 (Section~\ref{sec:results-injection}). Peer influence adds want-driven borrowing without
 detectably changing the effect. Bureau visibility tightens only the lender's test, so the platforms still lend to the
@@ -19,8 +20,8 @@ households it refuses, while screening applies that test to every \ac{BNPL} requ
 % 1.03 +/- 0.06: beta0_effect_pooled (results_numbers.json, Section 4.1); 1.13 +/- 0.06:
 % split_redraw_all (+ _se), results_numbers.json and results/summary/effect_split.json
 % (tab:effect-split); about half: the wage-income screen lowers the benchmark's 1.08 points by
-% 0.58 +/- 0.12, split_screen_less_bench_all and split_bench_all (+ _se). +0.11 +/- 0.07:
-% beta0_effect_pooled_contestable (+ _se), results/summary/contestable_default.json. No detectable
+% 0.58 +/- 0.12, split_screen_less_bench_all and split_bench_all (+ _se). +0.17 +/- 0.05:
+% split_redraw_other (+ _se), results_numbers.json (redrawn population, the main estimate). No detectable
 % slope in beta: results/summary/beta_sweep.json (Section 4.2).
 
 Every result covers two years, and each effect is a difference between arms, conditional on
