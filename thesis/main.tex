@@ -7,15 +7,36 @@
 \usepackage{algpseudocode}
 \usepackage{afterpage}
 \usepackage{needspace}       % keeps a heading with the unbreakable table or text after it
+\usepackage{enumitem}        % style=unboxed: a long description label may break
 \usepackage{pdfpages}
+\usepackage{rotating}        % sidewaystable
 \setlength{\emergencystretch}{2em}
 \usepackage{hyphenat}
+% hyphenat breaks an identifier at \_ with an inserted hyphen ("w5_-hhwage"), which reads as
+% part of the name; break there without one.
+\makeatletter
+\renewcommand{\BreakableUnderscore}{\leavevmode\prw@zbreak\textunderscore\discretionary{}{}{}\prw@zbreak}
+\makeatother
+% No single line of a paragraph alone at the foot or head of a page.
+\clubpenalty=10000
+\widowpenalty=10000
+% The thesis's term is "Submodel"; a break at "Sub-model" would read as another spelling.
+\hyphenation{Submodel Submodels}
 
 % --- encoding and symbols ---------------------------------------------------
 \usepackage[utf8]{inputenc}
 \usepackage{textgreek}
 \usepackage{amsmath}
 \usepackage{amssymb}
+% Indicator (switch) symbol: a double-struck 1 from the New Computer Modern blackboard font that
+% mathalpha installs (amssymb's \mathbb has no digits; bbm and dsfont are not installed).
+\DeclareFontFamily{U}{ncmbbr}{\skewchar\font=45}
+\DeclareFontShape{U}{ncmbbr}{m}{n}{<-> mathalpha-ncmbb-regular}{}
+\DeclareMathAlphabet{\mathbbone}{U}{ncmbbr}{m}{n}
+\newcommand{\ind}{\mathbbone{1}}
+% The default medium math space (binary operators such as \pm) may shrink to nothing on a tight
+% justified line; let it shrink by 1mu at most.
+\medmuskip=4mu plus 2mu minus 1mu
 
 % --- figures ----------------------------------------------------------------
 \usepackage{tikz}
@@ -28,6 +49,10 @@
 \usepackage{longtable}
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
 \newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}}
+% Label column with a hanging indent, so a wrapped label does not read as a new row.
+\newcolumntype{H}[1]{>{\raggedright\hangindent=1em\hangafter=1\arraybackslash}p{#1}}
+% First row of a longtable's \endhead: \LTcontinued{<number of columns>} before \toprule.
+\newcommand{\LTcontinued}[1]{\multicolumn{#1}{@{}l}{\footnotesize\itshape Table~\thetable\ (continued)}\\}
 
 % --- references and acronyms ------------------------------------------------
 \usepackage{caption}
@@ -37,7 +62,9 @@
 \usepackage[round,sort]{natbib}
 \setcitestyle{aysep={,}}
 % natbib typesets agsm URLs with \textit, which breaks on % and _; read them with \url.
-\renewcommand{\harvardurl}{Available at:~\url}
+% No page break just before the URL line (pdfTeX's \vadjust pre puts the penalty above it), so
+% "Available at:" never starts a page cut off from the rest of its entry.
+\renewcommand{\harvardurl}{\vadjust pre{\nobreak}Available at:~\url}
 \usepackage{hyperref}
 % Links work but carry no coloured border or text colour, on screen or in print.
 \hypersetup{hidelinks, pdftitle={Buy Now, Pay Later and Household Credit Distress in South
@@ -45,12 +72,18 @@
 \usepackage[printonlyused]{acronym}
 
 % --- float notes and pseudocode conventions ---------------------------------
+% A bold label on a line of its own above the paragraph it introduces (Appendix A). Run in, a long
+% label forced a stretched line or a break at "Sub-model".
+\newcommand{\labelpar}[1]{\par\addvspace{\smallskipamount}%
+    {\raggedright\noindent\textbf{#1}\par}\nopagebreak\noindent\ignorespaces}
 % Every table and figure carries a short title in \caption and a brief note in \tabnote
 % that defines unusual measures; shared conventions are stated once in Section 3.1.
 % In a longtable the note goes in a \multicolumn row instead.
 \newcommand{\tabnote}[1]{\par\vspace{2pt}\noindent\begin{minipage}{\linewidth}\footnotesize\sloppy #1\end{minipage}\par\vspace{4pt}}
 \usepackage{etoolbox}
-\AtBeginEnvironment{algorithmic}{\small}   % compact, as in the reference paper
+% Compact, as in the reference paper; ragged right, so a wrapped statement keeps even word
+% spaces (\Comment uses \hfill and stays flush right).
+\AtBeginEnvironment{algorithmic}{\small\raggedright}
 \algrenewcommand\alglinenumber[1]{}
 \captionsetup[algorithm]{labelsep=space}
 % acronym v1.50 ends each printonlyused entry with \\, which leaves a blank line between
@@ -58,6 +91,34 @@
 \makeatletter
 \expandafter\patchcmd\csname AC@\AC@prefix{}@acro\endcsname{\fi\\}{\fi}{}%
     {\PackageWarning{main}{acronym list patch failed}}
+\makeatother
+% A wrapped algorithm statement keeps a hanging indent of 2em under its own first line, instead
+% of returning to the left margin.
+\makeatletter
+\newcommand{\ALG@hangline}{\parshape 2 \@totalleftmargin \linewidth
+    \dimexpr\@totalleftmargin+\ALG@tlm+2em\relax \dimexpr\linewidth-\ALG@tlm-2em\relax}
+\patchcmd{\ALG@doentity}{\noindent\hskip\ALG@tlm}{\noindent\ALG@hangline\hskip\ALG@tlm}{}%
+    {\PackageWarning{main}{algorithm hanging-indent patch failed}}
+\makeatother
+% One-line conditional and loop with no closing line; a comment on a line of its own.
+\algnewcommand{\IfThen}[2]{\State \algorithmicif\ #1\ \algorithmicthen\ #2}
+\algnewcommand{\ForAllDo}[2]{\State \algorithmicforall\ #1\ \algorithmicdo\ #2}
+\algnewcommand{\LineComment}[1]{\State \(\triangleright\) #1}
+
+% --- headings and contents --------------------------------------------------
+% Headings are set ragged right and never hyphenated.
+\makeatletter
+\newcommand{\headingstyle}{\raggedright\hyphenpenalty=\@M}
+\renewcommand\section{\@startsection{section}{1}{\z@}%
+    {-3.5ex \@plus -1ex \@minus -.2ex}{2.3ex \@plus.2ex}{\normalfont\Large\bfseries\headingstyle}}
+\renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
+    {-3.25ex\@plus -1ex \@minus -.2ex}{1.5ex \@plus .2ex}{\normalfont\large\bfseries\headingstyle}}
+\renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
+    {-3.25ex\@plus -1ex \@minus -.2ex}{1.5ex \@plus .2ex}{\normalfont\normalsize\bfseries\headingstyle}}
+% Contents: room for two-digit subsection numbers (D.10) and three-digit page numbers.
+\renewcommand*\l@subsection{\@dottedtocline{2}{1.5em}{3.0em}}
+\renewcommand\@pnumwidth{2.2em}
+\renewcommand\@tocrmarg{3.2em}
 \makeatother
 
 % NOTE (template): class, geometry and the title page below are provisional.
@@ -73,7 +134,18 @@
 
 \begin{document}
 
+% Front matter: the title page stands alone and unnumbered (it counts as page i); the declaration,
+% abstract, data and code note, contents, lists and acronyms carry roman numbers; arabic
+% numbering starts at 1 on the first page of Section 1.
+\pagenumbering{roman}
+\begingroup
+\let\newpage\relax          % \maketitle would otherwise eject the \vfill above it
+\null\vfill
 \maketitle
+\vfill\vfill
+\endgroup
+\thispagestyle{empty}
+\clearpage
 
 % ============================================================================
 % FRONT MATTER
@@ -92,6 +164,8 @@ not been submitted for any other degree or examination at any other university.
 \vspace{2em}
 \noindent Signed: \hrulefill \qquad Date: \hrulefill
 
+% The abstract and the data and code note each start on a new page.
+\clearpage
 \section*{Abstract}
 \addcontentsline{toc}{section}{Abstract}
 
@@ -101,9 +175,16 @@ not been submitted for any other degree or examination at any other university.
 % Section 3.4; validation misses: Section 3.5 (debt service: tab:pop-external; the book halves:
 % 2,237 to 1,175, Section 3.4; interest: tab:bnpl-on-checks; default has no external counterpart).
 % Two-year horizon and "enter default during the run": Section 3.1 (sec:sim-params).
-% 1.0 point: beta0_effect_pooled (1.03); 14.4%: default during the run without BNPL, 14.37,
-% tab:baseline-arms; households below food and rent: short_group.json and
-% short_group_lending.json (Sections 3.5 and 4.1); not detectable without the shortfall path:
+% 1.1 points: split_redraw_all (1.13, redrawn population, the main estimate since 2026-11-25);
+% 1.0: beta0_effect_pooled (1.03, fixed population); 14.4%: default during the run without BNPL, 14.37,
+% tab:baseline-arms; 3.6% short from the start (182 of 5,000): short_group.json (Section 3.5);
+% refused by the lender and accepted by the platforms: 0.92 of the 1.08 points from the 55 of 120
+% the lender never lends to, short_group_lending.json (Section 4.1); other households: +0.17 +/-
+% 0.05, split_redraw_other, results_numbers.json (redrawn population; +0.11 +/- 0.07 pooled over the
+% fixed population's blocks, beta0_effect_pooled_contestable, contestable_default.json). About half under the wage-income screen: +0.50 +/- 0.09
+% against +1.08 +/- 0.11 on the same seeds, split_screen_all and split_bench_all; 1.1 points with
+% the redrawn population: +1.13 +/- 0.06, split_redraw_all (results_numbers.json and
+% effect_split.json, tab:effect-split, Section 4.1). Not detectable without the shortfall path:
 % no-shortfall-BNPL row of tab:effect; no detectable slope:
 % results/summary/beta_sweep.json; 0.20 points: scen_bureau_beta0_default, tab:scenarios (refusals
 % +124/954); 0.9 to 1.0 points: screening rows of tab:scenarios; food and rent:
@@ -111,27 +192,29 @@ not been submitted for any other degree or examination at any other university.
 % -0.09 +/- 0.08 (Section 5). Possibly understated: for 68% of the group's respondents a single
 % income question covers food and rent (one_shot_covers_share_of_answered, short_group.json,
 % Section 3.5). Peer influence raises borrowing: Sections 4.2 and 4.4.
-South African households were in credit distress before \ac{BNPL} spread, and \ac{BNPL} agreements
-do not appear on consumer credit profiles. Using an agent-based model of 5{,}000 households built
-from South African survey microdata, we ask how \ac{BNPL} changes credit distress and what bureau
-visibility and affordability screening would change. The model's traditional lender tests
-affordability on the debts the bureau records, and four \ac{BNPL} platforms cannot see one
-another's balances. Runs start from the 2017 arrears profile, to whose five bands we fit two
-repayment parameters, and last two years. A household defaults when an instalment on any of its
-credit, \ac{BNPL} included, is more than 90 days past due. Enabling \ac{BNPL} raises the share of
-households that default during the run by 1.0 percentage point, from 14.4\%. The rise comes mostly
-from households the lender refuses and the platforms accept, whose surveyed income, possibly
-understated, does not cover food and rent. It is not detectable when \ac{BNPL} cannot be used
-against a cash shortfall. Peer influence raises \ac{BNPL} borrowing without detectably changing the
-effect. Without peer influence, bureau visibility raises default by 0.20
-points, because the lender refuses more households, which in the model have no other credit.
-Screening \ac{BNPL} with the same test lowers default by 0.9 to 1.0 points. Both policies leave
-more households short of food and rent, screening only without peer influence. The fitted profile cannot
-validate the model, opening debt service exceeds what households report, the number of indebted
-households halves over the run, traditional interest does not rise with \ac{BNPL} as in United
-States data, and no external figure measures default. We therefore interpret mainly differences
-between runs, conditional on their shared assumptions.
+In an agent-based model of 5{,}000 households built from South African survey microdata, we ask
+how \ac{BNPL} changes credit distress and what bureau visibility and affordability screening
+change. The model's traditional lender tests affordability on the debts the bureau records, which
+exclude \ac{BNPL}. Its four platforms apply no such test and cannot see one another's balances.
+Runs last two years from the 2017 arrears profile, to which we fit two parameters. A household
+defaults when an instalment on any credit, \ac{BNPL} included, is more than 90 days past
+due. In the model \ac{BNPL} raises default mainly among the 3.6\% of households short from the
+start, whose surveyed income, possibly understated, does not cover food and rent. The rise comes
+mostly from those the lender refuses and the platforms accept. For other households it is small.
+Across households, default rises by 1.1 percentage points, from 14.4\%, when each comparison
+draws a new population, and by 1.0 in one fixed population. The rise is not
+detectable when \ac{BNPL} cannot be used against a cash shortfall. About half of it remains when
+the platforms lend only to households with wage income. Peer influence raises \ac{BNPL} borrowing without detectably
+changing the rise. Without peer influence, bureau
+visibility raises default by 0.20 points, since in the model a refused household has no other
+source of credit. Screening \ac{BNPL} with the lender's test lowers default by 0.9 to 1.0 points.
+Both leave more households short of food and rent, screening only without peer influence. The
+fitted profile cannot validate the model, opening debt service exceeds what households report,
+the credit-active book halves, traditional interest does not rise with \ac{BNPL}
+as in United States data, and no external figure measures default. We therefore interpret mainly
+differences between runs, conditional on their shared assumptions.
 
+\clearpage
 \section*{Data and Code}
 \addcontentsline{toc}{section}{Data and Code}
 
@@ -150,11 +233,26 @@ Python 3.14.4 with Mesa 3.5.1; \texttt{simulation/requirements.txt} pins every p
 version. The results come from the commit tagged in the code release.
 % Versions: simulation/requirements.txt and the project .venv (checked 2026-10-13).
 
-\acresetall
 \clearpage
 \tableofcontents
 
-% The contents, the acronym list and the body each start on a new page.
+% The contents, the lists of tables and figures, the acronym list and the body each start on a
+% new page.
+\clearpage
+\begingroup
+% In the lists an acronym in a caption prints in its short form.
+\let\ac\acs
+\phantomsection
+\addcontentsline{toc}{section}{\listtablename}
+\listoftables
+\clearpage
+\phantomsection
+\addcontentsline{toc}{section}{\listfigurename}
+\listoffigures
+\endgroup
+% No acronym counts as used before the body (the abstract and the lists above use some).
+\acresetall
+
 \clearpage
 \section*{Acronyms}
 \addcontentsline{toc}{section}{Acronyms}
@@ -187,8 +285,9 @@ version. The results come from the commit tagged in the code release.
 % BODY
 % ============================================================================
 
-% Each body section starts on a new page.
+% Each body section starts on a new page; arabic page numbers start at 1 here.
 \clearpage
+\pagenumbering{arabic}
 \input{chapters/01_introduction}
 \clearpage
 \input{chapters/02_model}
@@ -211,13 +310,30 @@ version. The results come from the commit tagged in the code release.
 \bibliographystyle{agsm}
 \bibliography{main}
 
+% Each appendix starts on a new page; \clearpage also places every float of an appendix before
+% the next one begins. In the appendices a tall table or algorithm may take the top of a text
+% page, so the text flows on below it, and a page that holds only floats starts at the top.
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\textfraction}{0.07}
+\renewcommand{\floatpagefraction}{0.8}
+\makeatletter
+\setlength{\@fptop}{0pt}
+\setlength{\@fpsep}{\floatsep}
+\makeatother
 \appendix
+\clearpage
 \input{chapters/appendix_a_rationale}
+\clearpage
 \input{chapters/appendix_b_specification}
+\clearpage
 \input{chapters/appendix_c_supplementary}
+\clearpage
 \input{chapters/appendix_d_variables}
+\clearpage
 \input{chapters/appendix_e_matching}
+\clearpage
 \input{chapters/appendix_f_pseudo_init}
+\clearpage
 \input{chapters/appendix_g_pseudo_main}
 
 \end{document}

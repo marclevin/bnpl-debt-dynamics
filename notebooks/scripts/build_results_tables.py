@@ -39,15 +39,33 @@ SE_P = "paired by seed"
 SE_U = "unpaired, on different seed blocks"
 # One label per sensitivity arm, shared by Tables robustness and effect (build_results_figures.py
 # uses the same words in Figure tornado).
-SHORTFALL_COMMITTED = "shortfall $+$ one tick of committed spending"
+SHORTFALL_COMMITTED = "shortfall $+$ one tick of committed expenditure"
 CAP_REMOVED = ", uncapped"
 
 
 # Body-chapter tables (issue #89): here if they fit, otherwise at the top or bottom of the next
 # page, so a table that does not fit leaves no half-empty page as [H] did; "!" lets a tall table
 # take a top slot. Floating tables also keep their numbered order, which mixing [H] with floating
-# tables does not. Appendix tables keep [H].
+# tables does not. Appendix tables float [!htbp] (results_common.APPENDIX_PLACEMENT).
 FLOAT_NEAR = "!htb"
+
+
+def tminus(s: str) -> str:
+    """A signed number for a text cell, with a true minus sign: a negative value is set in math
+    ("$-4.2$"); a positive one keeps its text plus sign, the same glyph."""
+    return f"${s}$" if s.startswith("-") else s
+
+
+def hb(text: str, width: str) -> str:
+    """A bold column head that wraps, right-aligned and bottom-aligned, so the heads of a row
+    share their last line and a rule under a spanning head meets it."""
+    return f"\\multicolumn{{1}}{{>{{\\raggedleft\\arraybackslash}}b{{{width}}}}}{{\\textbf{{{text}}}}}"
+
+
+def mark(cell: str, sym: str) -> str:
+    """A note mark after a number, set outside the column's width so the number stays aligned
+    with the column's others."""
+    return f"{cell}\\rlap{{$^{{{sym}}}$}}"
 
 
 def se_note(a: pd.DataFrame, b: pd.DataFrame) -> str:
@@ -92,7 +110,13 @@ def tab_baseline_arms(rq0: pd.DataFrame) -> None:
         if col is None:
             rows.append(group_row(name, 4))
             continue
-        rows.append(" & ".join([name] + [cell(x[col], d, scale) for x in (off, b0, b1)]) + r" \\")
+        cells = [cell(x[col], d, scale) for x in (off, b0, b1)]
+        if col == "ever_stacked_2plus_of_adopters":
+            # no household holds BNPL without it, so the share of ever-holders is empty (--), as
+            # for the holders row below
+            assert (off[col] == 0).all()
+            cells[0] = "--"
+        rows.append(" & ".join([name] + cells) + r" \\")
     # holders share, computed per replicate, before the ever row
     rows.insert(
         len(rows) - 1,
@@ -160,7 +184,8 @@ def tab_baseline_arms(rq0: pd.DataFrame) -> None:
         "volume cover the post-burn-in ticks (45.2\\% of households have no liquid savings at the start, "
         "Section~\\ref{sec:data-validation}); default, lending and refusals cover the whole run. "
         "$\\pm$: one standard error, paired by seed.",
-        "L{5.6cm}rrr",
+        # \footnotesize: at \small the labels would wrap beside three columns of changes
+        "H{6.4cm}rrr",
         r"\textbf{Outcome} & \textbf{No \ac{BNPL}} & \textbf{\ac{BNPL}, $\beta=0$} & \textbf{\ac{BNPL}, $\beta=0.3$}",
         rows,
         size=r"\footnotesize",
@@ -289,18 +314,20 @@ def tab_stacking(rq1: pd.DataFrame) -> None:
         f"at the start. Default with six platforms less one: "
         f"{pm(d0, se0)} points at $\\beta = 0$ and {pm(d1, se1)} at $\\beta = 0.3$, $\\pm$ one "
         "standard error, paired by seed.",
-        "c rr rr rr rr",
+        # fixed widths, so each pair of columns shares its head's width evenly
+        # a wider gap between the pairs than within them
+        "c" + r" R{1.25cm}R{1.25cm} @{\hspace{10pt}}" * 3 + " R{1.25cm}R{1.25cm}",
         r"& \multicolumn{4}{c}{\textbf{Owing two or more platforms}} & & & & \\ \cmidrule(lr){2-5}"
         "\n"
         r"& \multicolumn{2}{c}{\textbf{Holders (\%)}} & \multicolumn{2}{c}{\textbf{Ever-holders (\%)}} "
-        r"& \multicolumn{2}{c}{\textbf{Volume (R m)}} & \multicolumn{2}{c}{\textbf{Default (\%)}} \\ "
+        r"& \multicolumn{2}{c}{\textbf{Volume (R~m)}} & \multicolumn{2}{c}{\textbf{Default (\%)}} \\ "
         r"\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(lr){8-9}"
-        "\n\\textbf{Platforms} & $\\beta=0$ & $\\beta=0.3$ & $\\beta=0$ & $\\beta=0.3$ & $\\beta=0$ & $\\beta=0.3$ "
-        "& $\\beta=0$ & $\\beta=0.3$",
+        # braces keep each head on one line: math in a p column may break at "="
+        "\n\\textbf{Platforms} & ${\\beta=0}$ & ${\\beta=0.3}$ & ${\\beta=0}$ & ${\\beta=0.3}$ & ${\\beta=0}$ & ${\\beta=0.3}$ "
+        "& ${\\beta=0}$ & ${\\beta=0.3}$",
         rows,
-        size=r"\small",
         placement=FLOAT_NEAR,
-        colsep="4pt",
+        colsep="3pt",
     )
     # appendix: every beta, two outcomes
     betas = sorted(rq1.beta.unique())
@@ -346,15 +373,16 @@ def tab_stacking(rq1: pd.DataFrame) -> None:
         f"can owe two (--). Default: including the households placed in default at the start. "
         f"Replicate standard deviations are at most {sd_max * 100:.1f} "
         f"points for that share and {sd_def * 100:.2f} for default. Default with six platforms less "
-        f"one: {', '.join(contrasts)}, $\\pm$ one standard error, paired by seed.",
-        "c " + "r" * k + " " + "r" * k,
-        f"& \\multicolumn{{{k}}}{{c}}{{Owing two or more platforms (\\% of households)}} & \\multicolumn{{{k}}}{{c}}{{Default rate (\\%)}} \\\\ "
+        f"one: {', '.join(contrasts)}, $\\pm$~one standard error, paired by seed.",
+        # a wider gap between the two blocks of columns
+        "c" + " R{1.27cm}" * k + r" @{\hspace{14pt}}" + " R{1.27cm}" * k,
+        f"& \\multicolumn{{{k}}}{{c}}{{\\textbf{{\\begin{{tabular}}[b]{{@{{}}c@{{}}}}Owing two or more platforms\\\\(\\% of households)\\end{{tabular}}}}}} "
+        f"& \\multicolumn{{{k}}}{{c}}{{\\textbf{{Default rate (\\%)}}}} \\\\ "
         f"\\cmidrule(lr){{2-{k + 1}}}\\cmidrule(lr){{{k + 2}-{2 * k + 1}}}\n\\textbf{{Platforms}} & "
-        + " & ".join(f"$\\beta={b:g}$" for b in betas) + " & "
-        + " & ".join(f"$\\beta={b:g}$" for b in betas),
+        + " & ".join(f"${{\\beta={b:g}}}$" for b in betas) + " & "
+        + " & ".join(f"${{\\beta={b:g}}}$" for b in betas),
         rows,
-        size=r"\footnotesize",
-        colsep="3pt",
+        colsep="3.5pt",
     )
 
 
@@ -466,9 +494,10 @@ def tab_bnpl_on_checks(rq0: pd.DataFrame) -> None:
         f"1. Traditional interest rises~\\citep{{dehaan2024bnpl}} & Rise & "
         f"{pmb(r_int0, r_int0_se, 1)}; {pmb(r_int1, r_int1_se, 1)}\\% & "
         f"{verdict(((r_int0, r_int0_se), (r_int1, r_int1_se)))} \\\\",
-        f"3. Debt-to-income peaks mid-distribution~\\citep{{hamill2023creditcard}} & Peak in Q2--Q4 & "
-        f"{peak} {dti[peak]:.2f}; {second} {dti[second]:.2f} (start: {peak0} {dti0[peak0]:.2f}; "
-        f"{second0} {dti0[second0]:.2f}) & {p3_reading} \\\\",
+        f"3. Debt-to-income peaks \\mbox{{mid-distribution}}~\\citep{{hamill2023creditcard}} & Peak in Q2--Q4 & "
+        # ties and a box keep each quintile with its value
+        f"{peak}~{dti[peak]:.2f}; {second}~{dti[second]:.2f} \\mbox{{(start: {peak0} {dti0[peak0]:.2f};}} "
+        f"{second0}~{dti0[second0]:.2f}) & {p3_reading} \\\\",
         group_row("\\ac{BNPL} market", 4),
         f"Owing two or more platforms at once~\\citep{{cfpb2025bnpl}} & 32--33\\% of borrowers in a year & "
         f"{pct(ev0, 1)}\\% of ever-holders over two years & Below, over a longer window; different market \\\\",
@@ -494,16 +523,29 @@ def tab_bnpl_on_checks(rq0: pd.DataFrame) -> None:
         "The purchase target is gross merchandise value divided by transaction count. For Pattern~1, "
         "deHaan et al.\\ measure card late fees and interest; traditional arrears proxy late fees in the model. Pattern~2, "
         "the calibration target, appears in Table~\\ref{tab:arrears-fit}.",
-        "L{4.6cm}L{2.7cm}L{3.0cm}L{3.3cm}",
+        "H{4.7cm}L{2.7cm}L{3.0cm}L{3.15cm}",
         r"\textbf{Comparison} & \textbf{Expected} & \textbf{Model} & \textbf{Result}",
         rows,
-        size=r"\footnotesize",
         placement=FLOAT_NEAR,
         colsep="3pt",
+        spaced=True,
     )
 
 
 # ============================================================ 5 the scenario panel
+# The two scenario tables share their heads. At \small five columns of changes with their
+# standard errors do not fit the text width, so both are \footnotesize.
+SCEN_COLS = "H{4.2cm}R{2.0cm}R{2.3cm}R{2.3cm}R{2.3cm}"
+
+
+def scen_head(width: str) -> str:
+    """The scenario heads; the wrapped "Bureau visibility" is bottom-aligned by hb() in a column
+    of the given width, as in the other tables."""
+    return (r"& & \multicolumn{3}{c}{\textbf{Change from benchmark}} \\ \cmidrule(lr){3-5}"
+            f"\n\\textbf{{Outcome}} & \\textbf{{Benchmark}} & {hb('Bureau visibility', width)} & "
+            "\\textbf{Screening} & \\textbf{Both}")
+
+
 def tab_scenarios(rq3s: pd.DataFrame) -> None:
     """One table for RQ3: the benchmark level and each arm's change from it, at both betas."""
     keys = [("bench", "Benchmark"), ("bureau", "Bureau visibility"), ("afford", "Screening"),
@@ -515,9 +557,9 @@ def tab_scenarios(rq3s: pd.DataFrame) -> None:
         ("Default rate (\\%)", "default_rate_final", "pp", 100, 2),
         ("90+ day arrears, credit-active (\\%)", "active_90_plus_mean", "pp", 100, 2),
         ("Refused applications", "trad_refused_gate", "abs", 1, 0),
-        ("Traditional lending (R m)", "trad_granted_value", "abs", 1e-6, 2),
+        ("Traditional lending (R~m)", "trad_granted_value", "abs", 1e-6, 2),
         ("\\ac{BNPL} holding (\\%)", "bnpl_adoption_final", "pp", 100, 2),
-        ("\\ac{BNPL} volume (R m; change in \\%)", "bnpl_volume_cumulative", "rel", 1e-6, 2),
+        ("\\ac{BNPL} volume (R~m; change in \\%)", "bnpl_volume_cumulative", "rel", 1e-6, 2),
     ] + [(f"Default rate, {q} (\\%)", f"default_rate_final_{q}", "pp", 100, 2) for q in Q]  # noqa
     rows = []
     for b in (0.0, BP):
@@ -571,10 +613,8 @@ def tab_scenarios(rq3s: pd.DataFrame) -> None:
         "the start, the same households in every arm. Refused applications and lending: the "
         "traditional lender's. Holding: at the final tick. Quintiles are of per-capita income. "
         "Food and rent left unpaid: Table~\\ref{tab:scenarios-distress}.",
-        "L{3.5cm}R{2.05cm}R{2.4cm}R{2.3cm}R{2.3cm}",
-        r"& & \multicolumn{3}{c}{\textbf{Change from benchmark}} \\ \cmidrule(lr){3-5}"
-        "\n\\textbf{Outcome} & \\textbf{Benchmark} & \\textbf{Bureau visibility} & "
-        "\\textbf{Screening} & \\textbf{Both}",
+        SCEN_COLS,
+        scen_head('2.3cm'),
         rows,
         size=r"\footnotesize",
         placement=FLOAT_NEAR,
@@ -592,7 +632,7 @@ def tab_scenarios_distress(rq3s: pd.DataFrame) -> None:
     whether a household is short, not by how much, so there is no Rand column.
     """
     keys = ["bench", "bureau", "afford", "both"]
-    measures = [("Short in a tick, mean (\\%)", "consumption_distress_mean", "cdist_tick"),
+    measures = [("Short in a tick, mean~(\\%)", "consumption_distress_mean", "cdist_tick"),
                 ("Ever short (\\%)", "ever_consumption_distress_final", "cdist_ever")]
     rows = []
     for b in (0.0, BP):
@@ -620,14 +660,13 @@ def tab_scenarios_distress(rq3s: pd.DataFrame) -> None:
         "households cannot borrow. Short in a tick: mean share of all households short over the "
         f"{ticks - burn} post-burn-in ticks. Ever short: share short in any of the {ticks} ticks. "
         "Runs record shortfalls as indicators, not Rand amounts.",
-        "L{2.8cm}R{2.1cm}R{2.7cm}R{2.7cm}R{2.7cm}",
-        r"& & \multicolumn{3}{c}{\textbf{Change from benchmark}} \\ \cmidrule(lr){3-5}"
-        "\n\\textbf{Outcome} & \\textbf{Benchmark} & \\textbf{Bureau visibility} & "
-        "\\textbf{Screening} & \\textbf{Both}",
+        # changes at three decimals need wider columns; the labels are short
+        "H{3.3cm}R{2.0cm}R{2.65cm}R{2.65cm}R{2.65cm}",
+        scen_head('2.65cm'),
         rows,
         size=r"\footnotesize",
         placement=FLOAT_NEAR,
-        colsep="3pt",
+        colsep="4pt",
     )
 
 
@@ -646,13 +685,14 @@ def tab_distribution(rq0: pd.DataFrame) -> None:
         sizes.append(num(n_q))
         e0 = delta(b0, off, f"default_rate_final_{q}")
         e1 = delta(b1, off, f"default_rate_final_{q}")
+        # grouped by arm: the two no-BNPL measures, the two changes, the three beta = 0 measures
         cells = [
             q,
             pct(ms(off[f"default_rate_final_{q}"])[0], 2),
+            f"{ms(off[f'dti_{q}'])[0]:.2f}",
             pmb(*e0),
             pmb(*e1),
             pct(ms(shares[0])[0], 1),
-            f"{ms(off[f'dti_{q}'])[0]:.2f}",
             pct(ms(shares[2])[0], 1),
             num(ms(b0[f"bnpl_purchase_mean_realised_{q}"])[0]),
         ]
@@ -686,14 +726,18 @@ def tab_distribution(rq0: pd.DataFrame) -> None:
         "monthly income. Limit binds: share of the quintile's platform requests that a platform's "
         "limit for that household reduced or refused. Purchase: mean want-driven purchase, in 2017 "
         "Rands.",
-        "c R{1.4cm} R{2.3cm} R{2.3cm} R{1.4cm} R{1.3cm} R{1.4cm} R{1.6cm}",
-        r"& \textbf{Default (\%)} & \multicolumn{2}{c}{\textbf{Change in default (pp)}} & "
-        r"\textbf{Holding (\%)} & \textbf{Debt/ income} & \textbf{Limit binds (\%)} & \textbf{Purchase (R)} \\ \cmidrule(lr){3-4}"
-        "\n\\textbf{Quintile} & No \\ac{BNPL} & $\\beta=0$ & $\\beta=0.3$ & $\\beta=0$ & No \\ac{BNPL} & $\\beta=0$ & $\\beta=0$",
+        # \footnotesize: eight columns, two of changes with standard errors
+        "c R{1.4cm} R{1.25cm} R{2.25cm} R{2.25cm} R{1.4cm} R{1.25cm} R{1.75cm}",
+        r"& \multicolumn{2}{c}{\textbf{No \ac{BNPL}}} & \multicolumn{2}{c}{\textbf{Change in default (pp)}} "
+        r"& \multicolumn{3}{c}{\textbf{\ac{BNPL}, $\beta=0$}} \\ "
+        r"\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-8}"
+        f"\n\\textbf{{Quintile}} & {hb('Default (\\%)', '1.4cm')} & {hb('Debt/ income', '1.25cm')} & "
+        f"${{\\beta=0}}$ & ${{\\beta=0.3}}$ & {hb('Holding (\\%)', '1.4cm')} & "
+        f"{hb('Limit binds (\\%)', '1.25cm')} & {hb('Purchase (R)', '1.75cm')}",
         rows,
         size=r"\footnotesize",
         placement=FLOAT_NEAR,
-        colsep="2.8pt",
+        colsep="3pt",
     )
 
 
@@ -719,7 +763,7 @@ def tab_access(rq2: pd.DataFrame, rq2t: pd.DataFrame) -> None:
         fit = f"{d['linear_r2']:.2f}" if detectable(dd, se) else "--"
         N[f"access_rise_beta{b:g}_detectable"] = bool(detectable(dd, se))
         N[f"access_maxdev_beta{b:g}"] = d["max_dev_frac"]
-        rows.append(f"$\\beta = {b:g}${tag} & {signed(hold_rise * 100, 1)} & {pmb(dd, se)} & {fit} \\\\")
+        rows.append(f"$\\beta = {b:g}${tag} & {tminus(signed(hold_rise * 100, 1))} & {pmb(dd, se)} & {fit} \\\\")
         N[f"access_rise_beta{b:g}"], N[f"access_rise_beta{b:g}_se"], N[f"access_r2_beta{b:g}"] = dd, se, d["linear_r2"]
     fitted = [b for b in rq2.beta.unique() if N[f"access_rise_beta{b:g}_detectable"]]
     N["access_fitted_betas"] = sorted(float(b) for b in fitted)
@@ -743,7 +787,7 @@ def tab_access(rq2: pd.DataFrame, rq2t: pd.DataFrame) -> None:
     cd, cse = ends(ctrl_runs)
     N["thr_ctrl_default_rise_se"] = cse
     N["thr_ctrl_default_detectable"] = bool(detectable(cd, cse))
-    rows.append(f"$\\gamma = 0$ (control) & {signed(ac['rise'] * 100, 1)} & {pmb(cd, cse)} & {fit_cells(cd, cse, dc)} \\\\")
+    rows.append(f"$\\gamma = 0$ (control) & {tminus(signed(ac['rise'] * 100, 1))} & {pmb(cd, cse)} & {fit_cells(cd, cse, dc)} \\\\")
     N["thr_ctrl_default_rise"], N["thr_ctrl_default_r2"] = dc["rise"], dc["linear_r2"]
     N["thr_ctrl_adoption_rise"] = ac["rise"]
     thr_r2, ad_rises, d_rises = [], [], []
@@ -759,7 +803,7 @@ def tab_access(rq2: pd.DataFrame, rq2t: pd.DataFrame) -> None:
         if detectable(dd, se):
             thr_r2.append(d["linear_r2"])
         ad_rises.append(a["rise"]); d_rises.append(d["rise"])
-        rows.append(f"$\\sigma_\\theta = {param(s)}$ & {signed(a['rise'] * 100, 1)} & {pmb(dd, se)} & {fit_cells(dd, se, d)} \\\\")
+        rows.append(f"$\\sigma_\\theta = {param(s)}$ & {tminus(signed(a['rise'] * 100, 1))} & {pmb(dd, se)} & {fit_cells(dd, se, d)} \\\\")
     N.update(thr_default_r2_min=min(thr_r2, default=float("nan")), thr_adoption_rise_max=max(ad_rises),
              thr_adoption_rise_min=min(ad_rises),
              thr_adoption_r2_min=min(N[f"thr_adoption_r2_s{s:g}"] for s in surf.sigma_theta.unique()),
@@ -782,11 +826,13 @@ def tab_access(rq2: pd.DataFrame, rq2t: pd.DataFrame) -> None:
         "Default: change in the default rate, $\\pm$ one standard error, paired by seed. "
         "$R^2$: fit of a straight line to default at the seven access levels, given only where the "
         "change in default is detectable.",
-        "L{4.4cm}rrr",
+        "H{4.4cm}rrr",
         r"\textbf{Arm} & \textbf{Holding (pp)} & \textbf{Default (pp)} & \textbf{$R^2$}",
         rows,
-        size=r"\footnotesize",
         placement=FLOAT_NEAR,
+        # A full-width note (two lines fewer): with Table distribution beside it on one page, a
+        # narrowed note left too little room for the heading and two lines that follow.
+        fit_note=False,
     )
 
 
@@ -801,11 +847,11 @@ def tab_robustness(rob: pd.DataFrame) -> None:
             return f"{name} & {cell(d.default_rate_final, 2)} & reference \\\\"
         if paired:
             dd, se = paired_diff(d, a(ref_label), "default_rate_final")
-            return f"{name} & {cell(d.default_rate_final, 2)} & {pmb(dd, se)[:-1]}^\\dagger$ \\\\"
+            return f"{name} & {cell(d.default_rate_final, 2)} & {mark(pmb(dd, se), '\\dagger')} \\\\"
         dd, se = delta(d, a(ref_label), "default_rate_final")
         N[f"{label}_diff"], N[f"{label}_diff_se"] = dd, se
-        mark = "" if shares_seeds(d, a(ref_label)) else "^\\ddagger"
-        return f"{name} & {cell(d.default_rate_final, 2)} & {pmb(dd, se)[:-1]}{mark}$ \\\\"
+        diff_cell = pmb(dd, se) if shares_seeds(d, a(ref_label)) else mark(pmb(dd, se), "\\ddagger")
+        return f"{name} & {cell(d.default_rate_final, 2)} & {diff_cell} \\\\"
 
     rules = [("shortfall", "exact shortfall"), ("shortfall_125", "shortfall $+25\\%$"),
              ("shortfall_plus_committed", SHORTFALL_COMMITTED)]
@@ -870,10 +916,12 @@ def tab_robustness(rob: pd.DataFrame) -> None:
         f"{pct(N['rob_k7_initial'])}\\%, and default during the run rises by "
         f"{pm(N['rob_k4_new_minus_k7'], N['rob_k4_new_minus_k7_se']).replace('$+', '$')} points. "
         "Remaining arms: Table~\\ref{tab:robustness-appendix}.",
-        "L{7.2cm}rr",
+        # \footnotesize: at \small the longest labels would wrap
+        "H{9.15cm}rr",
         r"\textbf{Arm} & \textbf{Default (\%)} & \textbf{Difference (pp)}",
         rows,
         size=r"\footnotesize",
+        colsep="3.5pt",
         placement=FLOAT_NEAR,
     )
 
@@ -898,7 +946,7 @@ def tab_robustness(rob: pd.DataFrame) -> None:
     for lam in (0.25, 0.5, 1.0):
         rows.append(row(f"{lam:.2f}", f"rob_limit{lam}", "rob_limit0.1"))
     rows += [group_row("Income-shock persistence (Submodel 1)", 3),
-             row("persistent until re-employment (default rule, seeds 50{,}000--)", "rob_amount_shortfall"),
+             row("persistent until re-employment (default rule, seeds 50{,}000--50{,}019)", "rob_amount_shortfall"),
              row("single-tick income shock", "rob_shock_single_tick", "rob_amount_shortfall")]
     N.update(
         rob_act_random=ms(a("rob_act_random").default_rate_final)[0],
@@ -920,10 +968,11 @@ def tab_robustness(rob: pd.DataFrame) -> None:
         "(minimum payment), 56{,}000 (limit) and 58{,}000 (single-tick shock, against the "
         "exact-shortfall reference on 50{,}000). $\\pm$: one standard error, paired by seed except "
         "where marked $\\ddagger$: unpaired, because seeds or population size differ.",
-        "L{7.2cm}rr",
+        "H{9.15cm}rr",
         r"\textbf{Arm} & \textbf{Default (\%)} & \textbf{Difference (pp)}",
         rows,
         size=r"\footnotesize",
+        colsep="3.5pt",
     )
 
 
@@ -941,8 +990,8 @@ def tab_sobol() -> None:
     idx = {k: {r["parameter"]: r for r in v} for k, v in data["indices"].items()}
     rows = []
 
-    def rng(x: float) -> str:  # parameter bounds at two decimals; beta keeps its integer grid
-        return f"{x:g}" if p == "beta" else param(x)
+    def rng(x: float) -> str:  # parameter bounds at two decimals or more; a zero bound is 0
+        return "0" if x == 0 else param(x)
 
     def z(x: float) -> str:  # a bootstrap estimate that rounds to zero prints without a sign
         return f"{x:.2f}".replace("-0.00", "0.00")
@@ -970,23 +1019,27 @@ def tab_sobol() -> None:
         f"{N['sobol_noise'] * 100:.0f}\\% of the variance of default across points and enters every "
         f"$S_T$, so a default $S_T$ near {N['sobol_noise']:.2f} is no larger than noise. Values outside "
         f"zero to one are estimation noise.",
-        "L{3.8cm}c rr rr",
-        r"& & \multicolumn{2}{c}{Default rate} & \multicolumn{2}{c}{Holding} \\ \cmidrule(lr){3-4}\cmidrule(lr){5-6}"
+        # \footnotesize: four columns of indices with their half-widths do not fit at \small
+        "H{4.0cm}r rr rr",
+        r"& & \multicolumn{2}{c}{\textbf{Default rate}} & \multicolumn{2}{c}{\textbf{Holding}} \\ \cmidrule(lr){3-4}\cmidrule(lr){5-6}"
         "\n\\textbf{Parameter} & \\textbf{Range} & \\textbf{$S_1$} & \\textbf{$S_T$} & \\textbf{$S_1$} & \\textbf{$S_T$}",
         rows,
         size=r"\footnotesize",
+        colsep="4pt",
+        spaced=True,
     )
 
 
 # ============================================================ C: cooling-off and cap
 def lever_table(rq3: pd.DataFrame, name: str, caption: str, arms: list[tuple[str, str]], note_extra: str,
                 prefix: str = "rq3", bench_key: str = "kcool0", write: bool = True) -> None:
-    rows = []
+    # one panel per beta, stacked, so the table has six columns rather than eleven
+    panels: dict[float, list[str]] = {0.0: [], BP: []}
     sd_adopt = 0.0
     paired_any, unpaired_any = False, False
     for key, label in arms:
-        cells = [label]
         for b in (0.0, BP):
+            cells = [label]
             d = arm(rq3, f"{prefix}_{key}_b{b}")
             bench = arm(rq3, f"{prefix}_{bench_key}_b{b}")
             dv, dv_se = ratio_change(d, bench, "bnpl_volume_cumulative")
@@ -997,8 +1050,10 @@ def lever_table(rq3: pd.DataFrame, name: str, caption: str, arms: list[tuple[str
                 paired_any |= shares_seeds(d, bench)
                 unpaired_any |= not shares_seeds(d, bench)
             cells += [cell(d.default_rate_final, 2), pmb(dd, se) if key != bench_key else "--",
-                      pct(ms(d.bnpl_adoption_final)[0], 1), signed(dv * 100, 1) if key != bench_key else "--",
+                      pct(ms(d.bnpl_adoption_final)[0], 1),
+                      tminus(signed(dv * 100, 1)) if key != bench_key else "--",
                       rm(ms(d.trad_granted_value)[0])]
+            panels[b].append(" & ".join(cells) + r" \\")
             N[f"lever_{key}_beta{b:g}_default"] = ms(d.default_rate_final)[0]
             N[f"lever_{key}_beta{b:g}_diff"], N[f"lever_{key}_beta{b:g}_diff_se"] = dd, se
             N[f"lever_{key}_beta{b:g}_volume_rel"] = dv
@@ -1006,7 +1061,8 @@ def lever_table(rq3: pd.DataFrame, name: str, caption: str, arms: list[tuple[str
             N[f"lever_{key}_beta{b:g}_adoption"] = ms(d.bnpl_adoption_final)[0]
             N[f"lever_{key}_beta{b:g}_lending"] = ms(d.trad_granted_value)[0]
             N[f"lever_{key}_beta{b:g}_lending_diff"], N[f"lever_{key}_beta{b:g}_lending_diff_se"] = dl, dl_se
-        rows.append(" & ".join(cells) + r" \\")
+    rows = ([group_row("No peer influence ($\\beta = 0$)", 6)] + panels[0.0]
+            + [group_row("Peer influence ($\\beta = 0.3$)", 6)] + panels[BP])
     if paired_any and not unpaired_any:
         se_text = "paired by seed"
     elif unpaired_any and not paired_any:
@@ -1019,16 +1075,13 @@ def lever_table(rq3: pd.DataFrame, name: str, caption: str, arms: list[tuple[str
         name,
         caption,
         f"Default: including the households placed in default at the start. $\\Delta$: default "
-        f"less the benchmark's, $\\pm$ one standard error, {se_text}. Hold.: share holding \\ac{{BNPL}} at "
-        f"the final tick (\\%). Vol.: change in cumulative post-burn-in \\ac{{BNPL}} volume (\\%). "
-        f"Trad.: new traditional lending (R m). {note_extra}",
-        "L{1.9cm} rrrrr rrrrr",
-        r"& \multicolumn{5}{c}{$\beta = 0$} & \multicolumn{5}{c}{$\beta = 0.3$} \\ \cmidrule(lr){2-6}\cmidrule(lr){7-11}"
-        "\n\\textbf{Arm} & \\textbf{Default} & \\textbf{$\\Delta$ (pp)} & \\textbf{Hold.} & \\textbf{Vol.} & \\textbf{Trad.} "
-        "& \\textbf{Default} & \\textbf{$\\Delta$ (pp)} & \\textbf{Hold.} & \\textbf{Vol.} & \\textbf{Trad.}",
+        f"less the benchmark's, $\\pm$ one standard error, {se_text}. Holding: share holding \\ac{{BNPL}} at "
+        f"the final tick (\\%). Volume: change in cumulative post-burn-in \\ac{{BNPL}} volume (\\%). "
+        f"Lending: new traditional lending (R~m). {note_extra}",
+        "H{3.2cm}rrrrr",
+        "\\textbf{Arm} & \\textbf{Default} & \\textbf{$\\Delta$ (pp)} & \\textbf{Holding} & \\textbf{Volume} "
+        "& \\textbf{Lending}",
         rows,
-        size=r"\scriptsize",
-        colsep="1.5pt",
     )
 
 
@@ -1079,8 +1132,8 @@ EFFECT_ROWS = [
     ("Other assumptions (Submodels 1, 6, 7 and 12)", [
         ("shock_single_tick", "single-tick income shock", "shock_single_tick"),
         ("k4", "default after 56 days", "k4"),
-        ("minpay0.025", "minimum payment 2.5\\% a month", "minpay0.025"),
-        ("minpay0.1", "minimum payment 10\\% a month", "minpay0.1"),
+        ("minpay0.025", "minimum payment 2.5\\%~a~month", "minpay0.025"),
+        ("minpay0.1", "minimum payment 10\\%~a~month", "minpay0.1"),
         ("m0.2", "minimum-payer share 0.20", "m0.2"),
         ("m0.4", "minimum-payer share 0.40", "m0.4"),
         ("limit0.25", "rolling limit $\\lambda = 0.25$", "ref"),
@@ -1123,7 +1176,8 @@ def tab_effect(eff: pd.DataFrame) -> None:
             name_ = f"\\textbf{{{name}}}" if key == "ref" else name
             rows.append(f"{name_} & {pct(ms(off.default_rate_final)[0])} & {num(p0)} & {num(p1)} & "
                         f"{num(v0)} & {num(v1)} & {pmb(d0, s0, dd)} & {pmb(d1, s1, dd)} \\\\")
-    rows.append(group_row("Want-driven path switched off ($q_{\\text{base}} = 0$, $\\beta = 0$)", 8))
+    # \mathrm, not \text: \text would take the italic of the group row's \emph
+    rows.append(group_row("Want-driven path switched off ($q_{\\mathrm{base}} = 0$, $\\beta = 0$)", 8))
     ref_off = a("eff_ref_off")
     dw, sw = paired_diff(a("eff_want_off_b0.0"), ref_off, "default_rate_final")
     rows.append(f"\\ac{{BNPL}} for shortfalls only & {pct(ms(ref_off.default_rate_final)[0])} & -- & -- & "
@@ -1157,17 +1211,121 @@ def tab_effect(eff: pd.DataFrame) -> None:
         + (f" The {' and '.join(fine)} row{'s are' if len(fine) > 1 else ' is'} at three decimals "
            f"because at two {'their' if len(fine) > 1 else 'its'} standard errors round to 0.01."
            if fine else ""),
-        # 6pt before each column pair and between the two effects, so the blocks read apart at 1.8pt.
-        r"L{3.5cm}R{1.15cm}@{\hspace{6pt}}rr@{\hspace{6pt}}rr@{\hspace{6pt}}r@{\hspace{6pt}}r",
-        r"& & \multicolumn{2}{c}{\textbf{Purchase (R)}} & \multicolumn{2}{c}{\textbf{Volume (R)}} "
+        # A page of its own, \footnotesize: eight columns, two of effects with standard errors.
+        # Rotated, the 30 rows would not fit the page's width. To leave the labels room, the
+        # spanning heads take two lines and the second head of each pair is "0.3"; a wrapped label
+        # keeps a hanging indent, and the rows are not spaced, which the page could not hold.
+        # Gaps: wider between the column pairs than within them, so the pairs read apart.
+        # (column 2 is bottom-aligned, so its three-line head sits on the heads' last line)
+        r"@{\hspace{1pt}}H{4.1cm}@{\hspace{3pt}}>{\raggedleft\arraybackslash}b{1.15cm}"
+        r"@{\hspace{7pt}}r@{\hspace{6pt}}r"
+        r"@{\hspace{8pt}}r@{\hspace{6pt}}r@{\hspace{8pt}}r@{\hspace{6pt}}r@{\hspace{1pt}}",
+        r"& \textbf{No \ac{BNPL} (\%)} & "
+        r"\multicolumn{2}{c}{\textbf{\begin{tabular}[b]{@{}c@{}}Purchase\\(R)\end{tabular}}} "
+        r"& \multicolumn{2}{c}{\textbf{\begin{tabular}[b]{@{}c@{}}Volume\\(R)\end{tabular}}} "
         r"& \multicolumn{2}{c}{\textbf{Effect (pp)}} \\ "
         r"\cmidrule(lr){3-4}\cmidrule(lr){5-6}\cmidrule(lr){7-8}"
-        "\n\\textbf{Setting} & \\textbf{No \\ac{BNPL} (\\%)} & "
-        "$\\beta=0$ & $\\beta=0.3$ & $\\beta=0$ & $\\beta=0.3$ & $\\beta=0$ & $\\beta=0.3$",
+        "\n\\textbf{Setting} & & "
+        "$\\beta=0$ & $0.3$ & $\\beta=0$ & $0.3$ & $\\beta=0$ & $0.3$",
         rows,
         size=r"\footnotesize",
         placement="p",  # a full page: a float page right after the page that cites it
-        colsep="1.8pt",
+        colsep="2.5pt",
+    )
+
+
+def tab_effect_split(rq0: pd.DataFrame, screen: pd.DataFrame, redraw: pd.DataFrame) -> None:
+    """D19 (supervisor, 2026-11-24): the effect by household group under the wage-income screen
+    and on a redrawn population, beside the benchmark.
+
+    The all-households column is taken from results/raw; the two group columns from the
+    per-run rows of results/summary/effect_split.json (check_effect_split.py, which reruns the
+    same runs with household-level default and checks each against results/raw). Default
+    during the run, as a share of all households, so the group columns sum to the first.
+    """
+    es = json.loads((SUMMARY / "effect_split.json").read_text(encoding="utf-8"))
+    runs = pd.DataFrame(es["per_run"])
+    runs["new_default_all"] = runs.new_default_rate_final
+    off = arm(rq0, "baseline_no_bnpl")
+    specs = [  # key, row label, (on, off) in results/raw, (on, off) labels in effect_split.json
+        ("bench", "Benchmark", (arm(rq0, "bnpl_on_beta0"), off), ("bnpl_on_beta0", "baseline_no_bnpl")),
+        ("screen", "Wage-income screen", (arm(screen, "screen_b0.0"), off), ("screen_b0.0", "baseline_no_bnpl")),
+        ("redraw", "Redrawn population", (arm(redraw, "redraw_b0.0"), arm(redraw, "redraw_off")),
+         ("redraw_b0.0", "redraw_off")),
+    ]
+    rows = []
+    for key, name, (on_raw, off_raw), (on_l, off_l) in specs:
+        assert shares_seeds(on_raw, off_raw), key
+        d, se = delta(on_raw, off_raw, "new_default_rate_final")
+        cells = [name, pmb(d, se)]
+        N[f"split_{key}_all"], N[f"split_{key}_all_se"] = d, se
+        for g in ("short", "other"):
+            gd, gse = paired_diff(arm(runs, on_l), arm(runs, off_l), f"new_default_{g}")
+            assert abs(gd - es[f"{key}_{g}"]) < 1e-12 and abs(gse - es[f"{key}_{g}_se"]) < 1e-12, (key, g)
+            N[f"split_{key}_{g}"], N[f"split_{key}_{g}_se"] = gd, gse
+            cells.append(pmb(gd, gse))
+        # The rerun reproduces the stored runs, so its all-households effect is the raw one.
+        assert abs(d - es[f"{key}_all"]) < 1e-12 and abs(se - es[f"{key}_all_se"]) < 1e-12, key
+        rows.append(" & ".join(cells) + r" \\")
+    for g in ("all", "short", "other"):
+        col = "new_default_rate_final" if g == "all" else f"new_default_{g}"
+        src = (arm(screen, "screen_b0.0"), arm(rq0, "bnpl_on_beta0")) if g == "all" else \
+            (arm(runs, "screen_b0.0"), arm(runs, "bnpl_on_beta0"))
+        N[f"split_screen_less_bench_{g}"], N[f"split_screen_less_bench_{g}_se"] = paired_diff(*src, col)
+    assert abs(N["split_bench_all"] - N["injection_beta0"]) < 1e-12, "the benchmark row is Table baseline-arms"
+    # The counts the prose quotes, as check_effect_split.py computed them.
+    for k in ("short_n", "short_sources", "short_at_risk", "short_at_risk_sources", "short_at_risk_banked",
+              "short_at_risk_banked_wage", "short_at_risk_wage", "never_lent", "never_lent_wage",
+              "never_lent_banked", "never_lent_sources", "never_lent_every_seed",
+              "never_lent_every_seed_wage", "never_lent_every_seed_sources", "lent", "lent_wage",
+              "lent_banked", "lent_sources", "never_lent_default_off", "never_lent_default_bench",
+              "never_lent_default_screen", "lent_default_off", "lent_default_bench",
+              "lent_default_screen", "eligible_bench", "eligible_screen"):
+        N[f"split_{k}"] = es[k]
+    for k in ("redraw_short_n", "redraw_short_at_risk", "redraw_baseline_new_default",
+              "redraw_separation_rate"):
+        for stat in ("mean", "sd", "min", "max"):
+            N[f"split_{k}_{stat}"] = es[k][stat]
+    N["split_redraw_reps"] = es["redraw_n"]
+    N["split_redraw_seed_min"], N["split_redraw_seed_max"] = es["redraw_seeds"]
+    N["split_effect_sd_rq0_seeds"] = es["effect_sd_rq0_seeds"]
+    N["split_effect_sd_redraws"] = es["effect_sd_redraws"]
+    N["split_hhwage_match_all_eight"] = es["w5_hhwage"]["match_all_eight"]
+    N["split_hhwage_households"] = es["w5_hhwage"]["households_with_hhwage"]
+    N["split_hhwage_missing_agents"] = es["w5_hhwage"]["agents_from_those_households"]
+    reps = es["redraw_n"]
+    sizes = es["redraw_short_n"]
+    note_diff = ", ".join(
+        f"{pm(N[f'split_screen_less_bench_{g}'], N[f'split_screen_less_bench_{g}_se'])}"
+        + (" points" if g == "all" else "") + f" {where}"
+        for g, where in (("all", "for all households"), ("short", "for those short from the start"),
+                         ("other", "for the others")))
+    table(
+        "tab_effect_split",
+        "The \\ac{BNPL} effect by household group",
+        "Effect: default during the run with \\ac{BNPL} at $\\beta = 0$ less default without, in "
+        "points of all 5{,}000 households, so the two group columns sum to the first up to rounding; "
+        "$\\pm$ one standard error. Benchmark: the $\\beta = 0$ arm of Table~\\ref{tab:baseline-arms}. "
+        "Wage-income screen: platforms lend only to households with wage income (surveyed income "
+        "from employment or self-employment) at the start, "
+        f"{num(N['split_eligible_screen'])} of the {num(N['split_eligible_bench'])} eligible "
+        f"households. \\ac{{NIDS}} records no wage income for the source households of "
+        f"{num(N['split_hhwage_missing_agents'])} of the 5{{,}}000 households although their members "
+        "report income from work, so the screen treats them as having none. Both rows: seeds 10{,}000--10{,}019, paired by seed with the no-\\ac{BNPL} arm of "
+        f"Table~\\ref{{tab:baseline-arms}}. Redrawn population: {num(reps)} replicates, seeds "
+        f"{num(N['split_redraw_seed_min'])}--{num(N['split_redraw_seed_max'])}, each drawing 5{{,}}000 "
+        "households from the 10{,}841 matched \\ac{NIDS} households and deriving its own separation "
+        "rate; its runs with and without \\ac{BNPL} share the draw and the seed, so the standard error "
+        "covers the population draw as well as simulation variance (Section~\\ref{sec:sim-params}). "
+        "Households short from the start: surveyed income below committed expenditure, "
+        f"{num(N['split_short_n'])} households in the fixed population and {num(sizes['min'])} to "
+        f"{num(sizes['max'])} in the draws. Wage-income screen less benchmark, paired by seed: {note_diff}.",
+        "H{3.6cm}R{2.6cm}R{2.9cm}R{2.9cm}",
+        r"& \multicolumn{3}{c}{\textbf{Effect on default during the run (pp)}} \\ \cmidrule(lr){2-4}"
+        f"\n& {hb('All households', '2.6cm')} & {hb('Households short from the start', '2.9cm')} & "
+        f"{hb('Households not short from the start', '2.9cm')}",
+        rows,
+        placement=FLOAT_NEAR,
     )
 
 
@@ -1342,6 +1500,16 @@ def main() -> None:
     tab_levers(rq3, rq3s)
     tab_effect(eff)
     derived_numbers(rq0, rq2, rq2t, rq3s, eff)
+    # D19 (2026-11-24): the wage-income screen and the redrawn population. After every other
+    # table, so it adds keys to results_numbers.json and changes none.
+    screen, redraw = load("screen"), load("redraw")
+    assert screen.seed.nunique() == 20 and set(screen.seed) == set(arm(rq0, "baseline_no_bnpl").seed)
+    assert redraw.groupby("label").seed.nunique().eq(100).all(), "every redraw arm needs 100 draws"
+    before = dict(N)
+    assert not any(k.startswith("split_") for k in before)
+    tab_effect_split(rq0, screen, redraw)
+    assert all(N[k] is before[k] for k in before), "the D19 table must not change an existing number"
+    assert all(k.startswith("split_") for k in set(N) - set(before))
     out = {k: (round(float(v), 6) if isinstance(v, (float, np.floating)) else
                (int(v) if isinstance(v, np.integer) else v)) for k, v in N.items()}
     (SUMMARY / "results_numbers.json").write_text(json.dumps(out, indent=2), encoding="utf-8")

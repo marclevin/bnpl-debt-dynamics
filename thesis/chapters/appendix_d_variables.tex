@@ -9,7 +9,7 @@ follows Algorithm~\ref{alg:init}. All monetary values are in 2017 Rands
 \begingroup
 \setlength{\tabcolsep}{3pt}
 \small
-\begin{longtable}{L{3.0cm}L{3.2cm}L{3.8cm}L{2.0cm}L{1.3cm}}
+\begin{longtable}{H{3.0cm}H{3.2cm}L{3.8cm}L{2.0cm}L{1.3cm}}
 \caption{Source field, rule and missing-data treatment for every agent field}
 \label{tab:var-map} \\
 \multicolumn{5}{p{13.3cm}}{\footnotesize Every agent field of
@@ -26,6 +26,7 @@ scaled to the 14-day tick at instantiation (Appendix~\ref{app:var-tick}).} \\
 \textbf{Agent field} & \textbf{Source field(s)} & \textbf{Rule} & \textbf{If missing} & \textbf{Where} \\
 \midrule
 \endfirsthead
+\LTcontinued{5}
 \toprule
 \textbf{Agent field} & \textbf{Source field(s)} & \textbf{Rule} & \textbf{If missing} & \textbf{Where} \\
 \midrule
@@ -169,6 +170,7 @@ Submodel~11.
 personal loan) equal to ``Yes''. Each household copies all six as one vector from a single donor
 (Appendix~\ref{app:matching}). We exclude lay-by (\texttt{G15}), which is not credit.
 
+\needspace{5\baselineskip}
 \subsection{Debt Service}
 \label{app:var-servicing}
 
@@ -204,7 +206,7 @@ indebted source households the resulting debt-service-to-income ratio has a weig
 10.9\% and an unweighted median of 3.3\%; the weighted full-population mean is 4.8\%, since
 56.0\% of weighted households hold no debt.
 
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
 \caption{Regulation 23A minimum necessary-expense norms}
 \label{tab:reg23a-norms}
@@ -215,6 +217,7 @@ lower bound; residual-income capacity is $\rho(Y) = Y$ less that amount. Tests a
 implementation against two hand-computed checks from the regulation's Table~1 (R2{,}000 $\to$
 R881.00; R10{,}000 $\to$ R1{,}505.38). Appendix~\ref{app:gate} discusses its application to household
 income.}
+\small
 \begin{tabular}{rrr}
 \toprule
 \textbf{Lower bound (R)} & \textbf{Fixed (R)} & \textbf{Plus \% above bound} \\
@@ -240,7 +243,8 @@ inflates the outlay denominator, so removing it would widen the gap.
 We resample the 10{,}841 weighted households with replacement, in proportion to
 \texttt{w5\_wgt}, to 5{,}000 unweighted agents from 3{,}221 unique source records
 (Section~\ref{sec:resample}), so every downstream statistic is unweighted.
-Figure~\ref{fig:pop-fidelity} reports the resample's fidelity.
+Figure~\ref{fig:pop-fidelity} reports the resample's fidelity. In the redrawn population each
+replicate repeats this draw with its own seed (Section~\ref{sec:sim-params}).
 
 \subsection{Tick Scaling}
 \label{app:var-tick}

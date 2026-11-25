@@ -1,0 +1,300 @@
+# Hits reviewed and accepted. One per line: rule, file, context. Rebuilt by --update-baseline.
+causal-verb	01_introduction.tex	anchoring beyond what liquidity constraints explain. Adoption may also depend on others. Student
+causal-verb	01_introduction.tex	rising inequality and consumption emulation lead to debt-financed spending and eventually a fina
+causal-verb	01_introduction.tex	sers, beyond what intertemporal substitution explains. If BNPL adds to spending, it may also strai
+causal-verb	02_model.tex	, but it records every default, whatever its cause. Households observe their own accounts and t
+causal-verb	02_model.tex	are not debts, so leaving them unpaid cannot cause default. Credit raised in the same tick pays
+causal-verb	02_model.tex	edit is short of food and rent, which cannot cause default. & MATH ticks (98 days), the 90-da
+causal-verb	02_model.tex	itional debt and every default, whatever its cause. The traditional lender does not see BNPL ba
+causal-verb	03_calibration.tex	of missing values. We suspect underreporting explains part of the gap. Debt service, the clearest
+contraction	appendix_d_variables.tex	ctor from the matched donor (Appendix~ ) & ``Don't know'' MATH false (14 donors) & S2 \\ \add
+forecast	01_introduction.tex	s, estimate the historical effect of BNPL or forecast default. In the model BNPL raises default m
+forecast	01_introduction.tex	w a fully forward-looking plan. Present bias predicts credit-card borrowing~ CITE , and present-bi
+forecast	03_calibration.tex	e, lies above FinScope's range, as Section~ predicts. \begin{table}[!htb] \centering \caption{Th
+forecast	05_policy.tex	l in the model within two years and is not a forecast. Almost all of screening's fall in default
+hedge-stack	02_model.tex	, reflects evidence that BNPL users are more likely to be financially constrained~ CITE . No study
+hedge-stack	appendix_c_supplementary.tex	e CCMR publishes no realised rates, so rates tend to overstate servicing for a given balance and
+hedge-stack	appendix_e_matching.tex	flags that price opening debt are therefore likely to be understated for larger households. The di
+italics	03_calibration.tex	.35\% of those not in default at the start. \emph{Default including the starting stock} adds t
+italics	03_calibration.tex	the end of any tick) cover the whole run. \emph{Default during the run} is the share of all
+italics	appendix_b_specification.tex	& Eight mechanisms are excluded by design. \emph{No macroeconomic dynamics}: holding the envi
+italics	appendix_b_specification.tex	acts only through the Regulation 23A test. \emph{No other source of credit}: a household that
+italics	appendix_b_specification.tex	e lender-conduct mechanism of Hamill et al. \emph{No learning and no scarring}. \emph{No peer
+italics	appendix_b_specification.tex	et al. \emph{No learning and no scarring}. \emph{No peer effects on consumption}: peer influe
+italics	appendix_b_specification.tex	fault cannot spread through these channels. \emph{No competition among traditional lenders}, w
+italics	appendix_b_specification.tex	injection effect under baseline conditions. \emph{No contagion}: one aggregate lender with no
+italics	appendix_b_specification.tex	peer influence acts only on BNPL adoption. \emph{Static household composition}. \emph{No cred
+italics	appendix_b_specification.tex	ption. \emph{Static household composition}. \emph{No credit scores or risk pricing}: bureau vi
+italics	appendix_c_supplementary.tex	\bottomrule \endfoot \multicolumn{3}{@{}l}{\emph{Bounding a central claim, argued in the body
+italics	appendix_c_supplementary.tex	ning \\ \addlinespace \multicolumn{3}{@{}l}{\emph{Other limitations, recorded here}} \\ FinSco
+italics	appendix_d_variables.tex	5 \\ \bottomrule \end{tabular} \end{table} \emph{Diagnostics.} Among indebted households, con
+italics	appendix_d_variables.tex	bt stock to a monthly flow in three steps. \emph{Rate and horizon.} Each product class carrie
+italics	appendix_d_variables.tex	is a numerical guard only and never binds. \emph{Amortisation.} The uncapped instalment is th
+italics	appendix_d_variables.tex	ment is the level monthly payment, MATH . \emph{Affordability cap.} We cap the instalment at
+italics	appendix_f_pseudo_init.tex	CODE \\ \addlinespace \multicolumn{3}{l}{\emph{Functions}} \\ MATH & Regulation 23A resid
+italics	appendix_f_pseudo_init.tex	CODE \\ \addlinespace \multicolumn{3}{l}{\emph{Household constants, from the data layer}} \
+italics	appendix_f_pseudo_init.tex	CODE \\ \addlinespace \multicolumn{3}{l}{\emph{Household state at tick MATH }} \\ MATH &
+italics	appendix_f_pseudo_init.tex	CODE \\ \addlinespace \multicolumn{3}{l}{\emph{Parameters}} \\ MATH , MATH & per-earner
+italics	appendix_f_pseudo_init.tex	CODE \\ \addlinespace \multicolumn{3}{l}{\emph{Platform constants}} \\ MATH & rolling rec
+italics	appendix_f_pseudo_init.tex	CODE \\ \addlinespace \multicolumn{3}{l}{\emph{Switches}} \\ MATH & BNPL platforms presen
+italics	appendix_f_pseudo_init.tex	ead \bottomrule \endfoot \multicolumn{3}{l}{\emph{Sets and indices}} \\ MATH , MATH , MATH
+long-sentence	03_calibration.tex	By the final tick 43.7 % of the households that held credit at any tick have defaulted, 13
+long-sentence	03_calibration.tex	It reproduces each flag's rate but not which products a household holds together, which se
+long-sentence	03_calibration.tex	The share of ever-holders owing more than one platform at once over the two years, 28.2 %,
+long-sentence	03_calibration.tex	The third is arrears at the final tick, when 14.16 % of credit-active households are more 
+long-sentence	04_results.tex	Answer to RQ2 Enabling BNPL raises default by MATH points without peer influence in the re
+long-sentence	05_policy.tex	figure [!htb] Default and BNPL volume under the two switches (a) Default rate under the be
+long-sentence	appendix_a_rationale.tex	Making the BNPL eligibility screen a real affordability test (Submodel 12). The asymmetry 
+long-sentence	appendix_a_rationale.tex	Population Construction Statistical fusion of NIDS and FinScope. A hot-deck or model-based
+long-sentence	appendix_a_rationale.tex	Scheduled amortisation as the sole repayment rule (Submodel 6). Keys and Wang CITE find th
+long-sentence	appendix_b_register.tex	Columns: the parameter name in the code; the submodel of Table that it belongs to (``desig
+long-sentence	appendix_b_specification.tex	Six further assumptions are not varied: purchase-size dispersion; the order cap, which bin
+long-sentence	appendix_b_specification.tex	The rolling limit. We set MATH (Section ) so that four platform limits sum to about Woolar
+long-sentence	appendix_b_specification.tex	Three other groups call for caution: itemize The uncited rules. The shortfall borrowing am
+long-sentence	appendix_c_supplementary.tex	figure [!htbp] Every lever against the benchmark, with and without peer influence Change i
+long-sentence	appendix_d_variables.tex	CODE is the median of CODE , monthly take-home pay from primary and secondary jobs, among 
+long-sentence	appendix_d_variables.tex	Fifty-three indebted households (27 agents after resampling) have income at or below R800,
+long-sentence	appendix_d_variables.tex	The 2018 to 2021 and 2025 rates are Stats SA annual averages, 2022 to 2024 are the World B
+long-sentence	appendix_d_variables.tex	The chained factor to June 2026, 1.511, is within 0.4 % of the ratio of the published June
+long-sentence	appendix_d_variables.tex	The field follows a gateway question and records a value only where the household reports 
+long-sentence	appendix_d_variables.tex	We measure store-card and hire-purchase horizons in NIDS as the median ratio of the househ
+long-sentence	appendix_e_matching.tex	Quintiles are the weighted NIDS bounds of Appendix . figure figure [!htb] Distributional f
+long-sentence	appendix_e_matching.tex	table [!htbp] National rates for the six imputed indicators The national rate of each impu
+long-sentence	appendix_f_pseudo_init.tex	The first three and the draw of 5 , 000 records that opens the fourth are the data layer o
+long-sentence	appendix_g_pseudo_main.tex	algorithm [!htbp] Credit application and the Regulation 23A gate algorithm BNPL BNPL Origi
+long-sentence	appendix_g_pseudo_main.tex	algorithm [!htbp] Household tick, for household MATH at tick MATH algorithm algorithm [!ht
+may-might	01_introduction.tex	market, that longer interest-free promotions could raise indebtedness. In Madeira's~ CITE mode
+no-effect	appendix_c_supplementary.tex	confidence intervals; the dashed line marks no change. The levers are the two switches of S
+num-word	03_calibration.tex	0 replicates and 0.04 with 250. About one in twenty contrasts with no true difference passes by
+num-word	05_policy.tex	ints, and in no quintile at MATH . If these ten quintile comparisons were independent, chanc
+passive-author	02_model.tex	ce, and the parameter register in Appendix~ is generated from the code. Automated checks, s
+passive-author	02_model.tex	in its income quintile. The separation rate is set so that expected separations equal expec
+passive-author	03_calibration.tex	ause eligibility and the repayment archetype are drawn first from the same stream and the min
+passive-author	03_calibration.tex	lds short from the start. Its 182 households are drawn from 109 NIDS records whose derived mo
+passive-author	03_calibration.tex	s. Assumed: no source gives the value, which is chosen. Swept: no source fixes the value, so
+passive-author	04_results.tex	ith no empirical estimate. The uncapped arms are compared with the exact-shortfall reference,
+passive-author	appendix_a_rationale.tex	tead, the construct of the bureau figures it is compared with~ CITE . An earlier version use
+passive-author	appendix_b_register.tex	e fee and fee cap and the assumed order cap, are set at 2026 prices and deflated once (Append
+passive-author	appendix_b_register.tex	e in the oldest bands. Ages in the 120+ band are drawn over 9--26 ticks, an assumption. House
+passive-author	appendix_b_register.tex	measures exclude the first 12 ticks; default is counted from the first tick (Section~ ).} \\
+passive-author	appendix_b_register.tex	pays that shortfall first; what stays unpaid is reported as consumption distress (Section~ )
+passive-author	appendix_b_register.tex	rican provider that publishes one; the value is set against Woolard's illustrative stacked e
+passive-author	appendix_b_register.tex	se reporting rule was fixed before the runs, is reported beside it. Volume per eligible hous
+passive-author	appendix_b_register.tex	ter. Names, submodels, provenance and values are taken from the parameter declarations in the
+passive-author	appendix_b_register.tex	ue is computed from data; fitted = the value is chosen by calibration; assumed = no anchor e
+passive-author	appendix_b_register.tex	vention fixes the value; derived = the value is computed from data; fitted = the value is ch
+passive-author	appendix_c_supplementary.tex	15, within the 0.02 tolerance of Table~ . It is reported and left uncorrected & May overstat
+passive-author	appendix_c_supplementary.tex	Table~ ; the window and the cap have 20 and are compared with the benchmark of Table~ . Valu
+passive-author	appendix_c_supplementary.tex	he BNPL effect \\ \addlinespace The baseline is calibrated, not validated & Agreement on the
+passive-author	appendix_c_supplementary.tex	ppendix~ ) & All BNPL Rand parameters, which are set at 2026 prices and deflated once to 2017
+passive-author	appendix_c_supplementary.tex	s owed. The switches have 100 replicates and are compared with the benchmark of Table~ ; the
+passive-author	appendix_c_supplementary.tex	ue employment falls through the run. Holding is set almost entirely by MATH . Table~ gives
+passive-author	appendix_c_supplementary.tex	urced: store-card and hire-purchase horizons are measured in NIDS, personal-loan and unflagge
+passive-author	appendix_c_supplementary.tex	what stays unpaid is not carried forward and is reported as consumption distress, which cann
+passive-author	appendix_d_variables.tex	, so a missing value denotes non-holding and is set to zero (48.2\% of households); a check
+passive-author	appendix_d_variables.tex	eans a missing value denotes non-holding and is set to zero, an assumption tested in Section
+passive-author	appendix_e_matching.tex	97 were used at least once; the median donor was used twice, the 99th percentile 13 times, an
+passive-author	appendix_e_matching.tex	han 50. Of 4{,}969 available donors, 3{,}597 were used at least once; the median donor was use
+passive-author	appendix_e_matching.tex	st the weighted 10{,}841-household source it is drawn from. Panels (a) and (b) cover the per
+passive-author	appendix_f_pseudo_init.tex	opened this tick; what a gate that sees BNPL is shown & CODE \\ MATH & platforms on whic
+percentage-point	03_calibration.tex	paired by seed. Differences in rates are in percentage points, written points in the text and pp in tables
+repeat	01_introduction.tex	The constructed population is close to external figures for household size and income ineq
+repeat	01_introduction.tex	With peer influence the rise is not detectable, but the two estimates do not differ detect
+repeat	appendix_b_register.tex	One tick is the fourteen-day right of withdrawal under section 66A of the United Kingdom's
+repeat	main.tex	In the model BNPL raises default mainly among the 3.6 % of households short from the start
+rhetorical-q	01_introduction.tex	affordability screening affect the outcome? \end{quote} Three subsidiary questions, RQ1
+rhetorical-q	01_introduction.tex	atforms cannot observe one another's exposures? \item How do bureau visibility and manda
+rhetorical-q	01_introduction.tex	omparisons not used in fitting or construction? \item How does enabling BNPL change popu
+rhetorical-q	01_introduction.tex	th with and without peer influence on adoption? \end{enumerate} Our main measure of distres
+rhetorical-q	01_introduction.tex	with access, peer adoption and platform count? How often do households owe several plat
+semicolon-chain	02_model.tex	MATH ticks (98 days), the 90-day convention; MATH swept; write-off 0.0707 per tick, derived; starting
+semicolon-chain	02_model.tex	orm sees another's balance. & Routing assumed; loyal routing swept; 1--6 platforms, 4 in the benchmark & Submode
+semicolon-chain	03_calibration.tex	, set so that expected employment is constant; the write-off rate, set so that the CCMR 120+ stock is stationary; the purchase ratio MATH , from IES 2022/23
+semicolon-chain	03_calibration.tex	ceilings and the Regulation 23A expense table; BNPL contract terms and late fees; the re-employment rate (QLFS 2017); the 2017
+semicolon-chain	03_calibration.tex	inespace Constructed & Scheduled debt service; income quintiles and reference groups; 2017-Rand values of BNPL amounts & Section~
+semicolon-chain	03_calibration.tex	me, expenditure, savings and debt (NIDS 2017); financial-inclusion flags (FinScope 2019); statutory rate ceilings and the Regulation 2
+semicolon-chain	03_calibration.tex	s MATH , MATH and the threshold parameters; the shortfall borrowing rule and the shortfall cap; the minimum-payment fraction; the platform l
+semicolon-chain	05_policy.tex	rk, bureau visibility and mandatory screening; black: MATH ; error bars: 95\% confidence intervals on the
+semicolon-chain	appendix_b_register.tex	benchmark differs only in setting CODE on); its provenance; the source that fixes or motivates the value
+semicolon-chain	appendix_b_register.tex	code. Columns: the parameter name in the code; the submodel of Table~ that it belongs to (``design'' marks the experimental design and ``data'' the data layer); its default value, that of the BNPL-free bas
+semicolon-chain	appendix_b_register.tex	statute or stated convention fixes the value; derived = the value is computed from data; fitted = the value is chosen by calibration;
+semicolon-chain	appendix_b_specification.tex	default rate, at the start and during the run; the CCMR arrears distribution of credit-active households; consumption distress; traditional debt, arre
+semicolon-chain	appendix_b_specification.tex	on 0.44\% of platform requests at MATH ; the discretionary floor of zero (Submodel~2); the payment order, food and rent first,
+semicolon-chain	appendix_b_specification.tex	redit-active households; consumption distress; traditional debt, arrears and interest; BNPL balances, holding, volume and fees; the
+semicolon-chain	appendix_b_specification.tex	rest; BNPL balances, holding, volume and fees; the number of platforms each household owes; reference-group adoption shares; and the sha
+semicolon-chain	appendix_b_specification.tex	then BNPL, then traditional debt (Section~ ); the cut of a want-driven order to what the household can pay at checkout; and refusal at the fee cap (Submodel~14)
+semicolon-chain	appendix_c_supplementary.tex	20.1\% to 9.0\% at MATH & Sections~ and~ ; bounds every stacking share; a default difference of up to about 0.25 poi
+semicolon-chain	appendix_c_supplementary.tex	s' income or lenders' credit supply & Table~ ; Section~ ; limits the contagion mechanisms tested in RQ
+semicolon-chain	appendix_e_matching.tex	nd copies the donor's six-flag vector (banked; store card; revolving credit; hire purchase; short-term
+semicolon-chain	appendix_e_matching.tex	pe 2019 target, weighted by its survey weight; the 10{,}841-household synthetic population after matching, weighted by NIDS survey weight; and the unweighted 5{,}000-agent resample us
+semicolon-chain	appendix_e_matching.tex	vector (banked; store card; revolving credit; hire purchase; short-term loan; personal loan) whole. Draws
+t-actor	01_introduction.tex	, use is highest among low-to-middle-income consumers~ CITE , and borrowers with subprime or deep
+t-actor	01_introduction.tex	TE , and the agreements are not displayed on consumer credit profiles~ CITE . A lender that relies
+t-actor	01_introduction.tex	debt grows. The CFPB documents United States borrowers who hold several BNPL loans at once, includi
+t-actor	01_introduction.tex	edit. Using banking records for 10.6 million consumers, deHaan et al.~ CITE find higher overdraft
+t-actor	01_introduction.tex	g low-to-middle-income consumers~ CITE , and borrowers with subprime or deep subprime credit scores
+t-actor	01_introduction.tex	households exposed to labour-income shocks & Consumer debt; default when a household cannot financ
+t-actor	01_introduction.tex	it-card borrowing~ CITE , and present-biased borrowers may fail to make their planned repayments~ C
+t-actor	01_introduction.tex	of South African respondents to a TransUnion consumer survey held a BNPL product~ CITE . BNPL prov
+t-actor	01_introduction.tex	ted States; banking records for 10.6 million consumers & BNPL adoption; overdraft charges, credit-c
+t-actor	01_introduction.tex	tter's~ CITE threshold model, heterogeneous individual thresholds can produce abrupt changes in col
+t-actor	02_model.tex	ODE & Employed members on the roster & NIDS individual file \\ \addlinespace CODE & Strictly unem
+t-actor	02_model.tex	ctly unemployed members on the roster & NIDS individual file \\ \addlinespace CODE & Pay a hired j
+t-actor	02_model.tex	mployed adults in the income quintile & NIDS individual file \\ \addlinespace CODE & Dominant comp
+t-actor	03_calibration.tex	-holders stack (Section~ ). The range is per customer of one provider and the model's volume per h
+t-actor	03_calibration.tex	and adverse listings, and the Monitor counts consumers where the model counts households. The third
+t-actor	03_calibration.tex	below the CFPB's 32 to 33\% of United States borrowers in a year, but the routing assumption largel
+t-actor	03_calibration.tex	days past due, below the Monitor's 21.7\% of consumers three or more months in arrears, which also
+t-actor	03_calibration.tex	g stock, against the 39.3\% of credit-active consumers with impaired records in the NCR's Credit Bu
+t-actor	03_calibration.tex	idence of Section~ comes from United States borrowers. It supplies the minimum-payer share of 0.29
+t-actor	03_calibration.tex	ld BNPL, above TransUnion's 57\% of surveyed consumers holding a BNPL product CITE , but a share o
+t-actor	03_calibration.tex	s 2017's, are assumptions. Payflex sets each customer's limit by its own assessment~ CITE , and we
+t-actor	04_results.tex	hed line is the CFPB's 32\% of United States borrowers in 2021, a one-year share~ CITE . Both share
+t-actor	appendix_b_register.tex	al under section 66A of the United Kingdom's Consumer Credit Act 1974. The FCA's rules treat that
+t-actor	appendix_b_register.tex	old could pay it, motivated by evidence that borrowers depart from planned repayment~ CITE . Fitted
+t-actor	appendix_b_specification.tex	(income quintile MATH province) aggregate individual adoption into the peer signal. The groups ar
+t-actor	appendix_c_supplementary.tex	al under section 66A of the United Kingdom's Consumer Credit Act 1974. The FCA's rules treat that
+t-actor	appendix_c_supplementary.tex	bes a minimum-expense norm for an individual consumer and the model applies it to household income
+t-actor	appendix_c_supplementary.tex	ion prescribes a minimum-expense norm for an individual consumer and the model applies it to househo
+t-actor	appendix_c_supplementary.tex	le. Regulation 23A applies to an individual consumer, and the model applies it to household incom
+t-actor	appendix_c_supplementary.tex	ttom quintile. Regulation 23A applies to an individual consumer, and the model applies it to househ
+t-actor	appendix_d_variables.tex	count of roster members whose CODE in the individual file is ``Employed'', merged on the househol
+t-actor	appendix_d_variables.tex	d & 0 & S4 \\ \addlinespace CODE & CODE (individual file) & count of roster members recorded as
+t-actor	appendix_d_variables.tex	d & 0 & S4 \\ \addlinespace CODE & CODE (individual file) & median over employed adults in the h
+t-actor	appendix_d_variables.tex	er-earner hazard, directly comparable to the individual transition rate in the QLFS, and it is why l
+t-actor	appendix_d_variables.tex	illed & S4 \\ \addlinespace CODE & CODE (individual file) & count of roster members recorded as
+t-actor	appendix_d_variables.tex	linespace head demographics & roster CODE ; individual CODE , CODE , CODE , CODE & the roster
+t-actor	appendix_d_variables.tex	of the unsecured book, three times the gross debtors book divided by quarterly credit granted (24
+t-actor	appendix_d_variables.tex	tal synthetic debt is 49\% of the CCMR gross debtor book for the in-scope products, whereas impu
+t-actor	appendix_e_matching.tex	ark \\ \addlinespace C. Regulation 23A cap & debtors on whom it binds & 3.8\% & MATH 10\% & \che
+t-agent	01_introduction.tex	an equilibrium, often with a representative agent so that the solution stays tractable. An ABM
+t-agent	01_introduction.tex	er~ CITE describe an ABM as a population of agents, each with its own state and rules of behavi
+t-agent	01_introduction.tex	not specified in advance and follow from the agents' interactions. Models more common in economi
+t-agent	01_introduction.tex	s. Models more common in economics give each agent a utility function, derive behaviour from it
+t-agent	01_introduction.tex	ssumptions. Its rules can be heuristics, its agents can differ as widely as the data do and need
+t-agent	02_model.tex	H{4.25cm}L{6.0cm}L{3.15cm}} \toprule \textbf{Agent field} & \textbf{Description} & \textbf{Sour
+t-agent	02_model.tex	\begin{table}[p] \centering \caption{Data-to-agent mapping} \tabnote{The state initialised fo
+t-agent	02_model.tex	endices~ and~ the pseudocode. \subsection{Agents and Institutions} \begin{table}[p] \cente
+t-agent	02_model.tex	g} \tabnote{The state initialised for each agent. Money is in 2017 Rands. Fields ending in C
+t-agent	02_model.tex	unts converted to fortnightly amounts. Every agent starts without BNPL, and its repayment arche
+t-agent	appendix_b_register.tex	st tick (Section~ ).} \\ \addlinespace CODE agents} & data & 5{,}000 & assumed & 1{,}000 / 5{,}
+t-arm	appendix_a_rationale.tex	ely in 2017 Rands removes all three, and the counterfactual injection design needs a 2017 anchor in any
+t-bank	appendix_a_rationale.tex	y between the Regulation 23A test that binds registered lenders and the light screen the platforms apply is
+t-bnpl-off	01_introduction.tex	read, from that year's arrears profile. With BNPL disabled, we fit two parameters that govern missed tr
+t-bnpl-off	03_calibration.tex	set the arrears profile in three steps, with BNPL disabled. First, we place credit-active households, a
+t-bnpl-off	appendix_b_register.tex	data layer); its default value, that of the BNPL-free baseline with payment friction and arrears p
+t-bnpl-off	appendix_c_supplementary.tex	(seeds 1{,}000--1{,}019) at each pair, with BNPL disabled. The pair with the smallest root sum of squa
+t-bnpl-off	appendix_g_pseudo_main.tex	Algorithm~ is Submodel~11 (Section~ ). With BNPL disabled the signal is identically zero, so the peer
+t-cap	03_calibration.tex	capped at the Regulation 23A residual-income ceiling~ CITE (Appendix~ ). No 2017 source we cons
+t-cap	appendix_a_rationale.tex	9).} An earlier version of this model used a ceiling of 0.65. It had no source, the NCA prescribe
+t-cap	appendix_a_rationale.tex	Regulation 23A residual-income test gives a ceiling that varies with income (Appendix~ ). \labe
+t-cap	appendix_c_supplementary.tex	Paired by seed, the cap as modelled less the agreements cap is MATH points at a cap of two and MATH
+t-cap	appendix_c_supplementary.tex	ame bound. Across the population the applied ceiling runs from zero to 93.2\% of income, with a m
+t-cap	appendix_c_supplementary.tex	gates BNPL eligibility, so the 82.8\% access ceiling carries a two-year vintage gap (Appendix~ ,
+t-cap	appendix_c_supplementary.tex	nd changes default by MATH points, and the agreements cap removes 14.1\% and changes default by MATH
+t-cap	appendix_c_supplementary.tex	ssive. At the per-capita quintile bounds the ceiling rises from 10.4\% of income at R900 per mont
+t-cap	appendix_d_variables.tex	icle finance. The excess is in the direction ceiling rates imply, and the double count of Appendi
+t-cap	appendix_d_variables.tex	is the level monthly payment, MATH . \emph{Affordability cap.} We cap the instalment at MATH , the month
+t-cap	appendix_e_matching.tex	hat interval, so the 82.8\% BNPL-eligibility ceiling is plausibly too generous for 2017. The magn
+t-cap	appendix_e_matching.tex	t respondent (P4) can change the eligibility ceiling and adoption levels, in opposite directions.
+t-committed	appendix_d_variables.tex	bnote{The statutory table of minimum monthly necessary expenses by gross monthly income band, from the Affor
+t-committed	appendix_d_variables.tex	lations~ CITE . For income MATH in a band, necessary expenses are the fixed amount plus the percentage of
+t-committed	appendix_d_variables.tex	take-home income, less the statutory minimum necessary expenses for the household's income band (Table~ ). T
+t-credit-active	03_calibration.tex	om the starting stock, against the 39.3\% of credit-active consumers with impaired records in the NCR's Credit Bu
+t-credit-active	03_calibration.tex	service is the share of monthly outlay among indebted households; FinScope's range is among holders of a mode
+t-credit-active	appendix_d_variables.tex	e band (Table~ ). The cap binds for 3.8\% of indebted households ( MATH ) and removes 22.8\% of aggregate cal
+t-credit-active	appendix_d_variables.tex	of aggregate calculated service. Fifty-three indebted households (27 agents after resampling) have income at
+t-credit-active	appendix_d_variables.tex	ular} \end{table} \emph{Diagnostics.} Among indebted households, constructed servicing is 12.8\% of monthly
+t-default-measure	01_introduction.tex	ion? \item How does enabling BNPL change population default, and how does that change vary with acce
+t-default-measure	03_calibration.tex	eport, and bureau figures can only bound the default rate.
+t-default-measure	03_calibration.tex	t is written off, because Q1 has the highest default rate. We do not count Pattern~3 as evidence.
+t-default-measure	04_results.tex	13\% in Q5. Raising the limit tenfold lowers population default by MATH points (Table~ ). \subsection
+t-default-measure	04_results.tex	Both shares are zero with one platform. (c) Default rate. Black: MATH . Error bars: 95\% confidence
+t-default-measure	04_results.tex	tb] \centering \caption{Sensitivity of the population default rate} \tabnote{Change in default from each
+t-default-measure	05_policy.tex	olume under the two switches} \tabnote{(a) Default rate under the benchmark, bureau visibility and m
+t-experiment	01_introduction.tex	s cannot see one another's balances, and its scenarios compare the two responses. \subsubsection*{
+t-experiment	03_calibration.tex	0--0.3 & 8 & 100{,}000 & \\ \addlinespace Scenarios & bureau visibility MATH screening & 0, 0.
+t-experiment	03_calibration.tex	baseline, injection, wage-income screen and scenario arms start with the same households in defau
+t-experiment	03_calibration.tex	e experiments and their replicates. The four scenario arms have 100, because 20 cannot resolve the
+t-experiment	appendix_a_rationale.tex	st on BNPL is an intervention, the screening scenario of Section~ . \labelpar{A purely multiplica
+t-experiment	appendix_b_register.tex	n the Sobol design; 0 and 0.3 in the effect, scenario and lever arms \\* \multicolumn{5}{@{\hspace
+t-experiment	appendix_c_supplementary.tex	es~ and~ ). Figure~ places them beside the scenarios. The cap counts platforms on which the hous
+t-experiment	appendix_c_supplementary.tex	vers at the same two values of MATH as the scenarios of Section~ , with twenty replicates and the
+t-experiment	appendix_d_variables.tex	of outlay; its net effect on distress and on scenario differences is unsigned. The ``discretionary
+t-facility	01_introduction.tex	2017, 14.2\% of unsecured and credit-facility accounts were more than 90 days in arrears~
+t-facility	generated/tab_arrears_fit.tex	e{CCMR: share of unsecured and credit-facility accounts by days in arrears, first quarter o
+t-lever	appendix_a_rationale.tex	del studies, so a genuine test on BNPL is an intervention, the screening scenario of Section~ . \labe
+t-model-name	appendix_e_matching.tex	behaviour and define the reference groups in the simulation. The Kolmogorov--Smirnov distance in (a) is
+t-model-name	appendix_e_matching.tex	he unweighted 5{,}000-agent resample used in the simulation. The difference column is synthetic less Fin
+t-param-class	appendix_a_rationale.tex	st which to calibrate one, so it would add a free parameter with no discipline. The model carries a bina
+t-past-due	01_introduction.tex	and credit-facility accounts were more than 90 days in arrears~ CITE , although the NCA requires lenders to
+t-past-due	01_introduction.tex	profile's five bands from 1--30 to more than 120 days in arrears. We then enable BNPL and compare outcomes ov
+t-past-due	04_results.tex	ion~ , the share of all households more than 90 days in arrears, averaged after burn-in, rises by MATH poi
+t-peer	01_introduction.tex	d how does that change vary with access, peer adoption and platform count? How often do households
+t-peer	02_model.tex	n purchases, whose probability can rise with peer adoption. & See Submodel~11 & CITE \\ \addlinespace
+t-peer	appendix_b_specification.tex	\emph{No learning and no scarring}. \emph{No peer effects on consumption}: peer influence acts only on
+t-peer	appendix_b_specification.tex	debt raises future obligations, while lagged peer adoption raises borrowing propensities. Setting MATH
+t-peer	appendix_b_specification.tex	driven purchase propensity rises with lagged peer adoption; they form none of the income expectations t
+t-peer	appendix_b_specification.tex	re this model's construction; Cardaci models peer effects on consumption. & CITE \\ \addlinespace Ob
+t-peer	appendix_c_supplementary.tex	ican data exist on who influences whom & The peer channel is a mean-field one, as in Granovetter's thr
+t-peer	appendix_g_pseudo_main.tex	abled the signal is identically zero, so the peer channel cannot affect the calibration baseline. \be
+t-platform	01_introduction.tex	nited States borrowers who hold several BNPL loans at once, including loans from different prov
+t-route	appendix_a_rationale.tex	. It made food and rent shortfalls the main route into default, and a household two months beh
+t-route	appendix_c_supplementary.tex	. Most of the BNPL effect comes through this route; Appendix~ gives the effect under the earli
+t-screening	01_introduction.tex	\item How do bureau visibility and mandatory affordability screening change simulated borrowing and distress,
+t-screening	01_introduction.tex	d notes that approval rests on less rigorous credit checks than traditional unsecured credit~ CITE . R
+t-screening	01_introduction.tex	hrough the lender's affordability test, with affordability checks on BNPL itself~ CITE . Section~ sets out
+t-screening	01_introduction.tex	lity and Regulation 23A specifies a residual-income test for it~ CITE . By late 2025, 57\% of South A
+t-screening	01_introduction.tex	rred payment credit, including proportionate affordability checks~ CITE , while South Africa is moving to bure
+t-screening	01_introduction.tex	stress, and how do bureau visibility and affordability screening affect the outcome? \end{quote} Three subsi
+t-screening	02_model.tex	ace 9.~Credit gate & Regulation 23A residual-income test on household income; a request is granted in
+t-screening	02_model.tex	l lender applies the Regulation 23A residual-income test, while BNPL platforms apply a light screen.
+t-screening	05_policy.tex	\section{Bureau Visibility and Affordability Screening} This section answers RQ3 with the tw
+t-screening	05_policy.tex	screening is a stricter version of the FCA's affordability check CITE . Regulation 23A excludes incidental c
+t-screening	appendix_a_rationale.tex	R585 per month. The Regulation 23A residual-income test gives a ceiling that varies with income (App
+t-screening	appendix_a_rationale.tex	ome (Appendix~ ). \labelpar{Making the BNPL eligibility screen a real affordability test (Submodel~12).} Th
+t-screening	appendix_b_register.tex	each BNPL request, the analogue of the FCA's affordability check~ CITE .} \\ \addlinespace CODE cool} & 15 &
+t-screening	appendix_c_supplementary.tex	applies a simplified Regulation 23A residual-income test CITE , granting credit when household incom
+t-screening	appendix_d_variables.tex	enses by gross monthly income band, from the Affordability Assessment Regulations~ CITE . For income MATH in a b
+t-screening	appendix_d_variables.tex	hly debt service the Regulation 23A residual-income test permits: monthly household income, which is
+t-screening	main.tex	edit distress and what bureau visibility and affordability screening change. The model's traditional lender tests
+t-short-group	03_calibration.tex	ts 13{,}719 household records, 10{,}841 have reported income, a valid household size and a positive sampl
+t-shortfall	02_model.tex	a Shortfall} Under Submodel~4 a household short of cash requests exactly its shortfall. Two alternat
+t-starting	01_introduction.tex	a share while the credit-active book halves. Opening debt service is above what households report
+t-starting	appendix_b_specification.tex	ears persistence, write-off, the ages of the initial arrears, activation order, and threshold end
+t-starting	appendix_f_pseudo_init.tex	sumption. \begin{algorithm}[!htbp] \caption{Initial arrears from the CCMR profile}
+t-starting	main.tex	he fitted profile cannot validate the model, opening debt service exceeds what households report,
+t-switch	01_introduction.tex	ecks~ CITE , while South Africa is moving to bureau reporting (Section~ ). The model's platforms cannot se
+t-switch	05_policy.tex	gainst the same shortfall, which we assume a bureau reporting with a lag would not show, so the switch ove
+t-users	01_introduction.tex	\\ \addlinespace CITE & United States BNPL users & BNPL access; spending & Want-driven purcha
+t-users	01_introduction.tex	doption, with larger increases among heavier users. The users are more financially constrained
+t-users	01_introduction.tex	ing among both constrained and unconstrained users, beyond what intertemporal substitution expl
+t-users	01_introduction.tex	rs are more financially constrained than non-users~ CITE , use is highest among low-to-middle-i
+t-users	01_introduction.tex	th larger increases among heavier users. The users are more financially constrained than non-us
+t-users	02_model.tex	. No study measures how much of a shortfall users finance with BNPL, so the sensitivity analys
+t-users	02_model.tex	nst a shortfall, reflects evidence that BNPL users are more likely to be financially constraine
+t-users	04_results.tex	m 13.98\% to 12.46\% at MATH , because BNPL holders join the denominator. We therefore use it fo
+t-validated	appendix_c_supplementary.tex	addlinespace The baseline is calibrated, not validated & Agreement on the five fitted CCMR bands is
+t-validated	appendix_e_matching.tex	. The joint distribution is never externally validated.] The checks cover only marginals. We locate
+t-validated	appendix_e_matching.tex	binations supports plausibility but does not verify the resulting joint distribution in the reci
+t-validated	appendix_e_matching.tex	he seven Group B checks in Table~ therefore verify the implementation and say nothing about the
+t-want	03_calibration.tex	H , MATH and the threshold parameters; the shortfall borrowing rule and the shortfall cap; the minimum-paym
+t-want	appendix_a_rationale.tex	want-driven borrowing could start only after shortfall borrowing had created balances, and never where BNPL r
+t-want	appendix_b_specification.tex	e} \item \textbf{The uncited rules.} The shortfall borrowing amount (Submodel~4), BNPL relief of a sh
+vague-quant	01_introduction.tex	B documents United States borrowers who hold several BNPL loans at once, including loans from dif
+vague-quant	01_introduction.tex	\subsection{Background} South Africa had substantial household credit distress before BNPL spread
+vague-quant	01_introduction.tex	ion*{Screening, Reporting and Borrowing from Several Lenders} Lenders that cannot see one anot
+vague-quant	01_introduction.tex	on bank statements, and a household can owe several providers without any one of them seeing all
+vague-quant	01_introduction.tex	platform count? How often do households owe several platforms at once when platforms cannot
+vague-quant	02_model.tex	lap and say nothing about why households use several platforms. We found no evidence on how South
+vague-quant	02_model.tex	latform rules out stacking but still permits several agreements. \subsection{Implementation and
+vague-quant	02_model.tex	robability MATH . No household chooses how many platforms to use, so the stacking measures s
+vague-quant	02_model.tex	s generated from the code. Automated checks, several against values calculated by hand, cover cas
+vague-quant	03_calibration.tex	change access or a repayment parameter swap a few (7 of 318 on one seed under changed access,
+vague-quant	03_calibration.tex	ed in default are also the same, except that a few differ in arms that change access or a repay
+vague-quant	03_calibration.tex	flags understate holding in households with several adults, and the 2019 banking data may overst
+vague-quant	03_calibration.tex	rowers in a year, but the routing assumption largely sets it (Section~ ), so the comparison is we
+vague-quant	03_calibration.tex	te in early 2017~ CITE . A household holding several classes takes the mean rate and horizon. NID
+we-assume	05_policy.tex	me tick against the same shortfall, which we assume a bureau reporting with a lag would not show
+we-assume	appendix_b_specification.tex	ry spending under stress. The priority order is assumed; the departure from optimisation is motivate
+we-assume	appendix_c_supplementary.tex	t (Table~ ) \\ \addlinespace Platform choice is assumed & Routing is random. Under loyal routing, on

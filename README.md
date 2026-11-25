@@ -81,7 +81,15 @@ baseline suite, `rq1` the platform sweep; see the top of `simulation/experiments
 | scenarios | `results/raw/rq3s.parquet` | 800 |
 | sensitivity of the level | `results/raw/robustness.parquet` | 620 |
 | sensitivity of the effect | `results/raw/effect.parquet` | 1,020 |
+| beta sweep | `results/raw/rqb.parquet` | 2,250 |
+| wage-income screen (pairs with `rq0`, seeds 10,000-10,019) | `results/raw/screen.parquet` | 20 |
+| redrawn population (one population draw per replicate, seeds 110,000-110,099) | `results/raw/redraw.parquet` | 200 |
 | Sobol | `results/summary/sobol_runs.parquet` | 4,096 |
+
+The wage-income screen and redrawn-population suites (D19 in [`docs/DECISIONS.md`](docs/DECISIONS.md)) are summarised by
+`notebooks/scripts/check_effect_split.py`, which reruns them with the `rq0` arms, checks each run
+against `results/raw` and writes `results/summary/effect_split.json`, the source of
+`tab:effect-split`. `final_run.py` runs it as its last step.
 
 Outputs from before the corrections of 2026-09-29 can be regenerated from tag
 `pre-correction-2026-09-29` ([`docs/HISTORY.md`](docs/HISTORY.md)).

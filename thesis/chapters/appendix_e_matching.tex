@@ -25,7 +25,7 @@ The most-used 1\% of donors supply 5.1\% of recipients.
 
 \subsection{Assumptions Under Which the Match Is Credible}\label{app:match-assumptions}
 
-\begin{description}
+\begin{description}[style=unboxed]
 \item[A1. Cell sufficiency.] Conditional on income quintile and province, the six flags are
 independent of everything else in \ac{NIDS} that affects a household's behaviour in the model.
 The two surveys alone cannot test this assumption, since one observes the flags and the other
@@ -51,7 +51,7 @@ gaps also absorb differences between the two surveys' cell compositions.
 
 \subsection{Circumstances Under Which the Match Is Problematic}\label{app:match-problems}
 
-\begin{description}
+\begin{description}[style=unboxed]
 \item[P1. Within-cell heterogeneity.] The match ignores anything that predicts inclusion within a
 cell, such as urban or rural location, education and the formality of employment. Donor flags
 still vary within each cell, but their associations with these recipient characteristics are
@@ -105,11 +105,12 @@ indicators with their \ac{FinScope} targets, nationally and by quintile.
 Figure~\ref{fig:pop-fidelity} compares the 5{,}000-agent resample with its source
 (Section~\ref{sec:resample}).
 
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
 \caption{National rates for the six imputed indicators}
 \label{tab:imputation_errors}
 \tabnote{The national rate of each imputed indicator in three populations: the \ac{FinScope} 2019 target, weighted by its survey weight; the 10{,}841-household synthetic population after matching, weighted by \ac{NIDS} survey weight; and the unweighted 5{,}000-agent resample used in the simulation. The difference column is synthetic less \ac{FinScope}, in percentage points, computed before rounding; the tolerance is 3 points (Table~\ref{tab:validation}). Agreement is expected by construction, so the table tests the implementation only (P6, Appendix~\ref{app:match-problems}).}
+\small
 \begin{tabular}{lrrrr}
 \toprule
 \textbf{Imputed indicator} & \textbf{FinScope 2019} & \textbf{Synthetic} & \textbf{Agents} & \textbf{Difference} \\
@@ -125,17 +126,17 @@ Personal loan    &  2.1 &  2.3 &  2.3 & 0.2 \\
 \end{tabular}
 \end{table}
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
-\includegraphics[width=\textwidth]{figures/fig_inclusion_fidelity.png}
+\includegraphics[width=\textwidth]{figures/fig_inclusion_fidelity}
 \caption{Fidelity of the imputed indicators}
 \label{fig:inclusion-fidelity}
 \tabnote{(a) National rate of each of the six imputed indicators in the three populations of Table~\ref{tab:imputation_errors}. (b) Synthetic-less-\ac{FinScope} gap for each indicator within each per-capita income quintile, thirty cells in all; the largest single deviation is 2.3 points against a tolerance of 5. Quintiles are the weighted \ac{NIDS} bounds of Appendix~\ref{app:variables}.}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[!htb]
 \centering
-\includegraphics[width=\textwidth]{figures/fig_population_fidelity.png}
+\includegraphics[width=\textwidth]{figures/fig_population_fidelity}
 \caption{Distributional fidelity of the agent population}
 \label{fig:pop-fidelity}
 \tabnote{Each panel compares the unweighted 5{,}000-agent resample, drawn with replacement in proportion to \ac{NIDS} survey weight (seed 20260818) from 3{,}221 unique source records, against the weighted 10{,}841-household source it is drawn from. Panels (a) and (b) cover the per-capita income distribution and its concentration; panels (c) to (f) cover income quintile, household size, province and primary income source, the categorical attributes that gate behaviour and define the reference groups in the simulation. The Kolmogorov--Smirnov distance in (a) is 0.016, the largest categorical deviation across the 24 sub-categories is 1.4 points, and the Gini rises by 0.015, from 0.6514 to 0.6668.}
@@ -146,16 +147,18 @@ Personal loan    &  2.1 &  2.3 &  2.3 & 0.2 \\
 Table~\ref{tab:validation} lists the checks that the constructed population reproduces its
 sources.
 
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
 \caption{Construction checks on the population}
 \label{tab:validation}
 \tabnote{Checks that the constructed population reproduces its own sources. Group A tests consistency, Group B the imputed flags against \ac{FinScope}, Group C the debt-service cap and Group D the resample against its weighted source. Agreement in Group B is expected by construction (P6). Tolerances are ours. These checks test the implementation, not external validity; the external comparisons are in Table~\ref{tab:pop-external}.}
-\begin{tabular}{L{4.9cm}L{3.6cm}rrc}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{L{5.0cm}L{4.6cm}rrc}
 \toprule
 \textbf{Check} & \textbf{Metric} & \textbf{Value} & \textbf{Tolerance} & \\
 \midrule
-A. Quintile shares $\approx 20\%$ & max $|$share $-0.20|$ & 0.4 pp & $\pm$2 pp & \checkmark \\
+A. Quintile shares $\approx 20\%$ & max $|\text{share} - 0.20|$ & 0.4 pp & $\pm$2 pp & \checkmark \\
 A. No impossible values & negative values & 0 & exact & \checkmark \\
 \addlinespace
 B. Banked (national) & vs FinScope & 0.4 pp & $\pm$3 pp & \checkmark \\

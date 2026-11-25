@@ -4,8 +4,13 @@ Loads `synthetic_population_5000.parquet` (P3 output, 14/14 checks passed in P4)
 the wage component needed for the D1 shock, recomputes each household's product-mix APR,
 and builds the D17 reference groups.
 
-Nothing here re-derives the population. P1-P3 are not re-run: the wage column is joined
-onto the existing parquet on `source_w5_hhid`, so the validated resample is untouched.
+Nothing here re-derives the canonical population. P1-P3 are not re-run: the wage column is
+joined onto the existing parquet on `source_w5_hhid`, so the validated resample is untouched.
+
+The one exception is the redrawn-population design (D19, 2026-11-24). With a population seed,
+the P3 step (`resample_population`) draws a fresh 5,000 from the matched households and the
+same joins are applied to that draw. P3 with its own seed, 20,260,818, reproduces the canonical
+parquet exactly (test_population_redraw.py), so the function is the P3 step and not a copy.
 """
 
 from __future__ import annotations
@@ -24,11 +29,20 @@ from .affordability import (
     weighted_apr_and_term,
 )
 from .config import (
+    MATCHED_PARQUET,
     MONTHLY_TO_TICK,
     NIDS_HHDERIVED,
     NIDS_INDDERIVED,
     POPULATION_PARQUET,
 )
+
+#: P3 (notebooks/p3_resample.ipynb): the canonical population is the draw of this size with
+#: this seed. Kept here so the redrawn-population design (D19) runs the same step.
+P3_SEED = 20260818
+P3_N_AGENTS = 5000
+#: P3 casts these before drawing, so a redraw must too or its dtypes differ from the canonical.
+P3_QUINTILES = ["Q1", "Q2", "Q3", "Q4", "Q5"]
+P3_FLAGS = ["banked", "G10", "G11", "G12", "G13", "G14"]
 
 @dataclass(slots=True)
 class HouseholdRecord:
@@ -72,13 +86,54 @@ class HouseholdRecord:
 
 
 @lru_cache(maxsize=1)
-def load_population_frame() -> pd.DataFrame:
+def load_matched_frame() -> pd.DataFrame:
+    """P2's 10,841 matched NIDS households, prepared exactly as P3 prepares them to draw.
+
+    Cached and never modified: `resample_population` copies the rows it draws.
+    """
+    pop = pd.read_parquet(MATCHED_PARQUET)
+    pop["income_quintile"] = pd.Categorical(pop["income_quintile"], P3_QUINTILES, ordered=True)
+    for f in P3_FLAGS:
+        pop[f] = pop[f].astype(int)
+    return pop
+
+
+def resample_population(seed: int, n: int = P3_N_AGENTS) -> pd.DataFrame:
+    """The P3 step: `n` households drawn with replacement in proportion to the NIDS weight.
+
+    Moved here from notebooks/p3_resample.ipynb on 2026-11-24 (D19) without change: the same
+    generator, probabilities, draw and renames. `resample_population(P3_SEED)` is the
+    canonical synthetic_population_5000.parquet, row for row. After the draw every household
+    counts once; `source_weight` is kept for traceability only.
+    """
+    pop = load_matched_frame()
+    rng = np.random.RandomState(seed)
+    p = (pop.w5_wgt / pop.w5_wgt.sum()).values
+    idx = rng.choice(len(pop), size=n, replace=True, p=p)
+    agents = pop.iloc[idx].reset_index(drop=True).copy()
+    agents.insert(0, "agent_id", np.arange(n))
+    return agents.rename(columns={"w5_hhid": "source_w5_hhid", "w5_wgt": "source_weight"})
+
+
+def load_population_frame(population_seed: int | None = None) -> pd.DataFrame:
     """The 5,000-agent population with the wage column joined and APRs recomputed.
 
-    Cached: the parquet is read once per process, which matters because the batch runner
-    instantiates thousands of models.
+    `population_seed` None (every stored run) reads the canonical P3 parquet. A seed draws a
+    new population with the P3 step instead (D19, the redrawn-population design); everything
+    below is then computed from that draw, including the hire wages.
     """
-    pop = pd.read_parquet(POPULATION_PARQUET)
+    return _population_frame(population_seed)
+
+
+@lru_cache(maxsize=4)
+def _population_frame(population_seed: int | None) -> pd.DataFrame:
+    """Cached: a population is built once per process, which matters because the batch
+    runner instantiates thousands of models. Four slots, so the two arms of a redrawn
+    population that land in one worker share their draw."""
+    if population_seed is None:
+        pop = pd.read_parquet(POPULATION_PARQUET)
+    else:
+        pop = resample_population(population_seed)
 
     # --- D1: join the wage component -----------------------------------------
     # Following Madeira, the income shock is a separation from employment, so its
@@ -99,7 +154,10 @@ def load_population_frame() -> pd.DataFrame:
 
     # Nulls are households with no wage income. Verified: no WAGE-dominant household has
     # a null or zero wage, so filling with 0 cannot silently exempt a household that
-    # ought to be shocked.
+    # ought to be shocked. (D19, 2026-11-24: not all nulls are households without wage income.
+    # NIDS leaves w5_hhwage missing where household income comes from the single household
+    # question; 202 of the 5,000 agents, all income_source OTHER, come from such households
+    # although their members report labour income. Left as it is; check_effect_split.py.)
     merged["w5_hhwage"] = merged["w5_hhwage"].fillna(0.0).clip(lower=0.0)
     over = merged["w5_hhwage"] > merged["w5_hhincome"]
     if over.any():
@@ -173,14 +231,15 @@ def load_population_frame() -> pd.DataFrame:
 
 
 def build_records(
-    n_agents: int | None = None, seed: int = 0
+    n_agents: int | None = None, seed: int = 0, population_seed: int | None = None
 ) -> tuple[list[HouseholdRecord], dict[tuple[str, str], list[int]]]:
     """Build agent records and the D17 reference-group index.
 
     `n_agents` None uses the full 5,000. A smaller value samples without replacement and
     a larger one resamples with replacement, for the population-stability check.
+    `population_seed` None uses the canonical population; a seed, a redrawn one (D19).
     """
-    df = load_population_frame()
+    df = load_population_frame(population_seed)
 
     if n_agents is not None and n_agents != len(df):
         rng = np.random.default_rng(seed)
@@ -246,13 +305,18 @@ def zero_capacity_debtors(records: list[HouseholdRecord]) -> list[int]:
     return [r.agent_id for r in records if r.d_trad > 0 and r.nca_capacity_monthly <= 0]
 
 
-def stationary_separation_rate(reemployment: float) -> float:
+@lru_cache(maxsize=None)
+def stationary_separation_rate(reemployment: float, population_seed: int | None = None) -> float:
     """The per-earner separation rate at which expected employment is constant.
 
     With labour flows on, employed members separate at `s` and unemployed members (the
     jobseekers on the NIDS roster, then anyone who separates) find work at the QLFS
     re-employment rate. Expected employment is flat from the first tick when outflows
     equal inflows, s x earners = reemployment x jobseekers (added 2026-10-12).
+
+    The rate depends on the population, so a redrawn population (D19) has its own; the
+    redraw suite re-derives it for each draw. Cached, because building that suite asks for
+    it once per draw and the CLI builds every suite twice.
     """
-    df = load_population_frame()
+    df = load_population_frame(population_seed)
     return reemployment * float(df["n_jobseekers"].sum()) / float(df["n_earners"].sum())

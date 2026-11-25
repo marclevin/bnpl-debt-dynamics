@@ -2,24 +2,32 @@
 % do not edit by hand; re-run the script instead.
 \begin{table}[!htb]
 \centering
-\caption{Comparisons with external evidence}
-\label{tab:bnpl-on-checks}
-\tabnote{No parameters were fitted to these quantities; Pattern~1 informed the design (Section~\ref{sec:lim-validation}). Model values use the $\beta = 0$ arm of Table~\ref{tab:baseline-arms}, except Pattern~1 (changes from no-\ac{BNPL} at $\beta = 0$ and $0.3$, $\pm$ one seed-paired standard error) and Pattern~3 (no-\ac{BNPL}, final tick). Debt-to-income is total debt divided by total monthly income per quintile; start denotes the pre-tick population. The volume band spans provider volumes per signed-up and active customer in 2017 Rands. Reported 2024 spending of R7{,}000 per customer (about R5{,}000 in 2017 Rands) exceeds the band, making its upper bound uncertain~\citep{homechoice2024ir}. The purchase target is gross merchandise value divided by transaction count. For Pattern~1, deHaan et al.\ measure card late fees and interest; traditional arrears proxy late fees in the model. Pattern~2, the calibration target, appears in Table~\ref{tab:arrears-fit}.}
-\begingroup\setlength{\tabcolsep}{3pt}\footnotesize
-\begin{tabular}{L{4.6cm}L{2.7cm}L{3.0cm}L{3.3cm}}
+\ifdefined\gentabbox\else\newsavebox{\gentabbox}\fi
+\sbox{\gentabbox}{\small\setlength{\tabcolsep}{3pt}%
+\begin{tabular}{H{4.7cm}L{2.7cm}L{3.0cm}L{3.15cm}}
 \toprule
 \textbf{Comparison} & \textbf{Expected} & \textbf{Model} & \textbf{Result} \\
 \midrule
 \multicolumn{4}{l}{\emph{Behavioural patterns}} \\
 1. Traditional arrears rise~\citep{dehaan2024bnpl} & Rise & $\boldsymbol{+0.20 \pm 0.05}$; $\boldsymbol{+0.26 \pm 0.07}$ pp & Rises \\
+\addlinespace
 1. Traditional interest rises~\citep{dehaan2024bnpl} & Rise & $-0.6 \pm 0.8$; $+0.9 \pm 0.7$\% & No detectable change \\
-3. Debt-to-income peaks mid-distribution~\citep{hamill2023creditcard} & Peak in Q2--Q4 & Q4 0.21; Q3 0.17 (start: Q4 1.19; Q1 0.81) & Not counted: Q4 is highest at the start too; Q1's ratio falls with write-offs \\
+\addlinespace
+3. Debt-to-income peaks \mbox{mid-distribution}~\citep{hamill2023creditcard} & Peak in Q2--Q4 & Q4~0.21; Q3~0.17 \mbox{(start: Q4 1.19;} Q1~0.81) & Not counted: Q4 is highest at the start too; Q1's ratio falls with write-offs \\
+\addlinespace
 \multicolumn{4}{l}{\emph{\ac{BNPL} market}} \\
 Owing two or more platforms at once~\citep{cfpb2025bnpl} & 32--33\% of borrowers in a year & 28.2\% of ever-holders over two years & Below, over a longer window; different market \\
+\addlinespace
 Annual volume per eligible household~\citep{weaver2025iar} & R1{,}333--R4{,}261 & R860 & Below \\
+\addlinespace
 Annual volume per ever-holder~\citep{weaver2025iar} & R1{,}333--R4{,}261 & R1{,}130 & Below \\
+\addlinespace
 Mean purchase~\citep{weaver2025iar} & R992 & R666 & 33\% low \\
 \bottomrule
-\end{tabular}
-\endgroup
+\end{tabular}}
+\caption{Comparisons with external evidence}
+\label{tab:bnpl-on-checks}
+{\ifdim\wd\gentabbox<\linewidth\setlength{\linewidth}{\wd\gentabbox}\fi
+\tabnote{No parameters were fitted to these quantities; Pattern~1 informed the design (Section~\ref{sec:lim-validation}). Model values use the $\beta = 0$ arm of Table~\ref{tab:baseline-arms}, except Pattern~1 (changes from no-\ac{BNPL} at $\beta = 0$ and $0.3$, $\pm$ one seed-paired standard error) and Pattern~3 (no-\ac{BNPL}, final tick). Debt-to-income is total debt divided by total monthly income per quintile; start denotes the pre-tick population. The volume band spans provider volumes per signed-up and active customer in 2017 Rands. Reported 2024 spending of R7{,}000 per customer (about R5{,}000 in 2017 Rands) exceeds the band, making its upper bound uncertain~\citep{homechoice2024ir}. The purchase target is gross merchandise value divided by transaction count. For Pattern~1, deHaan et al.\ measure card late fees and interest; traditional arrears proxy late fees in the model. Pattern~2, the calibration target, appears in Table~\ref{tab:arrears-fit}.}}
+\usebox{\gentabbox}
 \end{table}

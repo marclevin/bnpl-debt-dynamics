@@ -170,6 +170,18 @@ HEADER = (
 )
 
 
+#: Table style, one for every table in the thesis (generated and hand-written):
+#:   * body \small; \footnotesize only where the columns do not fit the text width at \small;
+#:     the note \footnotesize (\tabnote), under the caption, above the table;
+#:   * booktabs rules only; bold column heads; an italic group row gets a little space above it;
+#:   * where any cell wraps, \addlinespace between rows (spaced=True), and row labels that can
+#:     wrap go in an H column (hanging indent), so a continuation line does not read as a row;
+#:   * numbers right-aligned, one number of decimals per column, true minus signs (in math);
+#:   * a note under a table much narrower than the text is set to the table's width;
+#:   * body tables float [!htb] (near the citing text); appendix tables [!htbp].
+APPENDIX_PLACEMENT = "!htbp"
+
+
 def table(
     name: str,
     caption: str,
@@ -178,19 +190,47 @@ def table(
     header: str,
     rows: list[str],
     size: str = r"\small",
-    colsep: str = "4pt",
-    placement: str = "H",
+    colsep: str = "5pt",
+    placement: str = APPENDIX_PLACEMENT,
+    spaced: bool = False,
+    env: str = "table",
+    fit_note: bool = True,
 ) -> None:
-    body = "\n".join(rows)
+    """Write one table fragment in the thesis table style.
+
+    The tabular is set in a box first, so the note can take the table's width when the table
+    is much narrower than the text. `spaced` puts \\addlinespace between data rows (for a table
+    in which a cell wraps); a group row (group_row) always gets space above it unless it opens
+    the body. `env` is "table" or "sidewaystable" (a rotated table on its own page).
+    `fit_note=False` keeps a full-width note under a narrow table (fewer lines, where the
+    page could not otherwise hold the table).
+    """
+    out: list[str] = []
+    for i, r in enumerate(rows):
+        is_group = r.startswith("\\multicolumn") and "\\emph{" in r
+        prev = rows[i - 1] if i else ""
+        prev_is_group = prev.startswith("\\multicolumn") and "\\emph{" in prev
+        if i and prev.strip() != "\\midrule" and r.strip() != "\\midrule":
+            if is_group or (spaced and not prev_is_group):
+                out.append("\\addlinespace")
+        out.append(r)
+    body = "\n".join(out)
     tex = (
         HEADER
-        + f"\\begin{{table}}[{placement}]\n\\centering\n"
-        + f"\\caption{{{caption}}}\n\\label{{tab:{name.replace('tab_', '').replace('_', '-')}}}\n"
-        + f"\\tabnote{{{note}}}\n"
-        + f"\\begingroup\\setlength{{\\tabcolsep}}{{{colsep}}}{size}\n"
+        + f"\\begin{{{env}}}[{placement}]\n\\centering\n"
+        # one box register for every generated table, allocated by the first that is set
+        + "\\ifdefined\\gentabbox\\else\\newsavebox{\\gentabbox}\\fi\n"
+        + f"\\sbox{{\\gentabbox}}{{{size}\\setlength{{\\tabcolsep}}{{{colsep}}}%\n"
         + f"\\begin{{tabular}}{{{colspec}}}\n\\toprule\n{header} \\\\\n\\midrule\n"
         + body
-        + "\n\\bottomrule\n\\end{tabular}\n\\endgroup\n\\end{table}\n"
+        + "\n\\bottomrule\n\\end{tabular}}\n"
+        + f"\\caption{{{caption}}}\n\\label{{tab:{name.replace('tab_', '').replace('_', '-')}}}\n"
+        # the note takes the table's width when the table is narrower than the line
+        + ("{\\ifdim\\wd\\gentabbox<\\linewidth\\setlength{\\linewidth}{\\wd\\gentabbox}\\fi\n"
+           if fit_note else "{\n")
+        + f"\\tabnote{{{note}}}}}\n"
+        + "\\usebox{\\gentabbox}\n"
+        + f"\\end{{{env}}}\n"
     )
     GEN.mkdir(parents=True, exist_ok=True)
     (GEN / f"{name}.tex").write_text(tex, encoding="utf-8")
@@ -202,45 +242,72 @@ def group_row(title: str, ncols: int) -> str:
 
 
 # ------------------------------------------------------------------ figure style
-SRC = "#2a78d6"     # categorical slot 1 (blue)
-AGT = "#eb6834"     # slot 2 (orange)
-BENCH = "#1baf7a"   # slot 3 (aqua)
-RED = "#e34948"     # slot 8: reserved for "uncited" and "hypothetical"
-INK, INK2, INK3 = "#0b0b0b", "#52514e", "#8a8983"
+# One style for every generated figure (build_results_figures.py and build_data_figures.py).
+# Figures are drawn at the compiled text width and included at width=\textwidth, so the point
+# sizes below are the printed ones: ticks 8 pt, labels, legends and panel titles 9 pt.
+# Text is Computer Modern (matplotlib's bundled cmr10, embedded as TrueType) with mathtext in
+# the cm set, to match the thesis. cmr10 has no minus sign, Greek or en dash: write those in
+# math mode ("$-$", r"$\kappa$"); tick labels go through mathtext for the same reason.
+# Every series is told apart by marker, line style or hatch as well as colour, and the colours
+# are chosen to separate in greyscale (approximate grey level in brackets).
+SRC = "#2a78d6"     # blue (45%): the peer-influence arm, beta = 0.3
+RED = "#e34948"     # red (47%): reserved for external reference lines and "hypothetical"
+DKBLUE = "#1c5cab"  # dark blue (32%): the weighted survey source in the data figures
+LTORANGE = "#f4a261"  # light orange (70%): the unweighted agent population
+INK, INK2, INK3 = "#0b0b0b", "#3d3c3a", "#8a8983"
 GRID, RULE, SURF = "#e6e5e2", "#b9b8b3", "#ffffff"
-# Ordinal blue ramp (dataviz reference palette, steps 250-650) for ordered series.
+# Ordinal blue ramp (dataviz reference palette, steps 250-650) for ordered series; each step
+# also gets its own marker (MARKERS), because neighbouring steps are close in grey.
 RAMP = ["#86b6ef", "#5598e7", "#2a78d6", "#1c5cab", "#104281"]
-TW = 5.78  # compiled text width in inches; figures are included at width=\textwidth
+MARKERS = ["o", "^", "D", "v", "P"]
+TW = 5.78  # compiled text width in inches (14.68 cm); figures are included at width=\textwidth
+
+#: Error-bar style shared by every figure.
+ERR = dict(capsize=2.0, elinewidth=0.7, capthick=0.7)
 
 RC = {
-    "font.family": "sans-serif",
-    "font.sans-serif": ["DejaVu Sans"],
-    "font.size": 7.6, "axes.titlesize": 8.4, "axes.labelsize": 7.4,
-    "xtick.labelsize": 7.0, "ytick.labelsize": 7.0, "legend.fontsize": 7.0,
-    "axes.titleweight": "bold", "axes.titlepad": 5,
-    "axes.edgecolor": RULE, "axes.linewidth": 0.7,
-    "xtick.color": INK2, "ytick.color": INK2,
-    "xtick.major.width": 0.7, "ytick.major.width": 0.7,
-    "text.color": INK, "axes.labelcolor": INK2,
+    "font.family": "serif", "font.serif": ["cmr10"],
+    "mathtext.fontset": "cm", "axes.formatter.use_mathtext": True, "axes.unicode_minus": True,
+    "font.size": 9, "axes.titlesize": 9, "axes.labelsize": 9,
+    "xtick.labelsize": 8, "ytick.labelsize": 8, "legend.fontsize": 9,
+    "axes.titleweight": "normal", "axes.titlepad": 4, "axes.labelpad": 3,
+    "axes.edgecolor": INK2, "axes.linewidth": 0.6,
+    "xtick.color": INK, "ytick.color": INK, "xtick.labelcolor": INK, "ytick.labelcolor": INK,
+    "xtick.major.width": 0.6, "ytick.major.width": 0.6,
+    "xtick.major.size": 2.5, "ytick.major.size": 2.5, "xtick.major.pad": 2.5, "ytick.major.pad": 2.5,
+    "xtick.minor.visible": False, "ytick.minor.visible": False,
+    "text.color": INK, "axes.labelcolor": INK,
+    "lines.linewidth": 1.2, "lines.markersize": 4.0, "lines.markeredgewidth": 0.8,
+    "errorbar.capsize": 2.0, "hatch.linewidth": 0.5, "hatch.color": INK,
+    "legend.frameon": False, "legend.handlelength": 1.6, "legend.handletextpad": 0.5,
+    "legend.columnspacing": 1.4, "legend.borderaxespad": 0.3,
     "figure.facecolor": SURF, "axes.facecolor": SURF,
-    "savefig.facecolor": SURF, "pdf.fonttype": 42,
-    "legend.frameon": False,
+    "savefig.facecolor": SURF, "pdf.fonttype": 42, "pdf.compression": 9,
 }
 
 
 def dress(ax, ygrid: bool = True, xgrid: bool = False) -> None:
+    """Recessive chrome: no top or right spine, hairline grid behind the data."""
     for side in ("top", "right"):
         ax.spines[side].set_visible(False)
     ax.set_axisbelow(True)
     if ygrid:
-        ax.yaxis.grid(True, color=GRID, linewidth=0.6)
+        ax.yaxis.grid(True, color=GRID, linewidth=0.5)
     if xgrid:
-        ax.xaxis.grid(True, color=GRID, linewidth=0.6)
-    ax.tick_params(length=2.5)
+        ax.xaxis.grid(True, color=GRID, linewidth=0.5)
+
+
+def minus(v: float, decimals: int = 1) -> str:
+    """A signed number for figure text: a true minus, and a plain 0.0 in place of -0.0 or +0.0."""
+    r = round(float(v), decimals)
+    if r == 0:
+        return f"{0:.{decimals}f}"
+    return f"{r:+.{decimals}f}".replace("-", "$-$")
 
 
 def save(fig, stem: str) -> None:
+    """Vector PDF for the thesis (fonts embedded, no timestamp) and a PNG preview."""
     FIGS.mkdir(parents=True, exist_ok=True)
-    fig.savefig(FIGS / f"{stem}.pdf")
+    fig.savefig(FIGS / f"{stem}.pdf", metadata={"CreationDate": None})
     fig.savefig(FIGS / f"{stem}.png", dpi=300)
     print(f"wrote thesis/figures/{stem}.pdf (+png)")

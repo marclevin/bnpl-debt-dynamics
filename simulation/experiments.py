@@ -9,6 +9,8 @@ them would orphan the existing runs for no gain. Map them to the thesis as:
   * `rq2_threshold`  -> thesis RQ2, pre-registered structural alternative
   * `rq3_*`          -> thesis RQ3, the cooling-off window and the cap
   * `rq3s_*`         -> thesis RQ3, the two switches and their benchmark
+  * `screen`, `redraw` -> the supervisor's two checks on the BNPL effect (D19, 2026-11-24):
+    the wage-income screen and the redrawn population
 Thesis RQ1 (does the population reproduce behaviour it was not fitted to) has no grid
 here: it is answered by the data layer and the calibrated baseline, not by a sweep.
 
@@ -24,6 +26,8 @@ never of all households (D11).
 Usage:
     python -m simulation.experiments --which rq2 --reps 20
     python -m simulation.experiments --which all --reps 20
+    python -m simulation.experiments --which screen --reps 20    # D19, pairs with rq0
+    python -m simulation.experiments --which redraw              # D19, 100 draws whatever --reps
 """
 
 from __future__ import annotations
@@ -486,6 +490,56 @@ def beta_sweep(reps: int) -> list[ParamSet]:
     return out
 
 
+def wage_screen(reps: int) -> list[ParamSet]:
+    """D19 (supervisor, 2026-11-24): the wage-income screen at beta = 0.
+
+    One arm, platforms lending only to households with surveyed labour-market income, on the
+    rq0 seeds (10,000 onwards) so that it pairs by seed with `baseline_no_bnpl` and
+    `bnpl_on_beta0` in results/raw/rq0.parquet, which are not re-run. The screen acts after
+    the eligibility draw, so the arm shares the benchmark's population, eligibility draw and
+    starting arrears. The streams part in the first tick, when a screened household skips its
+    purchase draw (verified 2026-11-24: paired SE 0.118, unpaired 0.105). Label screen_b0.0; results/raw/screen.parquet.
+    """
+    return replicate(
+        calibrated(bnpl_enabled=True, beta=0.0, bnpl_wage_income_screen=True, label="screen_b0.0"),
+        reps,
+        seed0=10_000,
+    )
+
+
+#: D19: the redrawn-population design. Fixed here, not taken from --reps, as for the sweep.
+REDRAW_REPS = 100
+REDRAW_SEED0 = 110_000
+
+
+def population_redraw(reps: int) -> list[ParamSet]:
+    """D19 (supervisor, 2026-11-24): BNPL off and on at beta = 0, one population draw each.
+
+    `reps` is ignored: REDRAW_REPS replicates on seeds 110,000 onwards. Replicate i draws its
+    population with the P3 step on seed 110,000 + i (numpy's RandomState) and runs on the
+    same number as its model seed (Python's Random, seeded by a different algorithm). Its two
+    arms share the draw and the seed, so the effect is paired within the draw and its
+    standard error carries sampling variation of the population as well as simulation
+    variance. The separation rate is DERIVED from each draw (stationary_separation_rate,
+    rounded to five decimals as DERIVED_SHOCK_PROB is) and travels in the row as `shock_prob`;
+    the fitted friction and persistence and the FinScope match are held fixed. Labels
+    redraw_off and redraw_b0.0; results/raw/redraw.parquet.
+    """
+    from .population import stationary_separation_rate
+
+    arms = [
+        calibrated(bnpl_enabled=False, label="redraw_off"),
+        calibrated(bnpl_enabled=True, beta=0.0, label="redraw_b0.0"),
+    ]
+    out: list[ParamSet] = []
+    for i in range(REDRAW_REPS):
+        s = REDRAW_SEED0 + i
+        p = round(stationary_separation_rate(arms[0].shock_exit_prob, population_seed=s), 5)
+        # The two arms of a draw are adjacent, so a worker usually builds the draw once.
+        out += [a.replace(seed=s, population_seed=s, shock_prob=p) for a in arms]
+    return out
+
+
 SUITES = {
     "rq0": rq0_baseline,
     "rq1": rq1_stacking,
@@ -496,6 +550,9 @@ SUITES = {
     "robustness": robustness,
     "effect": effect_robustness,
     "rqb": beta_sweep,
+    # D19, 2026-11-24. Neither changes a stored file.
+    "screen": wage_screen,
+    "redraw": population_redraw,
 }
 
 
